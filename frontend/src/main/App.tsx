@@ -1,14 +1,29 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
+import { useEffect, useState } from 'react'
+import reactLogo from '../assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
 
 function App() {
   const [count, setCount] = useState(0)
+  const [hello, setHello] = useState('no data')
+
+  useEffect(() => {
+    console.log("useEffect")
+    fetch('http://localhost:8080/api/demo/hello')
+      .then((res) => {
+        console.log(res)
+        return res.json()
+      })
+      .then((data) => {
+        console.log(data)
+        setHello(data.message)
+      })
+  },[])
 
   return (
     <>
       <div>
+        <h1>{hello}</h1>
         <a href="https://vitejs.dev" target="_blank">
           <img src={viteLogo} className="logo" alt="Vite logo" />
         </a>

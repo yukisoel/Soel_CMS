@@ -9,7 +9,9 @@ import org.springframework.web.bind.annotation.GetMapping
 class DemoControlle {
 
   @GetMapping("/hello")
-  fun hello ():String {
-    return "Hello World"
+  fun hello ():HelloResponse {
+    return HelloResponse("Hello, World!")
   }
 }
+
+data class HelloResponse(val message: String)
