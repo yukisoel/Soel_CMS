@@ -3,10 +3,10 @@ import axios from "axios"
 type Props = {
   setInstagramInfo:(str:string) => void
   text: string
-  endopoint: string
+  endpoint: string
 }
 
-export default function FacebookMeButton({setInstagramInfo, text, endopoint}:Props) {
+export default function FacebookMeButton({setInstagramInfo, text, endpoint}:Props) {
 
   const getInfo = async () => {
     try{
@@ -15,7 +15,7 @@ export default function FacebookMeButton({setInstagramInfo, text, endopoint}:Pro
         {
           withCredentials:true,
           params: {
-            endopoint: endopoint
+            endpoint: endpoint
           }
         }
       )
