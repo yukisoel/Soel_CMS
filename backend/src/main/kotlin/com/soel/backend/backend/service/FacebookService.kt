@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service
 @Service
 class FacebookService(val facebookRepository: FacebookRepository) {
 
-    fun getMe(accessToken: String, endpoint: String): FacebookUser? {
-        return facebookRepository.getMe(accessToken, endpoint)
+    fun getMe(accessToken: String): FacebookUser? {
+        return facebookRepository.getMe(accessToken)
     }
 }

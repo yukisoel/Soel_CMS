@@ -13,9 +13,10 @@ import org.springframework.web.bind.annotation.RequestParam
 @RequestMapping("/api/facebook")
 class FacebookController(val facebookService: FacebookService) {
 
-  @GetMapping("/")
-  fun getMe(@RegisteredOAuth2AuthorizedClient("facebook") facebookClient: OAuth2AuthorizedClient, @RequestParam endpoint: String): FacebookUser? {
-    return facebookService.getMe(facebookClient.accessToken.tokenValue, endpoint)
+  @GetMapping("/me")
+  fun getMe(@RegisteredOAuth2AuthorizedClient("facebook") facebookClient: OAuth2AuthorizedClient): FacebookUser? {
+    return facebookService.getMe(facebookClient.accessToken.tokenValue)
   }
+  
 }
 

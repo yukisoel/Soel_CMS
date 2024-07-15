@@ -11,12 +11,9 @@ export default function FacebookMeButton({setInstagramInfo, text, endpoint}:Prop
   const getInfo = async () => {
     try{
       const res = await axios.get(
-        "api/facebook",
+        endpoint,
         {
           withCredentials:true,
-          params: {
-            endpoint: endpoint
-          }
         }
       )
       console.log(res)
