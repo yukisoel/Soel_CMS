@@ -1,14 +1,16 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import './App.css'
-import LoginButton from './components/LoginButton'
+import FacebookMeButton from './components/FacebookMeButton.tsx'
 
 function App() {
   const [instagramInfo, setInstagramInfo] = useState('まだ取得できていません')
 
   return (
     <div>
-      <LoginButton 
+      <FacebookMeButton
         setInstagramInfo={setInstagramInfo}
+        text={"facebookのmeをゲット"}
+        api={"/api/facebook/me"}
       />
       <div>
         {instagramInfo}

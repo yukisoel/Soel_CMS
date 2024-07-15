@@ -2,14 +2,17 @@ import axios from "axios"
 
 type Props = {
   setInstagramInfo:(str:string) => void
+  text: string
+  api: string
 }
 
-export default function LoginButton({setInstagramInfo}:Props) {
+export default function FacebookMeButton({setInstagramInfo, text, api}:Props) {
 
   const getInfo = async () => {
     try{
-      const res = await axios.get("/api/demo/hello", {withCredentials:true})
+      const res = await axios.get(api, {withCredentials:true})
       console.log(res)
+      setInstagramInfo(JSON.stringify(res.data))
 
     }catch(e) {
       console.log("catch")
@@ -18,7 +21,7 @@ export default function LoginButton({setInstagramInfo}:Props) {
   }
   return (
     <div>
-      <button onClick={getInfo}>InstagramにLogin</button>
+      <button onClick={getInfo}>{text}</button>
     </div>
   )
 }
