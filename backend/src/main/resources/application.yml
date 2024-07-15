@@ -1,6 +1,11 @@
 spring:
   application:
     name: backend
+  web:
+    resources:
+      cache:
+        cachecontrol:
+          no-store: true
   
   security:
     oauth2:

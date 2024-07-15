@@ -8,15 +8,7 @@ function App() {
 
   const getInstagramInfo = async () => {
     const res = await fetch(
-      'http://localhost:8080/api/graph/me',
-      {
-        method: 'GET',
-        redirect: 'follow',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include'
-      }
+      '/api/graph/me',
     )
     .then((res) => res)
     .catch((err) => {
