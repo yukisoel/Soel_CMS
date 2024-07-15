@@ -12,6 +12,11 @@ function App() {
         text={"facebookのmeをゲット"}
         endpoint={"api/facebook/me"}
       />
+      <FacebookMeButton
+        setInstagramInfo={setInstagramInfo}
+        text={"facebookのme/accountsをゲット"}
+        endpoint={"api/facebook/me/accounts"}
+      />
       <div>
         {instagramInfo}
       </div>
