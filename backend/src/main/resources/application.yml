@@ -1,3 +1,17 @@
 spring:
   application:
     name: backend
+  
+  security:
+    oauth2:
+      client:
+        registration:
+          facebook:
+            client-id: 377649348303912
+            client-secret: 91e9c7a5792fbb79265d1990605ced15
+            scope: public_profile,email
+            redirect-uri: "http://localhost:8080/login/oauth2/code/facebook"
+        provider:
+          facebook:
+            authorization-uri: https://www.facebook.com/v20.0/dialog/oauth
+            token-uri: https://graph.facebook.com/v20.0/oauth/access_token

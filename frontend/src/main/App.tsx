@@ -1,49 +1,51 @@
 import { useEffect, useState } from 'react'
-import reactLogo from '../assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
+import LoginButton from './components/LoginButton'
 
 function App() {
-  const [count, setCount] = useState(0)
-  const [hello, setHello] = useState('no data')
+
+  const [instagramInfo, setInstagramInfo] = useState<any>("まだ取れていません")
+
+  const getInstagramInfo = async () => {
+    const res = await fetch(
+      'http://localhost:8080/api/graph/me',
+      {
+        method: 'GET',
+        redirect: 'follow',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include'
+      }
+    )
+    .then((res) => res)
+    .catch((err) => {
+      console.error(err)
+      return err
+    })
+
+
+    if(res.redirected) {
+      console.log(res.redirected)
+      window.location.href = res.url
+    }
+    const data = await res.json()
+    console.log("instagram data:", data)
+    setInstagramInfo(data.message)
+  }
 
   useEffect(() => {
-    console.log("useEffect")
-    fetch('http://localhost:8080/api/demo/hello')
-      .then((res) => {
-        console.log(res)
-        return res.json()
-      })
-      .then((data) => {
-        console.log(data)
-        setHello(data.message)
-      })
+    getInstagramInfo()
   },[])
 
   return (
-    <>
+    <div>
+      <LoginButton />
       <div>
-        <h1>{hello}</h1>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+        {instagramInfo}
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    </div>
+
   )
 }
 
