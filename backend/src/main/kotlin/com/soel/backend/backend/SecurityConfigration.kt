@@ -13,30 +13,45 @@ class SecurityConfig {
  @Bean
  fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
   http
-   .cors { cors -> cors.configurationSource(corsConfigurationSource()) }
-   .csrf { csrf -> csrf.disable()}
-   .authorizeHttpRequests { authorize ->
-    authorize
-     .requestMatchers("/api/**").permitAll()
-     .anyRequest().permitAll() }
-   .oauth2Login{ oauth2Login ->
-    oauth2Login
-     .defaultSuccessUrl("http://localhost:5173")
-     .failureUrl("http://localhost:5173")
-   }
+    .headers {
+      it.frameOptions{
+        it.disable()
+      }
+    }
+    .oauth2Login {
+      it.successHandler{_, response, _ ->
+        response.sendRedirect("/api/demo/hello")
+      }
+      it.failureHandler{_, response, _ ->
+        response.sendRedirect("http://localhost:5173")
+      }
+    }
+    .logout {
+      it.logoutUrl("/api/logout")
+      it.logoutSuccessHandler{_, response, _ ->
+        response.status = 200
+      }
+      it.deleteCookies("JSESSIONID")
+    }
+    .csrf {
+      it.disable()
+    }
+    .authorizeHttpRequests {
+      it.requestMatchers("/api/**").authenticated()
+      it.requestMatchers("/**").permitAll()
+    }
+  
   return http.build()
  }
+}
 
- @Bean
- fun corsConfigurationSource(): UrlBasedCorsConfigurationSource {
-  val configuration = CorsConfiguration()
-  configuration.allowedOrigins = listOf("http://localhost:5173")
-  configuration.allowedMethods = listOf("GET", "POST", "PUT", "DELETE", "OPTIONS")
-  configuration.allowedHeaders = listOf("*")
-  configuration.allowCredentials = true
+@Component
+public class CustomOAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
-  val source = UrlBasedCorsConfigurationSource()
-  source.registerCorsConfiguration("/**", configuration)
-  return source
- }
+    @Override
+    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
+        // 認証成功後にリダイレクトするURLを設定
+        String redirectUrl = "http://localhost:5173";
+        getRedirectStrategy().sendRedirect(request, response, redirectUrl);
+    }
 }
