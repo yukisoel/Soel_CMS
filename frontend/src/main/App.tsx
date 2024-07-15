@@ -10,7 +10,7 @@ function App() {
       <FacebookMeButton
         setInstagramInfo={setInstagramInfo}
         text={"facebookのmeをゲット"}
-        api={"/api/facebook/me"}
+        endopoint={"/me"}
       />
       <div>
         {instagramInfo}

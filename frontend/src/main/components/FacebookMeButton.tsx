@@ -3,14 +3,22 @@ import axios from "axios"
 type Props = {
   setInstagramInfo:(str:string) => void
   text: string
-  api: string
+  endopoint: string
 }
 
-export default function FacebookMeButton({setInstagramInfo, text, api}:Props) {
+export default function FacebookMeButton({setInstagramInfo, text, endopoint}:Props) {
 
   const getInfo = async () => {
     try{
-      const res = await axios.get(api, {withCredentials:true})
+      const res = await axios.get(
+        "api/facebook",
+        {
+          withCredentials:true,
+          params: {
+            endopoint: endopoint
+          }
+        }
+      )
       console.log(res)
       setInstagramInfo(JSON.stringify(res.data))
 

@@ -7,14 +7,15 @@ import org.springframework.security.oauth2.client.annotation.RegisteredOAuth2Aut
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.RequestParam
 
 @RestController
 @RequestMapping("/api/facebook")
 class FacebookController(val facebookService: FacebookService) {
 
-  @GetMapping("/me")
-  fun getMe(@RegisteredOAuth2AuthorizedClient("facebook") facebookClient: OAuth2AuthorizedClient): FacebookUser? {
-    return facebookService.getMe(facebookClient.accessToken.tokenValue)
+  @GetMapping("/")
+  fun getMe(@RegisteredOAuth2AuthorizedClient("facebook") facebookClient: OAuth2AuthorizedClient, @RequestParam endpoint: String): FacebookUser? {
+    return facebookService.getMe(facebookClient.accessToken.tokenValue, endpoint)
   }
 }
 
