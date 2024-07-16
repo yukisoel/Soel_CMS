@@ -16,11 +16,6 @@ class SecurityConfig {
     @Bean
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
         http
-            .headers {
-                it.frameOptions{
-                    it.disable()
-                }
-            }
             .oauth2Login {
                 it.successHandler{_, response, _ ->
                     response.sendRedirect("http://localhost:5173")
@@ -35,9 +30,6 @@ class SecurityConfig {
                     response.status = 200
                 }
                 it.deleteCookies("JSESSIONID")
-            }
-            .csrf {
-                it.disable()
             }
             .authorizeHttpRequests {
                 it.requestMatchers("/api/**").authenticated()
