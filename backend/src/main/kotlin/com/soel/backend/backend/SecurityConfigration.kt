@@ -1,12 +1,17 @@
+package com.soel.backend.backend
+
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.web.SecurityFilterChain
+import org.slf4j.LoggerFactory
+import org.slf4j.Logger
 
 @Configuration
 @EnableWebSecurity
 class SecurityConfig {
+    private val logger: Logger = LoggerFactory.getLogger(SecurityConfig::class.java)
 
     @Bean
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
@@ -17,9 +22,8 @@ class SecurityConfig {
                 }
             }
             .oauth2Login {
-                it.loginPage("/login")
                 it.successHandler{_, response, _ ->
-                    response.sendRedirect("/")
+                    response.sendRedirect("http://localhost:5173")
                 }
                 it.failureHandler{_, response, _ ->
                     response.sendRedirect("/error")
@@ -40,6 +44,14 @@ class SecurityConfig {
                 it.anyRequest().permitAll()
             }
 
-        return http.build()
+            val filterChain = http.build()
+
+            val filters = filterChain.filters
+        logger.info("Security Filter Chain:")
+        filters.forEachIndexed { index, filter ->
+            logger.info("Filter $index: ${filter::class.java.name}")
+        }
+
+        return filterChain
     }
 }
