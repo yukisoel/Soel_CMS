@@ -1,24 +1,48 @@
 import { useState } from 'react'
 import './App.css'
 import FacebookMeButton from './components/FacebookMeButton.tsx'
+import FacebookIdButton from './components/FacebookInputIdButton.tsx'
 
 function App() {
-  const [instagramInfo, setInstagramInfo] = useState('まだ取得できていません')
+  const [instagramMeInfo, setInstagramMeInfo] = useState('まだ取得できていません')
+  const [instagramAdAccountIdInfo, setInstagramAdAccountIdInfo] = useState('まだ取得できていません')
+  const [instagramCampaignIdInfo, setInstagramCampaignIdInfo] = useState('まだ取得できていません')
 
   return (
     <div>
       <FacebookMeButton
-        setInstagramInfo={setInstagramInfo}
+        setInstagramInfo={setInstagramMeInfo}
         text={"facebookのmeをゲット"}
         endpoint={"api/facebook/me"}
       />
       <FacebookMeButton
-        setInstagramInfo={setInstagramInfo}
+        setInstagramInfo={setInstagramMeInfo}
         text={"facebookのme/accountsをゲット"}
         endpoint={"api/facebook/me/accounts"}
       />
+      <FacebookMeButton
+        setInstagramInfo={setInstagramMeInfo}
+        text={"広告アカウントの情報をゲット"}
+        endpoint={"api/facebook/me/adaccounts"}
+      />
       <div>
-        {instagramInfo}
+        {instagramMeInfo}
+      </div>
+      <FacebookIdButton
+      setInstagramInfo={setInstagramAdAccountIdInfo}
+      text={'広告アカウントのidを入力してキャンペーン一覧を取得'}
+      endpoint={'api/facebook/campaingns'}
+       />
+      <div>
+        {instagramAdAccountIdInfo}
+      </div>
+      <FacebookIdButton
+      setInstagramInfo={setInstagramCampaignIdInfo}
+      text={'キャンペーンのidを入力して詳細を取得'}
+      endpoint={'api/facebook/campaingn-detail'}
+       />
+      <div>
+        {instagramCampaignIdInfo}
       </div>
     </div>
 

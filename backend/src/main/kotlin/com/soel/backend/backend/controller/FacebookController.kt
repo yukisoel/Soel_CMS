@@ -2,12 +2,16 @@ package com.soel.backend.backend.controller
 
 import com.soel.backend.backend.model.FacebookMe
 import com.soel.backend.backend.model.FacebookMeAccounts
+import com.soel.backend.backend.model.FacebookAdAccounts
+import com.soel.backend.backend.model.FacebookCampaingnDetails
+import com.soel.backend.backend.model.FacebookCampaingns
 import com.soel.backend.backend.service.FacebookService
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient
 import org.springframework.security.oauth2.client.annotation.RegisteredOAuth2AuthorizedClient
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.RequestParam
 
 @RestController
 @RequestMapping("/api/facebook")
@@ -21,6 +25,23 @@ class FacebookController(val facebookService: FacebookService) {
   @GetMapping("/me/accounts")
   fun getMeAccounts(@RegisteredOAuth2AuthorizedClient("facebook") facebookClient: OAuth2AuthorizedClient): FacebookMeAccounts? {
     return facebookService.getMeAccounts(facebookClient.accessToken.tokenValue)
+  }
+
+  @GetMapping("/me/adaccounts")
+  fun getAdAccounts(@RegisteredOAuth2AuthorizedClient("facebook") facebookClient: OAuth2AuthorizedClient): FacebookAdAccounts? {
+    return facebookService.getAdAccounts(facebookClient.accessToken.tokenValue)
+  }
+
+  @GetMapping("/campaingns")
+  fun getCampaingns(@RegisteredOAuth2AuthorizedClient("facebook") facebookClient: OAuth2AuthorizedClient, @RequestParam id: String): FacebookCampaingns? {
+    println(id)
+    return facebookService.getCampaingns(facebookClient.accessToken.tokenValue, id)
+  }
+
+  @GetMapping("/campaingn-detail")
+  fun getCampaingnDetail(@RegisteredOAuth2AuthorizedClient("facebook") facebookClient: OAuth2AuthorizedClient, @RequestParam id: String): FacebookCampaingnDetails? {
+    println(id)
+    return facebookService.getCampaingnDetails(facebookClient.accessToken.tokenValue, id)
   }
   
 }
