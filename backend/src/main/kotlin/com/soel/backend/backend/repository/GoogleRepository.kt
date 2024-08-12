@@ -26,4 +26,40 @@ class GoogleRepository(val restTemplate: RestTemplate) {
             GoogleMe::class.java
         ).body
     }
+
+    fun getAccounts(accessToken: String): GoogleMe? {
+        val url = "https://mybusinessaccountmanagement.googleapis.com/v1/accounts"
+        val headers = HttpHeaders()
+
+        headers.apply {
+            setBearerAuth(accessToken)
+        }
+
+        val entity = HttpEntity<String>(headers)
+
+        return restTemplate.exchange(
+            url,
+            HttpMethod.GET,
+            entity,
+            GoogleMe::class.java
+        ).body
+    }
+
+    fun getAccountsLocations(accessToken: String): GoogleMe? {
+        val url = "https://mybusinessbusinessinformation.googleapis.com/v1/accounts/locations"
+        val headers = HttpHeaders()
+
+        headers.apply {
+            setBearerAuth(accessToken)
+        }
+
+        val entity = HttpEntity<String>(headers)
+
+        return restTemplate.exchange(
+            url,
+            HttpMethod.GET,
+            entity,
+            GoogleMe::class.java
+        ).body
+    }
 }

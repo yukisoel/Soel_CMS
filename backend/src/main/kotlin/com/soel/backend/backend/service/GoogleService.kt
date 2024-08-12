@@ -9,4 +9,12 @@ class GoogleService(val googleRepository: GoogleRepository) {
     fun getMe(accessToken: String): GoogleMe? {
         return googleRepository.getMe(accessToken)
     }
+
+    fun getAccounts(accessToken: String): GoogleMe? {
+        return googleRepository.getAccounts(accessToken)
+    }
+
+    fun getAccountsLocations(accessToken: String): GoogleMe? {
+        return googleRepository.getAccountsLocations(accessToken)
+    }
 }

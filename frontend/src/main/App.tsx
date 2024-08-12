@@ -19,6 +19,16 @@ function App() {
           text={"googleのmeをゲット"}
           endpoint={"api/google/me"}
         />
+        <GoogleMeButton
+          setInstagramInfo={setGoogleMeInfo}
+          text={"googleのaccountsをゲット"}
+          endpoint={"api/google/accounts"}
+        />
+        <GoogleMeButton
+          setInstagramInfo={setGoogleMeInfo}
+          text={"googleのaccountsをゲット"}
+          endpoint={"api/google/accounts/locations"}
+        />
         <div>
           {googleMeInfo}
         </div>

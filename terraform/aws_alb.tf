@@ -59,3 +59,23 @@ resource "aws_lb_target_group" "targetgroup1" {
     Name = "${local.env_project_name}-tg1"
   }
 }
+
+resource "aws_lb_target_group" "targetgroup2" {
+  name = "${local.env_project_name}-tg2"
+  vpc_id = aws_vpc.self.id
+  target_type = "ip"
+  port = 8080
+  protocol = "HTTP"
+  proxy_protocol_v2 = false
+  deregistration_delay = 30
+  health_check {
+    path = "/"
+    timeout = 5
+    healthy_threshold = 5
+    unhealthy_threshold = 2
+    matcher = 200
+  }
+  tags = {
+    Name = "${local.env_project_name}-tg2"
+  }
+}
