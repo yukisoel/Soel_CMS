@@ -2,9 +2,34 @@
 locals {
   task_name ="${local.env_project_name}-ecs-task"
   cluster_name = "${local.env_project_name}-ecs-cluster"
+  service_name = "${local.env_project_name}-ecs-service"
+  container_name = local.env_project_name
   task_execution_role_name = "${local.env_project_name}-ecs-task-execution-role"
 
-  web_ecs_containerDef_json =
+  web_ecs_containerDef_json = jsonencode([
+    {
+      name = local.env_project_name
+      image = "${aws_ecr_repository.prj_ecr.repository_url}:latest"
+      cpu = 256
+      memory = 512
+      essential = true
+      portMappings = [
+        {
+          containerPort = 8080
+          hostPort = 8080
+          protocol = "tcp"
+        }
+      ]
+      logConfiguration = {
+        logDriver = "awslogs"
+        options = {
+          "awslogs-group" = "/ecs/${local.task_name}"
+          "awslogs-region" = "ap-northeast-1"
+          "awslogs-stream-prefix" = "ecs"
+        }
+      }
+    }
+  ])
 }
 
 ## Data Resources  ############################################
@@ -26,7 +51,7 @@ data "aws_iam_policy_document" "ecstasks_assume_role" {
 ## Resources ###############################################
 
 resource "aws_iam_role" "ecsTaskExecutionRole" {
-  naem = local.task_execution_role_name
+  name = local.task_execution_role_name
   assume_role_policy = data.aws_iam_policy_document.ecstasks_assume_role.json
     managed_policy_arns = [
         data.aws_iam_policy.AmazonECSTaskExecutionRolePolicy.arn
@@ -59,6 +84,38 @@ resource "aws_ecs_task_definition" "project_ecs" {
     "FARGATE"
   ]
   task_role_arn = aws_iam_role.ecsTaskExecutionRole.arn
-  container_definitions = local.
+  container_definitions = local.web_ecs_containerDef_json
 }
 
+resource "aws_ecs_service" "project_ecs" {
+  name = local.service_name
+  cluster = aws_ecs_cluster.project_ecs.arn
+  deployment_maximum_percent = 200
+  deployment_minimum_healthy_percent = 100
+  desired_count = 1
+  task_definition = aws_ecs_task_definition.project_ecs.arn
+  launch_type = "FARGATE"
+  enable_ecs_managed_tags = true
+  health_check_grace_period_seconds = 0
+
+  deployment_controller {
+    type = "CODE_DEPLOY"
+  }
+  load_balancer {
+    container_name = local.container_name
+    container_port = 8080
+    target_group_arn = aws_lb_target_group.targetgroup1.arn
+  }
+  network_configuration {
+    assign_public_ip = false
+    subnets = [
+        aws_subnet.pri_1.id,
+        aws_subnet.pri_2.id
+    ]
+    security_groups = [
+      aws_security_group.ecs_from_vpc_local.id
+    ]
+  }
+  platform_version = "1.4.0"
+  enable_execute_command = true
+}
