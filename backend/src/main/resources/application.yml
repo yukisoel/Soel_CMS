@@ -7,21 +7,21 @@ spring:
         cachecontrol:
           no-store: true
   
-  security:
-    oauth2:
-      client:
-        registration:
-          facebook:
-            client-id: ${FACEBOOK_CLIENT_ID}
-            client-secret: ${FACEBOOK_CLIENT_SECRET}
-            scope: ${FACEBOOK_SCOPE}
-            redirect-uri: "{baseUrl}/login/oauth2/code/facebook"
-          google:
-            client-id: ${GOOGLE_CLIENT_ID}
-            client-secret: ${GOOGLE_CLIENT_SECRET}
-            scope: ${GOOGLE_SCOPE}
-            redirect-uri: "{baseUrl}/login/oauth2/code/google"
-        provider:
-          facebook:
-            authorization-uri: https://www.facebook.com/v20.0/dialog/oauth
-            token-uri: https://graph.facebook.com/v20.0/oauth/access_token
+#  security:
+#    oauth2:
+#      client:
+#        registration:
+#          facebook:
+#            client-id: ${FACEBOOK_CLIENT_ID}
+#            client-secret: ${FACEBOOK_CLIENT_SECRET}
+#            scope: ${FACEBOOK_SCOPE}
+#            redirect-uri: "{baseUrl}/login/oauth2/code/facebook"
+#          google:
+#            client-id: ${GOOGLE_CLIENT_ID}
+#            client-secret: ${GOOGLE_CLIENT_SECRET}
+#            scope: ${GOOGLE_SCOPE}
+#            redirect-uri: "{baseUrl}/login/oauth2/code/google"
+#        provider:
+#          facebook:
+#            authorization-uri: https://www.facebook.com/v20.0/dialog/oauth
+#            token-uri: https://graph.facebook.com/v20.0/oauth/access_token

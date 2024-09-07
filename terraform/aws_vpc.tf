@@ -1,6 +1,8 @@
 ## Resources ####################################################################
 resource "aws_vpc" "self" {
   cidr_block = local.vpc_cidr_block
+  enable_dns_hostnames = true
+  enable_dns_support = true
 
   tags = {
     Name = "${local.env_project_name}-vpc"
@@ -56,3 +58,4 @@ resource "aws_subnet" "pri_2" {
     Env = local.workspace
   }
 }
+

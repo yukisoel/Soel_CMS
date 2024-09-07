@@ -11,7 +11,7 @@ locals {
       name = local.env_project_name
       image = "${aws_ecr_repository.prj_ecr.repository_url}:latest"
       cpu = 256
-      memory = 512
+      memory = 1024
       essential = true
       portMappings = [
         {

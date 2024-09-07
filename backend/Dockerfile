@@ -1,11 +1,20 @@
-
-FROM public.ecr.aws/docker/library/openjdk:24-slim
+FROM --platform=linux/x86_64 public.ecr.aws/docker/library/gradle:jdk21-alpine AS build
 
 WORKDIR /app
 
-COPY build/libs/*.jar /app/app.jar
+COPY . .
+
+RUN ./gradlew build
+
+
+FROM --platform=linux/x86_64 public.ecr.aws/docker/library/gradle:jdk21-alpine AS production
+#FROM public.ecr.aws/docker/library/openjdk:24-slim
+
+WORKDIR /app
+
+COPY --from=build /app/build/libs/backend-0.0.1-SNAPSHOT.jar app.jar
 
 EXPOSE 8080
 
-ENTRYPOINT ["java", "-jar", "/app/app.jar"]
+CMD ["java", "-jar", "app.jar"]
 

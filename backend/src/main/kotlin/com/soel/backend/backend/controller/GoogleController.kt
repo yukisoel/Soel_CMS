@@ -2,8 +2,8 @@ package com.soel.backend.backend.controller
 
 import com.soel.backend.backend.model.*
 import com.soel.backend.backend.service.GoogleService
-import org.springframework.security.oauth2.client.OAuth2AuthorizedClient
-import org.springframework.security.oauth2.client.annotation.RegisteredOAuth2AuthorizedClient
+//import org.springframework.security.oauth2.client.OAuth2AuthorizedClient
+//import org.springframework.security.oauth2.client.annotation.RegisteredOAuth2AuthorizedClient
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.GetMapping
@@ -12,20 +12,25 @@ import org.springframework.web.bind.annotation.GetMapping
 @RequestMapping("/api/google")
 class GoogleController(val googleService: GoogleService) {
 
-    @GetMapping("/me")
-    fun getMe(@RegisteredOAuth2AuthorizedClient("google") googleClient: OAuth2AuthorizedClient): GoogleMe? {
-        return googleService.getMe(googleClient.accessToken.tokenValue)
+    @GetMapping("/demo")
+    fun demo(): String? {
+        return "demo"
     }
 
-    @GetMapping("/accounts")
-    fun getAccounts(@RegisteredOAuth2AuthorizedClient("google") googleClient: OAuth2AuthorizedClient): GoogleMe? {
-        return googleService.getAccounts(googleClient.accessToken.tokenValue)
-    }
-
-    @GetMapping("/accounts/locations")
-    fun getAccountsLocations(@RegisteredOAuth2AuthorizedClient("google") googleClient: OAuth2AuthorizedClient): GoogleMe? {
-        return googleService.getAccountsLocations(googleClient.accessToken.tokenValue)
-    }
+//    @GetMapping("/me")
+//    fun getMe(@RegisteredOAuth2AuthorizedClient("google") googleClient: OAuth2AuthorizedClient): GoogleMe? {
+//        return googleService.getMe(googleClient.accessToken.tokenValue)
+//    }
+//
+//    @GetMapping("/accounts")
+//    fun getAccounts(@RegisteredOAuth2AuthorizedClient("google") googleClient: OAuth2AuthorizedClient): GoogleMe? {
+//        return googleService.getAccounts(googleClient.accessToken.tokenValue)
+//    }
+//
+//    @GetMapping("/accounts/locations")
+//    fun getAccountsLocations(@RegisteredOAuth2AuthorizedClient("google") googleClient: OAuth2AuthorizedClient): GoogleMe? {
+//        return googleService.getAccountsLocations(googleClient.accessToken.tokenValue)
+//    }
     /*
 
         口コミ取得
