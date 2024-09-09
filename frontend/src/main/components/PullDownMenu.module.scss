@@ -9,12 +9,24 @@
   line-height: normal;
 }
 
+.selected_title {
+  margin-left: 3.8rem;
+
+  color: #D69507;
+  font-family: "Noto Sans CJK JP", sans-serif;
+  font-size: 2.5rem;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+}
+
 .pull_down_menu_container {
   position: relative;
   display: flex;
   flex-direction: column;
   margin-top: 0.9rem;
   padding-left: 3.8rem;
+  padding-right: 3.8rem;
 
   background-color: #EBEBEB;
 
@@ -26,6 +38,11 @@
   align-items: center;
   justify-content: flex-start;
   height: 8.3rem;
+  width: 100%;
+}
+
+.pull_down_menu_border {
+  border-bottom: 1px solid #BEBEBE;
 }
 
 .pull_down_menu_placeholder {
@@ -44,6 +61,10 @@
   font-style: normal;
   font-weight: 500;
   line-height: normal;
+}
+
+.opened_pull_down_menu_container{
+  height: 47.5rem;
 }
 
 .triangle {

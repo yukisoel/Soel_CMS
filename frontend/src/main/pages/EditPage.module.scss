@@ -41,7 +41,7 @@
 .window_store_search_wrapper {
   display: flex;
   flex-direction: column;
-  gap:7.4rem;
+  gap:7.2rem;
   width: 62.9rem;
   height: 69.1rem;
   padding: 8.9rem 9.1rem 5.5rem;
@@ -58,7 +58,7 @@
   flex-grow: 1;
   display: flex;
     justify-content: center;
-  align-items: baseline;
+  align-items: end;
 }
 
 .search_button {

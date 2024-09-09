@@ -8,25 +8,40 @@ export type Props = {
   placeholder?: string
   selectedContent: string
   setSelectedContent: (content: string) => void
+  selectedPullDownMenu: string
+  setSelectedPullDownMenu: (content: string) => void
   options: string[]
 }
 
-export default function PullDownMenu({title,placeholder, selectedContent, setSelectedContent, options}: Props) {
+export default function PullDownMenu({title,placeholder, selectedContent, setSelectedContent, selectedPullDownMenu, setSelectedPullDownMenu, options}: Props) {
   const effectivePlaceholder = placeholder ? placeholder : '入力して検索'
 
   const [isOpen, setIsOpen] = useState<boolean>(false)
 
   const toggleIsOpen = () => {
     setIsOpen(!isOpen)
+    if(selectedPullDownMenu === title) {
+      setSelectedPullDownMenu("none")
+    }else {
+      setSelectedPullDownMenu(title)
+    }
+
   }
 
   return(
     <>
       <div data-testid={'pull_down_menu_wrapper'}>
-        <div className={styles.title}>
+        <div className={classNames( {
+          [styles.title]: selectedPullDownMenu !== title,
+          [styles.selected_title]: selectedPullDownMenu === title
+        })}>
           {title}
         </div>
-        <div data-testid={'pull_down_menu'} onClick={toggleIsOpen} className={styles.pull_down_menu_container}>
+        <div data-testid={'pull_down_menu'} className={styles.pull_down_menu_container}
+             onClick={() => {
+               toggleIsOpen()
+             }}
+        >
           <div className={styles.triangle}>
             <img src={TriangleIcon} alt={'triangle_icon'}/>
           </div>
@@ -42,19 +57,23 @@ export default function PullDownMenu({title,placeholder, selectedContent, setSel
           )}
           {isOpen && (
             <>
-              <div className={`${styles.pull_down_menu_content} ${styles.pull_down_menu_placeholder}`}>
-                {effectivePlaceholder}
+              <div className={styles.opened_pull_down_menu_container}>
+                <div className={`${styles.pull_down_menu_content} ${styles.pull_down_menu_placeholder} ${styles.pull_down_menu_border}`}>
+                  {effectivePlaceholder}
+                </div>
+                {options.map((value,index) => {
+                  return (
+                    <div key={index}
+                         className={`${styles.pull_down_menu_content} ${styles.pull_down_menu_option} ${styles.pull_down_menu_border}`}
+                         onClick={() => {
+                           setSelectedContent(value)
+                        }}
+                    >
+                      {value}
+                    </div>
+                  )
+                })}
               </div>
-              {options.map((value,index) => {
-                return (
-                  <div key={index} className={`${styles.pull_down_menu_content} ${styles.pull_down_menu_option}`} onClick={() => {
-                    toggleIsOpen()
-                    setSelectedContent(value)
-                  }}>
-                    {value}
-                  </div>
-                )
-              })}
             </>
           )}
         </div>

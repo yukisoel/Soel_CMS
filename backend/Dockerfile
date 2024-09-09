@@ -7,7 +7,7 @@ COPY . .
 RUN ./gradlew build
 
 
-FROM --platform=linux/x86_64 public.ecr.aws/docker/library/gradle:jdk21-alpine AS production
+FROM --platform=linux/x86_64 public.ecr.aws/docker/library/eclipse-temurin:21-jdk-alpine AS production
 #FROM public.ecr.aws/docker/library/openjdk:24-slim
 
 WORKDIR /app

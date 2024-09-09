@@ -219,6 +219,92 @@ describe('EditPage', () => {
       })
     })
 
+    describe('プルダウンの選択について', () => {
+      it('ブランドを選択のプルダウンを選択しているとき、他のプルダウンは表示されない', async() => {
+        render(<EditPage />)
+
+
+        const brand_select_container = screen.getByTestId('brand_select_container')
+        const pull_down = within(brand_select_container).getByText('入力して検索')
+        await userEvent.click(pull_down)
+
+
+        expect(screen.getByTestId('store_select_container').hidden).toBe(true)
+        expect(screen.getByTestId('service_select_container').hidden).toBe(true)
+      })
+
+      it('ブランドを選択のプルダウンをもう一度クリックしているとき、他のプルダウンが表示される', async() => {
+        render(<EditPage />)
+
+
+        const brand_select_container = screen.getByTestId('brand_select_container')
+        const pull_down = within(brand_select_container).getByText('入力して検索')
+        await userEvent.click(pull_down)
+        const opened_pull_down = within(brand_select_container).getByText('入力して検索')
+        await userEvent.click(opened_pull_down)
+
+
+        expect(screen.getByTestId('store_select_container').hidden).toBe(false)
+        expect(screen.getByTestId('service_select_container').hidden).toBe(false)
+      })
+
+      it('店舗を選択のプルダウンを選択しているとき、他のプルダウンは表示されない', async() => {
+        render(<EditPage />)
+
+
+        const store_select_container = screen.getByTestId('store_select_container')
+        const pull_down = within(store_select_container).getByText('入力して検索')
+        await userEvent.click(pull_down)
+
+
+        expect(screen.getByTestId('brand_select_container').hidden).toBe(true)
+        expect(screen.getByTestId('service_select_container').hidden).toBe(true)
+      })
+
+      it('店舗を選択のプルダウンをもう一度クリックしているとき、他のプルダウンが表示される', async() => {
+        render(<EditPage/>)
+
+
+        const store_select_container = screen.getByTestId('store_select_container')
+        const pull_down = within(store_select_container).getByText('入力して検索')
+        await userEvent.click(pull_down)
+        const opened_pull_down = within(store_select_container).getByText('入力して検索')
+        await userEvent.click(opened_pull_down)
+
+
+        expect(screen.getByTestId('brand_select_container').hidden).toBe(false)
+        expect(screen.getByTestId('service_select_container').hidden).toBe(false)
+      })
+
+      it('対象サービスを選択のプルダウンを選択しているとき、他のプルダウンは表示されない', async() => {
+        render(<EditPage />)
+
+
+        const service_select_container = screen.getByTestId('service_select_container')
+        const pull_down = within(service_select_container).getByText('入力して検索')
+        await userEvent.click(pull_down)
+
+
+        expect(screen.getByTestId('brand_select_container').hidden).toBe(true)
+        expect(screen.getByTestId('store_select_container').hidden).toBe(true)
+      })
+
+      it('対象サービスを選択のプルダウンをもう一度クリックしているとき、他のプルダウンが表示される', async() => {
+        render(<EditPage />)
+
+
+        const service_select_container = screen.getByTestId('service_select_container')
+        const pull_down = within(service_select_container).getByText('入力して検索')
+        await userEvent.click(pull_down)
+        const opened_pull_down = within(service_select_container).getByText('入力して検索')
+        await userEvent.click(opened_pull_down)
+
+
+        expect(screen.getByTestId('brand_select_container').hidden).toBe(false)
+        expect(screen.getByTestId('store_select_container').hidden).toBe(false)
+      })
+    })
+
     it('検索ボタンが表示される', async() => {
       render(<EditPage />)
 
