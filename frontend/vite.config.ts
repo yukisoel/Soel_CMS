@@ -17,5 +17,10 @@ export default defineConfig({
   },
   build: {
     assetsDir: '.',
+  },
+  resolve: {
+    alias: {
+      '@': '/src',
+    },
   }
 })
