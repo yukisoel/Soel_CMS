@@ -3,12 +3,14 @@ import {useState} from "react";
 import PullDownMenu from "@/main/components/PullDownMenu.tsx";
 import ButtonBackIcon from "@/main/assets/Button_Back.svg";
 import SidebarMenu from "@/main/common/SidebarMenu.tsx";
+import {useNavigate} from "react-router-dom";
 
 export default function EditPage() {
   const [selectedBrand, setSelectedBrand] = useState<string>("入力して検索")
   const [selectedStore, setSelectedStore] = useState<string>("入力して検索")
   const [selectedService, setSelectedService] = useState<string>("入力して検索")
   const [selectedPullDownMenu, setSelectedPullDownMenu] = useState<string>("none")
+  const navigate = useNavigate()
 
   return (
     <>
@@ -65,7 +67,15 @@ export default function EditPage() {
                 />
               </div>
               <div className={styles.search_button_container}>
-                <button className={styles.search_button}>
+                <button
+                  data-testid='search_button'
+                  className={styles.search_button}
+                  onClick={() => {
+                    if(selectedService === 'GBP') {
+                      navigate('/edit/gbp')
+                    }
+                  }}
+                >
                   検索
                 </button>
               </div>

@@ -3,17 +3,30 @@ import EditPage from "../../main/pages/EditPage.tsx";
 import {render, screen, waitFor, within} from "@testing-library/react";
 import {userEvent} from "@testing-library/user-event";
 import ButtonBackIcon from "@/main/assets/Button_Back.svg";
+import {MemoryRouter, Route, Routes} from "react-router-dom";
 
 
 describe('EditPage', () => {
-  it('タイトルが表示される', async() =>{
-    render(<EditPage />)
+  it('タイトルが表示される', async () => {
+    render(
+      <MemoryRouter initialEntries={['/edit']}>
+        <Routes>
+          <Route path="/edit" element={<EditPage/>}/>
+        </Routes>
+      </MemoryRouter>
+    )
 
     expect(screen.getByText('ページ編集 /')).toBeInTheDocument()
   })
 
-  it('戻るボタンが表示される', async() => {
-    render(<EditPage />)
+  it('戻るボタンが表示される', async () => {
+    render(
+      <MemoryRouter initialEntries={['/edit']}>
+        <Routes>
+          <Route path="/edit" element={<EditPage/>}/>
+        </Routes>
+      </MemoryRouter>
+    )
 
 
     expect(screen.getByAltText('button_back')).toBeInTheDocument()
@@ -21,24 +34,42 @@ describe('EditPage', () => {
     expect(button_back).toHaveAttribute('src', ButtonBackIcon)
   })
 
-  it('サイドバーメニューが表示される', async() => {
-    render(<EditPage />)
+  it('サイドバーメニューが表示される', async () => {
+    render(
+      <MemoryRouter initialEntries={['/edit']}>
+        <Routes>
+          <Route path="/edit" element={<EditPage/>}/>
+        </Routes>
+      </MemoryRouter>
+    )
 
 
     expect(screen.getByTestId('sidebar_menu_container')).toBeInTheDocument()
   })
 
   describe('window_store_search', () => {
-    it('window_store_searchが表示されている', async() => {
-      render(<EditPage />)
+    it('window_store_searchが表示されている', async () => {
+      render(
+        <MemoryRouter initialEntries={['/edit']}>
+          <Routes>
+            <Route path="/edit" element={<EditPage/>}/>
+          </Routes>
+        </MemoryRouter>
+      )
 
 
       expect(screen.getByTestId('window_store_search_container')).toBeInTheDocument()
     })
 
     describe('ブランドを選択について', () => {
-      it('ブランドを選択のcontainerが表示される', async() => {
-        render(<EditPage />)
+      it('ブランドを選択のcontainerが表示される', async () => {
+        render(
+          <MemoryRouter initialEntries={['/edit']}>
+            <Routes>
+              <Route path="/edit" element={<EditPage/>}/>
+            </Routes>
+          </MemoryRouter>
+        )
 
 
         const window_store_search_container = screen.getByTestId('window_store_search_container')
@@ -46,8 +77,14 @@ describe('EditPage', () => {
 
         expect(within(window_store_search_container).getByTestId('brand_select_container')).toBeInTheDocument()
       })
-      it('ブランドを選択のタイトルが表示されている', async() => {
-        render(<EditPage />)
+      it('ブランドを選択のタイトルが表示されている', async () => {
+        render(
+          <MemoryRouter initialEntries={['/edit']}>
+            <Routes>
+              <Route path="/edit" element={<EditPage/>}/>
+            </Routes>
+          </MemoryRouter>
+        )
 
 
         const brand_select_container = screen.getByTestId('brand_select_container')
@@ -55,8 +92,14 @@ describe('EditPage', () => {
 
         expect(within(brand_select_container).getByText('ブランドを選択')).toBeInTheDocument()
       })
-      it('ブランドを選択のプルダウンメニューが表示されている', async() => {
-        render(<EditPage />)
+      it('ブランドを選択のプルダウンメニューが表示されている', async () => {
+        render(
+          <MemoryRouter initialEntries={['/edit']}>
+            <Routes>
+              <Route path="/edit" element={<EditPage/>}/>
+            </Routes>
+          </MemoryRouter>
+        )
 
 
         const brand_select_container = screen.getByTestId('brand_select_container')
@@ -64,9 +107,15 @@ describe('EditPage', () => {
 
         expect(within(brand_select_container).getByText('入力して検索')).toBeInTheDocument()
       })
-      describe('プルダウンメニューを押したとき', async() => {
-        it('プルダウンメニューが表示される', async() => {
-          render(<EditPage />)
+      describe('プルダウンメニューを押したとき', async () => {
+        it('プルダウンメニューが表示される', async () => {
+          render(
+            <MemoryRouter initialEntries={['/edit']}>
+              <Routes>
+                <Route path="/edit" element={<EditPage/>}/>
+              </Routes>
+            </MemoryRouter>
+          )
 
 
           const brand_select_container = screen.getByTestId('brand_select_container')
@@ -79,8 +128,14 @@ describe('EditPage', () => {
           })
         })
 
-        it('プルダウンメニューで選択肢を選ぶと選択した項目が表示される', async() => {
-          render(<EditPage />)
+        it('プルダウンメニューで選択肢を選ぶと選択した項目が表示される', async () => {
+          render(
+            <MemoryRouter initialEntries={['/edit']}>
+              <Routes>
+                <Route path="/edit" element={<EditPage/>}/>
+              </Routes>
+            </MemoryRouter>
+          )
 
 
           const brand_select_container = screen.getByTestId('brand_select_container')
@@ -98,15 +153,27 @@ describe('EditPage', () => {
     })
 
     describe('店舗を選択について', () => {
-      it('店舗を選択のcontainerが表示される', async() => {
-        render(<EditPage />)
+      it('店舗を選択のcontainerが表示される', async () => {
+        render(
+          <MemoryRouter initialEntries={['/edit']}>
+            <Routes>
+              <Route path="/edit" element={<EditPage/>}/>
+            </Routes>
+          </MemoryRouter>
+        )
 
 
         expect(screen.getByTestId('window_store_search_container')).toBeInTheDocument()
       })
 
-      it('店舗を選択のタイトルが表示されている', async() => {
-        render(<EditPage />)
+      it('店舗を選択のタイトルが表示されている', async () => {
+        render(
+          <MemoryRouter initialEntries={['/edit']}>
+            <Routes>
+              <Route path="/edit" element={<EditPage/>}/>
+            </Routes>
+          </MemoryRouter>
+        )
 
 
         const store_select_container = screen.getByTestId('store_select_container')
@@ -115,8 +182,14 @@ describe('EditPage', () => {
         expect(within(store_select_container).getByText('店舗を選択')).toBeInTheDocument()
       })
 
-      it('店舗を選択のプルダウンメニューが表示されている', async() => {
-        render(<EditPage />)
+      it('店舗を選択のプルダウンメニューが表示されている', async () => {
+        render(
+          <MemoryRouter initialEntries={['/edit']}>
+            <Routes>
+              <Route path="/edit" element={<EditPage/>}/>
+            </Routes>
+          </MemoryRouter>
+        )
 
 
         const store_select_container = screen.getByTestId('store_select_container')
@@ -125,9 +198,15 @@ describe('EditPage', () => {
         expect(within(store_select_container).getByText('入力して検索')).toBeInTheDocument()
       })
 
-      describe('プルダウンメニューを押したとき', async() => {
+      describe('プルダウンメニューを押したとき', async () => {
         it('プルダウンメニューが表示される', async () => {
-          render(<EditPage/>)
+          render(
+            <MemoryRouter initialEntries={['/edit']}>
+              <Routes>
+                <Route path="/edit" element={<EditPage/>}/>
+              </Routes>
+            </MemoryRouter>
+          )
 
 
           const store_select_container = screen.getByTestId('store_select_container')
@@ -140,8 +219,14 @@ describe('EditPage', () => {
           })
         })
 
-        it('プルダウンメニューで選択肢を選ぶと選択した項目が表示される', async() => {
-          render(<EditPage />)
+        it('プルダウンメニューで選択肢を選ぶと選択した項目が表示される', async () => {
+          render(
+            <MemoryRouter initialEntries={['/edit']}>
+              <Routes>
+                <Route path="/edit" element={<EditPage/>}/>
+              </Routes>
+            </MemoryRouter>
+          )
 
 
           const store_select_container = screen.getByTestId('store_select_container')
@@ -159,15 +244,27 @@ describe('EditPage', () => {
     })
 
     describe('対象サービスを選択について', () => {
-      it('対象サービスを選択のcontainerが表示される', async() => {
-        render(<EditPage/>)
+      it('対象サービスを選択のcontainerが表示される', async () => {
+        render(
+          <MemoryRouter initialEntries={['/edit']}>
+            <Routes>
+              <Route path="/edit" element={<EditPage/>}/>
+            </Routes>
+          </MemoryRouter>
+        )
 
 
         expect(screen.getByTestId('service_select_container')).toBeInTheDocument()
       })
 
-      it('対象サービスを選択のタイトルが表示されている', async() => {
-        render(<EditPage/>)
+      it('対象サービスを選択のタイトルが表示されている', async () => {
+        render(
+          <MemoryRouter initialEntries={['/edit']}>
+            <Routes>
+              <Route path="/edit" element={<EditPage/>}/>
+            </Routes>
+          </MemoryRouter>
+        )
 
 
         const service_select_container = screen.getByTestId('service_select_container')
@@ -176,8 +273,14 @@ describe('EditPage', () => {
         expect(within(service_select_container).getByText('対象サービスを選択')).toBeInTheDocument()
       })
 
-      it('対象サービスを選択のプルダウンメニューが表示されている', async() => {
-        render(<EditPage/>)
+      it('対象サービスを選択のプルダウンメニューが表示されている', async () => {
+        render(
+          <MemoryRouter initialEntries={['/edit']}>
+            <Routes>
+              <Route path="/edit" element={<EditPage/>}/>
+            </Routes>
+          </MemoryRouter>
+        )
 
 
         const service_select_container = screen.getByTestId('service_select_container')
@@ -186,9 +289,15 @@ describe('EditPage', () => {
         expect(within(service_select_container).getByText('入力して検索')).toBeInTheDocument()
       })
 
-      describe('プルダウンメニューを押したとき', async() => {
+      describe('プルダウンメニューを押したとき', async () => {
         it('プルダウンメニューが表示される', async () => {
-          render(<EditPage/>)
+          render(
+            <MemoryRouter initialEntries={['/edit']}>
+              <Routes>
+                <Route path="/edit" element={<EditPage/>}/>
+              </Routes>
+            </MemoryRouter>
+          )
 
 
           const service_select_container = screen.getByTestId('service_select_container')
@@ -201,8 +310,14 @@ describe('EditPage', () => {
           })
         })
 
-        it('プルダウンメニューで選択肢を選ぶと選択した項目が表示される', async() => {
-          render(<EditPage/>)
+        it('プルダウンメニューで選択肢を選ぶと選択した項目が表示される', async () => {
+          render(
+            <MemoryRouter initialEntries={['/edit']}>
+              <Routes>
+                <Route path="/edit" element={<EditPage/>}/>
+              </Routes>
+            </MemoryRouter>
+          )
 
 
           const service_select_container = screen.getByTestId('service_select_container')
@@ -220,8 +335,14 @@ describe('EditPage', () => {
     })
 
     describe('プルダウンの選択について', () => {
-      it('ブランドを選択のプルダウンを選択しているとき、他のプルダウンは表示されない', async() => {
-        render(<EditPage />)
+      it('ブランドを選択のプルダウンを選択しているとき、他のプルダウンは表示されない', async () => {
+        render(
+          <MemoryRouter initialEntries={['/edit']}>
+            <Routes>
+              <Route path="/edit" element={<EditPage/>}/>
+            </Routes>
+          </MemoryRouter>
+        )
 
 
         const brand_select_container = screen.getByTestId('brand_select_container')
@@ -233,8 +354,14 @@ describe('EditPage', () => {
         expect(screen.getByTestId('service_select_container').hidden).toBe(true)
       })
 
-      it('ブランドを選択のプルダウンをもう一度クリックしているとき、他のプルダウンが表示される', async() => {
-        render(<EditPage />)
+      it('ブランドを選択のプルダウンをもう一度クリックしているとき、他のプルダウンが表示される', async () => {
+        render(
+          <MemoryRouter initialEntries={['/edit']}>
+            <Routes>
+              <Route path="/edit" element={<EditPage/>}/>
+            </Routes>
+          </MemoryRouter>
+        )
 
 
         const brand_select_container = screen.getByTestId('brand_select_container')
@@ -248,8 +375,14 @@ describe('EditPage', () => {
         expect(screen.getByTestId('service_select_container').hidden).toBe(false)
       })
 
-      it('店舗を選択のプルダウンを選択しているとき、他のプルダウンは表示されない', async() => {
-        render(<EditPage />)
+      it('店舗を選択のプルダウンを選択しているとき、他のプルダウンは表示されない', async () => {
+        render(
+          <MemoryRouter initialEntries={['/edit']}>
+            <Routes>
+              <Route path="/edit" element={<EditPage/>}/>
+            </Routes>
+          </MemoryRouter>
+        )
 
 
         const store_select_container = screen.getByTestId('store_select_container')
@@ -261,8 +394,14 @@ describe('EditPage', () => {
         expect(screen.getByTestId('service_select_container').hidden).toBe(true)
       })
 
-      it('店舗を選択のプルダウンをもう一度クリックしているとき、他のプルダウンが表示される', async() => {
-        render(<EditPage/>)
+      it('店舗を選択のプルダウンをもう一度クリックしているとき、他のプルダウンが表示される', async () => {
+        render(
+          <MemoryRouter initialEntries={['/edit']}>
+            <Routes>
+              <Route path="/edit" element={<EditPage/>}/>
+            </Routes>
+          </MemoryRouter>
+        )
 
 
         const store_select_container = screen.getByTestId('store_select_container')
@@ -276,8 +415,14 @@ describe('EditPage', () => {
         expect(screen.getByTestId('service_select_container').hidden).toBe(false)
       })
 
-      it('対象サービスを選択のプルダウンを選択しているとき、他のプルダウンは表示されない', async() => {
-        render(<EditPage />)
+      it('対象サービスを選択のプルダウンを選択しているとき、他のプルダウンは表示されない', async () => {
+        render(
+          <MemoryRouter initialEntries={['/edit']}>
+            <Routes>
+              <Route path="/edit" element={<EditPage/>}/>
+            </Routes>
+          </MemoryRouter>
+        )
 
 
         const service_select_container = screen.getByTestId('service_select_container')
@@ -289,8 +434,14 @@ describe('EditPage', () => {
         expect(screen.getByTestId('store_select_container').hidden).toBe(true)
       })
 
-      it('対象サービスを選択のプルダウンをもう一度クリックしているとき、他のプルダウンが表示される', async() => {
-        render(<EditPage />)
+      it('対象サービスを選択のプルダウンをもう一度クリックしているとき、他のプルダウンが表示される', async () => {
+        render(
+          <MemoryRouter initialEntries={['/edit']}>
+            <Routes>
+              <Route path="/edit" element={<EditPage/>}/>
+            </Routes>
+          </MemoryRouter>
+        )
 
 
         const service_select_container = screen.getByTestId('service_select_container')
@@ -305,14 +456,67 @@ describe('EditPage', () => {
       })
     })
 
-    it('検索ボタンが表示される', async() => {
-      render(<EditPage />)
+    it('検索ボタンが表示される', async () => {
+      render(
+        <MemoryRouter initialEntries={['/edit']}>
+          <Routes>
+            <Route path="/edit" element={<EditPage/>}/>
+          </Routes>
+        </MemoryRouter>
+      )
 
 
       expect(screen.getByText('検索')).toBeInTheDocument()
     })
 
-    describe.skip('検索ボタンを押したとき', () => {
+    describe('検索ボタンを押したとき', () => {
+      it('選択されたサービスがGBPのとき, /edit/gbpに遷移する', async () => {
+        render(
+          <MemoryRouter initialEntries={['/edit']}>
+            <Routes>
+              <Route path="/edit" element={<EditPage/>}/>
+              <Route path="/edit/gbp" element={<div>GBP</div>}/>
+            </Routes>
+          </MemoryRouter>
+        )
+
+
+        const service_select_container = screen.getByTestId('service_select_container')
+        const pull_down = within(service_select_container).getByText('入力して検索')
+        await userEvent.click(pull_down)
+        await userEvent.click(screen.getByText('GBP'))
+        const search_button = screen.getByTestId('search_button')
+        await userEvent.click(search_button)
+
+
+        await waitFor(() => {
+          expect(screen.getByText('GBP')).toBeInTheDocument()
+        })
+      })
+
+      it('選択されたサービスがGBPじゃないとき, どこにも遷移しない', async () => {
+        render(
+          <MemoryRouter initialEntries={['/edit']}>
+            <Routes>
+              <Route path="/edit" element={<EditPage/>}/>
+              <Route path="/edit/gbp" element={<div>GBP</div>}/>
+            </Routes>
+          </MemoryRouter>
+        )
+
+
+        const service_select_container = screen.getByTestId('service_select_container')
+        const pull_down = within(service_select_container).getByText('入力して検索')
+        await userEvent.click(pull_down)
+        await userEvent.click(screen.getByText('食べログ'))
+        const search_button = screen.getByTestId('search_button')
+        await userEvent.click(search_button)
+
+
+        await waitFor(() => {
+          expect(screen.queryByText('GBP')).toBeNull()
+        })
+      })
     })
 
   })
