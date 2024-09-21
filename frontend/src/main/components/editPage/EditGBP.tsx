@@ -7,6 +7,7 @@ import EditInfoIcon from "@/main/assets/EditInfoIcon.svg"
 import EditItemIcon from "@/main/assets/EditItemIcon.svg"
 import EditReserveIcon from "@/main/assets/EditReserveIcon.svg"
 import EditQnAIcon from "@/main/assets/EditQnAIcon.svg"
+import CircleFilledIcon from "@/main/assets/CircleFilled.svg"
 import {DashboardItem} from "@/main/components/editPage/DashboardItem.tsx";
 
 type Props = {
@@ -21,8 +22,11 @@ export default function EditGBP({storeName}: Props) {
           <div className={styles.store_name_text}>
             {storeName}
           </div>
-          <div className={styles.store_badge}>
-            編集中の店舗
+          <div className={styles.store_badge_container}>
+            <img className={styles.store_badge_circle} alt={"circle_filled"} src={CircleFilledIcon}/>
+            <div className={styles.store_badge_text}>
+              編集中の店舗
+            </div>
           </div>
         </div>
         <div>

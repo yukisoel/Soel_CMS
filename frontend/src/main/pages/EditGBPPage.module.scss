@@ -19,10 +19,24 @@
     line-height: normal;
 }
 
-.store_badge {
+.store_badge_container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
     width: 17rem;
     height: 5rem;
 
+    background-color: #FFC42C;
+    border-radius: 2.5rem;
+}
+
+.store_badge_circle {
+    width: 1.2rem;
+    height: 1.2rem;
+}
+
+.store_badge_text {
     color: #000;
 
     font-family: "Noto Sans CJK JP", sans-serif;
@@ -30,8 +44,4 @@
     font-style: normal;
     font-weight: 500;
     line-height: normal;
-
-    background-color: #FFC42C;
-    border-radius: 2.5rem;
-
 }
