@@ -1,22 +1,20 @@
 import styles from '@/main/pages/EditPage.module.scss'
-import {useState} from "react";
-import PullDownMenu from "@/main/components/PullDownMenu.tsx";
 import ButtonBackIcon from "@/main/assets/Button_Back.svg";
 import SidebarMenu from "@/main/common/SidebarMenu.tsx";
-import {useNavigate} from "react-router-dom";
 
-export default function EditPage() {
-  const [selectedBrand, setSelectedBrand] = useState<string>("入力して検索")
-  const [selectedStore, setSelectedStore] = useState<string>("入力して検索")
-  const [selectedService, setSelectedService] = useState<string>("入力して検索")
-  const [selectedPullDownMenu, setSelectedPullDownMenu] = useState<string>("none")
-  const navigate = useNavigate()
+export type Props = {
+  email: string
+  children: React.ReactNode
+}
+
+export default function EditPage({email,  children}: Props) {
+
 
   return (
     <>
       <div className={styles.page_container}>
         <SidebarMenu
-          email={'dummyEmail@sample.jp'}
+          email={email}
         />
         <div className={styles.main_container}>
           <div className={styles.main_header}>
@@ -25,62 +23,7 @@ export default function EditPage() {
               <img src={ButtonBackIcon} alt={'button_back'}/>
             </div>
           </div>
-          <div data-testid="window_store_search_container" className={styles.window_store_search_container}>
-            <div className={styles.window_store_search_wrapper}>
-              <div data-testid="brand_select_container"
-                   className={styles.pull_down_menu_container}
-                   hidden={selectedPullDownMenu !== 'ブランドを選択' && selectedPullDownMenu !== 'none'}
-              >
-                <PullDownMenu
-                  title={'ブランドを選択'}
-                  selectedContent={selectedBrand}
-                  setSelectedContent={setSelectedBrand}
-                  selectedPullDownMenu={selectedPullDownMenu}
-                  setSelectedPullDownMenu={setSelectedPullDownMenu}
-                  options={['ブランド1', 'ブランド2', 'ブランド3']}
-                />
-              </div>
-              <div data-testid="store_select_container"
-                   className={styles.pull_down_menu_container}
-                   hidden={selectedPullDownMenu !== '店舗を選択' && selectedPullDownMenu !== 'none'}
-              >
-                <PullDownMenu
-                  title={'店舗を選択'}
-                  selectedContent={selectedStore}
-                  setSelectedContent={setSelectedStore}
-                  selectedPullDownMenu={selectedPullDownMenu}
-                  setSelectedPullDownMenu={setSelectedPullDownMenu}
-                  options={['SOELプレミアム秋葉原店', 'SOELプレミアム南青山店', 'SOELプレミアム吉祥寺店']}
-                />
-              </div>
-              <div data-testid="service_select_container"
-                   className={styles.pull_down_menu_container}
-                   hidden={selectedPullDownMenu !== '対象サービスを選択' && selectedPullDownMenu !== 'none'}
-              >
-                <PullDownMenu
-                  title={'対象サービスを選択'}
-                  selectedContent={selectedService}
-                  setSelectedContent={setSelectedService}
-                  selectedPullDownMenu={selectedPullDownMenu}
-                  setSelectedPullDownMenu={setSelectedPullDownMenu}
-                  options={['GBP', '食べログ', 'Retty']}
-                />
-              </div>
-              <div className={styles.search_button_container}>
-                <button
-                  data-testid='search_button'
-                  className={styles.search_button}
-                  onClick={() => {
-                    if(selectedService === 'GBP') {
-                      navigate('/edit/gbp')
-                    }
-                  }}
-                >
-                  検索
-                </button>
-              </div>
-            </div>
-          </div>
+          {children}
         </div>
       </div>
     </>

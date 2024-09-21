@@ -1,7 +1,7 @@
 import styles from '@/main/pages/EditGBPPage.module.scss'
 import SidebarMenu from "@/main/common/SidebarMenu.tsx";
 
-export default function EditGBPPage() {
+export default function EditGBP() {
   return(
     <>
       <div className={styles.page_container}>

@@ -1,6 +1,7 @@
 import {Route, Routes} from "react-router-dom";
 import EditPage from "./pages/EditPage.tsx";
-import EditGBPPage from "@/main/pages/EditGBPPage.tsx";
+import EditGBP from "@/main/components/editPage/EditGBP.tsx";
+import SearchStore from "@/main/components/editPage/SearchStore.tsx";
 
 function App() {
 
@@ -9,14 +10,17 @@ function App() {
       <Route
         path="/edit"
         element={
-        <EditPage />
+        <EditPage
+          email={'dummyEmail.sample.jp'}
+          children={<SearchStore />}
+        />
         }
       >
       </Route>
       <Route
         path="/edit/gbp"
         element={
-        <EditGBPPage />
+        <EditGBP />
         }
       >
 

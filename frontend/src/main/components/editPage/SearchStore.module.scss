@@ -1,0 +1,48 @@
+.window_store_search_container {
+  display: flex;
+  justify-content: center;
+  margin-top: 12.3rem;
+
+
+}
+
+.window_store_search_wrapper {
+  display: flex;
+  flex-direction: column;
+  gap:7.2rem;
+  width: 62.9rem;
+  height: 69.1rem;
+  padding: 8.9rem 9.1rem 5.5rem;
+
+  border-radius: 2rem;
+  box-shadow: 0 0 1.2rem rgba(0, 0, 0, 0.4);
+}
+
+.pull_down_menu_container {
+  width: 100%;
+}
+
+.search_button_container {
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
+  align-items: end;
+}
+
+.search_button {
+  width: 188.7px;
+  height: 82.65px;
+
+  background-color: #FFC42C;
+
+  border-radius: 4.2rem;
+
+  color: #282828;
+  text-align: center;
+  font-family: "Noto Sans CJK JP", sans-serif;
+  font-size: 2.7rem;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+}
+
