@@ -12,6 +12,7 @@ function App() {
         element={
         <EditPage
           email={'dummyEmail.sample.jp'}
+          pankuzu={['ページ編集']}
           children={<SearchStore />}
         />
         }
@@ -20,7 +21,15 @@ function App() {
       <Route
         path="/edit/gbp"
         element={
-        <EditGBP />
+          <EditPage
+            email={'dummyEmail.sample.jp'}
+            pankuzu={['ページ編集', 'GBP']}
+            children={
+            <EditGBP
+              storeName={'dummyStoreName'}
+            />
+          }
+          />
         }
       >
 

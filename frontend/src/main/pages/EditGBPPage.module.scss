@@ -1,4 +1,37 @@
-.page_container {
-    height: 100vh;
+.contents_container {
+    box-sizing: border-box;
+    height: 100%;
+    width: 100%;
+    padding-top: 10.3rem;
+}
+
+.store_name_container {
     display: flex;
+    gap: 2rem;
+    justify-content: center;
+    align-items: center;
+}
+.store_name_text {
+    font-family: "Noto Sans CJK JP", sans-serif;
+    font-size: 4rem;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+}
+
+.store_badge {
+    width: 17rem;
+    height: 5rem;
+
+    color: #000;
+
+    font-family: "Noto Sans CJK JP", sans-serif;
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+
+    background-color: #FFC42C;
+    border-radius: 2.5rem;
+
 }

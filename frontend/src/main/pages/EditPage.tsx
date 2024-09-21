@@ -4,10 +4,11 @@ import SidebarMenu from "@/main/common/SidebarMenu.tsx";
 
 export type Props = {
   email: string
+  pankuzu: string[]
   children: React.ReactNode
 }
 
-export default function EditPage({email,  children}: Props) {
+export default function EditPage({email, pankuzu, children}: Props) {
 
 
   return (
@@ -18,7 +19,7 @@ export default function EditPage({email,  children}: Props) {
         />
         <div className={styles.main_container}>
           <div className={styles.main_header}>
-            <div className={styles.pankuzu}>ページ編集 /</div>
+            <div className={styles.pankuzu}>{pankuzu.join(' / ')}</div>
             <div className={styles.button_back_container}>
               <img src={ButtonBackIcon} alt={'button_back'}/>
             </div>

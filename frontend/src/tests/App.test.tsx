@@ -12,4 +12,14 @@ describe('App', () => {
 
     expect(screen.getByTestId('window_store_search_container')).toBeInTheDocument()
   })
+
+  it('/edit/gbp にアクセスすると、EditGBP が表示される', async () => {
+    render(
+      <MemoryRouter initialEntries={['/edit/gbp']}>
+        <App />
+      </MemoryRouter>
+    )
+
+    expect(screen.getByTestId('window_edit_gbp_container')).toBeInTheDocument()
+  })
 })

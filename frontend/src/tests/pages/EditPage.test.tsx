@@ -7,18 +7,22 @@ import {MemoryRouter, Route, Routes} from "react-router-dom";
 
 describe('EditPage', () => {
   const dummyEmail = 'dummyEmail'
+  const dummyPankuzu: string[] = ['dummy']
   const dummyChild: React.ReactNode = <></>
-  it('タイトルが表示される', async () => {
+  it('パンクズリストが表示される', async () => {
+    const testPankuzuList: string[] = ['test1', 'test2']
+    const testPankuzuText = testPankuzuList.join(' / ')
     render(
       <MemoryRouter initialEntries={['/edit']}>
         <EditPage
           email={dummyEmail}
+          pankuzu={testPankuzuList}
           children={dummyChild}
         />
       </MemoryRouter>
     )
 
-    expect(screen.getByText('ページ編集 /')).toBeInTheDocument()
+    expect(screen.getByText(testPankuzuText)).toBeInTheDocument()
   })
 
   it('戻るボタンが表示される', async () => {
@@ -30,6 +34,7 @@ describe('EditPage', () => {
             element={
               <EditPage
                 email={dummyEmail}
+                pankuzu={dummyPankuzu}
                 children={dummyChild}
               />
             }
@@ -49,6 +54,7 @@ describe('EditPage', () => {
       <MemoryRouter initialEntries={['/edit']}>
         <EditPage
           email={dummyEmail}
+          pankuzu={dummyPankuzu}
           children={dummyChild}
         />
       </MemoryRouter>
