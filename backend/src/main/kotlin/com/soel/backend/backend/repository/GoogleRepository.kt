@@ -10,7 +10,7 @@ import org.springframework.web.client.RestTemplate
 @Repository
 class GoogleRepository(val restTemplate: RestTemplate) {
     fun getMe(accessToken: String): GoogleMe? {
-        val url = "https://people.googleapis.com/v1/people/me?personFields=names"
+        val url = "https://people.googleapis.com/v1/people/me?personFields=names,emailAddresses"
         val headers = HttpHeaders()
 
         headers.apply {
@@ -18,6 +18,13 @@ class GoogleRepository(val restTemplate: RestTemplate) {
         }
 
         val entity = HttpEntity<String>(headers)
+        val response = restTemplate.exchange(
+            url,
+            HttpMethod.GET,
+            entity,
+            String::class.java
+        )
+        println(response.body)
 
         return restTemplate.exchange(
             url,
