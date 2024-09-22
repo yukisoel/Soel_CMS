@@ -1,0 +1,33 @@
+.item_container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 1.8rem;
+
+  width: 14.6rem;
+
+  white-space: nowrap;
+}
+.item_button{
+  width: 14.5rem;
+  height: 14.5rem;
+
+  background-color: #fff;
+  border-radius: 3.8rem;
+  box-shadow: 0 0 0.6rem rgba(0, 0, 0, 0.25);
+}
+
+.item_name {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  color: #282828;
+
+  font-family: "Noto Sans CJK JP", sans-serif;
+  font-size: 2.5rem;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+}

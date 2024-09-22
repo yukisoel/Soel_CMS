@@ -1,3 +1,5 @@
+import styles from '@/main/components/editPage/DashboardItem.module.scss'
+
 type Props = {
   navigation: string
   text: string
@@ -8,11 +10,11 @@ type Props = {
 export function DashboardItem({text, src, altText}: Props) {
   return (
     <>
-      <div>
-        <button>
+      <div className={styles.item_container}>
+        <button className={styles.item_button}>
           <img alt={altText} src={src}/>
         </button>
-        <div>
+        <div className={styles.item_name}>
           {text}
         </div>
       </div>
