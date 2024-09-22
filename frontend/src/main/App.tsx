@@ -12,7 +12,7 @@ function App() {
         element={
         <EditPage
           email={'dummyEmail.sample.jp'}
-          pankuzu={['ページ編集']}
+          pankuzuItemList={[{name: 'ページ編集', path: '/edit'}]}
           children={<SearchStore />}
         />
         }
@@ -23,7 +23,7 @@ function App() {
         element={
           <EditPage
             email={'dummyEmail.sample.jp'}
-            pankuzu={['ページ編集', 'GBP']}
+            pankuzuItemList={[{name: 'ページ編集', path: '/edit'}, {name: 'GBP', path: '/edit/gbp'}]}
             children={
             <EditGBP
               storeName={'dummyStoreName'}

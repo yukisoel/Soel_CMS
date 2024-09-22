@@ -3,26 +3,25 @@ import EditPage from "../../main/pages/EditPage.tsx";
 import {render, screen} from "@testing-library/react";
 import ButtonBackIcon from "@/main/assets/Button_Back.svg";
 import {MemoryRouter, Route, Routes} from "react-router-dom";
+import {PankuzuItem} from "@/main/common/Pankuzu.tsx";
 
 
 describe('EditPage', () => {
   const dummyEmail = 'dummyEmail'
-  const dummyPankuzu: string[] = ['dummy']
+  const dummyPankuzu: PankuzuItem[] = [{name: 'dummyName', path: 'dummyPath'}]
   const dummyChild: React.ReactNode = <></>
   it('パンクズリストが表示される', async () => {
-    const testPankuzuList: string[] = ['test1', 'test2']
-    const testPankuzuText = testPankuzuList.join(' / ')
     render(
       <MemoryRouter initialEntries={['/edit']}>
         <EditPage
           email={dummyEmail}
-          pankuzu={testPankuzuList}
+          pankuzuItemList={dummyPankuzu}
           children={dummyChild}
         />
       </MemoryRouter>
     )
 
-    expect(screen.getByText(testPankuzuText)).toBeInTheDocument()
+    expect(screen.getByTestId(`pankuzu_container`)).toBeInTheDocument()
   })
 
   it('戻るボタンが表示される', async () => {
@@ -34,7 +33,7 @@ describe('EditPage', () => {
             element={
               <EditPage
                 email={dummyEmail}
-                pankuzu={dummyPankuzu}
+                pankuzuItemList={dummyPankuzu}
                 children={dummyChild}
               />
             }
@@ -54,7 +53,7 @@ describe('EditPage', () => {
       <MemoryRouter initialEntries={['/edit']}>
         <EditPage
           email={dummyEmail}
-          pankuzu={dummyPankuzu}
+          pankuzuItemList={dummyPankuzu}
           children={dummyChild}
         />
       </MemoryRouter>
