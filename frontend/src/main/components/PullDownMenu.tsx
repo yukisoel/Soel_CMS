@@ -13,25 +13,33 @@ export type Props = {
   options: string[]
 }
 
-export default function PullDownMenu({title,placeholder, selectedContent, setSelectedContent, selectedPullDownMenu, setSelectedPullDownMenu, options}: Props) {
+export default function PullDownMenu({
+                                       title,
+                                       placeholder,
+                                       selectedContent,
+                                       setSelectedContent,
+                                       selectedPullDownMenu,
+                                       setSelectedPullDownMenu,
+                                       options
+                                     }: Props) {
   const effectivePlaceholder = placeholder ? placeholder : '入力して検索'
 
   const [isOpen, setIsOpen] = useState<boolean>(false)
 
   const toggleIsOpen = () => {
     setIsOpen(!isOpen)
-    if(selectedPullDownMenu === title) {
+    if (selectedPullDownMenu === title) {
       setSelectedPullDownMenu("none")
-    }else {
+    } else {
       setSelectedPullDownMenu(title)
     }
 
   }
 
-  return(
+  return (
     <>
       <div data-testid={'pull_down_menu_wrapper'}>
-        <div className={classNames( {
+        <div className={classNames({
           [styles.title]: selectedPullDownMenu !== title,
           [styles.selected_title]: selectedPullDownMenu === title
         })}>
@@ -48,9 +56,9 @@ export default function PullDownMenu({title,placeholder, selectedContent, setSel
           {!isOpen && (
             <>
               <div className={classNames(styles.pull_down_menu_content, {
-                  [styles.pull_down_menu_placeholder]: selectedContent === effectivePlaceholder,
-                  [styles.pull_down_menu_option]: selectedContent !== effectivePlaceholder
-                })}>
+                [styles.pull_down_menu_placeholder]: selectedContent === effectivePlaceholder,
+                [styles.pull_down_menu_option]: selectedContent !== effectivePlaceholder
+              })}>
                 {selectedContent}
               </div>
             </>
@@ -58,21 +66,25 @@ export default function PullDownMenu({title,placeholder, selectedContent, setSel
           {isOpen && (
             <>
               <div className={styles.opened_pull_down_menu_container}>
-                <div className={`${styles.pull_down_menu_content} ${styles.pull_down_menu_placeholder} ${styles.pull_down_menu_border}`}>
+                <div
+                  className={`${styles.pull_down_menu_content} ${styles.pull_down_menu_placeholder} ${styles.pull_down_menu_border}`}>
                   {effectivePlaceholder}
                 </div>
-                {options.map((value,index) => {
-                  return (
-                    <div key={index}
-                         className={`${styles.pull_down_menu_content} ${styles.pull_down_menu_option} ${styles.pull_down_menu_border}`}
-                         onClick={() => {
-                           setSelectedContent(value)
-                        }}
-                    >
-                      {value}
-                    </div>
-                  )
-                })}
+                <div className={styles.pull_down_menu_option_container}>
+                  {options.map((value, index) => {
+                    return (
+                      <div key={index}
+                           className={`${styles.pull_down_menu_content} ${styles.pull_down_menu_option} ${styles.pull_down_menu_border}`}
+                           onClick={() => {
+                             setSelectedContent(value)
+                           }}
+                      >
+                        {value}
+                      </div>
+                    )
+                  })}
+                </div>
+
               </div>
             </>
           )}

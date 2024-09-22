@@ -63,8 +63,13 @@
   line-height: normal;
 }
 
+.pull_down_menu_option_container {
+  height: 41rem;
+  overflow: scroll;
+}
+
 .opened_pull_down_menu_container{
-  height: 47.5rem;
+  height: 54rem;
 }
 
 .triangle {
