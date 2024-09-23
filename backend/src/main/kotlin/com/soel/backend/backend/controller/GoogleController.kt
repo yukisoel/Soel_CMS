@@ -23,12 +23,12 @@ class GoogleController(val googleService: GoogleService) {
     fun getMe(@RegisteredOAuth2AuthorizedClient("google") googleClient: OAuth2AuthorizedClient): GoogleMe? {
         return googleService.getMe(googleClient.accessToken.tokenValue)
     }
-//
-//    @GetMapping("/accounts")
-//    fun getAccounts(@RegisteredOAuth2AuthorizedClient("google") googleClient: OAuth2AuthorizedClient): GoogleMe? {
-//        return googleService.getAccounts(googleClient.accessToken.tokenValue)
-//    }
-//
+
+    @GetMapping("/accounts")
+    fun getAccounts(@RegisteredOAuth2AuthorizedClient("google") googleClient: OAuth2AuthorizedClient): GoogleAccountList? {
+        return googleService.getAccounts(googleClient.accessToken.tokenValue)
+    }
+
 //    @GetMapping("/accounts/locations")
 //    fun getAccountsLocations(@RegisteredOAuth2AuthorizedClient("google") googleClient: OAuth2AuthorizedClient): GoogleMe? {
 //        return googleService.getAccountsLocations(googleClient.accessToken.tokenValue)

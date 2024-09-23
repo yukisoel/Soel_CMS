@@ -4,17 +4,23 @@ import com.soel.backend.backend.model.*
 import com.soel.backend.backend.repository.GoogleRepository
 import org.springframework.stereotype.Service
 
+interface GoogleService {
+    fun getMe(accessToken: String): GoogleMe?
+    fun getAccounts(accessToken: String): GoogleAccountList?
+
+}
+
 @Service
-class GoogleService(val googleRepository: GoogleRepository) {
-    fun getMe(accessToken: String): GoogleMe? {
+class GoogleServicImpl(val googleRepository: GoogleRepository):GoogleService {
+    override fun getMe(accessToken: String): GoogleMe? {
         return googleRepository.getMe(accessToken)
     }
 
-    fun getAccounts(accessToken: String): GoogleMe? {
+    override fun getAccounts(accessToken: String): GoogleAccountList? {
         return googleRepository.getAccounts(accessToken)
     }
 
-    fun getAccountsLocations(accessToken: String): GoogleMe? {
-        return googleRepository.getAccountsLocations(accessToken)
-    }
+//    fun getAccountsLocations(accessToken: String): GoogleMe? {
+//        return googleRepository.getAccountsLocations(accessToken)
+//    }
 }

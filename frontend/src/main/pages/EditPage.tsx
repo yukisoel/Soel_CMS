@@ -11,7 +11,6 @@ export type Props = {
 
 export default function EditPage({email, pankuzuItemList, children}: Props) {
 
-
   return (
     <>
       <div className={styles.page_container}>

@@ -9,3 +9,17 @@ data class GoogleName(
     val familyName: String?,
     val givenName: String?,
 )
+
+data class GoogleAccountList(
+    val accountList: List<GoogleAccount>
+)
+
+data class GoogleAccount (
+    val name: String,
+    val accountName: String
+)
+
+data class GoogleLocationItem (
+    val name: String,
+    val title: String
+)

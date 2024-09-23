@@ -2,7 +2,13 @@ import {Route, Routes} from "react-router-dom";
 import EditPage from "./pages/EditPage.tsx";
 import EditGBP from "@/main/components/editPage/EditGBP.tsx";
 import SearchStore from "@/main/components/editPage/SearchStore.tsx";
+import {GoogleAccountsContextProvider} from "@/main/contexts/GoogleAccountsContext.tsx";
+import {GoogleRepositoryImpl} from "@/main/repositories/GoogleRepository.ts";
+import {GoogleServiceImpl} from "@/main/services/GoogleService.ts";
 import axios from "axios";
+
+const googleRepository = new GoogleRepositoryImpl()
+const googleService = new GoogleServiceImpl({googleRepository})
 
 function App() {
 
@@ -15,35 +21,37 @@ function App() {
     })
 
   return (
-    <Routes>
-      <Route
-        path="/edit"
-        element={
-        <EditPage
-          email={'dummyEmail.sample.jp'}
-          pankuzuItemList={[{name: 'ページ編集', path: '/edit'}]}
-          children={<SearchStore />}
-        />
-        }
-      >
-      </Route>
-      <Route
-        path="/edit/gbp"
-        element={
-          <EditPage
-            email={'dummyEmail.sample.jp'}
-            pankuzuItemList={[{name: 'ページ編集', path: '/edit'}, {name: 'GBP', path: '/edit/gbp'}]}
-            children={
-            <EditGBP
-              storeName={'dummyStoreName'}
+    <GoogleAccountsContextProvider googleService={googleService}>
+      <Routes>
+        <Route
+          path="/edit"
+          element={
+            <EditPage
+              email={'dummyEmail.sample.jp'}
+              pankuzuItemList={[{name: 'ページ編集', path: '/edit'}]}
+              children={<SearchStore/>}
             />
           }
-          />
-        }
-      >
-      </Route>
-    </Routes>
-    )
+        >
+        </Route>
+        <Route
+          path="/edit/gbp"
+          element={
+            <EditPage
+              email={'dummyEmail.sample.jp'}
+              pankuzuItemList={[{name: 'ページ編集', path: '/edit'}, {name: 'GBP', path: '/edit/gbp'}]}
+              children={
+                <EditGBP
+                  storeName={'dummyStoreName'}
+                />
+              }
+            />
+          }
+        >
+        </Route>
+      </Routes>
+    </GoogleAccountsContextProvider>
+  )
 }
 
 export default App

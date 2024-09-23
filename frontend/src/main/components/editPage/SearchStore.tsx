@@ -1,7 +1,8 @@
 import styles from "@/main/components/editPage/SearchStore.module.scss";
 import PullDownMenu from "@/main/components/PullDownMenu.tsx";
-import {useState} from "react";
+import {useContext, useState} from "react";
 import {useNavigate} from "react-router-dom";
+import {GoogleAccountsContext} from "@/main/contexts/GoogleAccountsContext.tsx";
 
 export default function SearchStore() {
   const [selectedBrand, setSelectedBrand] = useState<string>("入力して検索")
@@ -9,6 +10,17 @@ export default function SearchStore() {
   const [selectedService, setSelectedService] = useState<string>("入力して検索")
   const [selectedPullDownMenu, setSelectedPullDownMenu] = useState<string>("none")
   const navigate = useNavigate()
+
+  const useGoogleAccountsContext = useContext(GoogleAccountsContext)
+  const {accountList} = useGoogleAccountsContext
+
+  const createAccountStoreNameList = ():string[] => {
+    if(accountList){
+      return accountList?.map(account => account.accountName)
+    } else{
+      return []
+    }
+  }
 
   return (
     <>
@@ -38,7 +50,7 @@ export default function SearchStore() {
                 setSelectedContent={setSelectedStore}
                 selectedPullDownMenu={selectedPullDownMenu}
                 setSelectedPullDownMenu={setSelectedPullDownMenu}
-                options={['SOELプレミアム秋葉原店', 'SOELプレミアム南青山店', 'SOELプレミアム吉祥寺店']}
+                options={createAccountStoreNameList()}
               />
             </div>
             <div data-testid="service_select_container"

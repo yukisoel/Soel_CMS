@@ -7,9 +7,14 @@ import org.springframework.http.HttpMethod
 import org.springframework.stereotype.Repository
 import org.springframework.web.client.RestTemplate
 
+interface GoogleRepository {
+    fun getMe(accessToken: String): GoogleMe?
+    fun getAccounts(accessToken: String): GoogleAccountList?
+}
+
 @Repository
-class GoogleRepository(val restTemplate: RestTemplate) {
-    fun getMe(accessToken: String): GoogleMe? {
+class GoogleRepositoryImpl(val restTemplate: RestTemplate):GoogleRepository {
+    override fun getMe(accessToken: String): GoogleMe? {
         val url = "https://people.googleapis.com/v1/people/me?personFields=names,emailAddresses"
         val headers = HttpHeaders()
 
@@ -34,7 +39,7 @@ class GoogleRepository(val restTemplate: RestTemplate) {
         ).body
     }
 
-    fun getAccounts(accessToken: String): GoogleMe? {
+    override fun getAccounts(accessToken: String): GoogleAccountList? {
         val url = "https://mybusinessaccountmanagement.googleapis.com/v1/accounts"
         val headers = HttpHeaders()
 
@@ -48,7 +53,7 @@ class GoogleRepository(val restTemplate: RestTemplate) {
             url,
             HttpMethod.GET,
             entity,
-            GoogleMe::class.java
+            GoogleAccountList::class.java
         ).body
     }
 
@@ -61,6 +66,14 @@ class GoogleRepository(val restTemplate: RestTemplate) {
         }
 
         val entity = HttpEntity<String>(headers)
+
+        val response = restTemplate.exchange(
+            url,
+            HttpMethod.GET,
+            entity,
+            String::class.java
+        )
+        println(response.body)
 
         return restTemplate.exchange(
             url,

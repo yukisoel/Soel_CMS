@@ -3,6 +3,8 @@ import {render, screen, waitFor, within} from "@testing-library/react";
 import {MemoryRouter, Route, Routes} from "react-router-dom";
 import {userEvent} from "@testing-library/user-event";
 import SearchStore from "@/main/components/editPage/SearchStore.tsx";
+import {GoogleAccount, GoogleAccountsContextProvider} from "@/main/contexts/GoogleAccountsContext.tsx";
+import SpyGoogleService from "@/tests/doubles/services/SpyGoogleService.ts";
 
 describe('SearchStore', () => {
 
@@ -139,10 +141,16 @@ describe('SearchStore', () => {
     })
 
     describe('プルダウンメニューを押したとき', async () => {
-      it('プルダウンメニューが表示される', async () => {
+      it('/api/google/accountsで取得したプルダウンメニューが表示される', async () => {
+        const testAccount: GoogleAccount = {name: 'dummy', accountName: 'testAccountName'}
+        const spyGoogleService = new SpyGoogleService()
+        spyGoogleService.getAccounts_returnValue = new Promise(resolve => resolve([testAccount]))
+
         render(
           <MemoryRouter initialEntries={["/"]}>
-            <SearchStore/>
+            <GoogleAccountsContextProvider googleService={spyGoogleService}>
+              <SearchStore/>
+            </GoogleAccountsContextProvider>
           </MemoryRouter>
         )
 
@@ -153,14 +161,20 @@ describe('SearchStore', () => {
 
 
         await waitFor(() => {
-          expect(screen.getByText('SOELプレミアム秋葉原店')).toBeInTheDocument()
+          expect(screen.getByText(testAccount.accountName)).toBeInTheDocument()
         })
       })
 
       it('プルダウンメニューで選択肢を選ぶと選択した項目が表示される', async () => {
+        const testAccount: GoogleAccount = {name: 'dummy', accountName: 'testAccountName'}
+        const spyGoogleService = new SpyGoogleService()
+        spyGoogleService.getAccounts_returnValue = new Promise(resolve => resolve([testAccount]))
+
         render(
           <MemoryRouter initialEntries={["/"]}>
-            <SearchStore/>
+            <GoogleAccountsContextProvider googleService={spyGoogleService}>
+              <SearchStore/>
+            </GoogleAccountsContextProvider>
           </MemoryRouter>
         )
 
@@ -168,13 +182,13 @@ describe('SearchStore', () => {
         const store_select_container = screen.getByTestId('store_select_container')
         const pull_down = within(store_select_container).getByText('入力して検索')
         await userEvent.click(pull_down)
-        await userEvent.click(screen.getByText('SOELプレミアム秋葉原店'))
+        await userEvent.click(screen.getByText(testAccount.accountName))
 
 
         await waitFor(() => {
           expect(within(store_select_container).queryByText('入力して検索')).toBeNull()
         })
-        expect(screen.getByText('SOELプレミアム秋葉原店')).toBeInTheDocument()
+        expect(screen.getByText(testAccount.accountName)).toBeInTheDocument()
       })
     })
   })
