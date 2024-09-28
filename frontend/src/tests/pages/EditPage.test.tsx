@@ -3,20 +3,15 @@ import EditPage from "../../main/pages/EditPage.tsx";
 import {render, screen} from "@testing-library/react";
 import ButtonBackIcon from "@/main/assets/Button_Back.svg";
 import {MemoryRouter, Route, Routes} from "react-router-dom";
-import {PankuzuItem} from "@/main/common/Pankuzu.tsx";
 
 
 describe('EditPage', () => {
   const dummyEmail = 'dummyEmail'
-  const dummyPankuzu: PankuzuItem[] = [{name: 'dummyName', path: 'dummyPath'}]
-  const dummyChild: React.ReactNode = <></>
   it('パンクズリストが表示される', async () => {
     render(
       <MemoryRouter initialEntries={['/edit']}>
         <EditPage
           email={dummyEmail}
-          pankuzuItemList={dummyPankuzu}
-          children={dummyChild}
         />
       </MemoryRouter>
     )
@@ -33,8 +28,6 @@ describe('EditPage', () => {
             element={
               <EditPage
                 email={dummyEmail}
-                pankuzuItemList={dummyPankuzu}
-                children={dummyChild}
               />
             }
           />
@@ -53,8 +46,6 @@ describe('EditPage', () => {
       <MemoryRouter initialEntries={['/edit']}>
         <EditPage
           email={dummyEmail}
-          pankuzuItemList={dummyPankuzu}
-          children={dummyChild}
         />
       </MemoryRouter>
     )
