@@ -27,8 +27,7 @@ function App() {
   return (
     <GoogleAccountsContextProvider googleService={googleService}>
       <Routes>
-        <Route
-          path="/edit"
+        <Route path="/edit"
           element={
             <StoreContextProvider>
               <PankuzuListContextProvider>
@@ -39,30 +38,12 @@ function App() {
             </StoreContextProvider>
           }
         >
-          <Route
-            path={''}
-            element={<SearchStore/>}
-          >
+          <Route path={''} element={<SearchStore/>}>
           </Route>
-          <Route
-            path={'gbp'}
-            element={<EditGBPLayout/>}
-          >
-            <Route
-              path={""}
-              element={<EditGBPDashboard/>}
-            />
-            <Route
-              path={"profile"}
-              element={<EditProfileLayout/>}
-            />
-
+          <Route path={'gbp'} element={<EditGBPLayout/>}>
+            <Route path={":account-id"} element={<EditGBPDashboard/>}/>
+            <Route path={":account-id/profile"} element={<EditProfileLayout/>}/>
           </Route>
-          {/*<Route*/}
-          {/*  path={'gbp/edit-profile'}*/}
-          {/*  element={<EditProfileLayout/>}*/}
-          {/*>*/}
-          {/*</Route>*/}
         </Route>
       </Routes>
     </GoogleAccountsContextProvider>

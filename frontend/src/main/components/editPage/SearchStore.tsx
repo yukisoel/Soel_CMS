@@ -2,7 +2,7 @@ import styles from "@/main/components/editPage/SearchStore.module.scss";
 import PullDownMenu from "@/main/components/PullDownMenu.tsx";
 import {useContext, useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
-import {GoogleAccountsContext} from "@/main/contexts/GoogleAccountsContext.tsx";
+import {GoogleAccount, GoogleAccountsContext} from "@/main/contexts/GoogleAccountsContext.tsx";
 import {PankuzuItemListContext} from "@/main/contexts/PankuzuItemListContext.tsx";
 import {StoreContext} from "@/main/contexts/StoreContext.tsx";
 
@@ -10,21 +10,28 @@ export default function SearchStore() {
   const [selectedBrand, setSelectedBrand] = useState<string>("")
   const [selectedService, setSelectedService] = useState<string>("")
   const [selectedPullDownMenu, setSelectedPullDownMenu] = useState<string>("none")
+  const [selectedAccount, setSelectedAccount] = useState<GoogleAccount>({name: '', accountName: ''})
   const navigate = useNavigate()
 
   const useGoogleAccountsContext = useContext(GoogleAccountsContext)
   const {accountList} = useGoogleAccountsContext
   const {setPankuzuItemList} = useContext(PankuzuItemListContext)
-  const {storeName,setStoreName} = useContext(StoreContext)
+  const {storeName, setStoreName} = useContext(StoreContext)
 
   useEffect(() => {
     setPankuzuItemList([{name: 'ページ編集', path: '/edit'}])
-  },[])
+  }, [])
 
-  const createAccountStoreNameList = ():string[] => {
-    if(accountList){
+  useEffect(() => {
+    if(storeName ) {
+      setSelectedAccount(accountList.filter(account => account.accountName === storeName)[0])
+    }
+  }, [storeName])
+
+  const createAccountStoreNameList = (): string[] => {
+    if (accountList) {
       return accountList?.map(account => account.accountName)
-    } else{
+    } else {
       return []
     }
   }
@@ -44,7 +51,7 @@ export default function SearchStore() {
                 setSelectedContent={setSelectedBrand}
                 selectedPullDownMenu={selectedPullDownMenu}
                 setSelectedPullDownMenu={setSelectedPullDownMenu}
-                options={['ブランド1', 'ブランド2', 'ブランド3','ブランド4', 'ブランド5', 'ブランド6','ブランド7', 'ブランド8', 'ブランド9']}
+                options={['ブランド1', 'ブランド2', 'ブランド3', 'ブランド4', 'ブランド5', 'ブランド6', 'ブランド7', 'ブランド8', 'ブランド9']}
               />
             </div>
             <div data-testid="store_select_container"
@@ -80,7 +87,7 @@ export default function SearchStore() {
               className={styles.search_button}
               onClick={() => {
                 if (selectedService === 'GBP') {
-                  navigate('/edit/gbp')
+                  navigate('/edit/gbp/' + selectedAccount.name)
                 }
               }}
             >

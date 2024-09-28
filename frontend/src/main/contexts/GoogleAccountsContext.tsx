@@ -33,6 +33,10 @@ export const GoogleAccountsContextProvider = ({children, googleService}: Props) 
   useEffect(() => {
     googleService.getAccounts()
       .then(accountList => {
+        accountList = accountList.map(account => {
+          const accountId = account.name.split('/')[account.name.split('/').length - 1]
+          return {name: accountId, accountName: account.accountName}
+        })
         setAccountList(accountList)
       })
       .catch(_ => {
