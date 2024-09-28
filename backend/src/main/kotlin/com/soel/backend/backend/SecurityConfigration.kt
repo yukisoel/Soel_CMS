@@ -7,6 +7,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.web.SecurityFilterChain
 import org.slf4j.LoggerFactory
 import org.slf4j.Logger
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.web.cors.CorsConfiguration
 import org.springframework.web.cors.CorsConfigurationSource
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource
@@ -16,12 +17,17 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 class SecurityConfig {
     private val logger: Logger = LoggerFactory.getLogger(SecurityConfig::class.java)
 
+    @Value("\${app.redirect.url}")
+    private lateinit var redirectUrl: String
+
+
     @Bean
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
+        println("Redirect URL: $redirectUrl")
         http
             .oauth2Login {
                 it.successHandler{_, response, _ ->
-                    response.sendRedirect("http://localhost:5173")
+                    response.sendRedirect(redirectUrl)
                 }
                 it.failureHandler{_, response, _ ->
                     response.sendRedirect("/error")

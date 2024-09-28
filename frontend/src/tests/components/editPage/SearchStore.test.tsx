@@ -3,8 +3,20 @@ import {render, screen, waitFor, within} from "@testing-library/react";
 import {MemoryRouter, Route, Routes} from "react-router-dom";
 import {userEvent} from "@testing-library/user-event";
 import SearchStore from "@/main/components/editPage/SearchStore.tsx";
-import {GoogleAccount, GoogleAccountsContextProvider} from "@/main/contexts/GoogleAccountsContext.tsx";
+import {
+  GoogleAccount,
+  GoogleAccountsContextProvider
+} from "@/main/contexts/GoogleAccountsContext.tsx";
 import SpyGoogleService from "@/tests/doubles/services/SpyGoogleService.ts";
+
+// const TestComponent = () => {
+//   const accountListContext = useContext(GoogleAccountsContext)
+//   return (
+//     <>
+//       <p>{accountListContext.selectedAccount?.accountName}</p>
+//     </>
+//   )
+// }
 
 describe('SearchStore', () => {
 
@@ -396,27 +408,33 @@ describe('SearchStore', () => {
   })
 
   describe('検索ボタンを押したとき', () => {
-    it('選択されたサービスがGBPのとき, /edit/gbpに遷移する', async () => {
-      render(
-        <MemoryRouter initialEntries={['/edit']}>
-          <Routes>
-            <Route path="/edit" element={<SearchStore/>}/>
-            <Route path="/edit/gbp" element={<div>GBP</div>}/>
-          </Routes>
-        </MemoryRouter>
-      )
+    describe('選択されたサービスがGBPのとき',() => {
+      it('/edit/gbpに遷移する', async () => {
+        render(
+          <MemoryRouter initialEntries={['/edit']}>
+            <Routes>
+              <Route path="/edit" element={<SearchStore/>}/>
+              <Route path="/edit/gbp" element={<div>GBP</div>}/>
+            </Routes>
+          </MemoryRouter>
+        )
 
 
-      const service_select_container = screen.getByTestId('service_select_container')
-      const pull_down = within(service_select_container).getByText('入力して検索')
-      await userEvent.click(pull_down)
-      await userEvent.click(screen.getByText('GBP'))
-      const search_button = screen.getByTestId('search_button')
-      await userEvent.click(search_button)
+        const service_select_container = screen.getByTestId('service_select_container')
+        const pull_down = within(service_select_container).getByText('入力して検索')
+        await userEvent.click(pull_down)
+        await userEvent.click(screen.getByText('GBP'))
+        const search_button = screen.getByTestId('search_button')
+        await userEvent.click(search_button)
 
 
-      await waitFor(() => {
-        expect(screen.getByText('GBP')).toBeInTheDocument()
+        await waitFor(() => {
+          expect(screen.getByText('GBP')).toBeInTheDocument()
+        })
+      })
+
+      it('選択した店舗名が表示される', async() => {
+
       })
     })
 

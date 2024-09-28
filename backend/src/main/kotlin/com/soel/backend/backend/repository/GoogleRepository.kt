@@ -57,7 +57,7 @@ class GoogleRepositoryImpl(val restTemplate: RestTemplate):GoogleRepository {
         ).body
     }
 
-    fun getAccountsLocations(accessToken: String): GoogleMe? {
+    fun getAccountLocations(accessToken: String): GoogleMe? {
         val url = "https://mybusinessbusinessinformation.googleapis.com/v1/accounts/locations"
         val headers = HttpHeaders()
 
