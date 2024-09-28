@@ -6,7 +6,7 @@ export type GoogleAccount = {
   accountName: string
 }
 
-interface InitialState {
+interface GoogleAccountsContextState {
   accountList: GoogleAccount[]
   setAccountList: React.Dispatch<React.SetStateAction<GoogleAccount[]>>
   selectedAccount: GoogleAccount | null
@@ -19,7 +19,7 @@ type Props = {
   googleService: GoogleService
 }
 
-export const GoogleAccountsContext = createContext<InitialState>({
+export const GoogleAccountsContext = createContext<GoogleAccountsContextState>({
   accountList: [],
   setAccountList: () => {},
   selectedAccount: null,

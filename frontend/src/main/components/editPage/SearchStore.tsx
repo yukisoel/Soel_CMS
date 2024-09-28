@@ -1,8 +1,9 @@
 import styles from "@/main/components/editPage/SearchStore.module.scss";
 import PullDownMenu from "@/main/components/PullDownMenu.tsx";
-import {useContext, useState} from "react";
+import {useContext, useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {GoogleAccountsContext} from "@/main/contexts/GoogleAccountsContext.tsx";
+import {PankuzuItemListContext} from "@/main/contexts/PankuzuItemListContext.tsx";
 
 export default function SearchStore() {
   const [selectedBrand, setSelectedBrand] = useState<string>("入力して検索")
@@ -13,6 +14,11 @@ export default function SearchStore() {
 
   const useGoogleAccountsContext = useContext(GoogleAccountsContext)
   const {accountList} = useGoogleAccountsContext
+  const {setPankuzuItemList} = useContext(PankuzuItemListContext)
+
+  useEffect(() => {
+    setPankuzuItemList([{name: 'ページ編集', path: '/edit'}])
+  },[])
 
   const createAccountStoreNameList = ():string[] => {
     if(accountList){

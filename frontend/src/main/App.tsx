@@ -6,6 +6,7 @@ import {GoogleAccountsContextProvider} from "@/main/contexts/GoogleAccountsConte
 import {GoogleRepositoryImpl} from "@/main/repositories/GoogleRepository.ts";
 import {GoogleServiceImpl} from "@/main/services/GoogleService.ts";
 import axios from "axios";
+import {PankuzuListContextProvider} from "@/main/contexts/PankuzuItemListContext.tsx";
 
 const googleRepository = new GoogleRepositoryImpl()
 const googleService = new GoogleServiceImpl({googleRepository})
@@ -26,28 +27,29 @@ function App() {
         <Route
           path="/edit"
           element={
-            <EditPage
-              email={'dummyEmail.sample.jp'}
-              pankuzuItemList={[{name: 'ページ編集', path: '/edit'}]}
-              children={<SearchStore/>}
-            />
+            <PankuzuListContextProvider>
+              <EditPage
+                email={'dummyEmail.sample.jp'}
+              />
+            </PankuzuListContextProvider>
           }
         >
-        </Route>
-        <Route
-          path="/edit/gbp"
-          element={
-            <EditPage
-              email={'dummyEmail.sample.jp'}
-              pankuzuItemList={[{name: 'ページ編集', path: '/edit'}, {name: 'GBP', path: '/edit/gbp'}]}
-              children={
-                <EditGBP
-                  storeName={'dummyStoreName'}
-                />
-              }
-            />
-          }
-        >
+          <Route
+            path={''}
+            element={
+              <SearchStore/>
+            }
+          >
+          </Route>
+          <Route
+            path={'gbp'}
+            element={
+              <EditGBP
+                storeName={'dummyStoreName'}
+              />
+            }
+          >
+          </Route>
         </Route>
       </Routes>
     </GoogleAccountsContextProvider>

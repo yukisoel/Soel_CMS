@@ -1,15 +1,17 @@
 import styles from '@/main/pages/EditPage.module.scss'
 import ButtonBackIcon from "@/main/assets/Button_Back.svg";
 import SidebarMenu from "@/main/common/SidebarMenu.tsx";
-import Pankuzu, {PankuzuItem} from "@/main/common/Pankuzu.tsx";
+import Pankuzu from "@/main/common/Pankuzu.tsx";
+import {Outlet} from "react-router-dom";
+import {useContext} from "react";
+import {PankuzuItemListContext} from "@/main/contexts/PankuzuItemListContext.tsx";
 
 export type Props = {
   email: string
-  pankuzuItemList: PankuzuItem[]
-  children: React.ReactNode
 }
 
-export default function EditPage({email, pankuzuItemList, children}: Props) {
+export default function EditPage({email}: Props) {
+  const {pankuzuItemList} = useContext(PankuzuItemListContext)
 
   return (
     <>
@@ -24,7 +26,7 @@ export default function EditPage({email, pankuzuItemList, children}: Props) {
               <img src={ButtonBackIcon} alt={'button_back'}/>
             </div>
           </div>
-          {children}
+          <Outlet/>
         </div>
       </div>
     </>

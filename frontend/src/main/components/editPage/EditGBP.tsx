@@ -9,12 +9,19 @@ import EditReserveIcon from "@/main/assets/EditReserveIcon.svg"
 import EditQnAIcon from "@/main/assets/EditQnAIcon.svg"
 import CircleFilledIcon from "@/main/assets/CircleFilled.svg"
 import {DashboardItem} from "@/main/components/editPage/DashboardItem.tsx";
+import {useContext, useEffect} from "react";
+import {PankuzuItemListContext} from "@/main/contexts/PankuzuItemListContext.tsx";
 
 type Props = {
   storeName: string
 }
 
 export default function EditGBP({storeName}: Props) {
+  const {setPankuzuItemList} = useContext(PankuzuItemListContext)
+
+  useEffect(() => {
+    setPankuzuItemList([{name: 'ページ編集', path: '/edit'}, {name: 'GBP', path: '/edit/gbp'}])
+  },[])
   return(
     <>
       <div data-testid={"window_edit_gbp_container"} className={styles.contents_container}>
