@@ -1,8 +1,8 @@
 import {createContext, useState} from "react";
 
 interface StoreContextState {
-  name: string
-  setName: React.Dispatch<React.SetStateAction<string>>
+  storeName: string
+  setStoreName: React.Dispatch<React.SetStateAction<string>>
 }
 
 type Props = {
@@ -10,15 +10,15 @@ type Props = {
 }
 
 export const StoreContext = createContext<StoreContextState>({
-  name: '',
-  setName: () => {}
+  storeName: '',
+  setStoreName: () => {}
 })
 
 export const StoreContextProvider = ({children}: Props) => {
-  const [name, setName] = useState<string>('')
+  const [storeName, setStoreName] = useState<string>('')
 
   return (
-    <StoreContext.Provider value={{name, setName}}>
+    <StoreContext.Provider value={{storeName: storeName, setStoreName: setStoreName}}>
       {children}
     </StoreContext.Provider>
   )

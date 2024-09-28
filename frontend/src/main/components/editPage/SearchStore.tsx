@@ -4,17 +4,18 @@ import {useContext, useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {GoogleAccountsContext} from "@/main/contexts/GoogleAccountsContext.tsx";
 import {PankuzuItemListContext} from "@/main/contexts/PankuzuItemListContext.tsx";
+import {StoreContext} from "@/main/contexts/StoreContext.tsx";
 
 export default function SearchStore() {
-  const [selectedBrand, setSelectedBrand] = useState<string>("入力して検索")
-  const [selectedStore, setSelectedStore] = useState<string>("入力して検索")
-  const [selectedService, setSelectedService] = useState<string>("入力して検索")
+  const [selectedBrand, setSelectedBrand] = useState<string>("")
+  const [selectedService, setSelectedService] = useState<string>("")
   const [selectedPullDownMenu, setSelectedPullDownMenu] = useState<string>("none")
   const navigate = useNavigate()
 
   const useGoogleAccountsContext = useContext(GoogleAccountsContext)
   const {accountList} = useGoogleAccountsContext
   const {setPankuzuItemList} = useContext(PankuzuItemListContext)
+  const {storeName,setStoreName} = useContext(StoreContext)
 
   useEffect(() => {
     setPankuzuItemList([{name: 'ページ編集', path: '/edit'}])
@@ -52,8 +53,8 @@ export default function SearchStore() {
             >
               <PullDownMenu
                 title={'店舗を選択'}
-                selectedContent={selectedStore}
-                setSelectedContent={setSelectedStore}
+                selectedContent={storeName}
+                setSelectedContent={setStoreName}
                 selectedPullDownMenu={selectedPullDownMenu}
                 setSelectedPullDownMenu={setSelectedPullDownMenu}
                 options={createAccountStoreNameList()}

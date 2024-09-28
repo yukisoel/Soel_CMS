@@ -56,10 +56,10 @@ export default function PullDownMenu({
           {!isOpen && (
             <>
               <div className={classNames(styles.pull_down_menu_content, {
-                [styles.pull_down_menu_placeholder]: selectedContent === effectivePlaceholder,
-                [styles.pull_down_menu_option]: selectedContent !== effectivePlaceholder
+                [styles.pull_down_menu_placeholder]: selectedContent.length === 0,
+                [styles.pull_down_menu_option]: selectedContent.length !== 0
               })}>
-                {selectedContent}
+                {selectedContent.length === 0 ? effectivePlaceholder : selectedContent}
               </div>
             </>
           )}

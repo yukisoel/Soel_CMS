@@ -1,0 +1,74 @@
+.profile_container {
+  display: flex;
+  flex-direction: column;
+
+  justify-content: center;
+  align-items: center;
+
+  margin-top: 4.2rem;
+}
+
+.tab_container {
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+
+  padding-bottom: 3rem;
+
+  border-bottom: 0.1rem solid #282828;
+}
+
+.tab_wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  width: 74.4rem;
+  height: 6rem;
+
+  background-color: #EBEBEB;
+  border-radius: 3rem;
+}
+
+.tab_selected {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  width: 12.9rem;
+  height: 100%;
+
+  color: #282828;
+  font-family: "Noto Sans CJK JP", sans-serif;
+  font-size: 2.5rem;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+
+
+  background-color: #FFC42C;
+  border-radius: 3rem;
+  cursor: pointer;
+}
+
+.tab {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  width: 12.9rem;
+  height: 3.6rem;
+
+  color: #282828;
+  font-family: "Noto Sans CJK JP", sans-serif;
+  font-size: 2.5rem;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+
+
+  border-radius: 3rem;
+  cursor: pointer;
+}

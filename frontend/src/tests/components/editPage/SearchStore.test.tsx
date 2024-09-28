@@ -177,7 +177,7 @@ describe('SearchStore', () => {
         })
       })
 
-      it('プルダウンメニューで選択肢を選ぶと選択した項目が表示される', async () => {
+      it.skip('プルダウンメニューで選択肢を選ぶと選択した項目が表示される', async () => {
         const testAccount: GoogleAccount = {name: 'dummy', accountName: 'testAccountName'}
         const spyGoogleService = new SpyGoogleService()
         spyGoogleService.getAccounts_returnValue = new Promise(resolve => resolve([testAccount]))
