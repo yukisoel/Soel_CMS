@@ -1,3 +1,11 @@
 app:
   redirect:
     url: http://localhost:8080/edit
+
+spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            redirect-uri: "http://localhost:8080/login/oauth2/code/google"

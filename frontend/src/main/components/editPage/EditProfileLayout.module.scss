@@ -96,6 +96,7 @@
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  align-items: center;
 
   width: 8rem;
 
@@ -106,7 +107,26 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 100%;
+  width: 8rem;
+  height: 4.8rem;
+
+  color: #000;
+
+  font-family: "Noto Sans CJK JP", sans-serif;
+  font-size: 1.8rem;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+
+  background-color: #FFC42C;
+  border-radius: 3rem;
+}
+
+.edit_back_button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 4.8rem;
   height: 4.8rem;
 
   color: #000;
@@ -127,6 +147,35 @@
   align-items: center;
   width: 100%;
   height: 4.8rem;
+
+  color: #000;
+
+  font-family: "Noto Sans CJK JP", sans-serif;
+  font-size: 1.8rem;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+
+  background-color: #EBEBEB;
+  border-radius: 3rem;
+}
+
+.edit_business_hours_button_container {
+  flex-shrink: 0;
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+
+  margin-top: 1.7rem;
+}
+
+.cancel_business_hours_button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 4.8rem;
+  padding-left: 1.7rem;
+  padding-right: 1.7rem;
 
   color: #000;
 
@@ -171,6 +220,45 @@
   line-height: normal;
 }
 
+.term_content_focus {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  width: 63.5rem;
+  padding-bottom: 1rem;
+
+  border-bottom: 0.2rem solid #BEBEBE;
+}
+
+.term_content_input_text {
+  flex-grow: 1;
+  white-space: pre-line;
+
+  color: #282828;
+
+  font-family: "Noto Sans CJK JP", sans-serif;
+  font-size: 30px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+}
+
+.term_content_input_textarea {
+  flex-grow: 1;
+  white-space: pre-line;
+
+  color: #282828;
+
+  font-family: "Noto Sans CJK JP", sans-serif;
+  font-size: 30px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+
+  outline: none;
+  border: none;
+}
+
 .tag_container {
     display: flex;
     gap: 1rem;
@@ -196,4 +284,13 @@
 
   background-color: #FFC42C;
   border-radius: 3rem;
+}
+
+.business_hours_container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1.4rem;
+
+  flex-grow: 1;
 }

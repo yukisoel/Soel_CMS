@@ -20,6 +20,16 @@ a {
 a:hover {
 }
 
+input {
+    font-family: "Noto Sans CJK JP", sans-serif;
+  border: none;
+  padding: 0;
+}
+
+input:focus {
+  outline: none;
+}
+
 html {
   font-size: 62.5%;
 }

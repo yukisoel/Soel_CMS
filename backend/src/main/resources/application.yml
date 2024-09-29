@@ -19,10 +19,10 @@ spring:
 #            scope: ${FACEBOOK_SCOPE}
 #            redirect-uri: "{baseUrl}/login/oauth2/code/facebook"
           google:
-            client-id: ${GOOGLE_CLIENT_ID}
-            client-secret: ${GOOGLE_CLIENT_SECRET}
-            scope: ${GOOGLE_SCOPE}
-            redirect-uri: "{baseUrl}/login/oauth2/code/google"
+            client-id: 666193583764-vqto55avfkdtn0nqj0j74j7jti8o281s.apps.googleusercontent.com
+            client-secret: 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
+            scope: openid,profile,https://www.googleapis.com/auth/business.manage
+#            redirect-uri: "{baseUrl}/login/oauth2/code/google"
 #        provider:
 #          facebook:
 #            authorization-uri: https://www.facebook.com/v20.0/dialog/oauth
