@@ -2,6 +2,9 @@ app:
   redirect:
     url: http://localhost:8080/edit
 
+server:
+  forward-headers-strategy: framework
+
 spring:
   security:
     oauth2:
