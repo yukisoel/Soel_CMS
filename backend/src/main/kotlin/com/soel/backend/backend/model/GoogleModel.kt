@@ -10,8 +10,13 @@ data class GoogleName(
     val givenName: String?,
 )
 
-data class GoogleAccountList(
-    val accountList: List<GoogleAccount>
+data class GoogleAccountsResponse(
+    val accounts: List<GoogleAccountResponse>,
+)
+
+data class GoogleAccountResponse(
+    val name: String,
+    val accountName: String,
 )
 
 data class GoogleAccount (

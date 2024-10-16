@@ -4,7 +4,7 @@ import EditGBPLayout from "@/main/components/editPage/EditGBPLayout.tsx";
 import SearchStore from "@/main/components/editPage/SearchStore.tsx";
 import {GoogleAccountsContextProvider} from "@/main/contexts/GoogleAccountsContext.tsx";
 import {GoogleRepositoryImpl} from "@/main/repositories/GoogleRepository.ts";
-import {GoogleServiceImpl} from "@/main/services/GoogleService.ts";
+import {GoogleServiceImpl} from "@/main/service/GoogleService.ts";
 import axios from "axios";
 import {PankuzuListContextProvider} from "@/main/contexts/PankuzuItemListContext.tsx";
 import {StoreContextProvider} from "@/main/contexts/StoreContext.tsx";

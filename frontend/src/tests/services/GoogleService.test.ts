@@ -1,6 +1,6 @@
 import {describe} from "vitest";
 import SpyGoogleRepository from "@/tests/doubles/repositories/SpyGoogleRepository.ts";
-import {GoogleServiceImpl} from "@/main/services/GoogleService.ts";
+import {GoogleServiceImpl} from "@/main/service/GoogleService.ts";
 
 describe("GoogleService", () => {
   describe('getAccounts', () => {

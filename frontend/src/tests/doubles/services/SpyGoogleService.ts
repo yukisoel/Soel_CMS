@@ -1,4 +1,4 @@
-import {GoogleService} from "@/main/services/GoogleService.ts";
+import {GoogleService} from "@/main/service/GoogleService.ts";
 import {GoogleAccount} from "@/main/contexts/GoogleAccountsContext.tsx";
 
 export default class SpyGoogleService implements GoogleService {

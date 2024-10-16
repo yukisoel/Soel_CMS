@@ -1,6 +1,7 @@
 package com.soel.backend.backend.repository
 
 import com.soel.backend.backend.model.*
+import org.springframework.context.annotation.Primary
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
@@ -9,9 +10,10 @@ import org.springframework.web.client.RestTemplate
 
 interface GoogleRepository {
     fun getMe(accessToken: String): GoogleMe?
-    fun getAccounts(accessToken: String): GoogleAccountList?
+    fun getAccounts(accessToken: String): GoogleAccountsResponse?
 }
 
+@Primary
 @Repository
 class GoogleRepositoryImpl(val restTemplate: RestTemplate):GoogleRepository {
     override fun getMe(accessToken: String): GoogleMe? {
@@ -23,13 +25,6 @@ class GoogleRepositoryImpl(val restTemplate: RestTemplate):GoogleRepository {
         }
 
         val entity = HttpEntity<String>(headers)
-        val response = restTemplate.exchange(
-            url,
-            HttpMethod.GET,
-            entity,
-            String::class.java
-        )
-        println(response.body)
 
         return restTemplate.exchange(
             url,
@@ -39,7 +34,7 @@ class GoogleRepositoryImpl(val restTemplate: RestTemplate):GoogleRepository {
         ).body
     }
 
-    override fun getAccounts(accessToken: String): GoogleAccountList? {
+    override fun getAccounts(accessToken: String): GoogleAccountsResponse? {
         val url = "https://mybusinessaccountmanagement.googleapis.com/v1/accounts"
         val headers = HttpHeaders()
 
@@ -53,7 +48,7 @@ class GoogleRepositoryImpl(val restTemplate: RestTemplate):GoogleRepository {
             url,
             HttpMethod.GET,
             entity,
-            GoogleAccountList::class.java
+            GoogleAccountsResponse::class.java
         ).body
     }
 

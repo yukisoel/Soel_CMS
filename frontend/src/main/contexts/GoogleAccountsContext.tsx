@@ -1,5 +1,5 @@
 import {createContext, useEffect, useState} from "react";
-import {GoogleService} from "@/main/services/GoogleService.ts";
+import {GoogleService} from "@/main/service/GoogleService.ts";
 
 export type GoogleAccount = {
   name: string //accountId

@@ -25,7 +25,6 @@ export default function PullDownMenu({
   const effectivePlaceholder = placeholder ? placeholder : '入力して検索'
 
   const [isOpen, setIsOpen] = useState<boolean>(false)
-
   const toggleIsOpen = () => {
     setIsOpen(!isOpen)
     if (selectedPullDownMenu === title) {
