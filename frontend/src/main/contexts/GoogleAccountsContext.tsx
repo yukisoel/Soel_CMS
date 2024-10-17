@@ -1,10 +1,6 @@
 import {createContext, useEffect, useState} from "react";
 import {GoogleService} from "@/main/service/GoogleService.ts";
-
-export type GoogleAccount = {
-  name: string //accountId
-  accountName: string
-}
+import {GoogleAccount} from "@/main/model/GoogleAccount.ts";
 
 interface GoogleAccountsContextState {
   accountList: GoogleAccount[]

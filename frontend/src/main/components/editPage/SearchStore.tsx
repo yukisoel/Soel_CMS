@@ -2,16 +2,22 @@ import styles from "@/main/components/editPage/SearchStore.module.scss";
 import PullDownMenu from "@/main/components/PullDownMenu.tsx";
 import {useContext, useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
-import {GoogleAccount, GoogleAccountsContext} from "@/main/contexts/GoogleAccountsContext.tsx";
+import {GoogleAccountsContext} from "@/main/contexts/GoogleAccountsContext.tsx";
 import {PankuzuItemListContext} from "@/main/contexts/PankuzuItemListContext.tsx";
 import {StoreContext} from "@/main/contexts/StoreContext.tsx";
 import {ServiceName} from "@/main/model/ServiceName.ts";
+import {GoogleService} from "@/main/service/GoogleService.ts";
+import {GoogleAccount} from "@/main/model/GoogleAccount.ts";
 
-export default function SearchStore() {
-  const [selectedAccount, setSelectedAccount] = useState<string>("")
+type Props = {
+  googleService: GoogleService
+}
+
+export default function SearchStore({googleService}: Props) {
+  const [selectedAccountName, setSelectedAccountName] = useState<string>("")
   const [selectedService, setSelectedService] = useState<string>("")
   const [selectedPullDownMenu, setSelectedPullDownMenu] = useState<string>("none")
-  const [selectedAccounts, setSelectedAccounts] = useState<GoogleAccount>({name: '', accountName: ''})
+  const [selectedGoogleAccount, setSelectedGoogleAccount] = useState<GoogleAccount>({name: '', accountName: ''})
   const navigate = useNavigate()
 
   const {accountList} = useContext(GoogleAccountsContext)
@@ -23,10 +29,22 @@ export default function SearchStore() {
     setPankuzuItemList([{name: 'ページ編集', path: '/edit'}])
   }, [])
   useEffect(() => {
-    if (storeName) {
-      setSelectedAccounts(accountList.filter(account => account.accountName === storeName)[0])
+    if (selectedAccountName) {
+      const googleAccount = accountList.filter(account => account.accountName === selectedAccountName)[0]
+      if (googleAccount) {
+        setSelectedGoogleAccount(googleAccount)
+        createLocationList(googleAccount)
+      }
     }
-  }, [storeName])
+  }, [selectedAccountName])
+
+  const createLocationList = (googleAccount:GoogleAccount): string[] => {
+    console.log(googleAccount)
+    googleService.getLocations(googleAccount).then(locations => {
+      console.log({locations})
+    })
+    return []
+  }
 
   const createAccountNameList = (): string[] => {
     if (accountList) {
@@ -80,8 +98,8 @@ export default function SearchStore() {
                 >
                   <PullDownMenu
                     title={'アカウントを選択'}
-                    selectedContent={selectedAccount}
-                    setSelectedContent={setSelectedAccount}
+                    selectedContent={selectedAccountName}
+                    setSelectedContent={setSelectedAccountName}
                     selectedPullDownMenu={selectedPullDownMenu}
                     setSelectedPullDownMenu={setSelectedPullDownMenu}
                     options={createAccountNameList()}
@@ -107,7 +125,7 @@ export default function SearchStore() {
                   className={styles.search_button}
                   onClick={() => {
                     if (selectedService === 'GBP') {
-                      navigate('/edit/gbp/' + selectedAccounts.name)
+                      navigate('/edit/gbp/' + selectedGoogleAccount.name)
                     }
                   }}
                 >

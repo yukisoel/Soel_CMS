@@ -5,20 +5,14 @@ import com.soel.backend.backend.service.GoogleService
 import org.springframework.http.ResponseEntity
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient
 import org.springframework.security.oauth2.client.annotation.RegisteredOAuth2AuthorizedClient
-//import org.springframework.security.oauth2.client.OAuth2AuthorizedClient
-//import org.springframework.security.oauth2.client.annotation.RegisteredOAuth2AuthorizedClient
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.RequestParam
 
 @RestController
 @RequestMapping("/api/google")
 class GoogleController(val googleService: GoogleService) {
-
-    @GetMapping("/demo")
-    fun demo(): String? {
-        return "demo"
-    }
 
     @GetMapping("/me")
     fun getMe(@RegisteredOAuth2AuthorizedClient("google") googleClient: OAuth2AuthorizedClient): GoogleMe? {
@@ -30,10 +24,11 @@ class GoogleController(val googleService: GoogleService) {
         return googleService.getAccounts(googleClient.accessToken.tokenValue)
     }
 
-//    @GetMapping("/accounts/locations")
-//    fun getAccountsLocations(@RegisteredOAuth2AuthorizedClient("google") googleClient: OAuth2AuthorizedClient): GoogleMe? {
-//        return googleService.getAccountsLocations(googleClient.accessToken.tokenValue)
-//    }
+    @GetMapping("/locations")
+
+    fun getLocations(@RegisteredOAuth2AuthorizedClient("google") googleClient: OAuth2AuthorizedClient, @RequestParam("accountId") accountId: String): ResponseEntity<List<GoogleLocation>>? {
+        return googleService.getLocations(googleClient.accessToken.tokenValue, accountId)
+    }
     /*
 
         口コミ取得

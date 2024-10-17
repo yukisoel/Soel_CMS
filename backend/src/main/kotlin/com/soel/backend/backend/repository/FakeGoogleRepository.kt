@@ -1,9 +1,6 @@
 package com.soel.backend.backend.repository
 
-import com.soel.backend.backend.model.GoogleAccount
-import com.soel.backend.backend.model.GoogleAccountResponse
-import com.soel.backend.backend.model.GoogleAccountsResponse
-import com.soel.backend.backend.model.GoogleMe
+import com.soel.backend.backend.model.*
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
@@ -34,13 +31,28 @@ class FakeGoogleRepository(private val restTemplate: RestTemplate) :GoogleReposi
     override fun getAccounts(accessToken: String): GoogleAccountsResponse? {
         return GoogleAccountsResponse(
             listOf(
-                GoogleAccountResponse(
+                GoogleAccount(
                     "accounts/name1",
                     "accountName1"
                 ),
-                GoogleAccountResponse(
+                GoogleAccount(
                     "accounts/name2",
                     "accountName2"
+                )
+            )
+        )
+    }
+
+    override fun getLocations(accessToken: String, accountId: String): GoogleLocationsResponse? {
+        return GoogleLocationsResponse(
+            listOf(
+                GoogleLocation(
+                    "locations/name1",
+                    "locationName1"
+                ),
+                GoogleLocation(
+                    "locations/name2",
+                    "locationName2"
                 )
             )
         )

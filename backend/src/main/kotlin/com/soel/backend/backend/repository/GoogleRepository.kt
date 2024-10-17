@@ -7,10 +7,12 @@ import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
 import org.springframework.stereotype.Repository
 import org.springframework.web.client.RestTemplate
+import org.springframework.web.util.UriComponentsBuilder
 
 interface GoogleRepository {
     fun getMe(accessToken: String): GoogleMe?
     fun getAccounts(accessToken: String): GoogleAccountsResponse?
+    fun getLocations(accessToken: String, accountId: String): GoogleLocationsResponse?
 }
 
 @Primary
@@ -52,8 +54,13 @@ class GoogleRepositoryImpl(val restTemplate: RestTemplate):GoogleRepository {
         ).body
     }
 
-    fun getAccountLocations(accessToken: String): GoogleMe? {
-        val url = "https://mybusinessbusinessinformation.googleapis.com/v1/accounts/locations"
+    override fun getLocations(accessToken: String, accountId: String): GoogleLocationsResponse? {
+        val baseUrl = "https://mybusinessaccountmanagement.googleapis.com/v1/accounts/$accountId/locations"
+        val uri = UriComponentsBuilder.fromHttpUrl(baseUrl)
+            .queryParam("readMask", "name,title")
+            .build()
+            .toUri()
+
         val headers = HttpHeaders()
 
         headers.apply {
@@ -62,19 +69,11 @@ class GoogleRepositoryImpl(val restTemplate: RestTemplate):GoogleRepository {
 
         val entity = HttpEntity<String>(headers)
 
-        val response = restTemplate.exchange(
-            url,
-            HttpMethod.GET,
-            entity,
-            String::class.java
-        )
-        println(response.body)
-
         return restTemplate.exchange(
-            url,
+            uri,
             HttpMethod.GET,
             entity,
-            GoogleMe::class.java
+            GoogleLocationsResponse::class.java
         ).body
     }
 }

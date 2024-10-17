@@ -38,7 +38,7 @@ function App() {
             </StoreContextProvider>
           }
         >
-          <Route path={''} element={<SearchStore/>}>
+          <Route path={''} element={<SearchStore googleService={googleService}/>}>
           </Route>
           <Route path={'gbp'} element={<EditGBPLayout/>}>
             <Route path={":account-id"} element={<EditGBPDashboard/>}/>

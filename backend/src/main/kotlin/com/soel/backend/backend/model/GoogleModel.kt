@@ -11,12 +11,11 @@ data class GoogleName(
 )
 
 data class GoogleAccountsResponse(
-    val accounts: List<GoogleAccountResponse>,
+    val accounts: List<GoogleAccount>,
 )
 
-data class GoogleAccountResponse(
-    val name: String,
-    val accountName: String,
+data class GoogleLocationsResponse(
+    val locations: List<GoogleLocation>,
 )
 
 data class GoogleAccount (
@@ -24,7 +23,7 @@ data class GoogleAccount (
     val accountName: String
 )
 
-data class GoogleLocationItem (
+data class GoogleLocation (
     val name: String,
     val title: String
 )
