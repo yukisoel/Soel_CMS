@@ -4,6 +4,7 @@ import {GoogleAccount, GoogleLocation} from "@/main/model/GoogleAccount.ts";
 export interface GoogleService {
   getAccounts(): Promise<GoogleAccount[]>
   getLocations(googleAccount:GoogleAccount): Promise<GoogleLocation[]>
+  getLocation(locationId:string): Promise<GoogleLocation>
 }
 
 type Props = {
@@ -23,5 +24,9 @@ export class GoogleServiceImpl implements GoogleService {
 
   async getLocations(googleAccount:GoogleAccount): Promise<GoogleLocation[]> {
     return this.googleRepository.getLocations(googleAccount)
+  }
+
+  async getLocation(locationId:string): Promise<GoogleLocation> {
+    return this.googleRepository.getLocation(locationId)
   }
 }

@@ -1,15 +1,15 @@
 import styles from "@/main/components/editPage/EditHeader.module.scss";
 import CircleFilledIcon from "@/main/assets/CircleFilled.svg";
 import {useContext} from "react";
-import {StoreContext} from "@/main/contexts/StoreContext.tsx";
+import {GoogleSelectedLocationContext} from "@/main/contexts/GoogleSelectedLocationContext.tsx";
 
 export default function EditHeader() {
-  const {storeName} = useContext(StoreContext)
+  const {googleSelectedLocation} = useContext(GoogleSelectedLocationContext)
 
   return (
     <div className={styles.store_name_container}>
       <div className={styles.store_name_text}>
-        {storeName}
+        {googleSelectedLocation.title}
       </div>
       <div className={styles.store_badge_container}>
         <img className={styles.store_badge_circle} alt={"circle_filled"} src={CircleFilledIcon}/>

@@ -25,9 +25,13 @@ class GoogleController(val googleService: GoogleService) {
     }
 
     @GetMapping("/locations")
-
     fun getLocations(@RegisteredOAuth2AuthorizedClient("google") googleClient: OAuth2AuthorizedClient, @RequestParam("accountId") accountId: String): ResponseEntity<List<GoogleLocation>>? {
         return googleService.getLocations(googleClient.accessToken.tokenValue, accountId)
+    }
+
+    @GetMapping("/location")
+    fun getLocation(@RegisteredOAuth2AuthorizedClient("google") googleClient: OAuth2AuthorizedClient, @RequestParam("locationId") locationId: String): ResponseEntity<GoogleLocation>? {
+        return googleService.getLocation(googleClient.accessToken.tokenValue, locationId)
     }
     /*
 

@@ -57,4 +57,11 @@ class FakeGoogleRepository(private val restTemplate: RestTemplate) :GoogleReposi
             )
         )
     }
+
+    override fun getLocation(accessToken: String, locationId: String): GoogleLocation? {
+        return GoogleLocation(
+            "locations/name1",
+            "locationName1"
+        )
+    }
 }

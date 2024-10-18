@@ -9,23 +9,25 @@ import EditInfoIcon from "@/main/assets/EditInfoIcon.svg"
 import EditItemIcon from "@/main/assets/EditItemIcon.svg"
 import EditReserveIcon from "@/main/assets/EditReserveIcon.svg"
 import EditQnAIcon from "@/main/assets/EditQnAIcon.svg"
-import {StoreContextProvider} from "@/main/contexts/StoreContext.tsx";
+import {
+  GoogleSelectedLocationContextProvider
+} from "@/main/contexts/GoogleSelectedLocationContext.tsx";
 
 describe('EditGBPLayout', () => {
   // const dumyyStoreName = 'dummyStoreName'
-  it.skip('店舗名が表示される', async() => {
+  it.skip('店舗名が表示される', async () => {
     const storeNameTest = "storeNameTest"
     render(
-      <StoreContextProvider>
+      <GoogleSelectedLocationContextProvider>
         <EditGBPLayout/>
-      </StoreContextProvider>
+      </GoogleSelectedLocationContextProvider>
     )
 
 
     expect(screen.queryByText(storeNameTest)).toBeInTheDocument()
   })
 
-  it('編集中の店舗のバッジが表示される', async() => {
+  it('編集中の店舗のバッジが表示される', async () => {
     render(
       <EditGBPLayout/>
     )
@@ -34,7 +36,7 @@ describe('EditGBPLayout', () => {
     expect(screen.queryByText('編集中の店舗')).toBeInTheDocument()
   })
 
-  it('「プロフィールを編集」のボタンが表示される', async() => {
+  it('「プロフィールを編集」のボタンが表示される', async () => {
     render(
       <EditGBPLayout/>
     )
@@ -45,11 +47,11 @@ describe('EditGBPLayout', () => {
     expect(editProfileIcon).toHaveAttribute('src', EditProfileIcon)
   })
 
-  it.skip('「プロフィールを編集」ボタンを押したとき、/edit-profileに遷移する', async() => {
+  it.skip('「プロフィールを編集」ボタンを押したとき、/edit-profileに遷移する', async () => {
 
   })
 
-  it('「写真」のボタンが表示される', async() => {
+  it('「写真」のボタンが表示される', async () => {
     render(
       <EditGBPLayout/>
     )
@@ -60,11 +62,11 @@ describe('EditGBPLayout', () => {
     expect(editPhotoIcon).toHaveAttribute('src', EditPhotoIcon)
   })
 
-  it.skip('「写真」ボタンを押したとき、/edit-photoに遷移する', async() => {
+  it.skip('「写真」ボタンを押したとき、/edit-photoに遷移する', async () => {
 
   })
 
-  it('「編集メニュー」のボタンが表示される', async() => {
+  it('「編集メニュー」のボタンが表示される', async () => {
     render(
       <EditGBPLayout/>
     )
@@ -75,11 +77,11 @@ describe('EditGBPLayout', () => {
     expect(editPhotoIcon).toHaveAttribute('src', EditMenuIcon)
   })
 
-  it.skip('「編集メニュー」ボタンを押したとき、/edit-menuに遷移する', async() => {
+  it.skip('「編集メニュー」ボタンを押したとき、/edit-menuに遷移する', async () => {
 
   })
 
-  it('「料理の注文」のボタンが表示される', async() => {
+  it('「料理の注文」のボタンが表示される', async () => {
     render(
       <EditGBPLayout/>
     )
@@ -90,11 +92,11 @@ describe('EditGBPLayout', () => {
     expect(editOrderIcon).toHaveAttribute('src', EditOrderIcon)
   })
 
-  it.skip('「料理の注文」ボタンを押したとき、/edit-orderに遷移する', async() => {
+  it.skip('「料理の注文」ボタンを押したとき、/edit-orderに遷移する', async () => {
 
   })
 
-  it('「最新情報を追加」のボタンが表示される', async() => {
+  it('「最新情報を追加」のボタンが表示される', async () => {
     render(
       <EditGBPLayout/>
     )
@@ -105,11 +107,11 @@ describe('EditGBPLayout', () => {
     expect(editInfoIcon).toHaveAttribute('src', EditInfoIcon)
   })
 
-  it.skip('「最新情報を追加」ボタンを押したとき、/edit-infoに遷移する', async() => {
+  it.skip('「最新情報を追加」ボタンを押したとき、/edit-infoに遷移する', async () => {
 
   })
 
-  it('「商品を編集」のボタンが表示される', async() => {
+  it('「商品を編集」のボタンが表示される', async () => {
     render(
       <EditGBPLayout/>
     )
@@ -120,11 +122,11 @@ describe('EditGBPLayout', () => {
     expect(editItemIcon).toHaveAttribute('src', EditItemIcon)
   })
 
-  it.skip('「商品を編集」ボタンを押したとき、/edit-itemに遷移する', async() => {
+  it.skip('「商品を編集」ボタンを押したとき、/edit-itemに遷移する', async () => {
 
   })
 
-  it('「予約」のボタンが表示される', async() => {
+  it('「予約」のボタンが表示される', async () => {
     render(
       <EditGBPLayout/>
     )
@@ -135,11 +137,11 @@ describe('EditGBPLayout', () => {
     expect(editReserveIcon).toHaveAttribute('src', EditReserveIcon)
   })
 
-  it.skip('「予約」ボタンを押したとき、/edit-reserveに遷移する', async() => {
+  it.skip('「予約」ボタンを押したとき、/edit-reserveに遷移する', async () => {
 
   })
 
-  it('「Q&A」のボタンが表示される', async() => {
+  it('「Q&A」のボタンが表示される', async () => {
     render(
       <EditGBPLayout/>
     )
@@ -150,7 +152,7 @@ describe('EditGBPLayout', () => {
     expect(editReserveIcon).toHaveAttribute('src', EditQnAIcon)
   })
 
-  it.skip('「Q&A」ボタンを押したとき、/edit-faqに遷移する', async() => {
+  it.skip('「Q&A」ボタンを押したとき、/edit-faqに遷移する', async () => {
 
   })
 })

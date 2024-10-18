@@ -2,7 +2,7 @@ import {describe} from "vitest";
 import axios from "axios";
 import MockAdapter from "axios-mock-adapter";
 import {GoogleRepositoryImpl} from "@/main/repositories/GoogleRepository.ts";
-import {GoogleAccount} from "@/main/contexts/GoogleAccountsContext.tsx";
+import {GoogleAccount} from "@/main/model/GoogleAccount.ts";
 
 describe("GoogleRepository", () => {
   describe('getAccounts', () => {

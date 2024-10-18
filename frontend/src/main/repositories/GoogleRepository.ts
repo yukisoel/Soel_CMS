@@ -1,18 +1,21 @@
-import axios, {AxiosResponse} from "axios";
+import{AxiosResponse} from "axios";
 import {GoogleAccount, GoogleLocation} from "@/main/model/GoogleAccount.ts";
+import {axiosApiClient} from "@/main/client/axiosClient.ts";
 
 export interface GoogleRepository {
   getAccounts(): Promise<GoogleAccount[]>
   getLocations(googleAccount:GoogleAccount): Promise<GoogleLocation[]>
+  getLocation(locationId:string): Promise<GoogleLocation>
 }
 
 type AccountListResponse = GoogleAccount[]
 type LocationListResponse = GoogleLocation[]
+type LocationResponse = GoogleLocation
 
 export class GoogleRepositoryImpl implements GoogleRepository {
   async getAccounts(): Promise<GoogleAccount[]> {
     try{
-      const response:AxiosResponse<AccountListResponse> = await axios.get('api/google/accounts')
+      const response:AxiosResponse<AccountListResponse> = await axiosApiClient.get('google/accounts')
        return response.data
      }catch (error){
       console.error(error)
@@ -22,7 +25,7 @@ export class GoogleRepositoryImpl implements GoogleRepository {
 
   async getLocations(googleAccount:GoogleAccount): Promise<GoogleLocation[]> {
     try{
-      const response:AxiosResponse<LocationListResponse> = await axios.get('api/google/locations', {
+      const response:AxiosResponse<LocationListResponse> = await axiosApiClient.get('google/locations', {
         params: {
           accountId: googleAccount.name
         }
@@ -31,6 +34,20 @@ export class GoogleRepositoryImpl implements GoogleRepository {
     }catch (error){
       console.error(error)
       throw new Error("google get locations failed")
+    }
+  }
+
+  async getLocation(locationId:string): Promise<GoogleLocation> {
+    try{
+      const response:AxiosResponse<LocationResponse> = await axiosApiClient.get('google/location', {
+        params: {
+          locationId: locationId
+        }
+      })
+      return response.data
+    }catch (error){
+      console.error(error)
+      throw new Error("google get location failed")
     }
   }
 }

@@ -1,4 +1,4 @@
-import axios from "axios"
+import {axiosApiClient} from "@/main/client/axiosClient.ts";
 
 type Props = {
   setInstagramInfo:(str:string) => void
@@ -10,7 +10,7 @@ export default function GoogleMeButton({setInstagramInfo, text, endpoint}:Props)
 
   const getInfo = async () => {
     try{
-      const res = await axios.get(
+      const res = await axiosApiClient.get(
         endpoint,
         {
           withCredentials:true,

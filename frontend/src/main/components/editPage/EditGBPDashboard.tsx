@@ -10,12 +10,27 @@ import EditReserveIcon from "@/main/assets/EditReserveIcon.svg";
 import EditQnAIcon from "@/main/assets/EditQnAIcon.svg";
 import {useContext, useEffect} from "react";
 import {PankuzuItemListContext} from "@/main/contexts/PankuzuItemListContext.tsx";
+import {useParams} from "react-router-dom";
+import {GoogleSelectedLocationContext} from "@/main/contexts/GoogleSelectedLocationContext.tsx";
+import {GoogleService} from "@/main/service/GoogleService.ts";
 
-export default function EditGBPDashboard() {
+type Props = {
+  googleService: GoogleService
+}
+
+export default function EditGBPDashboard({googleService}: Props) {
   const {setPankuzuItemList} = useContext(PankuzuItemListContext)
+  const {googleSelectedLocation, setGoogleSelectedLocation} = useContext(GoogleSelectedLocationContext)
+  const {locationId} = useParams()
 
   useEffect(() => {
     setPankuzuItemList([{name: 'ページ編集', path: '/edit'}, {name: 'GBP', path: '/edit/gbp'}])
+    if(googleSelectedLocation.name === "" && locationId) {
+
+      googleService.getLocation(locationId).then(location => {
+        setGoogleSelectedLocation(location)
+      })
+    }
   },[])
   return (
     <div className={styles.dashboard_item_container}>

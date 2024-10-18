@@ -2,46 +2,52 @@ import styles from "@/main/components/editPage/SearchStore.module.scss";
 import PullDownMenu from "@/main/components/PullDownMenu.tsx";
 import {useContext, useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
-import {GoogleAccountsContext} from "@/main/contexts/GoogleAccountsContext.tsx";
 import {PankuzuItemListContext} from "@/main/contexts/PankuzuItemListContext.tsx";
-import {StoreContext} from "@/main/contexts/StoreContext.tsx";
 import {ServiceName} from "@/main/model/ServiceName.ts";
 import {GoogleService} from "@/main/service/GoogleService.ts";
-import {GoogleAccount} from "@/main/model/GoogleAccount.ts";
+import {GoogleAccount, GoogleLocation} from "@/main/model/GoogleAccount.ts";
+import {GoogleAccountsContext} from "@/main/contexts/GoogleAccountsContext.tsx";
+import {GoogleSelectedLocationContext} from "@/main/contexts/GoogleSelectedLocationContext.tsx";
 
 type Props = {
   googleService: GoogleService
 }
 
 export default function SearchStore({googleService}: Props) {
-  const [selectedAccountName, setSelectedAccountName] = useState<string>("")
   const [selectedService, setSelectedService] = useState<string>("")
+  const [selectedAccountName, setSelectedAccountName] = useState<string>("")
+  const [selectedLocationTitle, setSelectedLocationTitle] = useState<string>("")
+  const [locationList, setLocationList] = useState<GoogleLocation[]>([])
   const [selectedPullDownMenu, setSelectedPullDownMenu] = useState<string>("none")
-  const [selectedGoogleAccount, setSelectedGoogleAccount] = useState<GoogleAccount>({name: '', accountName: ''})
   const navigate = useNavigate()
 
   const {accountList} = useContext(GoogleAccountsContext)
+  const {googleSelectedLocation, setGoogleSelectedLocation} = useContext(GoogleSelectedLocationContext)
   const {setPankuzuItemList} = useContext(PankuzuItemListContext)
-  const {storeName, setStoreName} = useContext(StoreContext)
-
 
   useEffect(() => {
     setPankuzuItemList([{name: 'ページ編集', path: '/edit'}])
   }, [])
+
   useEffect(() => {
     if (selectedAccountName) {
       const googleAccount = accountList.filter(account => account.accountName === selectedAccountName)[0]
       if (googleAccount) {
-        setSelectedGoogleAccount(googleAccount)
         createLocationList(googleAccount)
       }
     }
   }, [selectedAccountName])
 
+  useEffect(() => {
+    if (selectedLocationTitle) {
+      const googleLocation = locationList.filter(location => location.title === selectedLocationTitle)[0]
+      setGoogleSelectedLocation(googleLocation)
+    }
+  }, [selectedLocationTitle]);
+
   const createLocationList = (googleAccount:GoogleAccount): string[] => {
-    console.log(googleAccount)
     googleService.getLocations(googleAccount).then(locations => {
-      console.log({locations})
+      setLocationList(locations)
     })
     return []
   }
@@ -111,11 +117,11 @@ export default function SearchStore({googleService}: Props) {
                 >
                   <PullDownMenu
                     title={'店舗を選択'}
-                    selectedContent={storeName}
-                    setSelectedContent={setStoreName}
+                    selectedContent={selectedLocationTitle}
+                    setSelectedContent={setSelectedLocationTitle}
                     selectedPullDownMenu={selectedPullDownMenu}
                     setSelectedPullDownMenu={setSelectedPullDownMenu}
-                    options={createAccountNameList()}
+                    options={locationList.map(location => location.title)}
                   />
                 </div>
               </div>
@@ -125,7 +131,7 @@ export default function SearchStore({googleService}: Props) {
                   className={styles.search_button}
                   onClick={() => {
                     if (selectedService === 'GBP') {
-                      navigate('/edit/gbp/' + selectedGoogleAccount.name)
+                      navigate('/edit/gbp/' + googleSelectedLocation.name)
                     }
                   }}
                 >

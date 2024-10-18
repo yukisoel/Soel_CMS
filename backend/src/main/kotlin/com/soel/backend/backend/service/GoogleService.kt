@@ -12,7 +12,7 @@ interface GoogleService {
     fun getMe(accessToken: String): GoogleMe?
     fun getAccounts(accessToken: String): ResponseEntity<List<GoogleAccount>>?
     fun getLocations(accessToken: String, accountId: String): ResponseEntity<List<GoogleLocation>>?
-
+    fun getLocation(accessToken: String, locationId: String): ResponseEntity<GoogleLocation>?
 }
 
 @Service
@@ -33,7 +33,7 @@ class GoogleServicImpl(val googleRepository: GoogleRepository) : GoogleService {
                 )
             }
             return ResponseEntity.ok(googleAccounts)
-        }catch (e: Exception){
+        } catch (e: Exception) {
             logger.error("Error getting accounts", e)
             return ResponseEntity
                 .badRequest()
@@ -59,7 +59,20 @@ class GoogleServicImpl(val googleRepository: GoogleRepository) : GoogleService {
         }
     }
 
-//    fun getAccountsLocations(accessToken: String): GoogleMe? {
-//        return googleRepository.getAccountsLocations(accessToken)
-//    }
+    override fun getLocation(accessToken: String, locationId: String): ResponseEntity<GoogleLocation>?  {
+        try {
+            val googleLocation = googleRepository.getLocation(accessToken, locationId)
+            return ResponseEntity.ok(
+                GoogleLocation(
+                googleLocation!!.name.removePrefix("locations/"),
+                googleLocation.title
+            )
+            )
+        } catch (e: Exception) {
+            logger.error("Error getting location", e)
+            return ResponseEntity
+                .badRequest()
+                .body(null)
+        }
+    }
 }

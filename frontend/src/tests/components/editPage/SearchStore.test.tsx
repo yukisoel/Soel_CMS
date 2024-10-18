@@ -4,10 +4,10 @@ import {MemoryRouter, Route, Routes} from "react-router-dom";
 import {userEvent} from "@testing-library/user-event";
 import SearchStore from "@/main/components/editPage/SearchStore.tsx";
 import {
-  GoogleAccount,
   GoogleAccountsContextProvider
 } from "@/main/contexts/GoogleAccountsContext.tsx";
 import SpyGoogleService from "@/tests/doubles/services/SpyGoogleService.ts";
+import {GoogleAccount} from "@/main/model/GoogleAccount.ts";
 
 // const TestComponent = () => {
 //   const accountListContext = useContext(GoogleAccountsContext)
@@ -19,11 +19,12 @@ import SpyGoogleService from "@/tests/doubles/services/SpyGoogleService.ts";
 // }
 
 describe('SearchStore', () => {
+  const spyGoogleService = new SpyGoogleService()
 
   it('window_store_searchが表示されている', async () => {
     render(
       <MemoryRouter initialEntries={["/"]}>
-        <SearchStore/>
+        <SearchStore googleService={spyGoogleService}/>
       </MemoryRouter>
     )
 
@@ -35,7 +36,8 @@ describe('SearchStore', () => {
     it('ブランドを選択のcontainerが表示される', async () => {
       render(
         <MemoryRouter initialEntries={["/"]}>
-          <SearchStore/>
+          <SearchStore googleService={spyGoogleService}/>
+
         </MemoryRouter>
       )
 
@@ -48,7 +50,8 @@ describe('SearchStore', () => {
     it('ブランドを選択のタイトルが表示されている', async () => {
       render(
         <MemoryRouter initialEntries={["/"]}>
-          <SearchStore/>
+          <SearchStore googleService={spyGoogleService}/>
+
         </MemoryRouter>
       )
 
@@ -61,7 +64,8 @@ describe('SearchStore', () => {
     it('ブランドを選択のプルダウンメニューが表示されている', async () => {
       render(
         <MemoryRouter initialEntries={["/"]}>
-          <SearchStore/>
+          <SearchStore googleService={spyGoogleService}/>
+
         </MemoryRouter>
       )
 
@@ -75,7 +79,8 @@ describe('SearchStore', () => {
       it('プルダウンメニューが表示される', async () => {
         render(
           <MemoryRouter initialEntries={["/"]}>
-            <SearchStore/>
+            <SearchStore googleService={spyGoogleService}/>
+
           </MemoryRouter>
         )
 
@@ -93,7 +98,8 @@ describe('SearchStore', () => {
       it('プルダウンメニューで選択肢を選ぶと選択した項目が表示される', async () => {
         render(
           <MemoryRouter initialEntries={["/"]}>
-            <SearchStore/>
+            <SearchStore googleService={spyGoogleService}/>
+
           </MemoryRouter>
         )
 
@@ -116,7 +122,8 @@ describe('SearchStore', () => {
     it('店舗を選択のcontainerが表示される', async () => {
       render(
         <MemoryRouter initialEntries={["/"]}>
-          <SearchStore/>
+          <SearchStore googleService={spyGoogleService}/>
+
         </MemoryRouter>
       )
 
@@ -127,7 +134,8 @@ describe('SearchStore', () => {
     it('店舗を選択のタイトルが表示されている', async () => {
       render(
         <MemoryRouter initialEntries={["/"]}>
-          <SearchStore/>
+          <SearchStore googleService={spyGoogleService}/>
+
         </MemoryRouter>
       )
 
@@ -141,7 +149,8 @@ describe('SearchStore', () => {
     it('店舗を選択のプルダウンメニューが表示されている', async () => {
       render(
         <MemoryRouter initialEntries={["/"]}>
-          <SearchStore/>
+          <SearchStore googleService={spyGoogleService}/>
+
         </MemoryRouter>
       )
 
@@ -161,7 +170,8 @@ describe('SearchStore', () => {
         render(
           <MemoryRouter initialEntries={["/"]}>
             <GoogleAccountsContextProvider googleService={spyGoogleService}>
-              <SearchStore/>
+              <SearchStore googleService={spyGoogleService}/>
+
             </GoogleAccountsContextProvider>
           </MemoryRouter>
         )
@@ -185,7 +195,8 @@ describe('SearchStore', () => {
         render(
           <MemoryRouter initialEntries={["/"]}>
             <GoogleAccountsContextProvider googleService={spyGoogleService}>
-              <SearchStore/>
+              <SearchStore googleService={spyGoogleService}/>
+
             </GoogleAccountsContextProvider>
           </MemoryRouter>
         )
@@ -209,7 +220,8 @@ describe('SearchStore', () => {
     it('対象サービスを選択のcontainerが表示される', async () => {
       render(
         <MemoryRouter initialEntries={["/"]}>
-          <SearchStore/>
+          <SearchStore googleService={spyGoogleService}/>
+
         </MemoryRouter>
       )
 
@@ -220,7 +232,8 @@ describe('SearchStore', () => {
     it('対象サービスを選択のタイトルが表示されている', async () => {
       render(
         <MemoryRouter initialEntries={["/"]}>
-          <SearchStore/>
+          <SearchStore googleService={spyGoogleService}/>
+
         </MemoryRouter>
       )
 
@@ -234,7 +247,8 @@ describe('SearchStore', () => {
     it('対象サービスを選択のプルダウンメニューが表示されている', async () => {
       render(
         <MemoryRouter initialEntries={["/"]}>
-          <SearchStore/>
+          <SearchStore googleService={spyGoogleService}/>
+
         </MemoryRouter>
       )
 
@@ -249,7 +263,8 @@ describe('SearchStore', () => {
       it('プルダウンメニューが表示される', async () => {
         render(
           <MemoryRouter initialEntries={["/"]}>
-            <SearchStore/>
+            <SearchStore googleService={spyGoogleService}/>
+
           </MemoryRouter>
         )
 
@@ -267,7 +282,8 @@ describe('SearchStore', () => {
       it('プルダウンメニューで選択肢を選ぶと選択した項目が表示される', async () => {
         render(
           <MemoryRouter initialEntries={["/"]}>
-            <SearchStore/>
+            <SearchStore googleService={spyGoogleService}/>
+
           </MemoryRouter>
         )
 
@@ -290,7 +306,8 @@ describe('SearchStore', () => {
     it('ブランドを選択のプルダウンを選択しているとき、他のプルダウンは表示されない', async () => {
       render(
         <MemoryRouter initialEntries={["/"]}>
-          <SearchStore/>
+          <SearchStore googleService={spyGoogleService}/>
+
         </MemoryRouter>
       )
 
@@ -307,7 +324,8 @@ describe('SearchStore', () => {
     it('ブランドを選択のプルダウンをもう一度クリックしているとき、他のプルダウンが表示される', async () => {
       render(
         <MemoryRouter initialEntries={["/"]}>
-          <SearchStore/>
+          <SearchStore googleService={spyGoogleService}/>
+
         </MemoryRouter>
       )
 
@@ -326,7 +344,8 @@ describe('SearchStore', () => {
     it('店舗を選択のプルダウンを選択しているとき、他のプルダウンは表示されない', async () => {
       render(
         <MemoryRouter initialEntries={["/"]}>
-          <SearchStore/>
+          <SearchStore googleService={spyGoogleService}/>
+
         </MemoryRouter>
       )
 
@@ -343,7 +362,8 @@ describe('SearchStore', () => {
     it('店舗を選択のプルダウンをもう一度クリックしているとき、他のプルダウンが表示される', async () => {
       render(
         <MemoryRouter initialEntries={["/"]}>
-          <SearchStore/>
+          <SearchStore googleService={spyGoogleService}/>
+
         </MemoryRouter>
       )
 
@@ -362,7 +382,8 @@ describe('SearchStore', () => {
     it('対象サービスを選択のプルダウンを選択しているとき、他のプルダウンは表示されない', async () => {
       render(
         <MemoryRouter initialEntries={["/"]}>
-          <SearchStore/>
+          <SearchStore googleService={spyGoogleService}/>
+
         </MemoryRouter>
       )
 
@@ -379,7 +400,8 @@ describe('SearchStore', () => {
     it('対象サービスを選択のプルダウンをもう一度クリックしているとき、他のプルダウンが表示される', async () => {
       render(
         <MemoryRouter initialEntries={["/"]}>
-          <SearchStore/>
+          <SearchStore googleService={spyGoogleService}/>
+
         </MemoryRouter>
       )
 
@@ -399,7 +421,8 @@ describe('SearchStore', () => {
   it('検索ボタンが表示される', async () => {
     render(
       <MemoryRouter initialEntries={["/"]}>
-        <SearchStore/>
+        <SearchStore googleService={spyGoogleService}/>
+
       </MemoryRouter>
     )
 
@@ -408,12 +431,13 @@ describe('SearchStore', () => {
   })
 
   describe('検索ボタンを押したとき', () => {
-    describe('選択されたサービスがGBPのとき',() => {
+    describe('選択されたサービスがGBPのとき', () => {
       it('/edit/gbpに遷移する', async () => {
         render(
           <MemoryRouter initialEntries={['/edit']}>
             <Routes>
-              <Route path="/edit" element={<SearchStore/>}/>
+              <Route path="/edit" element={<SearchStore googleService={spyGoogleService}/>
+              }/>
               <Route path="/edit/gbp" element={<div>GBP</div>}/>
             </Routes>
           </MemoryRouter>
@@ -433,7 +457,7 @@ describe('SearchStore', () => {
         })
       })
 
-      it('選択した店舗名が表示される', async() => {
+      it('選択した店舗名が表示される', async () => {
 
       })
     })
@@ -442,7 +466,8 @@ describe('SearchStore', () => {
       render(
         <MemoryRouter initialEntries={['/edit']}>
           <Routes>
-            <Route path="/edit" element={<SearchStore/>}/>
+            <Route path="/edit" element={<SearchStore googleService={spyGoogleService}/>
+            }/>
             <Route path="/edit/gbp" element={<div>GBP</div>}/>
           </Routes>
         </MemoryRouter>
