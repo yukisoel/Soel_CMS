@@ -13,6 +13,7 @@ interface GoogleService {
     fun getAccounts(accessToken: String): ResponseEntity<List<GoogleAccount>>?
     fun getLocations(accessToken: String, accountId: String): ResponseEntity<List<GoogleLocation>>?
     fun getLocation(accessToken: String, locationId: String): ResponseEntity<GoogleLocation>?
+    fun getLocationProfile(accessToken: String, locationId: String): ResponseEntity<GoogleLocationProfileModel>?
 }
 
 @Service
@@ -59,17 +60,45 @@ class GoogleServicImpl(val googleRepository: GoogleRepository) : GoogleService {
         }
     }
 
-    override fun getLocation(accessToken: String, locationId: String): ResponseEntity<GoogleLocation>?  {
+    override fun getLocation(accessToken: String, locationId: String): ResponseEntity<GoogleLocation>? {
         try {
             val googleLocation = googleRepository.getLocation(accessToken, locationId)
             return ResponseEntity.ok(
                 GoogleLocation(
-                googleLocation!!.name.removePrefix("locations/"),
-                googleLocation.title
-            )
+                    googleLocation!!.name.removePrefix("locations/"),
+                    googleLocation.title
+                )
             )
         } catch (e: Exception) {
             logger.error("Error getting location", e)
+            return ResponseEntity
+                .badRequest()
+                .body(null)
+        }
+    }
+
+    override fun getLocationProfile(
+        accessToken: String,
+        locationId: String
+    ): ResponseEntity<GoogleLocationProfileModel>? {
+        try {
+            val googleLocationProfile = googleRepository.getLocationProfile(accessToken, locationId)
+            println("googleLocationProfile")
+            println(googleLocationProfile)
+            return ResponseEntity.ok(
+                GoogleLocationProfileModel(
+                    googleLocationProfile!!.name.removePrefix("locations/"),
+                    googleLocationProfile.title,
+                    googleLocationProfile.phoneNumbers,
+                    googleLocationProfile.categories,
+                    googleLocationProfile.storefrontAddress,
+                    googleLocationProfile.websiteUri,
+                    googleLocationProfile.regularHours,
+                    googleLocationProfile.profile
+                )
+            )
+        } catch (e: Exception) {
+            logger.error("Error getting location profile", e)
             return ResponseEntity
                 .badRequest()
                 .body(null)

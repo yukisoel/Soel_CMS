@@ -64,4 +64,31 @@ class FakeGoogleRepository(private val restTemplate: RestTemplate) :GoogleReposi
             "locationName1"
         )
     }
+
+    override fun getLocationProfile(accessToken: String, locationId: String): GoogleLocationProfileModel? {
+        return GoogleLocationProfileModel(
+            "locations/name1",
+            "locationName1",
+            GoogleLocationPhoneNumbers("primaryPhone1"),
+            GoogleLocationCategories(
+                GoogleLocationCategory("name1", "displayName1"),
+                listOf(
+                    GoogleLocationCategory("name2", "displayName2")
+                )
+            ),
+            GoogleLocationPostalAddress("postalCode1", "administrativeArea1", listOf("addressLine1")),
+            "websiteUri1",
+            GoogleLocationVusinessHours(
+                listOf(
+                    GoogleLocationTimePeriod(
+                        "Monday",
+                        GoogleLocationTimeOfDay(1, 1, 1, 1),
+                        "Tuesday",
+                        GoogleLocationTimeOfDay(1, 1, 1, 1),
+                    )
+                )
+            ),
+            GoogleLocationProfile("description1")
+        )
+    }
 }

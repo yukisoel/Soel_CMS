@@ -4,7 +4,7 @@ import ButtonEditBack from "@/main/assets/ButtonEditBack.svg";
 type Props = {
   name: string
   title?: string
-  content: string
+  content?: string
   isDeleteButton?: boolean
   type?: TermType
   editTerm: string | null

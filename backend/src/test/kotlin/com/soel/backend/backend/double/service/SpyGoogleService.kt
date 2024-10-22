@@ -26,4 +26,8 @@ class SpyGoogleService:GoogleService {
         TODO("Not yet implemented")
     }
 
+    override fun getLocation(accessToken: String, locationId: String): ResponseEntity<GoogleLocation>? {
+        TODO("Not yet implemented")
+    }
+
 }

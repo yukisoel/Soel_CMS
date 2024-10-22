@@ -41,7 +41,7 @@ function App() {
           </Route>
           <Route path={'gbp'} element={<EditGBPLayout/>}>
             <Route path={":locationId"} element={<EditGBPDashboard googleService={googleService}/>}/>
-            <Route path={":locationId/profile"} element={<EditProfileLayout/>}/>
+            <Route path={":locationId/profile"} element={<EditProfileLayout googleService={googleService}/>}/>
           </Route>
         </Route>
       </Routes>

@@ -3,6 +3,10 @@ import {useContext, useEffect, useState} from "react";
 import {PankuzuItemListContext} from "@/main/contexts/PankuzuItemListContext.tsx";
 import EditProfileTerm, {TermType} from "@/main/components/editPage/EditProfileTerm.tsx";
 import {EditBusinessHoursTerm} from "@/main/components/editPage/EditBusinessHoursTerm.tsx";
+import {GoogleSelectedLocationContext} from "@/main/contexts/GoogleSelectedLocationContext.tsx";
+import {useParams} from "react-router-dom";
+import {GoogleService} from "@/main/service/GoogleService.ts";
+import {GoogleLocationProfileModel} from "@/main/model/LocationModel.ts";
 
 enum Tabs {
   Overview = '概要',
@@ -12,11 +16,37 @@ enum Tabs {
   Other = 'その他'
 }
 
-export default function EditProfileLayout() {
+type Props = {
+  googleService: GoogleService
+}
+
+export default function EditProfileLayout({googleService}: Props) {
   const [selectedTab, setSelectedTab] = useState<Tabs>(Tabs.Overview)
   const [currentEditTerm, setCurrentEditTerm] = useState<string | null>(null)
+  const [googleLocationProfileObject, setGoogleLocationProfileObject] = useState<GoogleLocationProfileModel | null>(null)
 
   const {setPankuzuItemList} = useContext(PankuzuItemListContext)
+  const {googleSelectedLocation, setGoogleSelectedLocation} = useContext(GoogleSelectedLocationContext)
+
+  const {locationId} = useParams()
+
+  useEffect(() => {
+    setPankuzuItemList([{name: 'ページ編集', path: '/edit'}, {
+      name: 'GBP',
+      path: '/edit/gbp'
+    }, {name: 'プロフィール編集', path: '/edit/profile'}])
+    if(googleSelectedLocation.name === "" && locationId) {
+      googleService.getLocation(locationId).then(location => {
+        setGoogleSelectedLocation(location)
+      })
+    }
+    if(locationId) {
+      googleService.getLocationProfile(locationId).then(locationProfile => {
+        console.log({locationProfile})
+        setGoogleLocationProfileObject(locationProfile)
+      })
+    }
+  }, [])
 
   const getTabClassName = (tab: Tabs) => {
     if (selectedTab === tab) {
@@ -31,12 +61,6 @@ export default function EditProfileLayout() {
     setCurrentEditTerm(null)
   }
 
-  useEffect(() => {
-    setPankuzuItemList([{name: 'ページ編集', path: '/edit'}, {
-      name: 'GBP',
-      path: '/edit/gbp'
-    }, {name: 'プロフィール編集', path: '/edit/profile'}])
-  }, [])
   return (
     <div className={styles.profile_container}>
       <div className={styles.tab_container}>
@@ -53,10 +77,10 @@ export default function EditProfileLayout() {
       <div className={styles.term_container}>
         {selectedTab === Tabs.Overview &&
           <>
-            <EditProfileTerm name={"title"} title={"ビジネス名"} content={"SOELグルメ通り店"} editTerm={currentEditTerm}
+            <EditProfileTerm name={"title"} title={"ビジネス名"} content={googleLocationProfileObject?.title} editTerm={currentEditTerm}
                              setEditTerm={setCurrentEditTerm}/>
             <EditProfileTerm name={"categories"} title={"ビジネスカテゴリ"}
-                             content={"寿司店, 回転寿司店, テイクアウト寿司店, シーフード・海鮮料理店, 和食店"}
+                             content={googleLocationProfileObject?.categories.primaryCategory.name}
                              editTerm={currentEditTerm} setEditTerm={setCurrentEditTerm}/>
             <EditProfileTerm name={"description"} title={"説明"} type={TermType.TEXTAREA}
                              content={"こだわりが廻るグルメ回転寿司。こころを握る美味しい時間。日本海の魚介を職人の目利きで仕入れ、さばき、握る。米、醤油、調味料はもちろん、国産の割箸にまでこだわる。安心して美味しい寿司を召し上がっていただ..."}

@@ -26,7 +26,6 @@ export default function EditGBPDashboard({googleService}: Props) {
   useEffect(() => {
     setPankuzuItemList([{name: 'ページ編集', path: '/edit'}, {name: 'GBP', path: '/edit/gbp'}])
     if(googleSelectedLocation.name === "" && locationId) {
-
       googleService.getLocation(locationId).then(location => {
         setGoogleSelectedLocation(location)
       })
