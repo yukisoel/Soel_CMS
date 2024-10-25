@@ -1,7 +1,11 @@
 import {GoogleRepository} from "@/main/repositories/GoogleRepository.ts";
 import {GoogleAccount, GoogleLocation} from "@/main/model/GoogleAccount.ts";
+import { GoogleLocationProfileModel } from "@/main/model/LocationModel";
 
 export default class SpyGoogleRepository implements GoogleRepository {
+    getLocationProfile(_locationId: string): Promise<GoogleLocationProfileModel> {
+        throw new Error("Method not implemented.");
+    }
     getAccounts_isCalled = false
     getAccounts_returnValue:Promise<GoogleAccount[]> = new Promise(resolve => resolve([]))
     getAccounts(): Promise<GoogleAccount[]> {

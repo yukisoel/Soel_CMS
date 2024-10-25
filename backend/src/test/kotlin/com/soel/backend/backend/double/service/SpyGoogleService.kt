@@ -1,9 +1,6 @@
 package com.soel.backend.backend.double.service
 
-import com.soel.backend.backend.model.GoogleAccount
-import com.soel.backend.backend.model.GoogleAccountsResponse
-import com.soel.backend.backend.model.GoogleLocation
-import com.soel.backend.backend.model.GoogleMe
+import com.soel.backend.backend.model.*
 import com.soel.backend.backend.service.GoogleService
 import org.springframework.http.ResponseEntity
 
@@ -27,6 +24,13 @@ class SpyGoogleService:GoogleService {
     }
 
     override fun getLocation(accessToken: String, locationId: String): ResponseEntity<GoogleLocation>? {
+        TODO("Not yet implemented")
+    }
+
+    override fun getLocationProfile(
+        accessToken: String,
+        locationId: String
+    ): ResponseEntity<GoogleLocationProfileModel>? {
         TODO("Not yet implemented")
     }
 
