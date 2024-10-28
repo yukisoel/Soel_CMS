@@ -26,7 +26,7 @@ jobs:
       - name: Build Docker image
         run: |
           cd backend
-          docker build -t ${{vars.ECR_REPOSITORY_NAME}} .
+          docker build -f Dockerfile-gitops -t ${{vars.ECR_REPOSITORY_NAME}} .
           docker tag ${{vars.ECR_REPOSITORY_NAME}}:latest ${{vars.AWS_ACCOUNT_ID}}.dkr.ecr.${{vars.AWS_REGION}}.amazonaws.com/${{vars.ECR_REPOSITORY_NAME}}:latest
           docker push ${{vars.AWS_ACCOUNT_ID}}.dkr.ecr.${{vars.AWS_REGION}}.amazonaws.com/${{vars.ECR_REPOSITORY_NAME}}:latest
 
