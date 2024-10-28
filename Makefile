@@ -9,6 +9,7 @@ backend_start:
 	cd backend && source .env && ./gradlew bootRun
 
 build:
+	cd frontend && npm install
 	cd frontend && npm run build
 	test -d ./backend/src/main/resources/public & rm -rf ./backend/src/main/resources/public
 	test ! -d ./backend/src/main/resources/public & mkdir -p ./backend/src/main/resources/public
