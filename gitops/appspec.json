@@ -1,0 +1,17 @@
+{
+  "version": 0.0,
+  "Resources": [
+    {
+      "TargetService": {
+        "Type": "AWS::ECS::Service",
+        "Properties": {
+          "TaskDefinition": "arn:aws:ecs:ap-northeast-1:211125631266:task-definition/dev-soel-cms-ecs-task",
+          "LoadBalancerInfo": {
+            "ContainerName": "dev-soel-cms",
+            "ContainerPort": 8080
+          }
+        }
+      }
+    }
+  ]
+}

@@ -44,10 +44,12 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ap-northeast-1
 
-      - name: Update ECS service
+      - name: Deploy to ECS
         run: |
-          aws ecs update-service \
-          --cluster ${{vars.ECS_CLUSTER_NAME}} \
-          --service ${{vars.ECS_SERVICE_NAME}} \
-          --task-definition ${{vars.ECS_TASK_DEFINITION_NAME}} \
-          --force-new-deployment
+          cd ${{github.workspace}}/gitops  
+          
+          export APPSPEC_STRING=$(cat appspec.json | jq '@json')
+          aws deploy create-deployment \
+          --application-name ${{vars.CODEDEPLOY_APPLICATION_NAME}} \
+          --deployment-group-name ${{vars.CODEDEPLOY_DEPLOYMENT_GROUP_NAME}} \
+          --revision revisionType=AppSpecContent,appSpecContent={content=$APPSPEC_STRING}
