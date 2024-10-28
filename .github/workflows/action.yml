@@ -49,7 +49,8 @@ jobs:
           cd ${{github.workspace}}/gitops  
           
           export APPSPEC_STRING=$(cat appspec.json | jq '@json')
+          echo $APPSPEC_STRING
           aws deploy create-deployment \
           --application-name ${{vars.CODEDEPLOY_APPLICATION_NAME}} \
           --deployment-group-name ${{vars.CODEDEPLOY_DEPLOYMENT_GROUP_NAME}} \
-          --revision revisionType=AppSpecContent,appSpecContent={content=$APPSPEC_STRING}
+          --revision revisionType=AppSpecContent,appSpecContent={content=${APPSPEC_STRING}}
