@@ -80,21 +80,25 @@ export default function EditProfileLayout({googleService}: Props) {
             <EditProfileTerm name={"title"} title={"ビジネス名"} content={googleLocationProfileObject?.title} editTerm={currentEditTerm}
                              setEditTerm={setCurrentEditTerm}/>
             <EditProfileTerm name={"categories"} title={"ビジネスカテゴリ"}
-                             content={googleLocationProfileObject?.categories.primaryCategory.name}
+                             content={googleLocationProfileObject?.categories?.primaryCategory?.displayName}
                              editTerm={currentEditTerm} setEditTerm={setCurrentEditTerm}/>
             <EditProfileTerm name={"description"} title={"説明"} type={TermType.TEXTAREA}
-                             content={"こだわりが廻るグルメ回転寿司。こころを握る美味しい時間。日本海の魚介を職人の目利きで仕入れ、さばき、握る。米、醤油、調味料はもちろん、国産の割箸にまでこだわる。安心して美味しい寿司を召し上がっていただ..."}
+                             content={googleLocationProfileObject?.profile?.description}
                              editTerm={currentEditTerm} setEditTerm={setCurrentEditTerm}/>
-            <EditProfileTerm name={"openDate"} title={"開業日"} content={"2024年8月26日"} editTerm={currentEditTerm}
+            <EditProfileTerm name={"openDate"} title={"開業日"} content={`${googleLocationProfileObject?.openInfo?.openingDate?.year}年${googleLocationProfileObject?.openInfo?.openingDate?.month}月${googleLocationProfileObject?.openInfo?.openingDate?.day}日`} editTerm={currentEditTerm}
                              setEditTerm={setCurrentEditTerm}/>
           </>
         }
         {selectedTab === Tabs.Contact &&
           <>
-            <EditProfileTerm name={"phoneNumber"} title={"電話番号"} content={"03-1234-5678"} editTerm={currentEditTerm}
+            <EditProfileTerm name={"phoneNumber"} title={"電話番号"}
+                             content={googleLocationProfileObject?.phoneNumbers?.primaryPhone}
+                             editTerm={currentEditTerm}
                              setEditTerm={setCurrentEditTerm}/>
-            <EditProfileTerm name={"websiteUri"} title={"ウェブサイト"} content={"https://soelgourmet.com"}
-                             editTerm={currentEditTerm} setEditTerm={setCurrentEditTerm}/>
+            <EditProfileTerm name={"websiteUri"} title={"ウェブサイト"}
+                             content={googleLocationProfileObject?.websiteUri}
+                             editTerm={currentEditTerm}
+                             setEditTerm={setCurrentEditTerm}/>
             <EditProfileTerm name={"snsLinks"} title={"SNSリンク"}
                              content={"https://twitter.com/soel \n https://twitter.com/soel \n https://twitter.com/soel"}
                              editTerm={currentEditTerm} setEditTerm={setCurrentEditTerm}/>

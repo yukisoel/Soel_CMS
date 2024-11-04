@@ -1,12 +1,13 @@
 export type GoogleLocationProfileModel = {
-  name: string
-  title: string
-  phoneNumbers: GoogleLocationPhoneNumbers
-  categories: GoogleLocationCategories
-  storefrontAddress: GoogleLocatiionPostalAddress
-  websiteUri: string
-  regularHours: GoogleLocationBusinessHours
-  profile: GoogleLocationProfile
+  name?: string
+  title?: string
+  phoneNumbers?: GoogleLocationPhoneNumbers
+  categories?: GoogleLocationCategories
+  storefrontAddress?: GoogleLocatiionPostalAddress
+  websiteUri?: string
+  regularHours?: GoogleLocationBusinessHours
+  profile?: GoogleLocationProfile
+  openInfo?: GoogleLocationOpenInfo
 }
 
 export type GoogleLocationPhoneNumbers = {
@@ -14,13 +15,13 @@ export type GoogleLocationPhoneNumbers = {
 }
 
 export type GoogleLocationCategories = {
-  primaryCategory: GoogleLocationCategory
-  additionalCategories: GoogleLocationCategory[]
+  primaryCategory?: GoogleLocationCategory
+  additionalCategories?: GoogleLocationCategory[]
 }
 
 export type GoogleLocationCategory = {
-  name: string
-  displayName: string
+  name?: string
+  displayName?: string
 }
 
 export type GoogleLocatiionPostalAddress = {
@@ -59,5 +60,17 @@ export enum DayOfWeek {
 }
 
 export type GoogleLocationProfile = {
-  description: string
+  description?: string
+}
+
+export type GoogleLocationOpenInfo = {
+  status?: string
+  canReopen?: boolean
+  openingDate?: GoogleLocationOpenDate
+}
+
+export type GoogleLocationOpenDate = {
+  year?: string
+  month?: string
+  day?: string
 }

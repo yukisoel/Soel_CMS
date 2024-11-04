@@ -6,8 +6,8 @@ data class GoogleMe(
 
 data class GoogleName(
     val displayName: String,
-    val familyName: String?,
-    val givenName: String?,
+    val familyName: String? = null,
+    val givenName: String? = null,
 )
 
 data class GoogleAccountsResponse(
@@ -29,34 +29,35 @@ data class GoogleLocation (
 )
 
 data class GoogleLocationProfileModel(
-    val name: String,
-    val title: String,
-    val phoneNumbers: GoogleLocationPhoneNumbers,
-    val categories: GoogleLocationCategories,
-    val storefrontAddress: GoogleLocationPostalAddress,
-    val websiteUri: String,
-    val regularHours: GoogleLocationVusinessHours,
-    val profile: GoogleLocationProfile,
+    val name: String? = null,
+    val title: String? = null,
+    val phoneNumbers: GoogleLocationPhoneNumbers? = null,
+    val categories: GoogleLocationCategories? = null,
+//    val storefrontAddress: GoogleLocationPostalAddress,
+    val websiteUri: String? = null,
+//    val regularHours: GoogleLocationVusinessHours,
+    val profile: GoogleLocationProfile? = null,
+    val openInfo: GoogleLocationOpenInfo? = null,
 )
 
 data class GoogleLocationPhoneNumbers(
-    val primaryPhone: String,
+    val primaryPhone: String? = null,
 )
 
 data class GoogleLocationCategories(
-    val primaryCategory: GoogleLocationCategory,
-    val additionalCategories: List<GoogleLocationCategory>,
+    val primaryCategory: GoogleLocationCategory? = null,
+    val additionalCategories: List<GoogleLocationCategory>? = null,
 )
 
 data class GoogleLocationCategory(
-    val name: String,
-    val displayName: String,
+    val name: String? = null,
+    val displayName: String? = null,
 )
 
 data class GoogleLocationPostalAddress(
-    val postalCode: String,
-    val administrativeArea: String,
-    val addressLines: List<String>,
+    val postalCode: String? = null,
+    val administrativeArea: String? = null,
+    val addressLines: List<String>? = null,
 )
 
 data class GoogleLocationVusinessHours(
@@ -71,12 +72,25 @@ data class GoogleLocationTimePeriod(
 )
 
 data class GoogleLocationTimeOfDay(
-    val hours: Int?,
-    val minutes: Int?,
-    val seconds: Int?,
-    val nanos: Int?,
+    val hours: Int? = null,
+    val minutes: Int? = null,
+    val seconds: Int? = null,
+    val nanos: Int? = null,
 )
 
 data class GoogleLocationProfile(
-    val description: String,
+    val description: String? = null,
 )
+
+data class GoogleLocationOpenInfo(
+    val status: String? = null,
+    val canReopen: Boolean? = null,
+    val openingDate: GoogleLocationOpeningDate? = null,
+)
+
+data class GoogleLocationOpeningDate(
+    val year: String? = null,
+    val month: String? = null,
+    val day: String? = null,
+)
+

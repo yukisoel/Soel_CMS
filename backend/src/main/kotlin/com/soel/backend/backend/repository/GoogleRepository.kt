@@ -105,7 +105,7 @@ class GoogleRepositoryImpl(val restTemplate: RestTemplate):GoogleRepository {
     override fun getLocationProfile(accessToken: String, locationId: String): GoogleLocationProfileModel? {
         val baseUrl = "https://mybusinessaccountmanagement.googleapis.com/v1/locations/$locationId"
         val uri = UriComponentsBuilder.fromHttpUrl(baseUrl)
-            .queryParam("readMask", "name,title,phoneNumbers,categories,storefrontAddress,websiteUri,regularHours,profile")
+            .queryParam("readMask", "name,title,phoneNumbers,categories,storefrontAddress,websiteUri,regularHours,profile,openInfo")
             .build()
             .toUri()
 

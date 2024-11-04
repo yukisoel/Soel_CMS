@@ -17,7 +17,11 @@ type LocationResponse = GoogleLocation
 export class GoogleRepositoryImpl implements GoogleRepository {
   async getAccounts(): Promise<GoogleAccount[]> {
     try{
-      const response:AxiosResponse<AccountListResponse> = await axiosApiClient.get('google/accounts')
+      const response:AxiosResponse<AccountListResponse> = await axiosApiClient.get('google/accounts', {
+        headers: {
+          'Accept': 'application/json; charset=utf-8',
+        },
+      })
        return response.data
      }catch (error){
       console.error(error)
@@ -30,7 +34,10 @@ export class GoogleRepositoryImpl implements GoogleRepository {
       const response:AxiosResponse<LocationListResponse> = await axiosApiClient.get('google/locations', {
         params: {
           accountId: googleAccount.name
-        }
+        },
+        headers: {
+          'Accept': 'application/json; charset=utf-8',
+        },
       })
       return response.data
     }catch (error){
@@ -44,7 +51,10 @@ export class GoogleRepositoryImpl implements GoogleRepository {
       const response:AxiosResponse<LocationResponse> = await axiosApiClient.get('google/location', {
         params: {
           locationId: locationId
-        }
+        },
+        headers: {
+          'Accept': 'application/json; charset=utf-8',
+        },
       })
       return response.data
     }catch (error){
@@ -59,7 +69,10 @@ export class GoogleRepositoryImpl implements GoogleRepository {
       const response:AxiosResponse<GoogleLocationProfileModel> = await axiosApiClient.get('google/location/profile', {
         params: {
           locationId: locationId
-        }
+        },
+        headers: {
+          'Accept': 'application/json; charset=utf-8',
+        },
       })
       return response.data
     }catch (error){

@@ -76,19 +76,20 @@ class FakeGoogleRepository(private val restTemplate: RestTemplate) :GoogleReposi
                     GoogleLocationCategory("name2", "displayName2")
                 )
             ),
-            GoogleLocationPostalAddress("postalCode1", "administrativeArea1", listOf("addressLine1")),
+//            GoogleLocationPostalAddress("postalCode1", "administrativeArea1", listOf("addressLine1")),
             "websiteUri1",
-            GoogleLocationVusinessHours(
-                listOf(
-                    GoogleLocationTimePeriod(
-                        "Monday",
-                        GoogleLocationTimeOfDay(1, 1, 1, 1),
-                        "Tuesday",
-                        GoogleLocationTimeOfDay(1, 1, 1, 1),
-                    )
-                )
-            ),
-            GoogleLocationProfile("description1")
+//            GoogleLocationVusinessHours(
+//                listOf(
+//                    GoogleLocationTimePeriod(
+//                        "Monday",
+//                        GoogleLocationTimeOfDay(1, 1, 1, 1),
+//                        "Tuesday",
+//                        GoogleLocationTimeOfDay(1, 1, 1, 1),
+//                    )
+//                )
+//            ),
+            GoogleLocationProfile("description1"),
+            GoogleLocationOpenInfo("OPEN", true, GoogleLocationOpeningDate("2021", "5","1")),
         )
     }
 }

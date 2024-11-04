@@ -87,14 +87,15 @@ class GoogleServicImpl(val googleRepository: GoogleRepository) : GoogleService {
             println(googleLocationProfile)
             return ResponseEntity.ok(
                 GoogleLocationProfileModel(
-                    googleLocationProfile!!.name.removePrefix("locations/"),
+                    googleLocationProfile!!.name?.removePrefix("locations/"),
                     googleLocationProfile.title,
                     googleLocationProfile.phoneNumbers,
                     googleLocationProfile.categories,
-                    googleLocationProfile.storefrontAddress,
+//                    googleLocationProfile.storefrontAddress,
                     googleLocationProfile.websiteUri,
-                    googleLocationProfile.regularHours,
-                    googleLocationProfile.profile
+//                    googleLocationProfile.regularHours,
+                    googleLocationProfile.profile,
+                    googleLocationProfile.openInfo,
                 )
             )
         } catch (e: Exception) {
