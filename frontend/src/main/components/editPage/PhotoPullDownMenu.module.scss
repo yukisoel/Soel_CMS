@@ -1,0 +1,49 @@
+.pull_down_menu_container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding-left: 3.8rem;
+  padding-right: 3.8rem;
+
+  background-color: #EBEBEB;
+
+  border-radius: 4.15rem;
+}
+
+.pull_down_menu_content {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  height: 8.3rem;
+  width: 100%;
+}
+
+.pull_down_menu_border {
+  border-bottom: 1px solid #BEBEBE;
+}
+
+.pull_down_menu_placeholder {
+  color: #A0A0A0;
+  font-family: "Noto Sans CJK JP", sans-serif;
+  font-size: 2.5rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+}
+
+.pull_down_menu_option {
+  color: #282828;
+  font-family: "Noto Sans CJK JP", sans-serif;
+  font-size: 2.5rem;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+}
+
+.triangle {
+  position: absolute;
+  top: 3.3rem;
+  right: 4.35rem;
+  width: 2rem;
+  height: 1.35rem;
+}

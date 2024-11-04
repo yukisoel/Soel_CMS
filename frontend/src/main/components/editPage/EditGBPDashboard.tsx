@@ -41,7 +41,7 @@ export default function EditGBPDashboard({googleService}: Props) {
           altText={"edit_profile"}
         />
         <DashboardItem
-          navigation={""}
+          navigation={"photo"}
           text={"写真"}
           src={EditPhotoIcon}
           altText={"edit_photo"}

@@ -31,10 +31,10 @@ export default function EditProfileLayout({googleService}: Props) {
   const {locationId} = useParams()
 
   useEffect(() => {
-    setPankuzuItemList([{name: 'ページ編集', path: '/edit'}, {
-      name: 'GBP',
-      path: '/edit/gbp'
-    }, {name: 'プロフィール編集', path: '/edit/profile'}])
+    setPankuzuItemList([
+      {name: 'ページ編集', path: '/edit'},
+      {name: 'GBP', path: '/edit/gbp'},
+      {name: 'プロフィール編集', path: '/edit/profile'}])
     if(googleSelectedLocation.name === "" && locationId) {
       googleService.getLocation(locationId).then(location => {
         setGoogleSelectedLocation(location)

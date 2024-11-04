@@ -1,0 +1,64 @@
+.edit_photo_container {
+  flex-grow: 1;
+
+  display: flex;
+  flex-direction: column;
+
+  margin-top: 2.8rem;
+}
+
+.header_container {
+  box-sizing: border-box;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  height: 10.4rem;
+
+  padding-bottom: 2.2rem;
+  padding-left: 18.2rem;
+  padding-right: 18.2rem;
+
+  border-bottom: 0.1rem solid #282828;
+}
+
+.category {
+  width: 62.8rem;
+}
+
+.add_button {
+  width: 188.7px;
+  height: 82.65px;
+
+  background-color: #FFC42C;
+
+  border-radius: 4.2rem;
+
+  color: #282828;
+  text-align: center;
+  font-family: "Noto Sans CJK JP", sans-serif;
+  font-size: 2.7rem;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+}
+
+.photo_list_container {
+  flex-grow: 1;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  gap: 2rem;
+  overflow: scroll;
+
+  height: 10rem;
+
+  margin-top: 5rem;
+  padding-left: 18rem;
+  padding-right: 18rem;
+}
+
+.photo {
+  width: 19rem;
+  height: 19rem;
+  object-fit: contain;
+}

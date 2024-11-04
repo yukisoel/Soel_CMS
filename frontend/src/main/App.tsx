@@ -10,6 +10,7 @@ import EditProfileLayout from "@/main/components/editPage/EditProfileLayout.tsx"
 import EditGBPDashboard from "@/main/components/editPage/EditGBPDashboard.tsx";
 import {GoogleSelectedLocationContextProvider} from "@/main/contexts/GoogleSelectedLocationContext.tsx";
 import {axiosApiClient} from "@/main/client/axiosClient.ts";
+import EditPhotoLayout from "@/main/components/editPage/EditPhotoLayout.tsx";
 
 const googleRepository = new GoogleRepositoryImpl()
 const googleService = new GoogleServiceImpl({googleRepository})
@@ -42,6 +43,7 @@ function App() {
           <Route path={'gbp'} element={<EditGBPLayout/>}>
             <Route path={":locationId"} element={<EditGBPDashboard googleService={googleService}/>}/>
             <Route path={":locationId/profile"} element={<EditProfileLayout googleService={googleService}/>}/>
+            <Route path={":locationId/photo"} element={<EditPhotoLayout googleService={googleService}/>}/>
           </Route>
         </Route>
       </Routes>
