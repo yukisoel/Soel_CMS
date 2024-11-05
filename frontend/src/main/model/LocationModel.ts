@@ -1,3 +1,5 @@
+import {LocationAssociationName} from "@/main/model/LocationAssociationName.ts";
+
 export type GoogleLocationProfileModel = {
   name?: string
   title?: string
@@ -73,4 +75,16 @@ export type GoogleLocationOpenDate = {
   year?: string
   month?: string
   day?: string
+}
+
+export type GoogleLocationPhotoModel = {
+  name?: string
+  googleUrl?: string
+  thumbnailUrl?: string
+  createTime?: string
+  locationAssociation?:GoogleLocationAssociation
+}
+
+export type GoogleLocationAssociation = {
+  category?: LocationAssociationName
 }

@@ -94,3 +94,18 @@ data class GoogleLocationOpeningDate(
     val day: String? = null,
 )
 
+data class GoogleLocationPhotosResponse(
+    val mediaItems: List<GoogleLocationPhotoModel>,
+)
+
+data class GoogleLocationPhotoModel(
+    val name: String? = null,
+    val googleUrl: String? = null,
+    val thumbnailUrl: String? = null,
+    val createTime: String? = null,
+    val locationAssociation: GoogleLocationAssociation? = null,
+)
+
+data class GoogleLocationAssociation(
+    val category: String? = null,
+)

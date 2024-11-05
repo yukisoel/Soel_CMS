@@ -1,12 +1,13 @@
 import {GoogleRepository} from "@/main/repositories/GoogleRepository.ts";
 import {GoogleAccount, GoogleLocation} from "@/main/model/GoogleAccount.ts";
-import {GoogleLocationProfileModel} from "@/main/model/LocationModel.ts";
+import {GoogleLocationPhotoModel, GoogleLocationProfileModel} from "@/main/model/LocationModel.ts";
 
 export interface GoogleService {
   getAccounts(): Promise<GoogleAccount[]>
   getLocations(googleAccount:GoogleAccount): Promise<GoogleLocation[]>
   getLocation(locationId:string): Promise<GoogleLocation>
   getLocationProfile(locationId:string): Promise<GoogleLocationProfileModel>
+  getLocationPhotos(accountId:string, locationId:string): Promise<GoogleLocationPhotoModel[]>
 }
 
 type Props = {
@@ -29,12 +30,14 @@ export class GoogleServiceImpl implements GoogleService {
   }
 
   async getLocation(locationId:string): Promise<GoogleLocation> {
-    console.log("service")
-
     return this.googleRepository.getLocation(locationId)
   }
 
   async getLocationProfile(locationId:string): Promise<GoogleLocationProfileModel> {
     return this.googleRepository.getLocationProfile(locationId)
+  }
+
+  async getLocationPhotos(accountId:string, locationId:string): Promise<GoogleLocationPhotoModel[]> {
+    return this.googleRepository.getLocationPhotos(accountId, locationId)
   }
 }

@@ -38,6 +38,11 @@ class GoogleController(val googleService: GoogleService) {
     fun getLocationProfile(@RegisteredOAuth2AuthorizedClient("google") googleClient: OAuth2AuthorizedClient, @RequestParam("locationId") locationId: String): ResponseEntity<GoogleLocationProfileModel>? {
         return googleService.getLocationProfile(googleClient.accessToken.tokenValue, locationId)
     }
+
+    @GetMapping("/location/photos")
+    fun getLocationPhotos(@RegisteredOAuth2AuthorizedClient("google") googleClient: OAuth2AuthorizedClient,@RequestParam("accountId") accountId: String, @RequestParam("locationId") locationId: String): ResponseEntity<List<GoogleLocationPhotoModel>>? {
+        return googleService.getLocationPhotos(googleClient.accessToken.tokenValue, accountId, locationId)
+    }
     /*
 
         口コミ取得

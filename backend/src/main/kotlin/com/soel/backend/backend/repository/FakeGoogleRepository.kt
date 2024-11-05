@@ -92,4 +92,23 @@ class FakeGoogleRepository(private val restTemplate: RestTemplate) :GoogleReposi
             GoogleLocationOpenInfo("OPEN", true, GoogleLocationOpeningDate("2021", "5","1")),
         )
     }
+
+    override fun getLocationPhotos(
+        accessToken: String,
+        accountId: String,
+        locationId: String
+    ): GoogleLocationPhotosResponse? {
+        return GoogleLocationPhotosResponse(
+            listOf(
+                GoogleLocationPhotoModel(
+                    "photoReference1",
+                    "photoUri1"
+                ),
+                GoogleLocationPhotoModel(
+                    "photoReference2",
+                    "photoUri2"
+                )
+            )
+        )
+    }
 }

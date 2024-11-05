@@ -21,7 +21,7 @@ export default function SearchStore({googleService}: Props) {
   const [selectedPullDownMenu, setSelectedPullDownMenu] = useState<string>("none")
   const navigate = useNavigate()
 
-  const {accountList} = useContext(GoogleAccountsContext)
+  const {accountList, setSelectedAccount} = useContext(GoogleAccountsContext)
   const {googleSelectedLocation, setGoogleSelectedLocation} = useContext(GoogleSelectedLocationContext)
   const {setPankuzuItemList} = useContext(PankuzuItemListContext)
 
@@ -33,6 +33,7 @@ export default function SearchStore({googleService}: Props) {
     if (selectedAccountName) {
       const googleAccount = accountList.filter(account => account.accountName === selectedAccountName)[0]
       if (googleAccount) {
+        setSelectedAccount(googleAccount)
         createLocationList(googleAccount)
       }
     }

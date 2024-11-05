@@ -5,15 +5,20 @@ import {PankuzuItemListContext} from "@/main/contexts/PankuzuItemListContext.tsx
 import {GoogleSelectedLocationContext} from "@/main/contexts/GoogleSelectedLocationContext.tsx";
 import {useParams} from "react-router-dom";
 import PhotoPullDownMenu from "@/main/components/editPage/PhotoPullDownMenu.tsx";
+import {GoogleAccountsContext} from "@/main/contexts/GoogleAccountsContext.tsx";
+import {GoogleLocationPhotoModel} from "@/main/model/LocationModel.ts";
+import {LocationAssociationName} from "@/main/model/LocationAssociationName.ts";
 
 type Props = {
   googleService: GoogleService
 }
 
 export default function EditPhotoLayout({googleService}: Props) {
-  const [selectedCategory, setSelectedCategory] = useState<string>("")
+  const [selectedCategory, setSelectedCategory] = useState<string>(LocationAssociationName.CATEGORY_UNSPECIFIED)
+  const [photoList, setPhotoList] = useState<GoogleLocationPhotoModel[]>([])
 
   const {setPankuzuItemList} = useContext(PankuzuItemListContext)
+  const {selectedAccount} = useContext(GoogleAccountsContext)
   const {googleSelectedLocation, setGoogleSelectedLocation} = useContext(GoogleSelectedLocationContext)
 
   const {locationId} = useParams()
@@ -27,6 +32,10 @@ export default function EditPhotoLayout({googleService}: Props) {
       googleService.getLocation(locationId).then(location => {
         setGoogleSelectedLocation(location)
       })
+    } else if (selectedAccount) {
+      googleService.getLocationPhotos(selectedAccount.name, googleSelectedLocation.name).then(photos => {
+        setPhotoList(photos)
+      })
     }
   }, [])
 
@@ -37,7 +46,7 @@ export default function EditPhotoLayout({googleService}: Props) {
           <PhotoPullDownMenu
             selectedContent={selectedCategory}
             setSelectedContent={setSelectedCategory}
-            options={["aaa", "bbb"]}
+            options={Object.values(LocationAssociationName)}
           />
         </div>
         <div className={styles.add_button_container}>
@@ -53,44 +62,17 @@ export default function EditPhotoLayout({googleService}: Props) {
         </div>
       </div>
       <div className={styles.photo_list_container}>
-        <img src={"https://lh5.googleusercontent.com/p/AF1QipPhqtSwgLVhhp7m_K_poeu3ysXxJuhZes-sktA=w203-h114-k-no"}
-             className={styles.photo} alt={"photo"}/>
-        <img src={"https://lh5.googleusercontent.com/p/AF1QipMb8_oelVox9uRJQHVO4c5qc3B5ASNfjX6f3XY=s902-k-no"}
-             className={styles.photo} alt={"photo"}/>
-        <img src={"https://lh5.googleusercontent.com/p/AF1QipMb8_oelVox9uRJQHVO4c5qc3B5ASNfjX6f3XY=s902-k-no"}
-             className={styles.photo} alt={"photo"}/>
-        <img src={"https://lh5.googleusercontent.com/p/AF1QipMb8_oelVox9uRJQHVO4c5qc3B5ASNfjX6f3XY=s902-k-no"}
-             className={styles.photo} alt={"photo"}/>
-        <img src={"https://lh5.googleusercontent.com/p/AF1QipMb8_oelVox9uRJQHVO4c5qc3B5ASNfjX6f3XY=s902-k-no"}
-             className={styles.photo} alt={"photo"}/>
-        <img src={"https://lh5.googleusercontent.com/p/AF1QipMb8_oelVox9uRJQHVO4c5qc3B5ASNfjX6f3XY=s902-k-no"}
-             className={styles.photo} alt={"photo"}/>
-        <img src={"https://lh5.googleusercontent.com/p/AF1QipMb8_oelVox9uRJQHVO4c5qc3B5ASNfjX6f3XY=s902-k-no"}
-             className={styles.photo} alt={"photo"}/>
-        <img src={"https://lh5.googleusercontent.com/p/AF1QipMb8_oelVox9uRJQHVO4c5qc3B5ASNfjX6f3XY=s902-k-no"}
-             className={styles.photo} alt={"photo"}/>
-        <img src={"https://lh5.googleusercontent.com/p/AF1QipMb8_oelVox9uRJQHVO4c5qc3B5ASNfjX6f3XY=s902-k-no"}
-             className={styles.photo} alt={"photo"}/>
-        <img src={"https://lh5.googleusercontent.com/p/AF1QipMb8_oelVox9uRJQHVO4c5qc3B5ASNfjX6f3XY=s902-k-no"}
-             className={styles.photo} alt={"photo"}/>
-        <img src={"https://lh5.googleusercontent.com/p/AF1QipMb8_oelVox9uRJQHVO4c5qc3B5ASNfjX6f3XY=s902-k-no"}
-             className={styles.photo} alt={"photo"}/>
-        <img src={"https://lh5.googleusercontent.com/p/AF1QipMb8_oelVox9uRJQHVO4c5qc3B5ASNfjX6f3XY=s902-k-no"}
-             className={styles.photo} alt={"photo"}/>
-        <img src={"https://lh5.googleusercontent.com/p/AF1QipMb8_oelVox9uRJQHVO4c5qc3B5ASNfjX6f3XY=s902-k-no"}
-             className={styles.photo} alt={"photo"}/>
-        <img src={"https://lh5.googleusercontent.com/p/AF1QipMb8_oelVox9uRJQHVO4c5qc3B5ASNfjX6f3XY=s902-k-no"}
-             className={styles.photo} alt={"photo"}/>
-        <img src={"https://lh5.googleusercontent.com/p/AF1QipMb8_oelVox9uRJQHVO4c5qc3B5ASNfjX6f3XY=s902-k-no"}
-             className={styles.photo} alt={"photo"}/>
-        <img src={"https://lh5.googleusercontent.com/p/AF1QipMb8_oelVox9uRJQHVO4c5qc3B5ASNfjX6f3XY=s902-k-no"}
-             className={styles.photo} alt={"photo"}/>
-        <img src={"https://lh5.googleusercontent.com/p/AF1QipMb8_oelVox9uRJQHVO4c5qc3B5ASNfjX6f3XY=s902-k-no"}
-             className={styles.photo} alt={"photo"}/>
-        <img src={"https://lh5.googleusercontent.com/p/AF1QipMb8_oelVox9uRJQHVO4c5qc3B5ASNfjX6f3XY=s902-k-no"}
-             className={styles.photo} alt={"photo"}/>
-        <img src={"https://lh5.googleusercontent.com/p/AF1QipMb8_oelVox9uRJQHVO4c5qc3B5ASNfjX6f3XY=s902-k-no"}
-             className={styles.photo} alt={"photo"}/>
+        {photoList.map((photo, index) => {
+          return (
+            <img
+              key={index}
+              className={styles.photo}
+              src={photo.googleUrl}
+              alt={"photo"}
+              hidden={!(selectedCategory === LocationAssociationName.CATEGORY_UNSPECIFIED || selectedCategory === photo.locationAssociation?.category)}
+            />
+          )
+        })}
       </div>
     </div>
   )

@@ -14,6 +14,7 @@ interface GoogleService {
     fun getLocations(accessToken: String, accountId: String): ResponseEntity<List<GoogleLocation>>?
     fun getLocation(accessToken: String, locationId: String): ResponseEntity<GoogleLocation>?
     fun getLocationProfile(accessToken: String, locationId: String): ResponseEntity<GoogleLocationProfileModel>?
+    fun getLocationPhotos(accessToken: String, accountId: String, locationId: String): ResponseEntity<List<GoogleLocationPhotoModel>>?
 }
 
 @Service
@@ -100,6 +101,33 @@ class GoogleServicImpl(val googleRepository: GoogleRepository) : GoogleService {
             )
         } catch (e: Exception) {
             logger.error("Error getting location profile", e)
+            return ResponseEntity
+                .badRequest()
+                .body(null)
+        }
+    }
+
+    override fun getLocationPhotos(
+        accessToken: String,
+        accountId: String,
+        locationId: String
+    ): ResponseEntity<List<GoogleLocationPhotoModel>>? {
+        try {
+            val googleLocationPhotosResponse = googleRepository.getLocationPhotos(accessToken, accountId, locationId)
+
+            val googleLocationPhotoModels = googleLocationPhotosResponse?.mediaItems?.map { photoModel ->
+                GoogleLocationPhotoModel(
+                    photoModel.name,
+                    photoModel.googleUrl,
+                    photoModel.thumbnailUrl,
+                    photoModel.createTime,
+                    photoModel.locationAssociation,
+                )
+            }
+            return ResponseEntity.ok(googleLocationPhotoModels)
+        }
+        catch (e: Exception) {
+            logger.error("Error getting location photos", e)
             return ResponseEntity
                 .badRequest()
                 .body(null)
