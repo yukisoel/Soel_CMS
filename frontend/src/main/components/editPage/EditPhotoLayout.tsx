@@ -16,6 +16,7 @@ type Props = {
 export default function EditPhotoLayout({googleService}: Props) {
   const [selectedCategory, setSelectedCategory] = useState<string>(LocationAssociationName.CATEGORY_UNSPECIFIED)
   const [photoList, setPhotoList] = useState<GoogleLocationPhotoModel[]>([])
+  const [showAddPhotoPage, _setShowAddPhotoPage] = useState<boolean>(false)
 
   const {setPankuzuItemList} = useContext(PankuzuItemListContext)
   const {selectedAccount} = useContext(GoogleAccountsContext)
@@ -42,25 +43,30 @@ export default function EditPhotoLayout({googleService}: Props) {
   return (
     <div className={styles.edit_photo_container}>
       <div className={styles.header_container}>
-        <div className={styles.category}>
-          <PhotoPullDownMenu
-            selectedContent={selectedCategory}
-            setSelectedContent={setSelectedCategory}
-            options={Object.values(LocationAssociationName)}
-          />
-        </div>
-        <div className={styles.add_button_container}>
-          <button
-            data-testid='search_button'
-            className={styles.add_button}
-            onClick={() => {
-              console.log("写真追加")
-            }}
-          >
-            写真追加
-          </button>
-        </div>
+        {!showAddPhotoPage && (
+          <>
+            <div className={styles.category}>
+              <PhotoPullDownMenu
+                selectedContent={selectedCategory}
+                setSelectedContent={setSelectedCategory}
+                options={Object.values(LocationAssociationName)}
+              />
+            </div>
+            <div className={styles.add_button_container}>
+              <button
+                data-testid='search_button'
+                className={styles.add_button}
+                onClick={() => {
+                  console.log("写真追加")
+                }}
+              >
+                写真追加
+              </button>
+            </div>
+          </>
+        )}
       </div>
+
       <div className={styles.photo_list_container}>
         {photoList.map((photo, index) => {
           return (
