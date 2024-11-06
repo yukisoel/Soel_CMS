@@ -34,4 +34,12 @@ class SpyGoogleService:GoogleService {
         TODO("Not yet implemented")
     }
 
+    override fun getLocationPhotos(
+        accessToken: String,
+        accountId: String,
+        locationId: String
+    ): ResponseEntity<List<GoogleLocationPhotoModel>>? {
+        TODO("Not yet implemented")
+    }
+
 }
