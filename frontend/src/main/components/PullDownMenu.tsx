@@ -1,5 +1,5 @@
 import styles from '@/main/components/PullDownMenu.module.scss'
-import {useState} from "react";
+import {ChangeEvent, useState} from "react";
 import classNames from "classnames";
 import TriangleIcon from "@/main/assets/PullDownMenuTriangle.svg";
 
@@ -25,14 +25,18 @@ export default function PullDownMenu({
   const effectivePlaceholder = placeholder ? placeholder : '入力して検索'
 
   const [isOpen, setIsOpen] = useState<boolean>(false)
+  const [searchWord, setSearchWord] = useState<string>('')
   const toggleIsOpen = () => {
+    setSearchWord('')
     setIsOpen(!isOpen)
     if (selectedPullDownMenu === title) {
       setSelectedPullDownMenu("none")
     } else {
       setSelectedPullDownMenu(title)
     }
-
+  }
+  const handleShowSearchOptions = (e: ChangeEvent<HTMLInputElement>) => {
+    setSearchWord(e.target.value)
   }
 
   return (
@@ -44,20 +48,26 @@ export default function PullDownMenu({
         })}>
           {title}
         </div>
-        <div data-testid={'pull_down_menu'} className={styles.pull_down_menu_container}
-             onClick={() => {
-               toggleIsOpen()
-             }}
-        >
-          <div className={styles.triangle}>
+        <div data-testid={'pull_down_menu'} className={styles.pull_down_menu_container}>
+          <div
+            className={styles.triangle}
+            onClick={() => {
+              toggleIsOpen()
+            }}
+          >
             <img src={TriangleIcon} alt={'triangle_icon'}/>
           </div>
           {!isOpen && (
             <>
-              <div className={classNames(styles.pull_down_menu_content, {
-                [styles.pull_down_menu_placeholder]: selectedContent.length === 0,
-                [styles.pull_down_menu_option]: selectedContent.length !== 0
-              })}>
+              <div
+                className={classNames(styles.pull_down_menu_content, {
+                  [styles.pull_down_menu_placeholder]: selectedContent.length === 0,
+                  [styles.pull_down_menu_option]: selectedContent.length !== 0
+                })}
+                onClick={() => {
+                  toggleIsOpen()
+                }}
+              >
                 {selectedContent.length === 0 ? effectivePlaceholder : selectedContent}
               </div>
             </>
@@ -65,22 +75,29 @@ export default function PullDownMenu({
           {isOpen && (
             <>
               <div className={styles.opened_pull_down_menu_container}>
-                <div
-                  className={`${styles.pull_down_menu_content} ${styles.pull_down_menu_placeholder} ${styles.pull_down_menu_border}`}>
-                  {effectivePlaceholder}
-                </div>
+                <input
+                  className={`${styles.pull_down_menu_content} ${styles.pull_down_menu_input} ${styles.pull_down_menu_border}`}
+
+                  placeholder={"入力して検索"}
+                  onChange={handleShowSearchOptions}
+                />
                 <div className={styles.pull_down_menu_option_container}>
                   {options.map((value, index) => {
-                    return (
-                      <div key={index}
-                           className={`${styles.pull_down_menu_content} ${styles.pull_down_menu_option} ${styles.pull_down_menu_border}`}
-                           onClick={() => {
-                             setSelectedContent(value)
-                           }}
-                      >
-                        {value}
-                      </div>
-                    )
+                    if (searchWord.length === 0 || value.includes(searchWord)) {
+                      return (
+                        <div key={index}
+                             className={`${styles.pull_down_menu_content} ${styles.pull_down_menu_option} ${styles.pull_down_menu_border}`}
+                             onClick={() => {
+                               toggleIsOpen()
+                               setSelectedContent(value)
+                             }}
+                        >
+                          {value}
+                        </div>
+                      )
+                    } else {
+                      return (<></>)
+                    }
                   })}
                 </div>
 

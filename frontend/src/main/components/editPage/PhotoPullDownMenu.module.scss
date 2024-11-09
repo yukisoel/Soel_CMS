@@ -16,6 +16,10 @@
   justify-content: flex-start;
   height: 8.3rem;
   width: 100%;
+
+  &:hover {
+    cursor: pointer;
+  }
 }
 
 .pull_down_menu_border {
@@ -29,6 +33,19 @@
   font-style: normal;
   font-weight: 400;
   line-height: normal;
+}
+
+.pull_down_menu_input {
+  font-family: "Noto Sans CJK JP", sans-serif;
+  font-size: 2.5rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  background-color: #EBEBEB;
+
+  &:hover {
+    cursor: text;
+  }
 }
 
 .pull_down_menu_option {
@@ -46,4 +63,8 @@
   right: 4.35rem;
   width: 2rem;
   height: 1.35rem;
+
+  &:hover {
+    cursor: pointer;
+  }
 }
