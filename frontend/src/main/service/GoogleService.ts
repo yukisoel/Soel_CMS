@@ -4,6 +4,7 @@ import {GoogleLocationPhotoModel, GoogleLocationProfileModel} from "@/main/model
 
 export interface GoogleService {
   getAccounts(): Promise<GoogleAccount[]>
+  getAccount(accountId:string): Promise<GoogleAccount>
   getLocations(googleAccount:GoogleAccount): Promise<GoogleLocation[]>
   getLocation(locationId:string): Promise<GoogleLocation>
   getLocationProfile(locationId:string): Promise<GoogleLocationProfileModel>
@@ -23,6 +24,10 @@ export class GoogleServiceImpl implements GoogleService {
 
   async getAccounts(): Promise<GoogleAccount[]> {
     return this.googleRepository.getAccounts()
+  }
+
+  async getAccount(accountId:string): Promise<GoogleAccount> {
+    return this.googleRepository.getAccount(accountId)
   }
 
   async getLocations(googleAccount:GoogleAccount): Promise<GoogleLocation[]> {

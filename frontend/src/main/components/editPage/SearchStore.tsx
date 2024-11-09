@@ -17,17 +17,24 @@ export default function SearchStore({googleService}: Props) {
   const [selectedService, setSelectedService] = useState<string>("")
   const [selectedAccountName, setSelectedAccountName] = useState<string>("")
   const [selectedLocationTitle, setSelectedLocationTitle] = useState<string>("")
+  const [accountList, setAccountList] = useState<GoogleAccount[]>([])
   const [locationList, setLocationList] = useState<GoogleLocation[]>([])
   const [selectedPullDownMenu, setSelectedPullDownMenu] = useState<string>("none")
   const navigate = useNavigate()
 
-  const {accountList, setSelectedAccount} = useContext(GoogleAccountsContext)
+  const {selectedAccount,setSelectedAccount} = useContext(GoogleAccountsContext)
   const {googleSelectedLocation, setGoogleSelectedLocation} = useContext(GoogleSelectedLocationContext)
   const {setPankuzuItemList} = useContext(PankuzuItemListContext)
 
   useEffect(() => {
     setPankuzuItemList([{name: 'ページ編集', path: '/edit'}])
   }, [])
+
+  useEffect(() => {
+    if (selectedService === ServiceName.GBP) {
+      createAccountList()
+    }
+  }, [selectedService]);
 
   useEffect(() => {
     if (selectedAccountName) {
@@ -44,21 +51,18 @@ export default function SearchStore({googleService}: Props) {
       const googleLocation = locationList.filter(location => location.title === selectedLocationTitle)[0]
       setGoogleSelectedLocation(googleLocation)
     }
-  }, [selectedLocationTitle]);
+  }, [selectedLocationTitle])
 
-  const createLocationList = (googleAccount:GoogleAccount): string[] => {
+  const createAccountList = () => {
+    googleService.getAccounts().then(accounts => {
+      setAccountList(accounts)
+    })
+  }
+
+  const createLocationList = (googleAccount:GoogleAccount) => {
     googleService.getLocations(googleAccount).then(locations => {
       setLocationList(locations)
     })
-    return []
-  }
-
-  const createAccountNameList = (): string[] => {
-    if (accountList) {
-      return accountList?.map(account => account.accountName)
-    } else {
-      return []
-    }
   }
 
   return (
@@ -109,7 +113,7 @@ export default function SearchStore({googleService}: Props) {
                     setSelectedContent={setSelectedAccountName}
                     selectedPullDownMenu={selectedPullDownMenu}
                     setSelectedPullDownMenu={setSelectedPullDownMenu}
-                    options={createAccountNameList()}
+                    options={accountList.map(account => account.accountName)}
                   />
                 </div>
                 <div data-testid="store_select_container"
@@ -132,7 +136,7 @@ export default function SearchStore({googleService}: Props) {
                   className={styles.search_button}
                   onClick={() => {
                     if (selectedService === 'GBP') {
-                      navigate('/edit/gbp/' + googleSelectedLocation.name)
+                      navigate('/edit/gbp/accounts/' + selectedAccount?.name + "/location/"+ googleSelectedLocation.name)
                     }
                   }}
                 >

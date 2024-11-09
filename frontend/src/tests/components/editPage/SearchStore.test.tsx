@@ -168,8 +168,9 @@ describe('SearchStore', () => {
         spyGoogleService.getAccounts_returnValue = new Promise(resolve => resolve([testAccount]))
 
         render(
-          <MemoryRouter initialEntries={["/"]}>
-            <GoogleAccountsContextProvider googleService={spyGoogleService}>
+          <MemoryRouter initialEntries={["" +
+          "/"]}>
+            <GoogleAccountsContextProvider>
               <SearchStore googleService={spyGoogleService}/>
 
             </GoogleAccountsContextProvider>
@@ -194,7 +195,7 @@ describe('SearchStore', () => {
 
         render(
           <MemoryRouter initialEntries={["/"]}>
-            <GoogleAccountsContextProvider googleService={spyGoogleService}>
+            <GoogleAccountsContextProvider>
               <SearchStore googleService={spyGoogleService}/>
 
             </GoogleAccountsContextProvider>

@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service
 interface GoogleService {
     fun getMe(accessToken: String): GoogleMe?
     fun getAccounts(accessToken: String): ResponseEntity<List<GoogleAccount>>?
+    fun getAccount(accessToken: String, accountId: String): ResponseEntity<GoogleAccount>?
     fun getLocations(accessToken: String, accountId: String): ResponseEntity<List<GoogleLocation>>?
     fun getLocation(accessToken: String, locationId: String): ResponseEntity<GoogleLocation>?
     fun getLocationProfile(accessToken: String, locationId: String): ResponseEntity<GoogleLocationProfileModel>?
@@ -37,6 +38,23 @@ class GoogleServicImpl(val googleRepository: GoogleRepository) : GoogleService {
             return ResponseEntity.ok(googleAccounts)
         } catch (e: Exception) {
             logger.error("Error getting accounts", e)
+            return ResponseEntity
+                .badRequest()
+                .body(null)
+        }
+    }
+
+    override fun getAccount(accessToken: String, accountId: String): ResponseEntity<GoogleAccount>? {
+        try {
+            val googleAccount = googleRepository.getAccount(accessToken, accountId)
+            return ResponseEntity.ok(
+                GoogleAccount(
+                    googleAccount!!.name.removePrefix("accounts/"),
+                    googleAccount.accountName
+                )
+            )
+        } catch (e: Exception) {
+            logger.error("Error getting account", e)
             return ResponseEntity
                 .badRequest()
                 .body(null)

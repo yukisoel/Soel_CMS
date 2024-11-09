@@ -12,6 +12,7 @@ import org.springframework.web.util.UriComponentsBuilder
 interface GoogleRepository {
     fun getMe(accessToken: String): GoogleMe?
     fun getAccounts(accessToken: String): GoogleAccountsResponse?
+    fun getAccount(accessToken: String, accountId: String): GoogleAccount?
     fun getLocations(accessToken: String, accountId: String): GoogleLocationsResponse?
     fun getLocation(accessToken: String, locationId: String): GoogleLocation?
     fun getLocationProfile(accessToken: String, locationId: String): GoogleLocationProfileModel?
@@ -54,6 +55,25 @@ class GoogleRepositoryImpl(val restTemplate: RestTemplate):GoogleRepository {
             HttpMethod.GET,
             entity,
             GoogleAccountsResponse::class.java
+        ).body
+    }
+
+    override fun getAccount(accessToken: String, accountId: String): GoogleAccount? {
+        val baseUrl = "https://mybusinessaccountmanagement.googleapis.com/v1/accounts/$accountId"
+
+        val headers = HttpHeaders()
+
+        headers.apply {
+            setBearerAuth(accessToken)
+        }
+
+        val entity = HttpEntity<String>(headers)
+
+        return restTemplate.exchange(
+            baseUrl,
+            HttpMethod.GET,
+            entity,
+            GoogleAccount::class.java
         ).body
     }
 

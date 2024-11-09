@@ -25,10 +25,10 @@ function App() {
     })
 
   return (
-    <GoogleAccountsContextProvider googleService={googleService}>
-      <Routes>
-        <Route path="/edit"
-               element={
+    <Routes>
+      <Route path="/edit"
+             element={
+               <GoogleAccountsContextProvider>
                  <GoogleSelectedLocationContextProvider>
                    <PankuzuListContextProvider>
                      <EditPage
@@ -36,18 +36,21 @@ function App() {
                      />
                    </PankuzuListContextProvider>
                  </GoogleSelectedLocationContextProvider>
-               }
-        >
-          <Route path={''} element={<SearchStore googleService={googleService}/>}>
-          </Route>
-          <Route path={'gbp'} element={<EditGBPLayout/>}>
-            <Route path={":locationId"} element={<EditGBPDashboard googleService={googleService}/>}/>
-            <Route path={":locationId/profile"} element={<EditProfileLayout googleService={googleService}/>}/>
-            <Route path={":locationId/photo"} element={<EditPhotoLayout googleService={googleService}/>}/>
-          </Route>
+               </GoogleAccountsContextProvider>
+             }
+      >
+        <Route path={''} element={<SearchStore googleService={googleService}/>}>
         </Route>
-      </Routes>
-    </GoogleAccountsContextProvider>
+        <Route path={'gbp'} element={<EditGBPLayout/>}>
+          <Route path={"accounts/:accountId/location/:locationId"}
+                 element={<EditGBPDashboard googleService={googleService}/>}/>
+          <Route path={"accounts/:accountId/location/:locationId/profile"}
+                 element={<EditProfileLayout googleService={googleService}/>}/>
+          <Route path={"accounts/:accountId/location/:locationId/photo"}
+                 element={<EditPhotoLayout googleService={googleService}/>}/>
+        </Route>
+      </Route>
+    </Routes>
   )
 }
 

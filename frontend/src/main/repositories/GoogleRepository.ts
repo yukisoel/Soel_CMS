@@ -5,6 +5,7 @@ import {GoogleLocationPhotoModel, GoogleLocationProfileModel} from "@/main/model
 
 export interface GoogleRepository {
   getAccounts(): Promise<GoogleAccount[]>
+  getAccount(accountId:string): Promise<GoogleAccount>
   getLocations(googleAccount:GoogleAccount): Promise<GoogleLocation[]>
   getLocation(locationId:string): Promise<GoogleLocation>
   getLocationProfile(locationId:string): Promise<GoogleLocationProfileModel>
@@ -29,6 +30,23 @@ export class GoogleRepositoryImpl implements GoogleRepository {
       console.error(error)
       throw new Error("google get accounts failed")
      }
+  }
+
+  async getAccount(accountId: string): Promise<GoogleAccount> {
+    try{
+      const response:AxiosResponse<GoogleAccount> = await axiosApiClient.get('google/account', {
+        params: {
+          accountId: accountId
+        },
+        headers: {
+          'Accept': 'application/json; charset=utf-8',
+        },
+      })
+      return response.data
+    }catch (error){
+      console.error(error)
+      throw new Error("google get account failed")
+    }
   }
 
   async getLocations(googleAccount:GoogleAccount): Promise<GoogleLocation[]> {

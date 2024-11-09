@@ -15,6 +15,14 @@ export default class SpyGoogleService implements GoogleService {
     return this.getAccounts_returnValue
   }
 
+  getAccount_isCalled = false
+  getAccount_returnValue:Promise<GoogleAccount> = new Promise(resolve => resolve({name: "", accountName: ""}))
+  getAccount(_accountId: string): Promise<GoogleAccount> {
+    this.getAccount_isCalled = true
+
+    return this.getAccount_returnValue
+  }
+
   getLocations_isCalled = false
   getLocations_returnValue:Promise<GoogleLocation[]> = new Promise(resolve => resolve([]))
 

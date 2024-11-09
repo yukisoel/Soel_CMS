@@ -43,6 +43,13 @@ class FakeGoogleRepository(private val restTemplate: RestTemplate) :GoogleReposi
         )
     }
 
+    override fun getAccount(accessToken: String, accountId: String): GoogleAccount? {
+        return GoogleAccount(
+            "accounts/name1",
+            "accountName1"
+        )
+    }
+
     override fun getLocations(accessToken: String, accountId: String): GoogleLocationsResponse? {
         return GoogleLocationsResponse(
             listOf(
