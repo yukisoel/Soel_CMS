@@ -15,7 +15,11 @@ interface GoogleService {
     fun getLocations(accessToken: String, accountId: String): ResponseEntity<List<GoogleLocation>>?
     fun getLocation(accessToken: String, locationId: String): ResponseEntity<GoogleLocation>?
     fun getLocationProfile(accessToken: String, locationId: String): ResponseEntity<GoogleLocationProfileModel>?
-    fun getLocationPhotos(accessToken: String, accountId: String, locationId: String): ResponseEntity<List<GoogleLocationPhotoModel>>?
+    fun getLocationPhotos(
+        accessToken: String,
+        accountId: String,
+        locationId: String
+    ): ResponseEntity<List<GoogleLocationPhotoModel>>?
 }
 
 @Service
@@ -63,14 +67,21 @@ class GoogleServicImpl(val googleRepository: GoogleRepository) : GoogleService {
 
     override fun getLocations(accessToken: String, accountId: String): ResponseEntity<List<GoogleLocation>>? {
         try {
-            val googleLocationsResponse = googleRepository.getLocations(accessToken, accountId)
-            val googleLocations = googleLocationsResponse?.locations?.map { location ->
-                GoogleLocation(
-                    location.name.removePrefix("locations/"),
-                    location.title
-                )
-            }
-            return ResponseEntity.ok(googleLocations)
+            val googleLocationsMutableList: MutableList<GoogleLocation> = mutableListOf()
+            var nextPageToken: String? = null
+            do {
+                val googleLocationsResponse = googleRepository.getLocations(accessToken, accountId, nextPageToken)
+                val googleLocations = googleLocationsResponse?.locations?.map { location ->
+                    GoogleLocation(
+                        location.name.removePrefix("locations/"),
+                        location.title
+                    )
+                }
+                nextPageToken = googleLocationsResponse?.nextPageToken
+                googleLocationsMutableList.addAll(googleLocations!!.toMutableList())
+                println(nextPageToken)
+            } while (nextPageToken != null)
+            return ResponseEntity.ok(googleLocationsMutableList)
         } catch (e: Exception) {
             logger.error("Error getting locations", e)
             return ResponseEntity
@@ -131,20 +142,26 @@ class GoogleServicImpl(val googleRepository: GoogleRepository) : GoogleService {
         locationId: String
     ): ResponseEntity<List<GoogleLocationPhotoModel>>? {
         try {
-            val googleLocationPhotosResponse = googleRepository.getLocationPhotos(accessToken, accountId, locationId)
+            val googlePhotosMutableList: MutableList<GoogleLocationPhotoModel> = mutableListOf()
+            var nextPageToken: String? = null
+            do {
+                val googleLocationPhotosResponse = googleRepository.getLocationPhotos(accessToken, accountId, locationId, nextPageToken)
 
-            val googleLocationPhotoModels = googleLocationPhotosResponse?.mediaItems?.map { photoModel ->
-                GoogleLocationPhotoModel(
-                    photoModel.name,
-                    photoModel.googleUrl,
-                    photoModel.thumbnailUrl,
-                    photoModel.createTime,
-                    photoModel.locationAssociation,
-                )
-            }
-            return ResponseEntity.ok(googleLocationPhotoModels)
-        }
-        catch (e: Exception) {
+                val googleLocationPhotoModels = googleLocationPhotosResponse?.mediaItems?.map { photoModel ->
+                    GoogleLocationPhotoModel(
+                        photoModel.name,
+                        photoModel.googleUrl,
+                        photoModel.thumbnailUrl,
+                        photoModel.createTime,
+                        photoModel.locationAssociation,
+                    )
+                }
+                nextPageToken = googleLocationPhotosResponse?.nextPageToken
+                googlePhotosMutableList.addAll(googleLocationPhotoModels!!.toMutableList())
+                println(nextPageToken)
+            }while (nextPageToken != null)
+            return ResponseEntity.ok(googlePhotosMutableList)
+        } catch (e: Exception) {
             logger.error("Error getting location photos", e)
             return ResponseEntity
                 .badRequest()

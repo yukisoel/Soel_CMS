@@ -13,10 +13,10 @@ interface GoogleRepository {
     fun getMe(accessToken: String): GoogleMe?
     fun getAccounts(accessToken: String): GoogleAccountsResponse?
     fun getAccount(accessToken: String, accountId: String): GoogleAccount?
-    fun getLocations(accessToken: String, accountId: String): GoogleLocationsResponse?
+    fun getLocations(accessToken: String, accountId: String, nextPageToken: String?): GoogleLocationsResponse?
     fun getLocation(accessToken: String, locationId: String): GoogleLocation?
     fun getLocationProfile(accessToken: String, locationId: String): GoogleLocationProfileModel?
-    fun getLocationPhotos(accessToken: String, accountId: String, locationId: String): GoogleLocationPhotosResponse?
+    fun getLocationPhotos(accessToken: String, accountId: String, locationId: String, nextPageToken: String?): GoogleLocationPhotosResponse?
 }
 
 @Primary
@@ -77,10 +77,12 @@ class GoogleRepositoryImpl(val restTemplate: RestTemplate):GoogleRepository {
         ).body
     }
 
-    override fun getLocations(accessToken: String, accountId: String): GoogleLocationsResponse? {
+    override fun getLocations(accessToken: String, accountId: String, nextPageToken: String?): GoogleLocationsResponse? {
         val baseUrl = "https://mybusinessaccountmanagement.googleapis.com/v1/accounts/$accountId/locations"
         val uri = UriComponentsBuilder.fromHttpUrl(baseUrl)
             .queryParam("readMask", "name,title")
+            .queryParam("pageToken", nextPageToken)
+            .queryParam("pageSize", 100)
             .build()
             .toUri()
 
@@ -149,9 +151,15 @@ class GoogleRepositoryImpl(val restTemplate: RestTemplate):GoogleRepository {
     override fun getLocationPhotos(
         accessToken: String,
         accountId: String,
-        locationId: String
+        locationId: String,
+        nextPageToken: String?
     ): GoogleLocationPhotosResponse? {
         val baseUrl = "https://mybusiness.googleapis.com/v4/accounts/$accountId/locations/$locationId/media"
+        val uri = UriComponentsBuilder.fromHttpUrl(baseUrl)
+            .queryParam("pageToken", nextPageToken)
+            .queryParam("pageSize", 100)
+            .build()
+            .toUri()
         val headers = HttpHeaders()
 
         headers.apply {
@@ -161,7 +169,7 @@ class GoogleRepositoryImpl(val restTemplate: RestTemplate):GoogleRepository {
         val entity = HttpEntity<String>(headers)
 
         return restTemplate.exchange(
-            baseUrl,
+            uri,
             HttpMethod.GET,
             entity,
             GoogleLocationPhotosResponse::class.java

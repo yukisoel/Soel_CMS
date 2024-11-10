@@ -15,6 +15,7 @@ data class GoogleAccountsResponse(
 )
 
 data class GoogleLocationsResponse(
+    val nextPageToken: String? = null,
     val locations: List<GoogleLocation>,
 )
 
@@ -95,6 +96,7 @@ data class GoogleLocationOpeningDate(
 )
 
 data class GoogleLocationPhotosResponse(
+    val nextPageToken: String? = null,
     val mediaItems: List<GoogleLocationPhotoModel>,
 )
 

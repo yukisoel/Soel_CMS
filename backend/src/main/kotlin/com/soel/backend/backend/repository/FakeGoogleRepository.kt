@@ -50,8 +50,9 @@ class FakeGoogleRepository(private val restTemplate: RestTemplate) :GoogleReposi
         )
     }
 
-    override fun getLocations(accessToken: String, accountId: String): GoogleLocationsResponse? {
+    override fun getLocations(accessToken: String, accountId: String, nextPageToken: String?): GoogleLocationsResponse? {
         return GoogleLocationsResponse(
+            null,
             listOf(
                 GoogleLocation(
                     "locations/name1",
@@ -103,9 +104,11 @@ class FakeGoogleRepository(private val restTemplate: RestTemplate) :GoogleReposi
     override fun getLocationPhotos(
         accessToken: String,
         accountId: String,
-        locationId: String
+        locationId: String,
+        nextPageToken: String?
     ): GoogleLocationPhotosResponse? {
         return GoogleLocationPhotosResponse(
+            null,
             listOf(
                 GoogleLocationPhotoModel(
                     "photoReference1",
