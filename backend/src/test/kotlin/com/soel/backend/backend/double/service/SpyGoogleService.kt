@@ -19,6 +19,10 @@ class SpyGoogleService:GoogleService {
         return this.getAccounts_returnValue
     }
 
+    override fun getAccount(accessToken: String, accountId: String): ResponseEntity<GoogleAccount>? {
+        TODO("Not yet implemented")
+    }
+
     override fun getLocations(accessToken: String, accountId: String): ResponseEntity<List<GoogleLocation>>? {
         TODO("Not yet implemented")
     }
