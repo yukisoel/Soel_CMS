@@ -41,12 +41,8 @@ export default function EditProfileTerm({
     if((inputTextRef.current || textareaTextRef.current) && validateGoogleLocationProfileModel(name, inputTextRef.current?.value || textareaTextRef.current?.value || null)) {
       const updateProfile: GoogleLocationProfileModel = makeGoogleLocationProfileModel(name, inputTextRef.current?.value || textareaTextRef.current?.value || "")
       if (locationId) {
-        console.log("clickSaveButton")
-        console.log({name})
-        console.log({updateProfile})
         googleService.updateLocationProfile(locationId, name, updateProfile)
           .then(locationProfile => {
-            console.log({locationProfile})
             setGoogleLocationProfileObject(locationProfile)
           })
       }

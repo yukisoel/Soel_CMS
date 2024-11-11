@@ -42,7 +42,6 @@ export default function EditProfileLayout({googleService}: Props) {
     }
     if (locationId) {
       googleService.getLocationProfile(locationId).then(locationProfile => {
-        console.log({locationProfile})
         setGoogleLocationProfileObject(locationProfile)
       })
     }

@@ -92,7 +92,6 @@ export class GoogleRepositoryImpl implements GoogleRepository {
 
   async getLocationProfile(locationId: string): Promise<GoogleLocationProfileModel> {
     try {
-      console.log({locationId})
       const response: AxiosResponse<GoogleLocationProfileModel> = await axiosApiClient.get('google/location/profile', {
         params: {
           locationId: locationId
