@@ -9,6 +9,7 @@ export interface GoogleService {
   getLocation(locationId:string): Promise<GoogleLocation>
   getLocationProfile(locationId:string): Promise<GoogleLocationProfileModel>
   getLocationPhotos(accountId:string, locationId:string): Promise<GoogleLocationPhotoModel[]>
+  updateLocationProfile(locationId:string, updateMask:string, locationProfile:GoogleLocationProfileModel): Promise<GoogleLocationProfileModel>
 }
 
 type Props = {
@@ -44,5 +45,9 @@ export class GoogleServiceImpl implements GoogleService {
 
   async getLocationPhotos(accountId:string, locationId:string): Promise<GoogleLocationPhotoModel[]> {
     return this.googleRepository.getLocationPhotos(accountId, locationId)
+  }
+
+  async updateLocationProfile(locationId:string, updateMask:string, locationProfile:GoogleLocationProfileModel): Promise<GoogleLocationProfileModel> {
+    return this.googleRepository.updateLocationProfile(locationId, updateMask, locationProfile)
   }
 }

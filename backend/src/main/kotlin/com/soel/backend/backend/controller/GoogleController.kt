@@ -8,6 +8,8 @@ import org.springframework.security.oauth2.client.annotation.RegisteredOAuth2Aut
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PatchMapping
+import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestParam
 
 @RestController
@@ -47,6 +49,11 @@ class GoogleController(val googleService: GoogleService) {
     @GetMapping("/location/photos")
     fun getLocationPhotos(@RegisteredOAuth2AuthorizedClient("google") googleClient: OAuth2AuthorizedClient,@RequestParam("accountId") accountId: String, @RequestParam("locationId") locationId: String): ResponseEntity<List<GoogleLocationPhotoModel>>? {
         return googleService.getLocationPhotos(googleClient.accessToken.tokenValue, accountId, locationId)
+    }
+
+    @PatchMapping("/location/profile")
+    fun updateLocationProfile(@RegisteredOAuth2AuthorizedClient("google") googleClient: OAuth2AuthorizedClient, @RequestParam("locationId") locationId: String, @RequestParam("updateMask") updateMask: String, @RequestBody locationProfile: GoogleLocationProfileModel): ResponseEntity<GoogleLocationProfileModel>? {
+        return googleService.updateLocationProfile(googleClient.accessToken.tokenValue, locationId, updateMask, locationProfile)
     }
     /*
 

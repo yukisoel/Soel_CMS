@@ -35,12 +35,12 @@ export default function EditProfileLayout({googleService}: Props) {
       {name: 'ページ編集', path: '/edit'},
       {name: 'GBP', path: '/edit/gbp'},
       {name: 'プロフィール編集', path: '/edit/profile'}])
-    if(googleSelectedLocation.name === "" && locationId) {
+    if (googleSelectedLocation.name === "" && locationId) {
       googleService.getLocation(locationId).then(location => {
         setGoogleSelectedLocation(location)
       })
     }
-    if(locationId) {
+    if (locationId) {
       googleService.getLocationProfile(locationId).then(locationProfile => {
         console.log({locationProfile})
         setGoogleLocationProfileObject(locationProfile)
@@ -77,40 +77,63 @@ export default function EditProfileLayout({googleService}: Props) {
       <div className={styles.term_container}>
         {selectedTab === Tabs.Overview &&
           <>
-            <EditProfileTerm name={"title"} title={"ビジネス名"} content={googleLocationProfileObject?.title} editTerm={currentEditTerm}
-                             setEditTerm={setCurrentEditTerm}/>
+            <EditProfileTerm name={"title"} title={"ビジネス名"} content={googleLocationProfileObject?.title}
+                             setGoogleLocationProfileObject={setGoogleLocationProfileObject}
+                             editTerm={currentEditTerm}
+                             setEditTerm={setCurrentEditTerm}
+                             googleService={googleService}/>
             <EditProfileTerm name={"categories"} title={"ビジネスカテゴリ"}
                              content={googleLocationProfileObject?.categories?.primaryCategory?.displayName}
-                             editTerm={currentEditTerm} setEditTerm={setCurrentEditTerm}/>
-            <EditProfileTerm name={"description"} title={"説明"} type={TermType.TEXTAREA}
+                             setGoogleLocationProfileObject={setGoogleLocationProfileObject}
+                             editTerm={currentEditTerm} setEditTerm={setCurrentEditTerm}
+                             googleService={googleService}/>
+            <EditProfileTerm name={"profile.description"} title={"説明"} type={TermType.TEXTAREA}
                              content={googleLocationProfileObject?.profile?.description}
-                             editTerm={currentEditTerm} setEditTerm={setCurrentEditTerm}/>
-            <EditProfileTerm name={"openDate"} title={"開業日"} content={`${googleLocationProfileObject?.openInfo?.openingDate?.year}年${googleLocationProfileObject?.openInfo?.openingDate?.month}月${googleLocationProfileObject?.openInfo?.openingDate?.day}日`} editTerm={currentEditTerm}
-                             setEditTerm={setCurrentEditTerm}/>
+                             setGoogleLocationProfileObject={setGoogleLocationProfileObject}
+                             editTerm={currentEditTerm} setEditTerm={setCurrentEditTerm}
+                             googleService={googleService}/>
+            <EditProfileTerm name={"openDate"} title={"開業日"}
+                             content={`${googleLocationProfileObject?.openInfo?.openingDate?.year}年${googleLocationProfileObject?.openInfo?.openingDate?.month}月${googleLocationProfileObject?.openInfo?.openingDate?.day}日`}
+                             setGoogleLocationProfileObject={setGoogleLocationProfileObject}
+                             editTerm={currentEditTerm}
+                             setEditTerm={setCurrentEditTerm}
+                             googleService={googleService}/>
           </>
         }
         {selectedTab === Tabs.Contact &&
           <>
-            <EditProfileTerm name={"phoneNumber"} title={"電話番号"}
+            <EditProfileTerm name={"phoneNumbers.primaryPhone"} title={"電話番号"}
                              content={googleLocationProfileObject?.phoneNumbers?.primaryPhone}
+                             setGoogleLocationProfileObject={setGoogleLocationProfileObject}
                              editTerm={currentEditTerm}
-                             setEditTerm={setCurrentEditTerm}/>
+                             setEditTerm={setCurrentEditTerm}
+                             googleService={googleService}/>
             <EditProfileTerm name={"websiteUri"} title={"ウェブサイト"}
                              content={googleLocationProfileObject?.websiteUri}
+                             setGoogleLocationProfileObject={setGoogleLocationProfileObject}
                              editTerm={currentEditTerm}
-                             setEditTerm={setCurrentEditTerm}/>
+                             setEditTerm={setCurrentEditTerm}
+                             googleService={googleService}/>
             <EditProfileTerm name={"snsLinks"} title={"SNSリンク"}
                              content={"https://twitter.com/soel \n https://twitter.com/soel \n https://twitter.com/soel"}
-                             editTerm={currentEditTerm} setEditTerm={setCurrentEditTerm}/>
+                             setGoogleLocationProfileObject={setGoogleLocationProfileObject}
+                             editTerm={currentEditTerm} setEditTerm={setCurrentEditTerm}
+                             googleService={googleService}/>
           </>
         }
         {selectedTab === Tabs.Location &&
           <>
             <EditProfileTerm name={"storefrontAddress"} title={"店舗の住所"}
-                             content={"〒123-4567 東京都港区六本木1-2-3"} editTerm={currentEditTerm}
-                             setEditTerm={setCurrentEditTerm}/>
+                             content={"〒123-4567 東京都港区六本木1-2-3"}
+                             setGoogleLocationProfileObject={setGoogleLocationProfileObject}
+                             editTerm={currentEditTerm}
+                             setEditTerm={setCurrentEditTerm}
+                             googleService={googleService}/>
             <EditProfileTerm name={"serviceArea"} title={"サービス提供地域"} content={"東京都日野市"}
-                             editTerm={currentEditTerm} setEditTerm={setCurrentEditTerm}/>
+                             setGoogleLocationProfileObject={setGoogleLocationProfileObject}
+                             editTerm={currentEditTerm}
+                             setEditTerm={setCurrentEditTerm}
+                             googleService={googleService}/>
           </>
         }
         {selectedTab === Tabs.BusinessHours &&
@@ -119,10 +142,14 @@ export default function EditProfileLayout({googleService}: Props) {
               <>
                 <EditProfileTerm name={"regularHours"} isDeleteButton={true} title={"通常営業時間"}
                                  content={"月曜日 11:00 - 22:00, 火曜日 11:00 - 22:00, 水曜日 11:00 - 22:00, 木曜日 11:00 - 22:00, 金曜日 11:00 - 22:00, 土曜日 11:00 - 22:00, 日曜日 11:00 - 22:00"}
-                                 editTerm={currentEditTerm} setEditTerm={setCurrentEditTerm}/>
+                                 setGoogleLocationProfileObject={setGoogleLocationProfileObject}
+                                 editTerm={currentEditTerm} setEditTerm={setCurrentEditTerm}
+                                 googleService={googleService}/>
                 <EditProfileTerm name={"lunchHours"} isDeleteButton={true} title={"ランチ営業時間"}
                                  content={"月曜日 11:00 - 15:00, 火曜日 11:00 - 15:00, 水曜日 11:00 - 15:00, 木曜日 11:00 - 15:00, 金曜日 11:00 - 15:00, 土曜日 11:00 - 15:00, 日曜日 11:00 - 15:00"}
-                                 editTerm={currentEditTerm} setEditTerm={setCurrentEditTerm}/>
+                                 setGoogleLocationProfileObject={setGoogleLocationProfileObject}
+                                 editTerm={currentEditTerm} setEditTerm={setCurrentEditTerm}
+                                 googleService={googleService}/>
                 <div className={styles.term_wrapper}>
                   <div className={styles.term}>
                     <div className={styles.term_title}>その他の営業時間を追加</div>
@@ -154,10 +181,16 @@ export default function EditProfileLayout({googleService}: Props) {
         }
         {selectedTab === Tabs.Other &&
           <>
-            <EditProfileTerm name={"other1"} content={"ビジネス所有者情報"} editTerm={currentEditTerm}
-                             setEditTerm={setCurrentEditTerm}/>
-            <EditProfileTerm name={"other2"} content={"サービス"} editTerm={currentEditTerm}
-                             setEditTerm={setCurrentEditTerm}/>
+            <EditProfileTerm name={"other1"} content={"ビジネス所有者情報"}
+                             setGoogleLocationProfileObject={setGoogleLocationProfileObject}
+                             editTerm={currentEditTerm}
+                             setEditTerm={setCurrentEditTerm}
+                             googleService={googleService}/>
+            <EditProfileTerm name={"other2"} content={"サービス"}
+                             setGoogleLocationProfileObject={setGoogleLocationProfileObject}
+                             editTerm={currentEditTerm}
+                             setEditTerm={setCurrentEditTerm}
+                             googleService={googleService}/>
           </>
         }
       </div>

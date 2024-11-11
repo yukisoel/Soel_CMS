@@ -20,6 +20,12 @@ interface GoogleService {
         accountId: String,
         locationId: String
     ): ResponseEntity<List<GoogleLocationPhotoModel>>?
+    fun updateLocationProfile(
+        accessToken: String,
+        locationId: String,
+        updateMask: String,
+        locationProfile: GoogleLocationProfileModel
+    ): ResponseEntity<GoogleLocationProfileModel>?
 }
 
 @Service
@@ -163,6 +169,35 @@ class GoogleServicImpl(val googleRepository: GoogleRepository) : GoogleService {
             return ResponseEntity.ok(googlePhotosMutableList)
         } catch (e: Exception) {
             logger.error("Error getting location photos", e)
+            return ResponseEntity
+                .badRequest()
+                .body(null)
+        }
+    }
+
+    override fun updateLocationProfile(
+        accessToken: String,
+        locationId: String,
+        updateMask: String,
+        locationProfile: GoogleLocationProfileModel
+    ): ResponseEntity<GoogleLocationProfileModel>? {
+        try {
+            val googleLocationProfile = googleRepository.updateLocationProfile(accessToken, locationId, updateMask, locationProfile)
+            return ResponseEntity.ok(
+                GoogleLocationProfileModel(
+                    googleLocationProfile!!.name?.removePrefix("locations/"),
+                    googleLocationProfile.title,
+                    googleLocationProfile.phoneNumbers,
+                    googleLocationProfile.categories,
+//                    googleLocationProfile.storefrontAddress,
+                    googleLocationProfile.websiteUri,
+//                    googleLocationProfile.regularHours,
+                    googleLocationProfile.profile,
+                    googleLocationProfile.openInfo,
+                )
+            )
+        } catch (e: Exception) {
+            logger.error("Error updating location profile", e)
             return ResponseEntity
                 .badRequest()
                 .body(null)

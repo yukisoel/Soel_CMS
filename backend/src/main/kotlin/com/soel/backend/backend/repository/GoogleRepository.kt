@@ -17,6 +17,7 @@ interface GoogleRepository {
     fun getLocation(accessToken: String, locationId: String): GoogleLocation?
     fun getLocationProfile(accessToken: String, locationId: String): GoogleLocationProfileModel?
     fun getLocationPhotos(accessToken: String, accountId: String, locationId: String, nextPageToken: String?): GoogleLocationPhotosResponse?
+    fun updateLocationProfile(accessToken: String, locationId: String, updateMask: String, locationProfile: GoogleLocationProfileModel): GoogleLocationProfileModel?
 }
 
 @Primary
@@ -174,5 +175,32 @@ class GoogleRepositoryImpl(val restTemplate: RestTemplate):GoogleRepository {
             entity,
             GoogleLocationPhotosResponse::class.java
         ).body
+    }
+
+    override fun updateLocationProfile(
+        accessToken: String,
+        locationId: String,
+        updateMask: String,
+        locationProfile: GoogleLocationProfileModel
+    ): GoogleLocationProfileModel? {
+        val baseUrl = "https://mybusinessaccountmanagement.googleapis.com/v1/locations/$locationId"
+        val uri = UriComponentsBuilder.fromHttpUrl(baseUrl)
+            .queryParam("updateMask", updateMask)
+            .build()
+            .toUri()
+
+        val headers = HttpHeaders()
+
+        headers.apply {
+            setBearerAuth(accessToken)
+        }
+
+        val entity = HttpEntity(locationProfile, headers)
+
+        return restTemplate.patchForObject(
+            uri,
+            entity,
+            GoogleLocationProfileModel::class.java
+        )
     }
 }
