@@ -1,3 +1,18 @@
+@mixin base_button {
+  width: 188.7px;
+  height: 82.65px;
+
+  border-radius: 4.2rem;
+
+  color: #282828;
+  text-align: center;
+  font-family: "Noto Sans CJK JP", sans-serif;
+  font-size: 2.5rem;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+}
+
 .edit_photo_container {
   flex-grow: 1;
 
@@ -9,8 +24,6 @@
 
 .header_container {
   box-sizing: border-box;
-  display: flex;
-  justify-content: space-between;
   width: 100%;
   height: 10.4rem;
 
@@ -21,44 +34,96 @@
   border-bottom: 0.1rem solid #282828;
 }
 
+.header_wrapper {
+  display: flex;
+  justify-content: space-between;
+}
+
+.add_header_wrapper {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
 .category {
   width: 62.8rem;
 }
 
+.cancel_button {
+  @include base_button;
+
+  background-color: #EBEBEB;
+}
+
 .add_button {
-  width: 188.7px;
-  height: 82.65px;
+  @include base_button;
 
   background-color: #FFC42C;
+}
 
-  border-radius: 4.2rem;
-
-  color: #282828;
-  text-align: center;
-  font-family: "Noto Sans CJK JP", sans-serif;
-  font-size: 2.7rem;
-  font-style: normal;
-  font-weight: 500;
-  line-height: normal;
+.main_container {
+  flex-grow: 1;
+  flex-basis: 0;
+  overflow-y: scroll;
+  margin-top: 5rem;
+  padding-left: 18rem;
+  padding-right: 18rem;
 }
 
 .photo_list_container {
-  flex-grow: 1;
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-start;
   gap: 2rem;
-  overflow: scroll;
-
-  height: 10rem;
-
-  margin-top: 5rem;
-  padding-left: 18rem;
-  padding-right: 18rem;
 }
 
 .photo {
   width: 19rem;
   height: 19rem;
   object-fit: contain;
+}
+
+.file_upload_area_container {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.file_upload_area {
+  display: flex;
+  gap: 28px;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  width: 628.49px;
+  height: 266.58px;
+
+  background-color: #EBEBEB;
+
+  border-radius: 15px;
+  border: 1px dashed #A0A0A0;
+}
+
+.file_upload_text {
+  text-align: center;
+
+  color: #A0A0A0;
+  font-family: "Noto Sans CJK JP", sans-serif;
+  font-size: 25px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 11px;
+}
+
+.select_file_button {
+  @include base_button;
+
+  width: 212px;
+  height: 60px;
+
+  font-size: 20px;
+
+  background-color: #D2D2D2;
 }
