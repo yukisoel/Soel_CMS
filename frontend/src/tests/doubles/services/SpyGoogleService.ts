@@ -3,6 +3,9 @@ import {GoogleAccount, GoogleLocation} from "@/main/model/GoogleAccount.ts";
 import {GoogleLocationPhotoModel, GoogleLocationProfileModel} from "@/main/model/LocationModel";
 
 export default class SpyGoogleService implements GoogleService {
+  updateLocationProfile(_locationId: string, _updateMask: string, _locationProfile: GoogleLocationProfileModel): Promise<GoogleLocationProfileModel> {
+      throw new Error("Method not implemented.");
+  }
   getLocationProfile(_locationId: string): Promise<GoogleLocationProfileModel> {
       throw new Error("Method not implemented.");
   }

@@ -46,4 +46,13 @@ class SpyGoogleService:GoogleService {
         TODO("Not yet implemented")
     }
 
+    override fun updateLocationProfile(
+        accessToken: String,
+        locationId: String,
+        updateMask: String,
+        locationProfile: GoogleLocationProfileModel
+    ): ResponseEntity<GoogleLocationProfileModel>? {
+        TODO("Not yet implemented")
+    }
+
 }
