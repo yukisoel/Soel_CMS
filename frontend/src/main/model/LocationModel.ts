@@ -10,6 +10,7 @@ export type GoogleLocationProfileModel = {
   regularHours?: GoogleLocationBusinessHours
   profile?: GoogleLocationProfile
   openInfo?: GoogleLocationOpenInfo
+  serviceArea?: GoogleLocationServiceArea
 }
 
 export type GoogleLocationPhoneNumbers = {
@@ -75,6 +76,21 @@ export type GoogleLocationOpenDate = {
   year?: string
   month?: string
   day?: string
+}
+
+export type GoogleLocationServiceArea = {
+  businessType?: string
+  regionCode?: string
+  places?: GoogleLocationPlaceInfos
+}
+
+export type GoogleLocationPlaceInfos = {
+  placeInfos?: GoogleLocationPlaceInfo[]
+}
+
+export type GoogleLocationPlaceInfo = {
+  placeName?: string
+  placeId?: string
 }
 
 export type GoogleLocationPhotoModel = {

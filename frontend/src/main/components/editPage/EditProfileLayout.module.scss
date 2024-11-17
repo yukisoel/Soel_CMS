@@ -230,6 +230,14 @@
   border-bottom: 0.2rem solid #BEBEBE;
 }
 
+.openDate_term_content_focus {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  width: 63.5rem;
+  padding-bottom: 1rem;
+}
+
 .term_content_input_text {
   flex-grow: 1;
   white-space: pre-line;
@@ -241,6 +249,22 @@
   font-style: normal;
   font-weight: 500;
   line-height: normal;
+}
+
+.openDate_term_content_input_text {
+  white-space: pre-line;
+  width: 100px;
+  text-align: right;
+
+  color: #282828;
+
+  font-family: "Noto Sans CJK JP", sans-serif;
+  font-size: 30px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+
+  border-bottom: 0.2rem solid #BEBEBE;
 }
 
 .term_content_input_textarea {

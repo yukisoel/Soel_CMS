@@ -132,6 +132,7 @@ class GoogleServicImpl(val googleRepository: GoogleRepository) : GoogleService {
 //                    googleLocationProfile.regularHours,
                     googleLocationProfile.profile,
                     googleLocationProfile.openInfo,
+                    googleLocationProfile.serviceArea,
                 )
             )
         } catch (e: Exception) {

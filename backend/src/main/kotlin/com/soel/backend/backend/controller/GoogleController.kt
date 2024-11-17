@@ -48,6 +48,8 @@ class GoogleController(val googleService: GoogleService) {
 
     @GetMapping("/location/photos")
     fun getLocationPhotos(@RegisteredOAuth2AuthorizedClient("google") googleClient: OAuth2AuthorizedClient,@RequestParam("accountId") accountId: String, @RequestParam("locationId") locationId: String): ResponseEntity<List<GoogleLocationPhotoModel>>? {
+        println("accountId: $accountId, locationId: $locationId")
+        println(googleClient.accessToken.tokenValue)
         return googleService.getLocationPhotos(googleClient.accessToken.tokenValue, accountId, locationId)
     }
 

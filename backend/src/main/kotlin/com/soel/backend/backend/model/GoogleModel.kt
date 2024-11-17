@@ -39,6 +39,7 @@ data class GoogleLocationProfileModel(
 //    val regularHours: GoogleLocationVusinessHours,
     val profile: GoogleLocationProfile? = null,
     val openInfo: GoogleLocationOpenInfo? = null,
+    val serviceArea: GoogleLocationServiceArea? = null,
 )
 
 data class GoogleLocationPhoneNumbers(
@@ -87,6 +88,21 @@ data class GoogleLocationOpenInfo(
     val status: String? = null,
     val canReopen: Boolean? = null,
     val openingDate: GoogleLocationOpeningDate? = null,
+)
+
+data class GoogleLocationServiceArea(
+    val businessType: String? = null,
+    val regionCode: String? = null,
+    val places: GoogleLocationPlaceInfos? = null,
+)
+
+data class GoogleLocationPlaceInfos(
+    val placeInfos: List<GoogleLocationPlaceInfo>? = null,
+)
+
+data class GoogleLocationPlaceInfo(
+    val placeName: String? = null,
+    val placeId: String? = null,
 )
 
 data class GoogleLocationOpeningDate(

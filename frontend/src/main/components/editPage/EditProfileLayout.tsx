@@ -7,6 +7,8 @@ import {GoogleSelectedLocationContext} from "@/main/contexts/GoogleSelectedLocat
 import {useParams} from "react-router-dom";
 import {GoogleService} from "@/main/service/GoogleService.ts";
 import {GoogleLocationProfileModel} from "@/main/model/LocationModel.ts";
+import EditProfileOpenDateTerm from "@/main/components/editPage/EditProfileOpenDateTerm.tsx";
+import EditProfileServiceAreaTerm from "@/main/components/editPage/EditProfileServiceAreaTerm.tsx";
 
 enum Tabs {
   Overview = '概要',
@@ -60,6 +62,8 @@ export default function EditProfileLayout({googleService}: Props) {
     setCurrentEditTerm(null)
   }
 
+  console.log({googleLocationProfileObject})
+
   return (
     <div className={styles.profile_container}>
       <div className={styles.tab_container}>
@@ -91,12 +95,14 @@ export default function EditProfileLayout({googleService}: Props) {
                              setGoogleLocationProfileObject={setGoogleLocationProfileObject}
                              editTerm={currentEditTerm} setEditTerm={setCurrentEditTerm}
                              googleService={googleService}/>
-            <EditProfileTerm name={"openDate"} title={"開業日"}
-                             content={`${googleLocationProfileObject?.openInfo?.openingDate?.year}年${googleLocationProfileObject?.openInfo?.openingDate?.month}月${googleLocationProfileObject?.openInfo?.openingDate?.day}日`}
-                             setGoogleLocationProfileObject={setGoogleLocationProfileObject}
-                             editTerm={currentEditTerm}
-                             setEditTerm={setCurrentEditTerm}
-                             googleService={googleService}/>
+            <EditProfileOpenDateTerm name={"openInfo"} title={"開業日"}
+                                     year={googleLocationProfileObject?.openInfo?.openingDate?.year}
+                                     month={googleLocationProfileObject?.openInfo?.openingDate?.month}
+                                     day={googleLocationProfileObject?.openInfo?.openingDate?.day}
+                                     setGoogleLocationProfileObject={setGoogleLocationProfileObject}
+                                     editTerm={currentEditTerm}
+                                     setEditTerm={setCurrentEditTerm}
+                                     googleService={googleService}/>
           </>
         }
         {selectedTab === Tabs.Contact &&
@@ -128,11 +134,12 @@ export default function EditProfileLayout({googleService}: Props) {
                              editTerm={currentEditTerm}
                              setEditTerm={setCurrentEditTerm}
                              googleService={googleService}/>
-            <EditProfileTerm name={"serviceArea"} title={"サービス提供地域"} content={"東京都日野市"}
-                             setGoogleLocationProfileObject={setGoogleLocationProfileObject}
-                             editTerm={currentEditTerm}
-                             setEditTerm={setCurrentEditTerm}
-                             googleService={googleService}/>
+            <EditProfileServiceAreaTerm name={"serviceArea"} title={"サービス提供地域"}
+                                        placeInfos={googleLocationProfileObject?.serviceArea?.places?.placeInfos}
+                                        setGoogleLocationProfileObject={setGoogleLocationProfileObject}
+                                        editTerm={currentEditTerm}
+                                        setEditTerm={setCurrentEditTerm}
+                                        googleService={googleService}/>
           </>
         }
         {selectedTab === Tabs.BusinessHours &&
