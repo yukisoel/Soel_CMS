@@ -4,6 +4,7 @@ import {useRef} from "react";
 import {GoogleService} from "@/main/service/GoogleService.ts";
 import {useParams} from "react-router-dom";
 import {GoogleLocationPlaceInfo, GoogleLocationProfileModel} from "@/main/model/LocationModel.ts";
+import {APIProvider, Map} from "@vis.gl/react-google-maps";
 
 type Props = {
   name: string
@@ -34,6 +35,7 @@ export default function EditProfileServiceAreaTerm({
     else setEditTerm(name)
   }
 
+
   const clickSaveButton = () => {
     if ((yearTextRef.current && monthTextRef.current && dayTextRef.current) && validateGoogleLocationProfileModel(name, yearTextRef.current?.value, monthTextRef.current?.value, dayTextRef.current?.value)) {
       const updateProfile: GoogleLocationProfileModel = makeGoogleLocationProfileModel(name, yearTextRef.current?.value, monthTextRef.current?.value, dayTextRef.current?.value)
@@ -47,6 +49,8 @@ export default function EditProfileServiceAreaTerm({
     handleClickEditButton()
   }
 
+  console.log(import.meta.env.VITE_GOOGLE_MAPS_API_KEY)
+
   return (
     <>
       {name !== editTerm &&
@@ -58,9 +62,6 @@ export default function EditProfileServiceAreaTerm({
             {title &&
               <div className={styles.term_title}>{title}</div>
             }
-            {/*{placeInfos && placeInfos.length > 0 && placeInfos[0].placeName &&*/}
-            {/*  <div className={styles.term_content}>{placeInfos[0].placeName}</div>*/}
-            {/*}*/}
             {placeInfos && placeInfos.map((placeInfo, index) =>
               <div key={index} className={styles.term_content}>{placeInfo.placeName}</div>
             )}
@@ -86,6 +87,15 @@ export default function EditProfileServiceAreaTerm({
                 type={"text"}
                 defaultValue={(placeInfos && placeInfos.length > 0 && placeInfos[0].placeName?.length === 0) ? placeInfos[0].placeName : ""}
               />
+              <APIProvider apiKey={import.meta.env.GOOGLE_MAPS_API_KEY || ""}>
+                <Map
+                  style={{width: '100vw', height: '100vh'}}
+                  defaultCenter={{lat: 22.54992, lng: 0}}
+                  defaultZoom={3}
+                  gestureHandling={'greedy'}
+                  disableDefaultUI={true}
+                />
+              </APIProvider>
               <div className={styles.edit_button} onClick={clickSaveButton}>保存</div>
             </div>
           </div>
