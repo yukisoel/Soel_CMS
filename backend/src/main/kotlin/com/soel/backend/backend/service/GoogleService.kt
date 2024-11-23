@@ -201,11 +201,13 @@ class GoogleServicImpl(val googleRepository: GoogleRepository) : GoogleService {
     }
 
     override fun getLocationPhotoLocal(filename: String):ResponseEntity<StreamingResponseBody>? {
+        println("getLocationPhotoLocal")
         val uploadDir = System.getProperty("user.dir")
         val filePath: Path = Paths.get(uploadDir).resolve(filename).normalize()
         if (!Files.exists(filePath) || !Files.isReadable(filePath)) {
             throw ResponseStatusException(HttpStatus.NOT_FOUND, "ファイルが見つかりません")
         }
+        println("filePath = $filePath")
         val file = filePath.toFile()
         val contentType: String = Files.probeContentType(filePath) ?: "application/octet-stream"
 
@@ -217,6 +219,7 @@ class GoogleServicImpl(val googleRepository: GoogleRepository) : GoogleService {
             } catch (e: IOException) {
                 println("Error streaming file: ${e.message}")
             } finally {
+                println("before:deleteLocationPhotoLocal")
                 this.deleteLocationPhotoLocal(filename)
             }
         }
@@ -228,6 +231,7 @@ class GoogleServicImpl(val googleRepository: GoogleRepository) : GoogleService {
     }
 
     override fun deleteLocationPhotoLocal(filename: String) {
+        println("deleteLocationPhotoLocal")
         val uploadDir = System.getProperty("user.dir")
         val filePath: Path = Paths.get(uploadDir).resolve(filename).normalize()
         if (!Files.exists(filePath) || !Files.isReadable(filePath)) {
