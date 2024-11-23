@@ -6,6 +6,7 @@ import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
 import org.springframework.stereotype.Repository
 import org.springframework.web.client.RestTemplate
+import org.springframework.web.multipart.MultipartFile
 
 //@Primary
 @Repository
@@ -120,6 +121,15 @@ class FakeGoogleRepository(private val restTemplate: RestTemplate) :GoogleReposi
                 )
             )
         )
+    }
+
+    override fun postLocationPhoto(
+        accessToken: String,
+        accountId: String,
+        locationId: String,
+        filename: String,
+    ) {
+        TODO("Not yet implemented")
     }
 
     override fun updateLocationProfile(

@@ -15,7 +15,8 @@ type Props = {
 export default function EditPhotoLayout({googleService}: Props) {
   const [selectedCategory, setSelectedCategory] = useState<string>(LocationAssociationName.CATEGORY_UNSPECIFIED)
   const [photoList, setPhotoList] = useState<GoogleLocationPhotoModel[]>([])
-  const [uploadedPhotoList, setUploadedPhotoList] = useState<string[]>([])
+  const [uploadedPhotoFileList, setUploadedPhotoFileList] = useState<FileList | null>(null)
+  const [uploadedPhotoUrlList, setUploadedPhotoUrlList] = useState<string[]>([])
   const [showAddPhotoPage, setShowAddPhotoPage] = useState<boolean>(false)
   const [showAddPhotoListPage, setShowAddPhotoListPage] = useState<boolean>(false)
   const fileUploadInputRef = useRef<HTMLInputElement>(null)
@@ -39,6 +40,7 @@ export default function EditPhotoLayout({googleService}: Props) {
     }
     if (accountId && locationId) {
       googleService.getLocationPhotos(accountId, locationId).then(photos => {
+        console.log({photos})
         setPhotoList(photos)
       })
     }
@@ -60,24 +62,30 @@ export default function EditPhotoLayout({googleService}: Props) {
   }
 
   const onInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    console.log("onInputChange")
-    if (event.target.files) {
-      const files = event.target.files
-      handleFileUpload(files)
+    if (event.target.files) handleFileUpload(event.target.files)
+
+  }
+
+  const clickAddPhotoButton = () => {
+    console.log("clickAddPhotoButton")
+    console.log({accountId})
+    console.log({locationId})
+    console.log(uploadedPhotoFileList)
+    setShowAddPhotoPage(!showAddPhotoPage)
+    setShowAddPhotoListPage(false)
+    if (accountId && locationId && uploadedPhotoFileList && uploadedPhotoFileList.length > 0) {
+      googleService.postLocationPhoto(accountId, locationId, uploadedPhotoFileList)
     }
   }
 
-  const handleFileUpload = (files:FileList) => {
-    if (fileUploadInputRef.current) {
-      fileUploadInputRef.current.files = files
-
-      const urls = []
-      for (let i = 0; i < files.length; i++) {
-        urls.push(URL.createObjectURL(files[i]))
-      }
-      setUploadedPhotoList(urls)
-      setShowAddPhotoListPage(true)
+  const handleFileUpload = (files: FileList) => {
+    const urls = []
+    for (let i = 0; i < files.length; i++) {
+      urls.push(URL.createObjectURL(files[i]))
     }
+    setUploadedPhotoFileList(files)
+    setUploadedPhotoUrlList(urls)
+    setShowAddPhotoListPage(true)
   }
 
   const clickSelectFileButton = () => {
@@ -126,11 +134,7 @@ export default function EditPhotoLayout({googleService}: Props) {
               </button>
               <button
                 className={styles.add_button}
-                onClick={() => {
-                  setShowAddPhotoPage(!showAddPhotoPage)
-                  setShowAddPhotoListPage(false)
-
-                }}
+                onClick={clickAddPhotoButton}
               >
                 追加する
               </button>
@@ -184,7 +188,7 @@ export default function EditPhotoLayout({googleService}: Props) {
         )}
         {showAddPhotoListPage && (
           <div className={styles.photo_list_container}>
-            {uploadedPhotoList.map((url, index) => {
+            {uploadedPhotoUrlList.map((url, index) => {
               return (
                 <img
                   key={index}

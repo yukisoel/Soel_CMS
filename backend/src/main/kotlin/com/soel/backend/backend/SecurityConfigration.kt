@@ -45,6 +45,7 @@ class SecurityConfig {
             }
             .authorizeHttpRequests {
                 it.requestMatchers("/api/**").authenticated()
+                it.requestMatchers("/api/google/photo/**").permitAll()
                 it.anyRequest().permitAll()
             }
             .cors{it.configurationSource(corsConfigurationSource())}

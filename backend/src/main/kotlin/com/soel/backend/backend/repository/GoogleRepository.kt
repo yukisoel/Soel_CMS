@@ -1,10 +1,12 @@
 package com.soel.backend.backend.repository
 
 import com.soel.backend.backend.model.*
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Primary
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
+import org.springframework.http.MediaType
 import org.springframework.stereotype.Repository
 import org.springframework.web.client.RestTemplate
 import org.springframework.web.util.UriComponentsBuilder
@@ -16,13 +18,27 @@ interface GoogleRepository {
     fun getLocations(accessToken: String, accountId: String, nextPageToken: String?): GoogleLocationsResponse?
     fun getLocation(accessToken: String, locationId: String): GoogleLocation?
     fun getLocationProfile(accessToken: String, locationId: String): GoogleLocationProfileModel?
-    fun getLocationPhotos(accessToken: String, accountId: String, locationId: String, nextPageToken: String?): GoogleLocationPhotosResponse?
-    fun updateLocationProfile(accessToken: String, locationId: String, updateMask: String, locationProfile: GoogleLocationProfileModel): GoogleLocationProfileModel?
+    fun getLocationPhotos(
+        accessToken: String,
+        accountId: String,
+        locationId: String,
+        nextPageToken: String?
+    ): GoogleLocationPhotosResponse?
+    fun postLocationPhoto(accessToken: String, accountId: String, locationId: String, filename: String)
+    fun updateLocationProfile(
+        accessToken: String,
+        locationId: String,
+        updateMask: String,
+        locationProfile: GoogleLocationProfileModel
+    ): GoogleLocationProfileModel?
 }
 
 @Primary
 @Repository
-class GoogleRepositoryImpl(val restTemplate: RestTemplate):GoogleRepository {
+class GoogleRepositoryImpl(val restTemplate: RestTemplate) : GoogleRepository {
+    @Value("\${app.base-url}")
+    lateinit var baseUrl: String
+
     override fun getMe(accessToken: String): GoogleMe? {
         val url = "https://people.googleapis.com/v1/people/me?personFields=names,emailAddresses"
         val headers = HttpHeaders()
@@ -78,9 +94,13 @@ class GoogleRepositoryImpl(val restTemplate: RestTemplate):GoogleRepository {
         ).body
     }
 
-    override fun getLocations(accessToken: String, accountId: String, nextPageToken: String?): GoogleLocationsResponse? {
-        val baseUrl = "https://mybusinessaccountmanagement.googleapis.com/v1/accounts/$accountId/locations"
-        val uri = UriComponentsBuilder.fromHttpUrl(baseUrl)
+    override fun getLocations(
+        accessToken: String,
+        accountId: String,
+        nextPageToken: String?
+    ): GoogleLocationsResponse? {
+        val requestUrl = "https://mybusinessaccountmanagement.googleapis.com/v1/accounts/$accountId/locations"
+        val uri = UriComponentsBuilder.fromHttpUrl(requestUrl)
             .queryParam("readMask", "name,title")
             .queryParam("pageToken", nextPageToken)
             .queryParam("pageSize", 100)
@@ -104,8 +124,8 @@ class GoogleRepositoryImpl(val restTemplate: RestTemplate):GoogleRepository {
     }
 
     override fun getLocation(accessToken: String, locationId: String): GoogleLocation? {
-        val baseUrl = "https://mybusinessaccountmanagement.googleapis.com/v1/locations/$locationId"
-        val uri = UriComponentsBuilder.fromHttpUrl(baseUrl)
+        val requestUrl = "https://mybusinessaccountmanagement.googleapis.com/v1/locations/$locationId"
+        val uri = UriComponentsBuilder.fromHttpUrl(requestUrl)
             .queryParam("readMask", "name,title")
             .build()
             .toUri()
@@ -127,9 +147,12 @@ class GoogleRepositoryImpl(val restTemplate: RestTemplate):GoogleRepository {
     }
 
     override fun getLocationProfile(accessToken: String, locationId: String): GoogleLocationProfileModel? {
-        val baseUrl = "https://mybusinessaccountmanagement.googleapis.com/v1/locations/$locationId"
-        val uri = UriComponentsBuilder.fromHttpUrl(baseUrl)
-            .queryParam("readMask", "name,title,phoneNumbers,categories,storefrontAddress,websiteUri,regularHours,profile,openInfo,serviceArea")
+        val requestUrl = "https://mybusinessaccountmanagement.googleapis.com/v1/locations/$locationId"
+        val uri = UriComponentsBuilder.fromHttpUrl(requestUrl)
+            .queryParam(
+                "readMask",
+                "name,title,phoneNumbers,categories,storefrontAddress,websiteUri,regularHours,profile,openInfo,serviceArea"
+            )
             .build()
             .toUri()
 
@@ -155,8 +178,8 @@ class GoogleRepositoryImpl(val restTemplate: RestTemplate):GoogleRepository {
         locationId: String,
         nextPageToken: String?
     ): GoogleLocationPhotosResponse? {
-        val baseUrl = "https://mybusiness.googleapis.com/v4/accounts/$accountId/locations/$locationId/media"
-        val uri = UriComponentsBuilder.fromHttpUrl(baseUrl)
+        val requestUrl = "https://mybusiness.googleapis.com/v4/accounts/$accountId/locations/$locationId/media"
+        val uri = UriComponentsBuilder.fromHttpUrl(requestUrl)
             .queryParam("pageToken", nextPageToken)
             .queryParam("pageSize", 100)
             .build()
@@ -177,14 +200,54 @@ class GoogleRepositoryImpl(val restTemplate: RestTemplate):GoogleRepository {
         ).body
     }
 
+    override fun postLocationPhoto(
+        accessToken: String,
+        accountId: String,
+        locationId: String,
+        filename:String,
+    ) {
+        val requestUrl = "https://mybusiness.googleapis.com/v4/accounts/$accountId/locations/$locationId/media"
+        val uri = UriComponentsBuilder.fromHttpUrl(requestUrl)
+            .build()
+            .toUri()
+
+
+        val sourceUrl = "$baseUrl/api/google/photo/$filename"
+
+        println("sourceUrl: $sourceUrl")
+
+        val headers = HttpHeaders()
+
+
+        headers.apply {
+            contentType = MediaType.APPLICATION_JSON
+            setBearerAuth(accessToken)
+        }
+
+        val mediaRequest = GoogleLocationPhotoModel(
+            mediaFormat = "PHOTO",
+            locationAssociation = GoogleLocationAssociation(category = "COVER"),
+            sourceUrl = sourceUrl
+        )
+
+        val uploadEntity = HttpEntity(mediaRequest, headers)
+
+        println("postLocationPhoto")
+        val result = restTemplate.postForObject(
+            uri,
+            uploadEntity,
+            GoogleLocationPhotoModel::class.java
+        )
+    }
+
     override fun updateLocationProfile(
         accessToken: String,
         locationId: String,
         updateMask: String,
         locationProfile: GoogleLocationProfileModel
     ): GoogleLocationProfileModel? {
-        val baseUrl = "https://mybusinessaccountmanagement.googleapis.com/v1/locations/$locationId"
-        val uri = UriComponentsBuilder.fromHttpUrl(baseUrl)
+        val requestUrl = "https://mybusinessaccountmanagement.googleapis.com/v1/locations/$locationId"
+        val uri = UriComponentsBuilder.fromHttpUrl(requestUrl)
             .queryParam("updateMask", updateMask)
             .build()
             .toUri()

@@ -8,6 +8,10 @@ spring:
       cache:
         cachecontrol:
           no-store: true
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
   
   security:
     oauth2:

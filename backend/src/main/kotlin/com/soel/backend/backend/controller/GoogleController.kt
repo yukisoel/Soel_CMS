@@ -2,15 +2,13 @@ package com.soel.backend.backend.controller
 
 import com.soel.backend.backend.model.*
 import com.soel.backend.backend.service.GoogleService
+import org.springframework.core.io.Resource
 import org.springframework.http.ResponseEntity
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient
 import org.springframework.security.oauth2.client.annotation.RegisteredOAuth2AuthorizedClient
-import org.springframework.web.bind.annotation.RestController
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PatchMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestParam
+import org.springframework.web.bind.annotation.*
+import org.springframework.web.multipart.MultipartFile
+import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody
 
 @RestController
 @RequestMapping("/api/google")
@@ -53,6 +51,16 @@ class GoogleController(val googleService: GoogleService) {
         return googleService.getLocationPhotos(googleClient.accessToken.tokenValue, accountId, locationId)
     }
 
+    @GetMapping("/location/photo/{filename}")
+    fun getLocationPhotoLocal(@PathVariable filename: String):ResponseEntity<StreamingResponseBody>? {
+        return googleService.getLocationPhotoLocal(filename)
+    }
+
+    @PostMapping("/location/photos")
+    fun postLocationPhotos(@RegisteredOAuth2AuthorizedClient("google") googleClient: OAuth2AuthorizedClient, @RequestParam("accountId") accountId: String, @RequestParam("locationId") locationId: String, @RequestParam("files") files: List<MultipartFile>) {
+        println("files: $files")
+        return googleService.postLocationPhotos(googleClient.accessToken.tokenValue, accountId, locationId, files)
+    }
     @PatchMapping("/location/profile")
     fun updateLocationProfile(@RegisteredOAuth2AuthorizedClient("google") googleClient: OAuth2AuthorizedClient, @RequestParam("locationId") locationId: String, @RequestParam("updateMask") updateMask: String, @RequestBody locationProfile: GoogleLocationProfileModel): ResponseEntity<GoogleLocationProfileModel>? {
         return googleService.updateLocationProfile(googleClient.accessToken.tokenValue, locationId, updateMask, locationProfile)
@@ -99,4 +107,3 @@ class GoogleController(val googleService: GoogleService) {
     https://mybusiness.googleapis.com/v4/{parent=accounts/accountId/locations/{locationId}/localPosts
    */
 }
-

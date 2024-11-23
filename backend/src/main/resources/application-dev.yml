@@ -1,6 +1,7 @@
 app:
   redirect:
     url: https://cmssoel.click/edit
+  base-url: https://cmssoel.click
 
 server:
   forward-headers-strategy: framework

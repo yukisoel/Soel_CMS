@@ -118,10 +118,17 @@ data class GoogleLocationPhotosResponse(
 
 data class GoogleLocationPhotoModel(
     val name: String? = null,
+    val mediaFormat: String? = null,
     val googleUrl: String? = null,
     val thumbnailUrl: String? = null,
     val createTime: String? = null,
     val locationAssociation: GoogleLocationAssociation? = null,
+    val dataRef: GoogleLocationPhotoDataRef? = null,
+    val sourceUrl: String? = null,
+)
+
+data class GoogleLocationPhotoDataRef(
+    val resourceName: String? = null,
 )
 
 data class GoogleLocationAssociation(

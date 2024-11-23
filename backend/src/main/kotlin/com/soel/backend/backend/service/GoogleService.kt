@@ -5,8 +5,20 @@ import com.soel.backend.backend.model.*
 import com.soel.backend.backend.repository.GoogleRepository
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.http.HttpHeaders
+import org.springframework.http.HttpStatus
+import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
+import org.springframework.web.multipart.MultipartFile
+import org.springframework.web.server.ResponseStatusException
+import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody
+import java.io.FileInputStream
+import java.io.IOException
+import java.nio.file.Files
+import java.nio.file.Path
+import java.nio.file.Paths
+import java.util.*
 
 interface GoogleService {
     fun getMe(accessToken: String): GoogleMe?
@@ -20,6 +32,15 @@ interface GoogleService {
         accountId: String,
         locationId: String
     ): ResponseEntity<List<GoogleLocationPhotoModel>>?
+    fun getLocationPhotoLocal(filename: String): ResponseEntity<StreamingResponseBody>?
+    fun deleteLocationPhotoLocal(filename: String)
+    fun postLocationPhotos(
+        accessToken: String,
+        accountId: String,
+        locationId: String,
+        files: List<MultipartFile>
+    )
+
     fun updateLocationProfile(
         accessToken: String,
         locationId: String,
@@ -152,27 +173,97 @@ class GoogleServicImpl(val googleRepository: GoogleRepository) : GoogleService {
             val googlePhotosMutableList: MutableList<GoogleLocationPhotoModel> = mutableListOf()
             var nextPageToken: String? = null
             do {
-                val googleLocationPhotosResponse = googleRepository.getLocationPhotos(accessToken, accountId, locationId, nextPageToken)
+                val googleLocationPhotosResponse =
+                    googleRepository.getLocationPhotos(accessToken, accountId, locationId, nextPageToken)
 
                 val googleLocationPhotoModels = googleLocationPhotosResponse?.mediaItems?.map { photoModel ->
                     GoogleLocationPhotoModel(
                         photoModel.name,
+                        photoModel.mediaFormat,
                         photoModel.googleUrl,
                         photoModel.thumbnailUrl,
                         photoModel.createTime,
                         photoModel.locationAssociation,
+                        photoModel.dataRef,
                     )
                 }
                 nextPageToken = googleLocationPhotosResponse?.nextPageToken
                 googlePhotosMutableList.addAll(googleLocationPhotoModels!!.toMutableList())
                 println(nextPageToken)
-            }while (nextPageToken != null)
+            } while (nextPageToken != null)
             return ResponseEntity.ok(googlePhotosMutableList)
         } catch (e: Exception) {
             logger.error("Error getting location photos", e)
             return ResponseEntity
                 .badRequest()
                 .body(null)
+        }
+    }
+
+    override fun getLocationPhotoLocal(filename: String):ResponseEntity<StreamingResponseBody>? {
+        val uploadDir = System.getProperty("user.dir")
+        val filePath: Path = Paths.get(uploadDir).resolve(filename).normalize()
+        if (!Files.exists(filePath) || !Files.isReadable(filePath)) {
+            throw ResponseStatusException(HttpStatus.NOT_FOUND, "ファイルが見つかりません")
+        }
+        val file = filePath.toFile()
+        val contentType: String = Files.probeContentType(filePath) ?: "application/octet-stream"
+
+        val streamingResponseBody = StreamingResponseBody { outputStream ->
+            try {
+                FileInputStream(file).use { inputStream ->
+                    inputStream.copyTo(outputStream)
+                }
+            } catch (e: IOException) {
+                println("Error streaming file: ${e.message}")
+            } finally {
+                this.deleteLocationPhotoLocal(filename)
+            }
+        }
+
+        return ResponseEntity.ok()
+            .contentType(MediaType.parseMediaType(contentType))
+            .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"${file.name}\"")
+            .body(streamingResponseBody)
+    }
+
+    override fun deleteLocationPhotoLocal(filename: String) {
+        val uploadDir = System.getProperty("user.dir")
+        val filePath: Path = Paths.get(uploadDir).resolve(filename).normalize()
+        if (!Files.exists(filePath) || !Files.isReadable(filePath)) {
+            throw ResponseStatusException(HttpStatus.NOT_FOUND, "ファイルが見つかりません")
+        }
+        Files.delete(filePath)
+    }
+
+    override fun postLocationPhotos(
+        accessToken: String,
+        accountId: String,
+        locationId: String,
+        files: List<MultipartFile>
+    ) {
+        println("postLocationPhotos")
+        if (files.isEmpty()) {
+            return
+//                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("ファイルが選択されていません。")
+        }
+        try {
+            val uploadDir = System.getProperty("user.dir")
+            for (file in files) {
+                if (file.isEmpty) {
+                    continue
+                }
+                val originalFilename = file.originalFilename
+                val fileExtension = originalFilename!!.substringAfterLast('.', "")
+                val fileName = "${UUID.randomUUID()}.$fileExtension"
+
+                val targetLocation = Paths.get(uploadDir).resolve(fileName)
+                println("fileName = $fileName")
+                Files.copy(file.inputStream, targetLocation)
+                val response = googleRepository.postLocationPhoto(accessToken, accountId, locationId,fileName)
+            }
+        } catch (e: Exception) {
+            logger.error("Error posting location photos", e)
         }
     }
 
@@ -183,7 +274,8 @@ class GoogleServicImpl(val googleRepository: GoogleRepository) : GoogleService {
         locationProfile: GoogleLocationProfileModel
     ): ResponseEntity<GoogleLocationProfileModel>? {
         try {
-            val googleLocationProfile = googleRepository.updateLocationProfile(accessToken, locationId, updateMask, locationProfile)
+            val googleLocationProfile =
+                googleRepository.updateLocationProfile(accessToken, locationId, updateMask, locationProfile)
             return ResponseEntity.ok(
                 GoogleLocationProfileModel(
                     googleLocationProfile!!.name?.removePrefix("locations/"),

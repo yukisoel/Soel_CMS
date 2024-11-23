@@ -1,6 +1,7 @@
 app:
   redirect:
     url: http://localhost:5173/edit
+  base-url: http://localhost:5173
 
 spring:
   security:
