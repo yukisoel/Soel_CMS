@@ -226,7 +226,7 @@ class GoogleRepositoryImpl(val restTemplate: RestTemplate) : GoogleRepository {
 
         val mediaRequest = GoogleLocationPhotoModel(
             mediaFormat = "PHOTO",
-            locationAssociation = GoogleLocationAssociation(category = "COVER"),
+            locationAssociation = GoogleLocationAssociation(category = "ADDITIONAL"),
             sourceUrl = sourceUrl
         )
 
