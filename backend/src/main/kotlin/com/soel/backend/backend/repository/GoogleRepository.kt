@@ -212,7 +212,7 @@ class GoogleRepositoryImpl(val restTemplate: RestTemplate) : GoogleRepository {
             .toUri()
 
 
-        val sourceUrl = "$baseUrl/api/google/photo/$filename"
+        val sourceUrl = "$baseUrl/api/google/location/photo/$filename"
 
         println("sourceUrl: $sourceUrl")
 
