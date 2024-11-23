@@ -49,4 +49,12 @@ export default class SpyGoogleRepository implements GoogleRepository {
       return this.getLocationPhotos_returnValue
     }
 
+    postLocationPhoto_isCalled = false
+    postLocationPhoto_returnValue:Promise<void> = new Promise(resolve => resolve())
+    postLocationPhoto(_accountId: string, _locationId: string, _photos: FileList): Promise<void> {
+      this.postLocationPhoto_isCalled = true
+
+      return this.postLocationPhoto_returnValue
+    }
+
 }
