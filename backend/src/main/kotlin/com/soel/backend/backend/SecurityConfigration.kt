@@ -44,8 +44,8 @@ class SecurityConfig {
                 it.deleteCookies("JSESSIONID")
             }
             .authorizeHttpRequests {
-                it.requestMatchers("/api/**").authenticated()
                 it.requestMatchers("/api/google/location/photo/**").permitAll()
+                it.requestMatchers("/api/**").authenticated()
                 it.anyRequest().permitAll()
             }
             .cors{it.configurationSource(corsConfigurationSource())}
