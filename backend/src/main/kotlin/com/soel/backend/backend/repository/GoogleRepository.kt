@@ -24,7 +24,22 @@ interface GoogleRepository {
         locationId: String,
         nextPageToken: String?
     ): GoogleLocationPhotosResponse?
+    fun getLocationLocalPosts(
+        accessToken: String,
+        accountId: String,
+        locationId: String,
+        nextPageToken: String?
+    ): GoogleLocationLocalPostsResponse?
+
     fun postLocationPhoto(accessToken: String, accountId: String, locationId: String, filename: String)
+    fun postLocationLocalPost(
+        accessToken: String,
+        accountId: String,
+        locationId: String,
+        localPost: GoogleLocationLocalPostModel,
+        filenameList: List<String>
+    )
+
     fun updateLocationProfile(
         accessToken: String,
         locationId: String,
@@ -200,11 +215,41 @@ class GoogleRepositoryImpl(val restTemplate: RestTemplate) : GoogleRepository {
         ).body
     }
 
+    override fun getLocationLocalPosts(
+        accessToken: String,
+        accountId: String,
+        locationId: String,
+        nextPageToken: String?
+    ): GoogleLocationLocalPostsResponse? {
+        val requestUrl = "https://mybusiness.googleapis.com/v4/accounts/$accountId/locations/$locationId/localPosts"
+
+        val uri = UriComponentsBuilder.fromHttpUrl(requestUrl)
+            .queryParam("pageToken", nextPageToken)
+            .queryParam("pageSize", 100)
+            .build()
+            .toUri()
+
+        val headers = HttpHeaders()
+
+        headers.apply {
+            setBearerAuth(accessToken)
+        }
+
+        val entity = HttpEntity<String>(headers)
+
+        return restTemplate.exchange(
+            uri,
+            HttpMethod.GET,
+            entity,
+            GoogleLocationLocalPostsResponse::class.java
+        ).body
+    }
+
     override fun postLocationPhoto(
         accessToken: String,
         accountId: String,
         locationId: String,
-        filename:String,
+        filename: String,
     ) {
         val requestUrl = "https://mybusiness.googleapis.com/v4/accounts/$accountId/locations/$locationId/media"
         val uri = UriComponentsBuilder.fromHttpUrl(requestUrl)
@@ -238,6 +283,57 @@ class GoogleRepositoryImpl(val restTemplate: RestTemplate) : GoogleRepository {
             uploadEntity,
             GoogleLocationPhotoModel::class.java
         )
+    }
+
+    override fun postLocationLocalPost(
+        accessToken: String,
+        accountId: String,
+        locationId: String,
+        localPost: GoogleLocationLocalPostModel,
+        filenameList: List<String>
+    ) {
+        val requestUrl = "https://mybusiness.googleapis.com/v4/accounts/$accountId/locations/$locationId/localPosts"
+        val uri = UriComponentsBuilder.fromHttpUrl(requestUrl)
+            .build()
+            .toUri()
+
+        val mediaList = mutableListOf<GoogleLocationPhotoModel>()
+        for (filename in filenameList) {
+            val sourceUrl = "$baseUrl/api/google/location/photo/$filename"
+            println(sourceUrl)
+            mediaList.add(
+                GoogleLocationPhotoModel(
+                    mediaFormat = "PHOTO",
+                    locationAssociation = GoogleLocationAssociation(category = "ADDITIONAL"),
+                    sourceUrl = sourceUrl
+                )
+            )
+        }
+
+        val headers = HttpHeaders()
+
+        headers.apply {
+            contentType = MediaType.APPLICATION_JSON
+            setBearerAuth(accessToken)
+        }
+
+        val request = GoogleLocationLocalPostModel(
+            languageCode = "ja",
+            summary = localPost.summary,
+            callToAction = localPost.callToAction,
+            media = mediaList,
+            topicType = localPost.topicType,
+        )
+
+        val entity = HttpEntity(request, headers)
+
+        val result = restTemplate.postForObject(
+            uri,
+            entity,
+            GoogleLocationLocalPostModel::class.java
+        )
+
+        println(result)
     }
 
     override fun updateLocationProfile(

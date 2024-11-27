@@ -69,13 +69,13 @@ export type GoogleLocationProfile = {
 export type GoogleLocationOpenInfo = {
   status?: string
   canReopen?: boolean
-  openingDate?: GoogleLocationOpenDate
+  openingDate?: GoogleLocationDate
 }
 
-export type GoogleLocationOpenDate = {
-  year?: string
-  month?: string
-  day?: string
+export type GoogleLocationDate = {
+  year?: number
+  month?: number
+  day?: number
 }
 
 export type GoogleLocationServiceArea = {
@@ -103,4 +103,42 @@ export type GoogleLocationPhotoModel = {
 
 export type GoogleLocationAssociation = {
   category?: LocationAssociationName
+}
+
+export type GoogleLocationLocalPostModel = {
+  name?: string
+  languageCode?: string
+  summary?: string
+  callToAction?: GoogleLocationCallToAction
+  createTime?: string
+  updateTime?: string
+  event?: GoogleLocationEvent
+  media?: GoogleLocationPhotoModel[]
+  searchUrl?: string
+  topicType?: string
+  alertType?: string
+  offer?: GoogleLocationOffer
+}
+
+export type GoogleLocationCallToAction = {
+  actionType?: string
+  url?: string
+}
+
+export type GoogleLocationEvent = {
+  title?: string
+  schedule?: GoogleLocationTimeInterval
+}
+
+export type GoogleLocationTimeInterval = {
+  startDate?: GoogleLocationDate
+  endDate?: GoogleLocationDate
+  startTime?: GoogleLocationTimeOfDay
+  endTime?: GoogleLocationTimeOfDay
+}
+
+export type GoogleLocationOffer = {
+  couponCode?: string
+  redeemOnlineUrl?: string
+  termsConditions?: string
 }

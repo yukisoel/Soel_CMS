@@ -32,12 +32,25 @@ interface GoogleService {
         accountId: String,
         locationId: String
     ): ResponseEntity<List<GoogleLocationPhotoModel>>?
+    fun getLocationLocalPosts(
+        accessToken: String,
+        accountId: String,
+        locationId: String
+    ): ResponseEntity<List<GoogleLocationLocalPostModel>>?
     fun getLocationPhotoLocal(filename: String): ResponseEntity<StreamingResponseBody>?
     fun deleteLocationPhotoLocal(filename: String)
     fun postLocationPhotos(
         accessToken: String,
         accountId: String,
         locationId: String,
+        files: List<MultipartFile>
+    )
+
+    fun postLocationLocalPosts(
+        accessToken: String,
+        accountId: String,
+        locationId: String,
+        localPost: GoogleLocationLocalPostModel,
         files: List<MultipartFile>
     )
 
@@ -200,6 +213,49 @@ class GoogleServicImpl(val googleRepository: GoogleRepository) : GoogleService {
         }
     }
 
+    override fun getLocationLocalPosts(
+        accessToken: String,
+        accountId: String,
+        locationId: String
+    ): ResponseEntity<List<GoogleLocationLocalPostModel>>? {
+        try{
+            val googleLocalPostsMutableList: MutableList<GoogleLocationLocalPostModel> = mutableListOf()
+            var nextPageToken: String? = null
+            do {
+                println("do-while")
+                val googleLocationLocalPostsResponse =
+                    googleRepository.getLocationLocalPosts(accessToken, accountId, locationId, nextPageToken)
+                println("googleLocationLocalPostsResponse: $googleLocationLocalPostsResponse")
+                val googleLocationLocalPostModels = googleLocationLocalPostsResponse?.localPosts?.map { localPostModel ->
+                    GoogleLocationLocalPostModel(
+                        localPostModel.name,
+                        localPostModel.languageCode,
+                        localPostModel.summary,
+                        localPostModel.callToAction,
+                        localPostModel.createTime,
+                        localPostModel.updateTime,
+                        localPostModel.event,
+                        localPostModel.state,
+                        localPostModel.media,
+                        localPostModel.searchUrl,
+                        localPostModel.topicType,
+                        localPostModel.alertType,
+                        localPostModel.offer,
+                    )
+                }
+                nextPageToken = googleLocationLocalPostsResponse?.nextPageToken
+                googleLocalPostsMutableList.addAll(googleLocationLocalPostModels!!.toMutableList())
+                println(nextPageToken)
+            } while (nextPageToken != null)
+            return ResponseEntity.ok(googleLocalPostsMutableList)
+        } catch (e: Exception) {
+            logger.error("Error getting location local posts", e)
+            return ResponseEntity
+                .badRequest()
+                .body(null)
+        }
+    }
+
     override fun getLocationPhotoLocal(filename: String):ResponseEntity<StreamingResponseBody>? {
         println("getLocationPhotoLocal")
         val uploadDir = System.getProperty("user.dir")
@@ -249,7 +305,6 @@ class GoogleServicImpl(val googleRepository: GoogleRepository) : GoogleService {
         println("postLocationPhotos")
         if (files.isEmpty()) {
             return
-//                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("ファイルが選択されていません。")
         }
         try {
             val uploadDir = System.getProperty("user.dir")
@@ -268,6 +323,39 @@ class GoogleServicImpl(val googleRepository: GoogleRepository) : GoogleService {
             }
         } catch (e: Exception) {
             logger.error("Error posting location photos", e)
+        }
+    }
+
+    override fun postLocationLocalPosts(
+        accessToken: String,
+        accountId: String,
+        locationId: String,
+        localPost: GoogleLocationLocalPostModel,
+        files: List<MultipartFile>
+    ) {
+        println("postLocationLocalPosts")
+        if (files.isEmpty()) {
+            return
+        }
+        try {
+            val filenameList = mutableListOf<String>()
+            val uploadDir = System.getProperty("user.dir")
+            for (file in files) {
+                if (file.isEmpty) {
+                    continue
+                }
+                val originalFilename = file.originalFilename
+                val fileExtension = originalFilename!!.substringAfterLast('.', "")
+                val fileName = "${UUID.randomUUID()}.$fileExtension"
+                filenameList.add(fileName)
+
+                val targetLocation = Paths.get(uploadDir).resolve(fileName)
+                println("fileName = $fileName")
+                Files.copy(file.inputStream, targetLocation)
+            }
+            val response = googleRepository.postLocationLocalPost(accessToken, accountId, locationId, localPost, filenameList)
+        } catch (e: Exception) {
+            logger.error("Error posting location local posts", e)
         }
     }
 

@@ -8,9 +8,9 @@ import {GoogleLocationProfileModel} from "@/main/model/LocationModel.ts";
 type Props = {
   name: string
   title?: string
-  year?: string
-  month?: string
-  day?: string
+  year?: number
+  month?: number
+  day?: number
   setGoogleLocationProfileObject: (googleLocationProfileObject: GoogleLocationProfileModel | null) => void
   editTerm: string | null
   setEditTerm: (editTerm: string | null) => void
@@ -40,7 +40,7 @@ export default function EditProfileOpenDateTerm({
 
   const clickSaveButton = () => {
     if ((yearTextRef.current && monthTextRef.current && dayTextRef.current) && validateGoogleLocationProfileModel(name, yearTextRef.current?.value, monthTextRef.current?.value, dayTextRef.current?.value)) {
-      const updateProfile: GoogleLocationProfileModel = makeGoogleLocationProfileModel(name, yearTextRef.current?.value, monthTextRef.current?.value, dayTextRef.current?.value)
+      const updateProfile: GoogleLocationProfileModel = makeGoogleLocationProfileModel(name, parseInt(yearTextRef.current?.value, 10), parseInt(monthTextRef.current?.value, 10), parseInt(dayTextRef.current?.value, 10))
       if (locationId) {
         googleService.updateLocationProfile(locationId, name, updateProfile)
           .then(locationProfile => {
@@ -147,7 +147,7 @@ function validateGoogleLocationProfileModel(name: string, year?: string, month?:
   }
 }
 
-function makeGoogleLocationProfileModel(name: string, year?: string, month?: string, day?: string): GoogleLocationProfileModel {
+function makeGoogleLocationProfileModel(name: string, year?: number, month?: number, day?: number): GoogleLocationProfileModel {
   switch (name) {
     case "openInfo":
       return {openInfo: {

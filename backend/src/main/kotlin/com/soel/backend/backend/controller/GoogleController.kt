@@ -51,6 +51,13 @@ class GoogleController(val googleService: GoogleService) {
         return googleService.getLocationPhotos(googleClient.accessToken.tokenValue, accountId, locationId)
     }
 
+    @GetMapping("/location/local_posts")
+    fun getLocationLocalPosts(@RegisteredOAuth2AuthorizedClient("google") googleClient: OAuth2AuthorizedClient,@RequestParam("accountId") accountId: String, @RequestParam("locationId") locationId: String): ResponseEntity<List<GoogleLocationLocalPostModel>>? {
+        println("accountId: $accountId, locationId: $locationId")
+        println(googleClient.accessToken.tokenValue)
+        return googleService.getLocationLocalPosts(googleClient.accessToken.tokenValue, accountId, locationId)
+    }
+
     @GetMapping("/location/photo/{filename}")
     fun getLocationPhotoLocal(@PathVariable filename: String):ResponseEntity<StreamingResponseBody>? {
         return googleService.getLocationPhotoLocal(filename)
@@ -61,6 +68,12 @@ class GoogleController(val googleService: GoogleService) {
         println("files: $files")
         return googleService.postLocationPhotos(googleClient.accessToken.tokenValue, accountId, locationId, files)
     }
+
+    @PostMapping("/location/local_posts")
+    fun postLocationLocalPosts(@RegisteredOAuth2AuthorizedClient("google") googleClient: OAuth2AuthorizedClient, @RequestParam("accountId") accountId: String, @RequestParam("locationId") locationId: String, @RequestParam("files") files: List<MultipartFile>, @RequestBody localPost: GoogleLocationLocalPostModel) {
+        return googleService.postLocationLocalPosts(googleClient.accessToken.tokenValue, accountId, locationId, localPost, files)
+    }
+
     @PatchMapping("/location/profile")
     fun updateLocationProfile(@RegisteredOAuth2AuthorizedClient("google") googleClient: OAuth2AuthorizedClient, @RequestParam("locationId") locationId: String, @RequestParam("updateMask") updateMask: String, @RequestBody locationProfile: GoogleLocationProfileModel): ResponseEntity<GoogleLocationProfileModel>? {
         return googleService.updateLocationProfile(googleClient.accessToken.tokenValue, locationId, updateMask, locationProfile)

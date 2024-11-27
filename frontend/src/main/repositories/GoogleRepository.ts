@@ -1,7 +1,11 @@
 import {AxiosResponse} from "axios";
 import {GoogleAccount, GoogleLocation} from "@/main/model/GoogleAccount.ts";
 import {axiosApiClient} from "@/main/client/axiosClient.ts";
-import {GoogleLocationPhotoModel, GoogleLocationProfileModel} from "@/main/model/LocationModel.ts";
+import {
+  GoogleLocationLocalPostModel,
+  GoogleLocationPhotoModel,
+  GoogleLocationProfileModel
+} from "@/main/model/LocationModel.ts";
 
 export interface GoogleRepository {
   getAccounts(): Promise<GoogleAccount[]>
@@ -16,6 +20,7 @@ export interface GoogleRepository {
 
   getLocationPhotos(accountId: string, locationId: string): Promise<LocationPhotoListResponse>
   postLocationPhoto(accountId: string, locationId: string, photos: FileList): Promise<void>
+  postLocationLocalPost(accountId: string, locationId: string, localPost: GoogleLocationLocalPostModel, photos: FileList): Promise<void>
 
   updateLocationProfile(locationId: string, updateMask: string, locationProfile: GoogleLocationProfileModel): Promise<GoogleLocationProfileModel>
 }
@@ -149,6 +154,33 @@ export class GoogleRepositoryImpl implements GoogleRepository {
     } catch (error) {
       console.error(error)
       throw new Error("google post location photo failed")
+    }
+  }
+
+  async postLocationLocalPost(accountId: string, locationId: string, localPost: GoogleLocationLocalPostModel, photos: FileList): Promise<void> {
+    try {
+      const formData = new FormData()
+      for (let i = 0; i < photos.length; i++) {
+        formData.append('files', photos[i])
+      }
+      formData.append('localPost', JSON.stringify(localPost))
+
+      const response: AxiosResponse<void> = await axiosApiClient.post(
+        'google/location/localPost',
+        formData,
+        {
+          params: {
+            accountId: accountId,
+            locationId: locationId
+          },
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        })
+      console.log(response)
+    } catch (error) {
+      console.error(error)
+      throw new Error("google post location local post failed")
     }
   }
 

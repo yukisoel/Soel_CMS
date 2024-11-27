@@ -87,7 +87,7 @@ data class GoogleLocationProfile(
 data class GoogleLocationOpenInfo(
     val status: String? = null,
     val canReopen: Boolean? = null,
-    val openingDate: GoogleLocationOpeningDate? = null,
+    val openingDate: GoogleLocationDate? = null,
 )
 
 data class GoogleLocationServiceArea(
@@ -105,15 +105,20 @@ data class GoogleLocationPlaceInfo(
     val placeId: String? = null,
 )
 
-data class GoogleLocationOpeningDate(
-    val year: String? = null,
-    val month: String? = null,
-    val day: String? = null,
+data class GoogleLocationDate(
+    val year: Int? = null,
+    val month: Int? = null,
+    val day: Int? = null,
 )
 
 data class GoogleLocationPhotosResponse(
     val nextPageToken: String? = null,
     val mediaItems: List<GoogleLocationPhotoModel>,
+)
+
+data class GoogleLocationLocalPostsResponse(
+    val nextPageToken: String? = null,
+    val localPosts: List<GoogleLocationLocalPostModel>,
 )
 
 data class GoogleLocationPhotoModel(
@@ -134,3 +139,43 @@ data class GoogleLocationPhotoDataRef(
 data class GoogleLocationAssociation(
     val category: String? = null,
 )
+
+data class GoogleLocationLocalPostModel(
+    val name: String? = null,
+    val languageCode: String? = null,
+    val summary: String? = null,
+    val callToAction: GoogleLocationCallToAction? = null,
+    val createTime: String? = null,
+    val updateTime: String? = null,
+    val event: GoogleLocationEvent? = null,
+    val state: String? = null,
+    val media: List<GoogleLocationPhotoModel>? = null,
+    val searchUrl: String? = null,
+    val topicType: String? = null,
+    val alertType: String? = null,
+    val offer: GoogleLocationOffer? = null,
+)
+
+data class GoogleLocationCallToAction(
+    val actionType: String? = null,
+    val url: String? = null,
+)
+
+data class GoogleLocationEvent(
+    val title: String? = null,
+    val schedule: GoogleLocationTimeInterval? = null,
+)
+
+data class GoogleLocationTimeInterval(
+    val startDate: GoogleLocationDate? = null,
+    val endDate: GoogleLocationDate? = null,
+    val startTime: GoogleLocationTimeOfDay? = null,
+    val endTime: GoogleLocationTimeOfDay? = null,
+)
+
+data class GoogleLocationOffer(
+    val couponCode: String? = null,
+    val redeemOnlineUrl: String? = null,
+    val termsConditions: String? = null,
+)
+
