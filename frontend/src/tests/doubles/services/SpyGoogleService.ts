@@ -1,6 +1,10 @@
 import {GoogleService} from "@/main/service/GoogleService.ts";
 import {GoogleAccount, GoogleLocation} from "@/main/model/GoogleAccount.ts";
-import {GoogleLocationPhotoModel, GoogleLocationProfileModel} from "@/main/model/LocationModel";
+import {
+  GoogleLocationLocalPostModel,
+  GoogleLocationPhotoModel,
+  GoogleLocationProfileModel
+} from "@/main/model/LocationModel";
 
 export default class SpyGoogleService implements GoogleService {
   updateLocationProfile(_locationId: string, _updateMask: string, _locationProfile: GoogleLocationProfileModel): Promise<GoogleLocationProfileModel> {
@@ -59,5 +63,13 @@ export default class SpyGoogleService implements GoogleService {
     this.postLocationPhoto_isCalled = true
 
     return this.postLocationPhoto_returnValue
+  }
+
+  postLocationLocalPost_isCalled = false
+  postLocationLocalPost_returnValue:Promise<void> = new Promise(resolve => resolve())
+  postLocationLocalPost(_accountId: string, _locationId: string, _localPost: GoogleLocationLocalPostModel, _photos: FileList): Promise<void> {
+    this.postLocationLocalPost_isCalled = true
+
+    return this.postLocationLocalPost_returnValue
   }
 }
