@@ -66,7 +66,7 @@ export default function EditGBPDashboard({googleService}: Props) {
       </div>
       <div className={styles.dashboard_item_row}>
         <DashboardItem
-          navigation={""}
+          navigation={"local_post"}
           text={"最新情報を追加"}
           src={EditInfoIcon}
           altText={"edit_info"}
