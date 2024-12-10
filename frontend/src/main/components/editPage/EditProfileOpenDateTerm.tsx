@@ -1,6 +1,6 @@
 import styles from "@/main/components/editPage/EditProfileLayout.module.scss";
 import ButtonEditBack from "@/main/assets/ButtonEditBack.svg";
-import {useRef} from "react";
+import {useRef, useState} from "react";
 import {GoogleService} from "@/main/service/GoogleService.ts";
 import {useParams} from "react-router-dom";
 import {GoogleLocationProfileModel} from "@/main/model/LocationModel.ts";
@@ -28,9 +28,9 @@ export default function EditProfileOpenDateTerm({
                                                   setEditTerm,
                                                   googleService
                                                 }: Props) {
+  const [selectedMonth, setSelectedMonth] = useState<number|null>(null)
+  const [selectedDay, setSelectedDay] = useState<number|null>(null)
   const yearTextRef = useRef<HTMLInputElement>(null)
-  const monthTextRef = useRef<HTMLInputElement>(null)
-  const dayTextRef = useRef<HTMLInputElement>(null)
   const {locationId} = useParams()
 
   const handleClickEditButton = () => {
@@ -39,8 +39,10 @@ export default function EditProfileOpenDateTerm({
   }
 
   const clickSaveButton = () => {
-    if ((yearTextRef.current && monthTextRef.current && dayTextRef.current) && validateGoogleLocationProfileModel(name, yearTextRef.current?.value, monthTextRef.current?.value, dayTextRef.current?.value)) {
-      const updateProfile: GoogleLocationProfileModel = makeGoogleLocationProfileModel(name, parseInt(yearTextRef.current?.value, 10), parseInt(monthTextRef.current?.value, 10), parseInt(dayTextRef.current?.value, 10))
+    const saveMonth = selectedMonth ? selectedMonth : month
+    const saveDay = selectedDay ? selectedDay : day
+    if ((yearTextRef.current && saveMonth && saveDay) && validateGoogleLocationProfileModel(name, yearTextRef.current?.value, saveMonth.toString(), saveDay.toString())) {
+      const updateProfile: GoogleLocationProfileModel = makeGoogleLocationProfileModel(name, parseInt(yearTextRef.current?.value, 10), saveMonth, saveDay)
       if (locationId) {
         googleService.updateLocationProfile(locationId, name, updateProfile)
           .then(locationProfile => {
@@ -88,19 +90,25 @@ export default function EditProfileOpenDateTerm({
                 defaultValue={year ? year : ""}
               />
               年
-              <input
+              <select
                 className={styles.openDate_term_content_input_text}
-                ref={monthTextRef}
-                type={"text"}
-                defaultValue={month ? month : ""}
-              />
+                onChange={(e) => setSelectedMonth(parseInt(e.target.value, 10))}
+                defaultValue={month}
+              >
+                {[...Array(12)].map((_, i) => {
+                  return <option key={i} value={i + 1}>{i + 1}</option>
+                })}
+              </select>
               月
-              <input
+              <select
                 className={styles.openDate_term_content_input_text}
-                ref={dayTextRef}
-                type={"text"}
-                defaultValue={day ? day : ""}
-              />
+                onChange={(e) => setSelectedDay(parseInt(e.target.value, 10))}
+                defaultValue={day}
+              >
+                {[...Array(31)].map((_, i) => {
+                  return <option key={i} value={i + 1}>{i + 1}</option>
+                })}
+              </select>
               日
               <div className={styles.edit_button} onClick={clickSaveButton}>保存</div>
             </div>
