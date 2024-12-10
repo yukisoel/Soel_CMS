@@ -30,6 +30,11 @@ interface GoogleRepository {
         locationId: String,
         nextPageToken: String?
     ): GoogleLocationLocalPostsResponse?
+    fun getLocationFoodMenus(
+        accessToken: String,
+        accountId: String,
+        locationId: String,
+    ): GoogleLocationFoodMenusModel?
 
     fun postLocationPhoto(accessToken: String, accountId: String, locationId: String, filename: String)
     fun postLocationLocalPost(
@@ -242,6 +247,35 @@ class GoogleRepositoryImpl(val restTemplate: RestTemplate) : GoogleRepository {
             HttpMethod.GET,
             entity,
             GoogleLocationLocalPostsResponse::class.java
+        ).body
+    }
+
+    override fun getLocationFoodMenus(
+        accessToken: String,
+        accountId: String,
+        locationId: String,
+    ): GoogleLocationFoodMenusModel? {
+        val requestUrl = "https://mybusiness.googleapis.com/v4/accounts/$accountId/locations/$locationId/foodMenus"
+
+        val uri = UriComponentsBuilder.fromHttpUrl(requestUrl)
+//            .queryParam("pageToken", nextPageToken)
+//            .queryParam("pageSize", 100)
+            .build()
+            .toUri()
+
+        val headers = HttpHeaders()
+
+        headers.apply {
+            setBearerAuth(accessToken)
+        }
+
+        val entity = HttpEntity<String>(headers)
+
+        return restTemplate.exchange(
+            uri,
+            HttpMethod.GET,
+            entity,
+            GoogleLocationFoodMenusModel::class.java
         ).body
     }
 

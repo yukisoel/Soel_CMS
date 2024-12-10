@@ -58,6 +58,13 @@ class GoogleController(val googleService: GoogleService) {
         return googleService.getLocationLocalPosts(googleClient.accessToken.tokenValue, accountId, locationId)
     }
 
+    @GetMapping("/location/food_menus")
+    fun getLocationFoodMenus(@RegisteredOAuth2AuthorizedClient("google") googleClient: OAuth2AuthorizedClient,@RequestParam("accountId") accountId: String, @RequestParam("locationId") locationId: String): ResponseEntity<GoogleLocationFoodMenusModel>? {
+        println("accountId: $accountId, locationId: $locationId")
+        println(googleClient.accessToken.tokenValue)
+        return googleService.getLocationFoodMenus(googleClient.accessToken.tokenValue, accountId, locationId)
+    }
+
     @GetMapping("/location/photo/{filename}")
     fun getLocationPhotoLocal(@PathVariable filename: String):ResponseEntity<StreamingResponseBody>? {
         return googleService.getLocationPhotoLocal(filename)

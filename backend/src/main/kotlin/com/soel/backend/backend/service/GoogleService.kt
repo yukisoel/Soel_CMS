@@ -37,6 +37,11 @@ interface GoogleService {
         accountId: String,
         locationId: String
     ): ResponseEntity<List<GoogleLocationLocalPostModel>>?
+    fun getLocationFoodMenus(
+        accessToken: String,
+        accountId: String,
+        locationId: String
+    ): ResponseEntity<GoogleLocationFoodMenusModel>?
     fun getLocationPhotoLocal(filename: String): ResponseEntity<StreamingResponseBody>?
     fun deleteLocationPhotoLocal(filename: String)
     fun postLocationPhotos(
@@ -250,6 +255,23 @@ class GoogleServicImpl(val googleRepository: GoogleRepository) : GoogleService {
             return ResponseEntity.ok(googleLocalPostsMutableList)
         } catch (e: Exception) {
             logger.error("Error getting location local posts", e)
+            return ResponseEntity
+                .badRequest()
+                .body(null)
+        }
+    }
+
+    override fun getLocationFoodMenus(
+        accessToken: String,
+        accountId: String,
+        locationId: String
+    ): ResponseEntity<GoogleLocationFoodMenusModel>? {
+        try {
+                val googleLocationFoodMenusModel =
+                    googleRepository.getLocationFoodMenus(accessToken, accountId, locationId)
+            return ResponseEntity.ok(googleLocationFoodMenusModel)
+        } catch (e: Exception) {
+            logger.error("Error getting location food menus", e)
             return ResponseEntity
                 .badRequest()
                 .body(null)

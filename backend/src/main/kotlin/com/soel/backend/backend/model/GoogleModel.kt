@@ -1,5 +1,7 @@
 package com.soel.backend.backend.model
 
+import io.swagger.v3.oas.models.security.SecurityScheme.In
+
 data class GoogleMe(
     val names: List<GoogleName>,
 )
@@ -121,6 +123,11 @@ data class GoogleLocationLocalPostsResponse(
     val localPosts: List<GoogleLocationLocalPostModel>,
 )
 
+data class GoogleLocationFoodMenusResponse(
+    val nextPageToken: String? = null,
+    val foodMenus: List<GoogleLocationFoodMenusModel>,
+)
+
 data class GoogleLocationPhotoModel(
     val name: String? = null,
     val mediaFormat: String? = null,
@@ -178,4 +185,89 @@ data class GoogleLocationOffer(
     val redeemOnlineUrl: String? = null,
     val termsConditions: String? = null,
 )
+
+data class GoogleLocationFoodMenusModel(
+    val name: String? = null,
+    val menus: List<GoogleLocationFoodMenu>? = null,
+)
+
+data class GoogleLocationFoodMenu(
+    val labels: List<GoogleLocationMenuLabel>? = null,
+    val sourceUrl: String? = null,
+    val sections: List<GoogleLocationFoodMenuSection>? = null,
+    val cuisines: List<String>? = null,
+)
+
+data class GoogleLocationMenuLabel(
+    val displayName: String? = null,
+    val description: String? = null,
+    val languageCode: String? = null,
+)
+
+data class GoogleLocationFoodMenuSection(
+    val labels: List<GoogleLocationMenuLabel>? = null,
+    val items: List<GoogleLocationFoodMenuItem>? = null,
+)
+
+data class GoogleLocationFoodMenuItem(
+    val labels: List<GoogleLocationMenuLabel>? = null,
+    val attributes: GoogleLocationFoodMenuItemAttributes? = null,
+    val options: List<GoogleLocationFoodMenuItemOption>? = null,
+)
+
+data class GoogleLocationFoodMenuItemOption(
+    val labels: List<GoogleLocationMenuLabel>? = null,
+    val attributes: GoogleLocationFoodMenuItemAttributes? = null,
+)
+
+data class GoogleLocationFoodMenuItemAttributes(
+    val price: GoogleLocationMoney? = null,
+    val spiciness: String? = null,
+    val allergens: List<String>? = null,
+    val dietaryRestrictions: List<String>? = null,
+    val nutritionFacts: GoogleLocationNutritionFacts? = null,
+    val ingredients: List<GoogleLocationIngredient>? = null,
+    val servesNumPeople: Int? = null,
+    val preparationMethods: List<String>? = null,
+    val portionSize: GoogleLocationPortionSize? = null,
+    val mediaKeys: List<String>? = null,
+)
+
+data class GoogleLocationMoney(
+    val currencyCode: String? = null,
+    val units: String? = null,
+    val nanos: Int? = null,
+)
+
+data class GoogleLocationNutritionFacts(
+    val calories: GoogleLocationCaloriesFact? = null,
+    val totalFat: GoogleLocationNutritionFact? = null,
+    val cholesterol: GoogleLocationNutritionFact? = null,
+    val sodium: GoogleLocationNutritionFact? = null,
+    val totalCarbohydrates: GoogleLocationNutritionFact? = null,
+    val protein: GoogleLocationNutritionFact? = null,
+)
+
+data class GoogleLocationCaloriesFact(
+    val lowerAmount: Int? = null,
+    val upperAmount: Int? = null,
+    val unit: String? = null,
+)
+
+data class GoogleLocationNutritionFact(
+    val lowerAmount: Int? = null,
+    val upperAmount: Int? = null,
+    val unit: String? = null,
+)
+
+data class GoogleLocationIngredient(
+    val labels: List<GoogleLocationMenuLabel>? = null,
+)
+
+data class GoogleLocationPortionSize(
+    val quantity: Int? = null,
+    val unit: List<GoogleLocationMenuLabel>? = null,
+)
+
+
 
