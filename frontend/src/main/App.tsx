@@ -12,6 +12,7 @@ import {GoogleSelectedLocationContextProvider} from "@/main/contexts/GoogleSelec
 import {axiosApiClient} from "@/main/client/axiosClient.ts";
 import EditPhotoLayout from "@/main/components/editPage/EditPhotoLayout.tsx";
 import EditLocalPostLayout from "@/main/components/editPage/EditLocalPostLayout.tsx";
+import EditMenuLayout from "./components/editPage/EditMenuLayout.tsx";
 
 const googleRepository = new GoogleRepositoryImpl()
 const googleService = new GoogleServiceImpl({googleRepository})
@@ -51,6 +52,8 @@ function App() {
                  element={<EditPhotoLayout googleService={googleService}/>}/>
           <Route path={"accounts/:accountId/location/:locationId/local_post"}
                   element={<EditLocalPostLayout googleService={googleService}/>}/>
+          <Route path={"accounts/:accountId/location/:locationId/menu"}
+                  element={<EditMenuLayout googleService={googleService}/>}/>
         </Route>
       </Route>
     </Routes>

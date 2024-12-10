@@ -52,7 +52,7 @@ export default function EditGBPDashboard({googleService}: Props) {
           altText={"edit_photo"}
         />
         <DashboardItem
-          navigation={""}
+          navigation={"menu"}
           text={"編集メニュー"}
           src={EditMenuIcon}
           altText={"edit_menu"}
