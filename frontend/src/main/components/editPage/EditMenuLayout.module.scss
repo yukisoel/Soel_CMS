@@ -1,21 +1,3 @@
-@mixin base_text {
-    font-family: "Noto Sans CJK JP", sans-serif;
-    font-style: normal;
-    font-weight: 500;
-    line-height: normal;
-}
-
-@mixin base_button {
-    @include base_text;
-    width: 291px;
-    height: 82.65px;
-
-    border-radius: 4.2rem;
-
-    text-align: center;
-    background-color: #FFC42C;
-}
-
 .edit_menu_container {
   flex-grow: 1;
 
@@ -32,13 +14,6 @@
   padding-bottom: 2.2rem;
 
   border-bottom: 0.1rem solid #282828; // TODO: あとから差し替える
-}
-
-.add_button {
-    @include base_button;
-
-    color: #282828;
-    font-size: 2.5rem;
 }
 
 .menu_container {
@@ -62,16 +37,6 @@
 .menu_section_title_container {
     gap: 1.1rem;
     margin-bottom: 1.6rem;
-}
-
-.menu_section_title_button {
-    @include base_button;
-
-    width: 82px;
-    height: 49px;
-
-    color: #000;
-    font-size: 1.8rem;
 }
 
 .menu_section_items_wrapper {

@@ -6,6 +6,7 @@ import {GoogleSelectedLocationContext} from "@/main/contexts/GoogleSelectedLocat
 import {useParams} from "react-router-dom";
 import Typography from "@/main/common/Typography";
 import Wrapper from "@/main/common/Wrapper";
+import Button from "@/main/common/Button";
 
 type Props = {
   googleService: GoogleService
@@ -21,7 +22,9 @@ function MenuSectionItem({sectionTitle, items}: MenuSectionItemProps) {
     <Wrapper direction="col" className={styles.menu_section_container}>
         <Wrapper align="align-center" className={styles.menu_section_title_container}>
             <Typography content={sectionTitle} size="xlarge" color="primary" />
-            <button className={styles.menu_section_title_button}>編集</button>
+            <Button bgColor="primary" px="small" py="large">
+                <Typography content="編集" size="small" color="black" />
+            </Button>
         </Wrapper>
         <Wrapper direction="col" className={styles.menu_section_items_wrapper}>
             {items.map(item => (
@@ -78,7 +81,9 @@ export default function EditMenuLayout({googleService}: Props) {
   return (
     <Wrapper direction="col" className={styles.edit_menu_container}>
         <Wrapper justify="justify-center" className={styles.header_container}>
-            <button className={styles.add_button}>セクションを追加</button>
+            <Button bgColor="primary" px="xlarge" py="xlarge">
+                <Typography content="セクションを追加" size="medium" color="primary" />
+            </Button>
         </Wrapper>
 
         <Wrapper direction="col" className={styles.menu_container}>

@@ -1,4 +1,4 @@
-@use '../styles/variables' as vars;
+@use '@/main/styles/variables' as vars;
 
 @mixin base_text {
     font-family: "Noto Sans CJK JP", sans-serif;
