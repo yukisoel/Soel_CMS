@@ -76,16 +76,16 @@ export default function EditMenuLayout({googleService}: Props) {
   ]
 
   return (
-    <div className={styles.edit_menu_container}>
-        <div className={styles.header_container}>
+    <Wrapper direction="col" className={styles.edit_menu_container}>
+        <Wrapper justify="justify-center" className={styles.header_container}>
             <button className={styles.add_button}>セクションを追加</button>
-        </div>
+        </Wrapper>
 
-        <div className={styles.menu_container}>
+        <Wrapper direction="col" className={styles.menu_container}>
             {menuSectionItems.map(sectionItem => (
                 <MenuSectionItem sectionTitle={sectionItem.sectionTitle} items={sectionItem.items} />
             ))}
-        </div>
-    </div>
+        </Wrapper>
+    </Wrapper>
   )
 }
