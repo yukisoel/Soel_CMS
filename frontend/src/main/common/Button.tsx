@@ -13,7 +13,7 @@ export default function Button({children, px, py, bgColor, className}: Props) {
     return (
         <span className={classNames(
             className,
-            styles.radius,
+            styles.button,
             px ? styles[`px-${px}`] : '',
             py ? styles[`py-${py}`] : '',
             styles[bgColor]

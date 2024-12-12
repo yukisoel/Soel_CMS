@@ -1,6 +1,7 @@
 @use '@/main/styles/variables' as vars;
 
-.radius {
+.button {
+    cursor: pointer;
     border-radius: 4.2rem;
 }
 
