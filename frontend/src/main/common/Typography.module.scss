@@ -1,0 +1,40 @@
+@use '../styles/variables' as vars;
+
+@mixin base_text {
+    font-family: "Noto Sans CJK JP", sans-serif;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+}
+
+.xlarge {
+    @include base_text;
+    font-size: 4rem;
+}
+
+.large {
+    @include base_text;
+    font-size: 3rem;
+}
+
+.medium {
+    @include base_text;
+    font-size: 2.5rem;
+}
+
+.small {
+    @include base_text;
+    font-size: 1.8rem;
+}
+
+.primary {
+    color: vars.$text-color-primary;
+}
+
+.secondary {
+    color: vars.$text-color-secondary;
+}
+
+.black {
+    color: vars.$text-color-black;
+}

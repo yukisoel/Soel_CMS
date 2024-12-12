@@ -4,9 +4,35 @@ import {useContext, useEffect} from "react";
 import {PankuzuItemListContext} from "@/main/contexts/PankuzuItemListContext.tsx";
 import {GoogleSelectedLocationContext} from "@/main/contexts/GoogleSelectedLocationContext.tsx";
 import {useParams} from "react-router-dom";
+import Typography from "@/main/common/Typography";
 
 type Props = {
   googleService: GoogleService
+}
+
+type MenuSectionItemProps = {
+    sectionTitle: string
+    items: {title: string, price: string}[]
+}
+
+function MenuSectionItem({sectionTitle, items}: MenuSectionItemProps) {
+   return (
+    <div className={styles.menu_section_container}>
+        <div className={styles.menu_section_title_container}>
+            <Typography content={sectionTitle} size="xlarge" color="primary" />
+            <button className={styles.menu_section_title_button}>編集</button>
+        </div>
+        <div className={styles.menu_section_items_wrapper}>
+            {items.map(item => (
+                <div className={styles.menu_section_item_container}>
+                    <Typography content={item.title} size="large" color="primary" />
+                    <Typography content={item.price} size="medium" color="secondary" />
+
+                </div>
+            ))}
+        </div>
+    </div>
+   )
 }
 
 export default function EditMenuLayout({googleService}: Props) {
@@ -29,6 +55,24 @@ export default function EditMenuLayout({googleService}: Props) {
     }
   }, [])
 
+  const menuSectionItems = [
+     {
+        sectionTitle: "ランチメニューセット",
+        items: [
+            {title: "鰻うどん定食", price: "1000円"},
+            {title: "鰻うどん定食", price: "1200円"},
+            {title: "鰻うどん定食", price: "1500円"},
+        ]
+     },
+     {
+        sectionTitle: "ランチメニューセット",
+        items: [
+            {title: "鰻うどん定食", price: "1000円"},
+            {title: "鰻うどん定食", price: "1200円"},
+            {title: "鰻うどん定食", price: "1500円"},
+        ]
+     }
+  ]
 
   return (
     <div className={styles.edit_menu_container}>
@@ -37,46 +81,9 @@ export default function EditMenuLayout({googleService}: Props) {
         </div>
 
         <div className={styles.menu_container}>
-            <div className={styles.menu_section_container}>
-                <div className={styles.menu_section_title_container}>
-                    <span className={styles.menu_section_title_content}>ランチメニューセット</span>
-                    <button className={styles.menu_section_title_button}>編集</button>
-                </div>
-                <div className={styles.menu_section_items_wrapper}>
-                    <div className={styles.menu_section_item_container}>
-                        <span className={styles.menu_section_item_title}>鰻どうん定食</span>
-                        <span className={styles.menu_section_item_price}>1,980円</span>
-                    </div>
-                    <div className={styles.menu_section_item_container}>
-                        <span className={styles.menu_section_item_title}>鰻どうん定食</span>
-                        <span className={styles.menu_section_item_price}>1,980円</span>
-                    </div>
-                    <div className={styles.menu_section_item_container}>
-                        <span className={styles.menu_section_item_title}>鰻どうん定食</span>
-                        <span className={styles.menu_section_item_price}>1,980円</span>
-                    </div>
-                </div>
-            </div>
-            <div className={styles.menu_section_container}>
-                <div className={styles.menu_section_title_container}>
-                    <span className={styles.menu_section_title_content}>ランチメニューセット</span>
-                    <button className={styles.menu_section_title_button}>編集</button>
-                </div>
-                <div className={styles.menu_section_items_wrapper}>
-                    <div className={styles.menu_section_item_container}>
-                        <span className={styles.menu_section_item_title}>鰻どうん定食</span>
-                        <span className={styles.menu_section_item_price}>1,980円</span>
-                    </div>
-                    <div className={styles.menu_section_item_container}>
-                        <span className={styles.menu_section_item_title}>鰻どうん定食</span>
-                        <span className={styles.menu_section_item_price}>1,980円</span>
-                    </div>
-                    <div className={styles.menu_section_item_container}>
-                        <span className={styles.menu_section_item_title}>鰻どうん定食</span>
-                        <span className={styles.menu_section_item_price}>1,980円</span>
-                    </div>
-                </div>
-            </div>
+            {menuSectionItems.map(sectionItem => (
+                <MenuSectionItem sectionTitle={sectionItem.sectionTitle} items={sectionItem.items} />
+            ))}
         </div>
     </div>
   )
