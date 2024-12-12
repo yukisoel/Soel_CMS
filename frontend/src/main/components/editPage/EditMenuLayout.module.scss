@@ -65,8 +65,6 @@
 }
 
 .menu_section_title_container {
-    display: flex;
-    align-items: center;
     gap: 1.1rem;
     margin-bottom: 1.6rem;
 }
@@ -88,14 +86,10 @@
 }
 
 .menu_section_items_wrapper {
-    display: flex;
-    flex-direction: column;
     gap: 0.7rem;
 }
 
 .menu_section_item_container {
-    display: flex;
-    align-items: center;
     gap: 3.8rem;
 }
 

@@ -5,6 +5,7 @@ import {PankuzuItemListContext} from "@/main/contexts/PankuzuItemListContext.tsx
 import {GoogleSelectedLocationContext} from "@/main/contexts/GoogleSelectedLocationContext.tsx";
 import {useParams} from "react-router-dom";
 import Typography from "@/main/common/Typography";
+import Wrapper from "@/main/common/Wrapper";
 
 type Props = {
   googleService: GoogleService
@@ -17,21 +18,21 @@ type MenuSectionItemProps = {
 
 function MenuSectionItem({sectionTitle, items}: MenuSectionItemProps) {
    return (
-    <div className={styles.menu_section_container}>
-        <div className={styles.menu_section_title_container}>
+    <Wrapper direction="col" className={styles.menu_section_container}>
+        <Wrapper align="align-center" className={styles.menu_section_title_container}>
             <Typography content={sectionTitle} size="xlarge" color="primary" />
             <button className={styles.menu_section_title_button}>編集</button>
-        </div>
-        <div className={styles.menu_section_items_wrapper}>
+        </Wrapper>
+        <Wrapper direction="col" className={styles.menu_section_items_wrapper}>
             {items.map(item => (
-                <div className={styles.menu_section_item_container}>
+                <Wrapper align="align-center" className={styles.menu_section_item_container}>
                     <Typography content={item.title} size="large" color="primary" />
                     <Typography content={item.price} size="medium" color="secondary" />
 
-                </div>
+                </Wrapper>
             ))}
-        </div>
-    </div>
+        </Wrapper>
+    </Wrapper>
    )
 }
 

@@ -5,13 +5,15 @@ type Props = {
     content: string
     size: 'small' | 'medium' | 'large' | 'xlarge'
     color: 'primary' | 'secondary' | 'black'
+    className?: string
 }
 
-export default function Typography({content, size, color}: Props) {
+export default function Typography({content, size, color, className}: Props) {
     return (
         <span className={classNames(
             styles[color],
-            styles[size]
+            styles[size],
+            className
         )}>{content}</span>
     )
 }
