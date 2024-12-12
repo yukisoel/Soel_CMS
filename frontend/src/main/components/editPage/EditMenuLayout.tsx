@@ -43,13 +43,13 @@ export default function EditMenuLayout({googleService}: Props) {
   const {setPankuzuItemList} = useContext(PankuzuItemListContext)
   const {googleSelectedLocation, setGoogleSelectedLocation} = useContext(GoogleSelectedLocationContext)
 
-  const {accountId, locationId} = useParams()
+  const {locationId} = useParams()
 
   useEffect(() => {
     setPankuzuItemList([
       {name: 'ページ編集', path: '/edit'},
       {name: 'GBP', path: '/edit/gbp'},
-      {name: '写真', path: '/edit/photo'}])
+      {name: '編集メニュー', path: '/edit/menu'}])
     if (googleSelectedLocation.name === "" && locationId) {
       googleService.getLocation(locationId).then(location => {
         console.log({locationId})
