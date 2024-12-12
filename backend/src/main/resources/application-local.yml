@@ -10,3 +10,9 @@ spring:
         registration:
           google:
             redirect-uri: "http://localhost:8080/login/oauth2/code/google"
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html

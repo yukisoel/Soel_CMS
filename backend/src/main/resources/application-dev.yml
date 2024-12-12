@@ -13,9 +13,16 @@ spring:
         registration:
           google:
             redirect-uri: "https://cmssoel.click/login/oauth2/code/google"
+springdoc:
+  api-docs:
+    enabled: false
+  swagger-ui:
+    enabled: false
+
 logging:
   level:
     org:
       springframework:
         security: DEBUG
         web: DEBUG
+
