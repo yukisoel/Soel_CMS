@@ -1,15 +1,10 @@
-import styles from "@/main/components/editPage/EditMenuLayout.module.scss";
-import {GoogleService} from "@/main/service/GoogleService.ts";
-import {useContext, useEffect} from "react";
-import {PankuzuItemListContext} from "@/main/contexts/PankuzuItemListContext.tsx";
-import {GoogleSelectedLocationContext} from "@/main/contexts/GoogleSelectedLocationContext.tsx";
-import {useParams} from "react-router-dom";
+import styles from "@/main/components/editPage/EditMenuLayout/EditMenuList.module.scss";
 import Typography from "@/main/common/Typography";
 import Wrapper from "@/main/common/Wrapper";
 import Button from "@/main/common/Button";
 
 type Props = {
-  googleService: GoogleService
+  menuSectionItems: MenuSectionItemProps[]
 }
 
 type MenuSectionItemProps = {
@@ -38,43 +33,7 @@ function MenuSectionItem({sectionTitle, items}: MenuSectionItemProps) {
    )
 }
 
-export default function EditMenuLayout({googleService}: Props) {
-  const {setPankuzuItemList} = useContext(PankuzuItemListContext)
-  const {googleSelectedLocation, setGoogleSelectedLocation} = useContext(GoogleSelectedLocationContext)
-
-  const {locationId} = useParams()
-
-  useEffect(() => {
-    setPankuzuItemList([
-      {name: 'ページ編集', path: '/edit'},
-      {name: 'GBP', path: '/edit/gbp'},
-      {name: '編集メニュー', path: '/edit/menu'}])
-    if (googleSelectedLocation.name === "" && locationId) {
-      googleService.getLocation(locationId).then(location => {
-        setGoogleSelectedLocation(location)
-      })
-    }
-  }, [])
-
-  const menuSectionItems = [
-     {
-        sectionTitle: "ランチメニューセット",
-        items: [
-            {title: "鰻うどん定食", price: "1000円"},
-            {title: "鰻うどん定食", price: "1200円"},
-            {title: "鰻うどん定食", price: "1500円"},
-        ]
-     },
-     {
-        sectionTitle: "ランチメニューセット",
-        items: [
-            {title: "鰻うどん定食", price: "1000円"},
-            {title: "鰻うどん定食", price: "1200円"},
-            {title: "鰻うどん定食", price: "1500円"},
-        ]
-     }
-  ]
-
+export default function EditMenuList({menuSectionItems}: Props) {
   return (
     <Wrapper direction="col" className={styles.edit_menu_container}>
         <Wrapper justify="justify-center" className={styles.header_container}>
@@ -82,7 +41,6 @@ export default function EditMenuLayout({googleService}: Props) {
                 <Typography content="セクションを追加" size="medium" color="primary" />
             </Button>
         </Wrapper>
-
         <Wrapper direction="col" className={styles.menu_container}>
             {menuSectionItems.map(sectionItem => (
                 <MenuSectionItem sectionTitle={sectionItem.sectionTitle} items={sectionItem.items} />
