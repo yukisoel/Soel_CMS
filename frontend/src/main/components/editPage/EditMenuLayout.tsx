@@ -31,7 +31,6 @@ function MenuSectionItem({sectionTitle, items}: MenuSectionItemProps) {
                 <Wrapper align="align-center" className={styles.menu_section_item_container}>
                     <Typography content={item.title} size="large" color="primary" />
                     <Typography content={item.price} size="medium" color="secondary" />
-
                 </Wrapper>
             ))}
         </Wrapper>
@@ -52,8 +51,6 @@ export default function EditMenuLayout({googleService}: Props) {
       {name: '編集メニュー', path: '/edit/menu'}])
     if (googleSelectedLocation.name === "" && locationId) {
       googleService.getLocation(locationId).then(location => {
-        console.log({locationId})
-        console.log({location})
         setGoogleSelectedLocation(location)
       })
     }
