@@ -42,14 +42,14 @@ export default function EditMenuUpdate({sectionTitle, items: menuItems, onClickC
   return (
     <Wrapper direction="col" className={styles.edit_menu_container}>
         <Wrapper justify="justify-center" gap="2rem" className={styles.header_container}>
-            <Button bgColor="secondary" padding="2.2rem 3.2rem 2.4rem 3.1rem" onClick={onClickCancel}>
+            <Button bgColor="secondary" padding="2rem 3.2rem 2.1rem 3.1rem" onClick={onClickCancel}>
                 <Typography content="キャンセル" size="medium" color="primary"/>
             </Button>
-            <Button bgColor="primary" padding="2.2rem 6.9rem 2.4rem" onClick={() => onClickSave({sectionTitle: section, items})}>
+            <Button bgColor="primary" padding="2rem 6.9rem 2.1rem" onClick={() => onClickSave({sectionTitle: section, items})}>
                 <Typography content="保存" size="medium" color="primary" />
             </Button>
         </Wrapper>
-        <Wrapper direction="col" gap="3.9rem" padding="9.1rem 26.7rem 27.8rem">
+        <Wrapper direction="col" gap="3.9rem" padding="9.1rem 26rem 9rem" className={styles.menu_container}>
             <Wrapper direction="col" gap="1rem">
                 <Wrapper padding="0 0 0 3.8rem">
                     <Typography content="セクション" size="medium" color="primary" />

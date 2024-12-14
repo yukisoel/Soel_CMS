@@ -53,7 +53,15 @@ export default function EditMenuLayout({googleService}: Props) {
                {title: "鰻うどん定食", price: "1200円"},
                {title: "鰻うどん定食", price: "1500円"},
            ]
-        }
+        },
+        {
+          sectionTitle: "ランチメニューセット",
+          items: [
+              {title: "鰻うどん定食", price: "1000円"},
+              {title: "鰻うどん定食", price: "1200円"},
+              {title: "鰻うどん定食", price: "1500円"},
+          ]
+       }
      ]
     )
   }, [])

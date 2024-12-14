@@ -2,7 +2,7 @@
     flex-grow: 1;
 
     margin-top: 2.8rem;
-  }
+}
 
 .header_container {
     box-sizing: border-box;
@@ -16,7 +16,9 @@
     width: 100%;
     box-sizing: border-box;
 
-    margin-top: 7.7rem;
+    flex-grow: 1;
+    flex-basis: 0;
+    overflow-y: scroll;
 }
 
 .menu_section_container {

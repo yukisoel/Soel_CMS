@@ -39,7 +39,7 @@ export default function EditMenuList({menuSectionItems, onClickCreate, onClickEd
                 <Typography content="セクションを追加" size="medium" color="primary" />
             </Button>
         </Wrapper>
-        <Wrapper direction="col" gap="2.3rem" padding="0 18.3rem" className={styles.menu_container}>
+        <Wrapper direction="col" gap="2.3rem" padding="7.7rem 18.3rem 0" className={styles.menu_container}>
             {menuSectionItems.map((sectionItem, index) => (
                 <MenuSectionItem sectionTitle={sectionItem.sectionTitle} items={sectionItem.items} index={index} onClickEdit={onClickEdit} />
             ))}
