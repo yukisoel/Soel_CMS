@@ -1,9 +1,10 @@
 import {GoogleService} from "@/main/service/GoogleService.ts";
-import {useContext, useEffect} from "react";
+import {useContext, useEffect, useState} from "react";
 import {PankuzuItemListContext} from "@/main/contexts/PankuzuItemListContext.tsx";
 import {GoogleSelectedLocationContext} from "@/main/contexts/GoogleSelectedLocationContext.tsx";
 import {useParams} from "react-router-dom";
 import EditMenuList from "./EditMenuList";
+import EditMenuUpdate from "./EditMenuUpdate";
 
 type Props = {
   googleService: GoogleService
@@ -14,6 +15,8 @@ export default function EditMenuLayout({googleService}: Props) {
   const {googleSelectedLocation, setGoogleSelectedLocation} = useContext(GoogleSelectedLocationContext)
 
   const {locationId} = useParams()
+
+  const [mode, setMode] = useState<'list' | 'edit' | 'create'>('list');
 
   useEffect(() => {
     setPankuzuItemList([
@@ -47,9 +50,12 @@ export default function EditMenuLayout({googleService}: Props) {
      }
   ]
 
-
+  const handleToggleMode = (mode: 'list' | 'edit' | 'create') => {
+    setMode(mode);
+  };
 
   return (
-    <EditMenuList menuSectionItems={menuSectionItems} />
+    // <EditMenuList menuSectionItems={menuSectionItems} />
+    <EditMenuUpdate sectionTitle={menuSectionItems[0].sectionTitle} items={menuSectionItems[0].items} />
   )
 }

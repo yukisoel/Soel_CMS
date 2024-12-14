@@ -1,0 +1,25 @@
+@use '@/main/styles/variables' as vars;
+
+@mixin base_text {
+    font-family: "Noto Sans CJK JP", sans-serif;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    color: vars.$text-color-primary;
+}
+
+.input {
+    @include base_text;
+    font-size: 2.5rem;
+    background-color: vars.$background-color-input;
+    border-radius: 4.2rem;
+
+    &::placeholder {
+        color: vars.$text-color-gray;
+        font-weight: 500;
+    }
+}
+
+.fw-midium {
+    font-weight: 500;
+}
