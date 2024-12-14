@@ -6,17 +6,19 @@ type Props = {
     direction?: 'col' | 'row'
     align?: 'align-center' | 'align-start' | 'align-end' | 'align-stretch'
     justify?: 'justify-center' | 'justify-start' | 'justify-end'
+    gap?: string
+    padding?: string
     className?: string
 }
 
-export default function Wrapper({children, direction = 'row', align = 'align-stretch', justify = 'justify-start', className}: Props) {
+export default function Wrapper({children, direction = 'row', align = 'align-stretch', justify = 'justify-start', gap, padding, className}: Props) {
     return (
         <div className={classNames(
+            className,
             styles.flex,
             styles[direction],
             styles[align],
             styles[justify],
-            className
-        )}>{children}</div>
+        )} style={{gap: gap, padding: padding}}>{children}</div>
     )
 }

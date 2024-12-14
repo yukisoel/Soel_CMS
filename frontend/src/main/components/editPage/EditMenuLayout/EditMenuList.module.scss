@@ -5,13 +5,9 @@
 }
 
 .header_container {
-  display: flex;
-  justify-content: center;
   box-sizing: border-box;
   width: 100%;
   height: 10.4rem;
-
-  padding-bottom: 2.2rem;
 
   border-bottom: 0.1rem solid #282828; // TODO: あとから差し替える
 }
@@ -19,30 +15,14 @@
 .menu_container {
     width: 100%;
     box-sizing: border-box;
-    padding: 0px 183px;
-    gap: 2.3rem;
 
     margin-top: 7.7rem;
 }
 
 .menu_section_container {
-    padding-bottom: 23px;
     border-bottom: 0.3rem solid #EBEBEB;
 
     &:last-child {
         border-bottom: none;
     }
-}
-
-.menu_section_title_container {
-    gap: 1.1rem;
-    margin-bottom: 1.6rem;
-}
-
-.menu_section_items_wrapper {
-    gap: 0.7rem;
-}
-
-.menu_section_item_container {
-    gap: 3.8rem;
 }
