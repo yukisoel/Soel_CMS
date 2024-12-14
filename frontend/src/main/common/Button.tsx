@@ -3,20 +3,17 @@ import classNames from "classnames"
 
 type Props = {
     children: React.ReactNode
-    px?: 'small' | 'medium' | 'large' | 'xlarge' | 'xxlarge'
-    py?: 'small' | 'medium' | 'large' | 'xlarge'
+    padding?: string
     bgColor: 'primary' | 'secondary' | 'tertiary' | 'black'
     className?: string
 }
 
-export default function Button({children, px, py, bgColor, className}: Props) {
+export default function Button({children, padding, bgColor, className}: Props) {
     return (
         <span className={classNames(
             className,
             styles.button,
-            px ? styles[`px-${px}`] : '',
-            py ? styles[`py-${py}`] : '',
             styles[bgColor]
-        )}>{children}</span>
+        )} style={{padding: padding}}>{children}</span>
     )
 }

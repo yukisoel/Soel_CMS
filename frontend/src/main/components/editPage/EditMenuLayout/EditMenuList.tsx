@@ -17,7 +17,7 @@ function MenuSectionItem({sectionTitle, items}: MenuSectionItemProps) {
     <Wrapper direction="col" gap="1.6rem" padding="0 0 2.7rem" className={styles.menu_section_container}>
         <Wrapper align="align-center" gap="1.1rem">
             <Typography content={sectionTitle} size="xlarge" color="primary" />
-            <Button bgColor="primary" px="small" py="large">
+            <Button bgColor="primary" padding="1rem 2.2rem 1.2rem">
                 <Typography content="編集" size="small" color="black" />
             </Button>
         </Wrapper>
@@ -37,7 +37,7 @@ export default function EditMenuList({menuSectionItems}: Props) {
   return (
     <Wrapper direction="col" className={styles.edit_menu_container}>
         <Wrapper justify="justify-center" padding="0 0 2.2rem" className={styles.header_container}>
-            <Button bgColor="primary" px="xlarge" py="xlarge">
+            <Button bgColor="primary" padding="2.2rem 4.5rem 2.4rem">
                 <Typography content="セクションを追加" size="medium" color="primary" />
             </Button>
         </Wrapper>
