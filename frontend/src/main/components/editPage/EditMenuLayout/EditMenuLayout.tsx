@@ -10,6 +10,11 @@ type Props = {
   googleService: GoogleService
 }
 
+export type MenuSectionItem = {
+  sectionTitle: string
+  items: {title: string, price: string}[]
+}
+
 export default function EditMenuLayout({googleService}: Props) {
   const {setPankuzuItemList} = useContext(PankuzuItemListContext)
   const {googleSelectedLocation, setGoogleSelectedLocation} = useContext(GoogleSelectedLocationContext)
@@ -17,6 +22,9 @@ export default function EditMenuLayout({googleService}: Props) {
   const {locationId} = useParams()
 
   const [mode, setMode] = useState<'list' | 'edit' | 'create'>('list');
+  // TODO: メニューの取得処理を追加する
+  const [menuSectionItems, setMenuSectionItems] = useState<MenuSectionItem[]>([]);
+  const [selectedMenuSectionItem, setSelectedMenuSectionItem] = useState<MenuSectionItem & { index: number} | null>(null);
 
   useEffect(() => {
     setPankuzuItemList([
@@ -28,34 +36,51 @@ export default function EditMenuLayout({googleService}: Props) {
         setGoogleSelectedLocation(location)
       })
     }
+    setMenuSectionItems(
+      [
+        {
+           sectionTitle: "ランチメニューセット",
+           items: [
+               {title: "鰻うどん定食", price: "1000円"},
+               {title: "鰻うどん定食", price: "1200円"},
+               {title: "鰻うどん定食", price: "1500円"},
+           ]
+        },
+        {
+           sectionTitle: "ランチメニューセット",
+           items: [
+               {title: "鰻うどん定食", price: "1000円"},
+               {title: "鰻うどん定食", price: "1200円"},
+               {title: "鰻うどん定食", price: "1500円"},
+           ]
+        }
+     ]
+    )
   }, [])
 
-  // TODO: メニューの取得処理を追加する
-  const menuSectionItems = [
-     {
-        sectionTitle: "ランチメニューセット",
-        items: [
-            {title: "鰻うどん定食", price: "1000円"},
-            {title: "鰻うどん定食", price: "1200円"},
-            {title: "鰻うどん定食", price: "1500円"},
-        ]
-     },
-     {
-        sectionTitle: "ランチメニューセット",
-        items: [
-            {title: "鰻うどん定食", price: "1000円"},
-            {title: "鰻うどん定食", price: "1200円"},
-            {title: "鰻うどん定食", price: "1500円"},
-        ]
-     }
-  ]
+  const onClickEdit = (item: MenuSectionItem & { index: number }) => {
+    setSelectedMenuSectionItem(item);
+    setMode('edit');
+  }
 
-  const handleToggleMode = (mode: 'list' | 'edit' | 'create') => {
-    setMode(mode);
-  };
+  const onClickCreate = () => {
+    setMode('create');
+  }
+
+  const onClickCancel = () => {
+    setSelectedMenuSectionItem(null);
+    setMode('list');
+  }
+
+  const onClickSave = (menuSectionItem: MenuSectionItem) => {
+    // 保存する処理
+  }
 
   return (
-    // <EditMenuList menuSectionItems={menuSectionItems} />
-    <EditMenuUpdate sectionTitle={menuSectionItems[0].sectionTitle} items={menuSectionItems[0].items} />
+    <>
+      {mode === 'list' && <EditMenuList menuSectionItems={menuSectionItems} onClickEdit={onClickEdit} onClickCreate={onClickCreate} />}
+      {mode === 'edit' && <EditMenuUpdate sectionTitle={selectedMenuSectionItem?.sectionTitle || ''} items={selectedMenuSectionItem?.items || []} onClickCancel={onClickCancel} onClickSave={onClickSave} />}
+      {mode === 'create' && <EditMenuUpdate sectionTitle="" items={[]} onClickCancel={onClickCancel} onClickSave={onClickSave} />}
+    </>
   )
 }

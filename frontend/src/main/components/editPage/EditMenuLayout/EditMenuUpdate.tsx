@@ -5,13 +5,16 @@ import Button from "@/main/common/Button";
 import Input from "@/main/common/Input";
 import CloseButton from "@/main/common/CloseButton";
 import { useEffect, useState } from "react";
+import { MenuSectionItem } from "./EditMenuLayout";
 
 type Props = {
     sectionTitle: string
     items: {title: string, price: string}[]
+    onClickCancel: () => void
+    onClickSave: (menuSectionItem: MenuSectionItem) => void
 }
 
-export default function EditMenuUpdate({sectionTitle, items: menuItems}: Props) {
+export default function EditMenuUpdate({sectionTitle, items: menuItems, onClickCancel, onClickSave}: Props) {
     const [section, setSection] = useState(sectionTitle)
     const [items, setItems] = useState([{ title: '', price: '' }])
 
@@ -39,10 +42,10 @@ export default function EditMenuUpdate({sectionTitle, items: menuItems}: Props) 
   return (
     <Wrapper direction="col" className={styles.edit_menu_container}>
         <Wrapper justify="justify-center" gap="2rem" className={styles.header_container}>
-            <Button bgColor="secondary" padding="2.2rem 3.2rem 2.4rem 3.1rem">
-                <Typography content="キャンセル" size="medium" color="primary" />
+            <Button bgColor="secondary" padding="2.2rem 3.2rem 2.4rem 3.1rem" onClick={onClickCancel}>
+                <Typography content="キャンセル" size="medium" color="primary"/>
             </Button>
-            <Button bgColor="primary" padding="2.2rem 6.9rem 2.4rem">
+            <Button bgColor="primary" padding="2.2rem 6.9rem 2.4rem" onClick={() => onClickSave({sectionTitle: section, items})}>
                 <Typography content="保存" size="medium" color="primary" />
             </Button>
         </Wrapper>
@@ -55,7 +58,7 @@ export default function EditMenuUpdate({sectionTitle, items: menuItems}: Props) 
             </Wrapper>
             <Wrapper direction="col" gap="1rem">
                 <Wrapper padding="0 0 0 3.8rem">
-                    <Typography content="セクション" size="medium" color="primary" />
+                    <Typography content="内容" size="medium" color="primary" />
                 </Wrapper>
                 <Wrapper direction="col" gap="2rem">
                     {items.map((item, index) => (
