@@ -81,7 +81,7 @@ export default function EditMenuLayout({googleService}: Props) {
   }
 
   const onClickSave = (menuSectionItem: MenuSectionItem) => {
-    // 保存する処理
+    // TODO: 保存する処理
   }
 
   return (
