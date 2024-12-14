@@ -21,6 +21,17 @@
     }
 }
 
-.fw-midium {
+.fw-medium {
     font-weight: 500;
+}
+
+.inputWrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.closeButton {
+    position: absolute;
+    right: 3.8rem;
 }

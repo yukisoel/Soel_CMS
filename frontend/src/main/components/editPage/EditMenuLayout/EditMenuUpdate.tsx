@@ -54,7 +54,7 @@ export default function EditMenuUpdate({sectionTitle, items: menuItems, onClickC
                 <Wrapper padding="0 0 0 3.8rem">
                     <Typography content="セクション" size="medium" color="primary" />
                 </Wrapper>
-                <Input placeholder="セクション名を入力" width="1066px" padding="2.3rem 0 2.3rem 3.8rem" value={section} onChange={(e) => setSection(e.target.value)} />
+                <Input placeholder="セクション名を入力" width="1066px" padding="2.3rem 0 2.3rem 3.8rem" value={section} onChange={(e) => setSection(e.target.value)} onClear={() => {setSection('')}} />
             </Wrapper>
             <Wrapper direction="col" gap="1rem">
                 <Wrapper padding="0 0 0 3.8rem">
