@@ -1,0 +1,57 @@
+@use '@/main/styles/variables' as vars;
+
+.button {
+    cursor: pointer;
+    border-radius: 4.2rem;
+}
+
+.px-xxlarge {
+    padding-right: 8.9rem;
+    padding-left: 8.9rem;
+}
+
+.px-xlarge {
+    padding-right: 4.5rem;
+    padding-left: 4.5rem;
+}
+
+.px-large {
+    padding-right: 2.2em;
+    padding-left: 2.2em;
+}
+
+.px-medium {
+    padding-right: 3.1rem;
+    padding-left: 3.2rem;
+}
+
+.px-small {
+    padding-right: 2.1rem;
+    padding-left: 2.1rem;
+}
+
+.py-xlarge {
+    padding-top: 2.2rem;
+    padding-bottom: 2.4rem;
+}
+
+.py-large {
+    padding-top: 1rem;
+    padding-bottom: 1.2rem;
+}
+
+.primary {
+    background-color: vars.$background-color-primary;
+}
+
+.secondary {
+    background-color: vars.$background-color-secondary;
+}
+
+.tertiary {
+    background-color: vars.$background-color-tertiary;
+}
+
+.white {
+    background-color: vars.$background-color-white;
+}
