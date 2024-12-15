@@ -9,43 +9,43 @@ import {
 } from "@/main/model/LocationModel.ts";
 
 export interface GoogleRepository {
-  getAccounts(): Promise<GoogleAccount[]>;
+  getAccounts(): Promise<GoogleAccount[]>
 
-  getAccount(accountId: string): Promise<GoogleAccount>;
+  getAccount(accountId: string): Promise<GoogleAccount>
 
-  getLocations(googleAccount: GoogleAccount): Promise<GoogleLocation[]>;
+  getLocations(googleAccount: GoogleAccount): Promise<GoogleLocation[]>
 
-  getLocation(locationId: string): Promise<GoogleLocation>;
+  getLocation(locationId: string): Promise<GoogleLocation>
 
-  getLocationProfile(locationId: string): Promise<GoogleLocationProfileModel>;
+  getLocationProfile(locationId: string): Promise<GoogleLocationProfileModel>
 
   getLocationPhotos(
     accountId: string,
     locationId: string
-  ): Promise<LocationPhotoListResponse>;
+  ): Promise<LocationPhotoListResponse>
 
   getLocationFoodMenus(
     accountId: string,
     locationId: string
-  ): Promise<GoogleLocationFoodMenusModel>;
+  ): Promise<GoogleLocationFoodMenusModel>
 
   postLocationPhoto(
     accountId: string,
     locationId: string,
     photos: FileList
-  ): Promise<void>;
+  ): Promise<void>
   postLocationLocalPost(
     accountId: string,
     locationId: string,
     localPost: GoogleLocationLocalPostModel,
     photos: FileList
-  ): Promise<void>;
+  ): Promise<void>
 
   updateLocationProfile(
     locationId: string,
     updateMask: string,
     locationProfile: GoogleLocationProfileModel
-  ): Promise<GoogleLocationProfileModel>;
+  ): Promise<GoogleLocationProfileModel>
 }
 
 type AccountListResponse = GoogleAccount[];
