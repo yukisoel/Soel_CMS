@@ -12,7 +12,7 @@ import {GoogleSelectedLocationContextProvider} from "@/main/contexts/GoogleSelec
 import {axiosApiClient} from "@/main/client/axiosClient.ts";
 import EditPhotoLayout from "@/main/components/editPage/EditPhotoLayout.tsx";
 import EditLocalPostLayout from "@/main/components/editPage/EditLocalPostLayout.tsx";
-import EditMenuLayout from "./components/editPage/EditMenuLayout.tsx";
+import EditMenuLayout from "./components/editPage/EditMenuLayout/EditMenuLayout.tsx";
 
 const googleRepository = new GoogleRepositoryImpl()
 const googleService = new GoogleServiceImpl({googleRepository})

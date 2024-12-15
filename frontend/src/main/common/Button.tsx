@@ -1,22 +1,19 @@
 import styles from '@/main/common/Button.module.scss'
 import classNames from "classnames"
 
-type Props = {
+interface Props extends React.ButtonHTMLAttributes<HTMLButtonElement> {
     children: React.ReactNode
-    px?: 'small' | 'medium' | 'large' | 'xlarge' | 'xxlarge'
-    py?: 'small' | 'medium' | 'large' | 'xlarge'
+    padding?: string
     bgColor: 'primary' | 'secondary' | 'tertiary' | 'black'
     className?: string
 }
 
-export default function Button({children, px, py, bgColor, className}: Props) {
+export default function Button({children, padding, bgColor, className, ...props}: Props) {
     return (
-        <span className={classNames(
+        <button className={classNames(
             className,
             styles.button,
-            px ? styles[`px-${px}`] : '',
-            py ? styles[`py-${py}`] : '',
             styles[bgColor]
-        )}>{children}</span>
+        )} style={{padding: padding}} {...props}>{children}</button>
     )
 }
