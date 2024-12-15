@@ -1,11 +1,11 @@
-import { AxiosResponse } from "axios";
-import { GoogleAccount, GoogleLocation } from "@/main/model/GoogleAccount.ts";
-import { axiosApiClient } from "@/main/client/axiosClient.ts";
+import {AxiosResponse} from "axios";
+import {GoogleAccount, GoogleLocation} from "@/main/model/GoogleAccount.ts";
+import {axiosApiClient} from "@/main/client/axiosClient.ts";
 import {
   GoogleLocationFoodMenusModel,
   GoogleLocationLocalPostModel,
   GoogleLocationPhotoModel,
-  GoogleLocationProfileModel,
+  GoogleLocationProfileModel
 } from "@/main/model/LocationModel.ts";
 
 export interface GoogleRepository {
@@ -19,49 +19,29 @@ export interface GoogleRepository {
 
   getLocationProfile(locationId: string): Promise<GoogleLocationProfileModel>
 
-  getLocationPhotos(
-    accountId: string,
-    locationId: string
-  ): Promise<LocationPhotoListResponse>
+  getLocationPhotos(accountId: string, locationId: string): Promise<LocationPhotoListResponse>
 
-  getLocationFoodMenus(
-    accountId: string,
-    locationId: string
-  ): Promise<GoogleLocationFoodMenusModel>
+  getLocationFoodMenus(accountId: string,locationId: string): Promise<GoogleLocationFoodMenusModel>
 
-  postLocationPhoto(
-    accountId: string,
-    locationId: string,
-    photos: FileList
-  ): Promise<void>
-  postLocationLocalPost(
-    accountId: string,
-    locationId: string,
-    localPost: GoogleLocationLocalPostModel,
-    photos: FileList
-  ): Promise<void>
+  postLocationPhoto(accountId: string, locationId: string, photos: FileList): Promise<void>
+  postLocationLocalPost(accountId: string, locationId: string, localPost: GoogleLocationLocalPostModel, photos: FileList): Promise<void>
 
-  updateLocationProfile(
-    locationId: string,
-    updateMask: string,
-    locationProfile: GoogleLocationProfileModel
-  ): Promise<GoogleLocationProfileModel>
+  updateLocationProfile(locationId: string, updateMask: string, locationProfile: GoogleLocationProfileModel): Promise<GoogleLocationProfileModel>
 }
 
-type AccountListResponse = GoogleAccount[];
-type LocationListResponse = GoogleLocation[];
-type LocationResponse = GoogleLocation;
-type LocationPhotoListResponse = GoogleLocationPhotoModel[];
+type AccountListResponse = GoogleAccount[]
+type LocationListResponse = GoogleLocation[]
+type LocationResponse = GoogleLocation
+type LocationPhotoListResponse = GoogleLocationPhotoModel[]
 
 export class GoogleRepositoryImpl implements GoogleRepository {
   async getAccounts(): Promise<GoogleAccount[]> {
     try {
-      const response: AxiosResponse<AccountListResponse> =
-        await axiosApiClient.get("google/accounts", {
-          headers: {
-            Accept: "application/json; charset=utf-8",
-          },
-        })
+      const response: AxiosResponse<AccountListResponse> = await axiosApiClient.get('google/accounts', {
+        headers: {
+          'Accept': 'application/json; charset=utf-8',
+        },
+      })
       return response.data
     } catch (error) {
       console.error(error)
@@ -71,17 +51,14 @@ export class GoogleRepositoryImpl implements GoogleRepository {
 
   async getAccount(accountId: string): Promise<GoogleAccount> {
     try {
-      const response: AxiosResponse<GoogleAccount> = await axiosApiClient.get(
-        "google/account",
-        {
-          params: {
-            accountId: accountId,
-          },
-          headers: {
-            Accept: "application/json; charset=utf-8",
-          },
-        }
-      )
+      const response: AxiosResponse<GoogleAccount> = await axiosApiClient.get('google/account', {
+        params: {
+          accountId: accountId
+        },
+        headers: {
+          'Accept': 'application/json; charset=utf-8',
+        },
+      })
       return response.data
     } catch (error) {
       console.error(error)
@@ -91,15 +68,14 @@ export class GoogleRepositoryImpl implements GoogleRepository {
 
   async getLocations(googleAccount: GoogleAccount): Promise<GoogleLocation[]> {
     try {
-      const response: AxiosResponse<LocationListResponse> =
-        await axiosApiClient.get("google/locations", {
-          params: {
-            accountId: googleAccount.name,
-          },
-          headers: {
-            Accept: "application/json; charset=utf-8",
-          },
-        })
+      const response: AxiosResponse<LocationListResponse> = await axiosApiClient.get('google/locations', {
+        params: {
+          accountId: googleAccount.name
+        },
+        headers: {
+          'Accept': 'application/json; charset=utf-8',
+        },
+      })
       return response.data
     } catch (error) {
       console.error(error)
@@ -109,15 +85,14 @@ export class GoogleRepositoryImpl implements GoogleRepository {
 
   async getLocation(locationId: string): Promise<GoogleLocation> {
     try {
-      const response: AxiosResponse<LocationResponse> =
-        await axiosApiClient.get("google/location", {
-          params: {
-            locationId: locationId,
-          },
-          headers: {
-            Accept: "application/json; charset=utf-8",
-          },
-        })
+      const response: AxiosResponse<LocationResponse> = await axiosApiClient.get('google/location', {
+        params: {
+          locationId: locationId
+        },
+        headers: {
+          'Accept': 'application/json; charset=utf-8',
+        },
+      })
       return response.data
     } catch (error) {
       console.error(error)
@@ -125,19 +100,16 @@ export class GoogleRepositoryImpl implements GoogleRepository {
     }
   }
 
-  async getLocationProfile(
-    locationId: string
-  ): Promise<GoogleLocationProfileModel> {
+  async getLocationProfile(locationId: string): Promise<GoogleLocationProfileModel> {
     try {
-      const response: AxiosResponse<GoogleLocationProfileModel> =
-        await axiosApiClient.get("google/location/profile", {
-          params: {
-            locationId: locationId,
-          },
-          headers: {
-            Accept: "application/json; charset=utf-8",
-          },
-        })
+      const response: AxiosResponse<GoogleLocationProfileModel> = await axiosApiClient.get('google/location/profile', {
+        params: {
+          locationId: locationId
+        },
+        headers: {
+          'Accept': 'application/json; charset=utf-8',
+        },
+      })
       return response.data
     } catch (error) {
       console.error(error)
@@ -145,21 +117,17 @@ export class GoogleRepositoryImpl implements GoogleRepository {
     }
   }
 
-  async getLocationPhotos(
-    accountId: string,
-    locationId: string
-  ): Promise<LocationPhotoListResponse> {
+  async getLocationPhotos(accountId: string, locationId: string): Promise<LocationPhotoListResponse> {
     try {
-      const response: AxiosResponse<LocationPhotoListResponse> =
-        await axiosApiClient.get("google/location/photos", {
-          params: {
-            accountId: accountId,
-            locationId: locationId,
-          },
-          headers: {
-            Accept: "application/json; charset=utf-8",
-          },
-        })
+      const response: AxiosResponse<LocationPhotoListResponse> = await axiosApiClient.get('google/location/photos', {
+        params: {
+          accountId: accountId,
+          locationId: locationId
+        },
+        headers: {
+          'Accept': 'application/json; charset=utf-8',
+        },
+      })
       return response.data
     } catch (error) {
       console.error(error)
@@ -167,10 +135,7 @@ export class GoogleRepositoryImpl implements GoogleRepository {
     }
   }
 
-  async getLocationFoodMenus(
-    accountId: string,
-    locationId: string
-  ): Promise<GoogleLocationFoodMenusModel> {
+  async getLocationFoodMenus(accountId: string, locationId: string): Promise<GoogleLocationFoodMenusModel> {
     try {
       const response: AxiosResponse<GoogleLocationFoodMenusModel> =
         await axiosApiClient.get("google/location/food_menus", {
@@ -189,30 +154,25 @@ export class GoogleRepositoryImpl implements GoogleRepository {
     }
   }
 
-  async postLocationPhoto(
-    accountId: string,
-    locationId: string,
-    photos: FileList
-  ): Promise<void> {
+  async postLocationPhoto(accountId: string, locationId: string, photos: FileList): Promise<void> {
     try {
       const formData = new FormData()
       for (let i = 0; i < photos.length; i++) {
-        formData.append("files", photos[i])
+        formData.append('files', photos[i])
       }
 
       const response: AxiosResponse<void> = await axiosApiClient.post(
-        "google/location/photos",
+        'google/location/photos',
         formData,
         {
           params: {
             accountId: accountId,
-            locationId: locationId,
+            locationId: locationId
           },
           headers: {
-            "Content-Type": "multipart/form-data",
+            'Content-Type': 'multipart/form-data',
           },
-        }
-      )
+        })
       console.log(response)
     } catch (error) {
       console.error(error)
@@ -220,32 +180,26 @@ export class GoogleRepositoryImpl implements GoogleRepository {
     }
   }
 
-  async postLocationLocalPost(
-    accountId: string,
-    locationId: string,
-    localPost: GoogleLocationLocalPostModel,
-    photos: FileList
-  ): Promise<void> {
+  async postLocationLocalPost(accountId: string, locationId: string, localPost: GoogleLocationLocalPostModel, photos: FileList): Promise<void> {
     try {
       const formData = new FormData()
       for (let i = 0; i < photos.length; i++) {
-        formData.append("files", photos[i])
+        formData.append('files', photos[i])
       }
-      formData.append("localPost", JSON.stringify(localPost))
+      formData.append('localPost', JSON.stringify(localPost))
 
       const response: AxiosResponse<void> = await axiosApiClient.post(
-        "google/location/localPost",
+        'google/location/localPost',
         formData,
         {
           params: {
             accountId: accountId,
-            locationId: locationId,
+            locationId: locationId
           },
           headers: {
-            "Content-Type": "multipart/form-data",
+            'Content-Type': 'multipart/form-data',
           },
-        }
-      )
+        })
       console.log(response)
     } catch (error) {
       console.error(error)
@@ -253,21 +207,19 @@ export class GoogleRepositoryImpl implements GoogleRepository {
     }
   }
 
-  async updateLocationProfile(
-    locationId: string,
-    updateMask: string,
-    locationProfile: GoogleLocationProfileModel
-  ): Promise<GoogleLocationProfileModel> {
+  async updateLocationProfile(locationId: string, updateMask: string, locationProfile: GoogleLocationProfileModel): Promise<GoogleLocationProfileModel> {
     try {
-      const response: AxiosResponse<GoogleLocationProfileModel> =
-        await axiosApiClient.patch("google/location/profile", locationProfile, {
+      const response: AxiosResponse<GoogleLocationProfileModel> = await axiosApiClient.patch(
+        'google/location/profile',
+        locationProfile,
+        {
           params: {
             locationId: locationId,
-            updateMask: updateMask,
+            updateMask: updateMask
           },
           headers: {
-            Accept: "application/json; charset=utf-8",
-            "Content-Type": "application/json",
+            'Accept': 'application/json; charset=utf-8',
+            'Content-Type': 'application/json',
           },
         })
       return response.data
