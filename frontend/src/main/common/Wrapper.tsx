@@ -5,7 +5,7 @@ type Props = {
     children?: React.ReactNode
     direction?: 'col' | 'row'
     align?: 'align-center' | 'align-start' | 'align-end' | 'align-stretch'
-    justify?: 'justify-center' | 'justify-start' | 'justify-end'
+    justify?: 'justify-center' | 'justify-start' | 'justify-end' | 'justify-between'
     gap?: string
     padding?: string
     className?: string
