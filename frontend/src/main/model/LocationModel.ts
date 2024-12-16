@@ -1,4 +1,4 @@
-import {LocationAssociationName} from "@/main/model/LocationAssociationName.ts";
+import { LocationAssociationName } from "@/main/model/LocationAssociationName.ts"
 
 export type GoogleLocationProfileModel = {
   name?: string
@@ -98,7 +98,7 @@ export type GoogleLocationPhotoModel = {
   googleUrl?: string
   thumbnailUrl?: string
   createTime?: string
-  locationAssociation?:GoogleLocationAssociation
+  locationAssociation?: GoogleLocationAssociation
 }
 
 export type GoogleLocationAssociation = {
@@ -141,4 +141,34 @@ export type GoogleLocationOffer = {
   couponCode?: string
   redeemOnlineUrl?: string
   termsConditions?: string
+}
+
+export type GoogleLocationFoodMenusModel = {
+  menus: GoogleLocationFoodMenu[]
+}
+
+export type GoogleLocationFoodMenu = {
+  sections: GoogleLocationFoodMenuSection[]
+}
+
+export type GoogleLocationMenuLabel = {
+  displayName: string
+}
+
+export type GoogleLocationFoodMenuSection = {
+  labels: GoogleLocationMenuLabel[]
+  items: GoogleLocationFoodMenuItem[]
+}
+
+export type GoogleLocationFoodMenuItem = {
+  labels: GoogleLocationMenuLabel[]
+  attributes: GoogleLocationFoodMenuItemAttributes
+}
+
+export type GoogleLocationFoodMenuItemAttributes = {
+  price?: GoogleLocationMoeny
+}
+
+export type GoogleLocationMoeny = {
+  units: string
 }

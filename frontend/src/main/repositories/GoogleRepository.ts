@@ -2,6 +2,7 @@ import {AxiosResponse} from "axios";
 import {GoogleAccount, GoogleLocation} from "@/main/model/GoogleAccount.ts";
 import {axiosApiClient} from "@/main/client/axiosClient.ts";
 import {
+  GoogleLocationFoodMenusModel,
   GoogleLocationLocalPostModel,
   GoogleLocationPhotoModel,
   GoogleLocationProfileModel
@@ -19,6 +20,9 @@ export interface GoogleRepository {
   getLocationProfile(locationId: string): Promise<GoogleLocationProfileModel>
 
   getLocationPhotos(accountId: string, locationId: string): Promise<LocationPhotoListResponse>
+
+  getLocationFoodMenus(accountId: string,locationId: string): Promise<GoogleLocationFoodMenusModel>
+
   postLocationPhoto(accountId: string, locationId: string, photos: FileList): Promise<void>
   postLocationLocalPost(accountId: string, locationId: string, localPost: GoogleLocationLocalPostModel, photos: FileList): Promise<void>
 
@@ -128,6 +132,25 @@ export class GoogleRepositoryImpl implements GoogleRepository {
     } catch (error) {
       console.error(error)
       throw new Error("google get location photos failed")
+    }
+  }
+
+  async getLocationFoodMenus(accountId: string, locationId: string): Promise<GoogleLocationFoodMenusModel> {
+    try {
+      const response: AxiosResponse<GoogleLocationFoodMenusModel> =
+        await axiosApiClient.get("google/location/food_menus", {
+          params: {
+            accountId: accountId,
+            locationId: locationId,
+          },
+          headers: {
+            Accept: "application/json; charset=utf-8",
+          },
+        })
+      return response.data;
+    } catch (error) {
+      console.error(error)
+      throw new Error("google get location food menus failed")
     }
   }
 

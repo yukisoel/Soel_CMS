@@ -23,7 +23,12 @@ function MenuSectionItem({sectionTitle, items, index, onClickEdit}: MenuSectionI
             {items.map((item, i) => (
                 <Wrapper align="align-center" gap="3.8rem" key={i}>
                     <Typography content={item.title} size="large" color="primary" />
-                    <Typography content={item.price} size="medium" color="secondary" />
+                    {item.price && (
+                    <Wrapper>
+                        <Typography content={item.price} size="medium" color="secondary" />
+                        <Typography content="円" size="medium" color="secondary" />
+                    </Wrapper>
+                    )}
                 </Wrapper>
             ))}
         </Wrapper>

@@ -5,6 +5,7 @@ import {GoogleSelectedLocationContext} from "@/main/contexts/GoogleSelectedLocat
 import {useParams} from "react-router-dom";
 import EditMenuList from "./EditMenuList";
 import EditMenuUpdate from "./EditMenuUpdate";
+import { GoogleLocationFoodMenuSection } from "@/main/model/LocationModel";
 
 type Props = {
   googleService: GoogleService
@@ -15,16 +16,74 @@ export type MenuSectionItem = {
   items: {title: string, price: string}[]
 }
 
+const useMenuFood = (googleService: GoogleService, accountId: string | undefined, locationId: string | undefined) => {
+  const [foodMenuSections, setFoodMenuSections] = useState<GoogleLocationFoodMenuSection[]>([])
+  const [menuSectionItems, setMenuSectionItems] = useState<MenuSectionItem[]>([]);
+
+  useEffect(() => {
+    getFoodMenus()
+  }, [accountId, locationId])
+
+  const getFoodMenus = () => {
+    if (accountId && locationId) {
+      googleService.getLocationFoodMenus(accountId, locationId).then(data => {
+        const menu = data.menus[0];
+        setFoodMenuSections(menu.sections)
+        setMenuSectionItems(toMenuSectionItems(menu.sections))
+      })
+    }
+  }
+
+  const toMenuSectionItems = (foodMenuSections: GoogleLocationFoodMenuSection[]): MenuSectionItem[] => {
+    return foodMenuSections.map(section => {
+       return {
+          sectionTitle: section.labels[0].displayName,
+          items: section.items.map(item => {
+              return {
+                  title: item.labels[0].displayName,
+                  price: item.attributes.price?.units || ''
+              }
+          })
+       }
+    })
+  }
+
+  // TODO: リクエストの形式によりfoodMenuSectionsと良い感じにマージする必要があるかも
+  const toFoodMenuSections = (menuSectionItems: MenuSectionItem[]): GoogleLocationFoodMenuSection[] => {
+    return menuSectionItems.map(section => {
+      return {
+        labels: [{displayName: section.sectionTitle}],
+        items: section.items.map(item => {
+          return {
+            labels: [{displayName: item.title}],
+            attributes: {
+              price: {
+                units: item.price
+              }
+            }
+          }
+        })
+      }
+    })
+  }
+
+  const updateMenu = (menuSectionItems: MenuSectionItem[]) => {
+    // TODO: update処理を追加する refetchも必要
+  }
+
+  return {menuSectionItems, updateMenu}
+}
+
 export default function EditMenuLayout({googleService}: Props) {
   const {setPankuzuItemList} = useContext(PankuzuItemListContext)
   const {googleSelectedLocation, setGoogleSelectedLocation} = useContext(GoogleSelectedLocationContext)
 
-  const {locationId} = useParams()
+  const {accountId, locationId} = useParams()
 
   const [mode, setMode] = useState<'list' | 'edit' | 'create'>('list');
-  // TODO: メニューの取得処理を追加する
-  const [menuSectionItems, setMenuSectionItems] = useState<MenuSectionItem[]>([]);
   const [selectedMenuSectionItem, setSelectedMenuSectionItem] = useState<MenuSectionItem & { index: number} | null>(null);
+
+  const {menuSectionItems, updateMenu} = useMenuFood(googleService, accountId, locationId)
 
   useEffect(() => {
     setPankuzuItemList([
@@ -36,34 +95,6 @@ export default function EditMenuLayout({googleService}: Props) {
         setGoogleSelectedLocation(location)
       })
     }
-    setMenuSectionItems(
-      [
-        {
-           sectionTitle: "ランチメニューセット",
-           items: [
-               {title: "鰻うどん定食", price: "1000円"},
-               {title: "鰻うどん定食", price: "1200円"},
-               {title: "鰻うどん定食", price: "1500円"},
-           ]
-        },
-        {
-           sectionTitle: "ランチメニューセット",
-           items: [
-               {title: "鰻うどん定食", price: "1000円"},
-               {title: "鰻うどん定食", price: "1200円"},
-               {title: "鰻うどん定食", price: "1500円"},
-           ]
-        },
-        {
-          sectionTitle: "ランチメニューセット",
-          items: [
-              {title: "鰻うどん定食", price: "1000円"},
-              {title: "鰻うどん定食", price: "1200円"},
-              {title: "鰻うどん定食", price: "1500円"},
-          ]
-       }
-     ]
-    )
   }, [])
 
   const onClickEdit = (item: MenuSectionItem & { index: number }) => {

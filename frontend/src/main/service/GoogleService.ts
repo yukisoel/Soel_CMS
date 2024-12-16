@@ -1,6 +1,7 @@
 import {GoogleRepository} from "@/main/repositories/GoogleRepository.ts";
 import {GoogleAccount, GoogleLocation} from "@/main/model/GoogleAccount.ts";
 import {
+  GoogleLocationFoodMenusModel,
   GoogleLocationLocalPostModel,
   GoogleLocationPhotoModel,
   GoogleLocationProfileModel
@@ -13,6 +14,7 @@ export interface GoogleService {
   getLocation(locationId:string): Promise<GoogleLocation>
   getLocationProfile(locationId:string): Promise<GoogleLocationProfileModel>
   getLocationPhotos(accountId:string, locationId:string): Promise<GoogleLocationPhotoModel[]>
+  getLocationFoodMenus(accountId: string,locationId: string): Promise<GoogleLocationFoodMenusModel>
   postLocationPhoto(accountId:string, locationId:string, photos:FileList): Promise<void>
   postLocationLocalPost(accountId:string, locationId:string, localPost:GoogleLocationLocalPostModel, photos:FileList): Promise<void>
   updateLocationProfile(locationId:string, updateMask:string, locationProfile:GoogleLocationProfileModel): Promise<GoogleLocationProfileModel>
@@ -51,6 +53,10 @@ export class GoogleServiceImpl implements GoogleService {
 
   async getLocationPhotos(accountId:string, locationId:string): Promise<GoogleLocationPhotoModel[]> {
     return this.googleRepository.getLocationPhotos(accountId, locationId)
+  }
+
+  async getLocationFoodMenus(accountId: string, locationId: string): Promise<GoogleLocationFoodMenusModel> {
+    return this.googleRepository.getLocationFoodMenus(accountId, locationId)
   }
 
   async postLocationPhoto(accountId:string, locationId:string, photos:FileList): Promise<void> {
