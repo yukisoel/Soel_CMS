@@ -51,6 +51,13 @@ interface GoogleRepository {
         updateMask: String,
         locationProfile: GoogleLocationProfileModel
     ): GoogleLocationProfileModel?
+
+    fun updateLocationFoodMenus(
+        accessToken: String,
+        accountId: String,
+        locationId: String,
+        foodMenus: GoogleLocationFoodMenusModel
+    ): GoogleLocationFoodMenusModel?
 }
 
 @Primary
@@ -394,6 +401,32 @@ class GoogleRepositoryImpl(val restTemplate: RestTemplate) : GoogleRepository {
             uri,
             entity,
             GoogleLocationProfileModel::class.java
+        )
+    }
+
+    override fun updateLocationFoodMenus(
+        accessToken: String,
+        accountId: String,
+        locationId: String,
+        foodMenus: GoogleLocationFoodMenusModel
+    ): GoogleLocationFoodMenusModel? {
+        val requestUrl = "https://mybusiness.googleapis.com/v4/accounts/$accountId/locations/$locationId/foodMenus"
+        val uri = UriComponentsBuilder.fromHttpUrl(requestUrl)
+            .build()
+            .toUri()
+
+        val headers = HttpHeaders()
+
+        headers.apply {
+            setBearerAuth(accessToken)
+        }
+
+        val entity = HttpEntity(foodMenus, headers)
+
+        return restTemplate.patchForObject(
+            uri,
+            entity,
+            GoogleLocationFoodMenusModel::class.java
         )
     }
 }

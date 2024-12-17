@@ -65,6 +65,13 @@ interface GoogleService {
         updateMask: String,
         locationProfile: GoogleLocationProfileModel
     ): ResponseEntity<GoogleLocationProfileModel>?
+
+    fun updateLocationFoodMenus(
+        accessToken: String,
+        accountId: String,
+        locationId: String,
+        locationFoodMenus: GoogleLocationFoodMenusModel
+    ): ResponseEntity<GoogleLocationFoodMenusModel>?
 }
 
 @Service
@@ -405,6 +412,24 @@ class GoogleServicImpl(val googleRepository: GoogleRepository) : GoogleService {
             )
         } catch (e: Exception) {
             logger.error("Error updating location profile", e)
+            return ResponseEntity
+                .badRequest()
+                .body(null)
+        }
+    }
+
+    override fun updateLocationFoodMenus(
+        accessToken: String,
+        accountId: String,
+        locationId: String,
+        locationFoodMenus: GoogleLocationFoodMenusModel
+    ): ResponseEntity<GoogleLocationFoodMenusModel>? {
+        try {
+            val googleLocationFoodMenusModel =
+                googleRepository.updateLocationFoodMenus(accessToken, accountId, locationId, locationFoodMenus)
+            return ResponseEntity.ok(googleLocationFoodMenusModel)
+        } catch (e: Exception) {
+            logger.error("Error updating location food menus", e)
             return ResponseEntity
                 .badRequest()
                 .body(null)

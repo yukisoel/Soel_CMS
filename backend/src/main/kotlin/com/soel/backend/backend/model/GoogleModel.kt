@@ -223,8 +223,8 @@ data class GoogleLocationFoodMenuItemOption(
 data class GoogleLocationFoodMenuItemAttributes(
     val price: GoogleLocationMoney? = null,
     val spiciness: String? = null,
-    val allergens: List<String>? = null,
-    val dietaryRestrictions: List<String>? = null,
+    val allergen: List<String>? = null,
+    val dietaryRestriction: List<String>? = null,
     val nutritionFacts: GoogleLocationNutritionFacts? = null,
     val ingredients: List<GoogleLocationIngredient>? = null,
     val servesNumPeople: Int? = null,

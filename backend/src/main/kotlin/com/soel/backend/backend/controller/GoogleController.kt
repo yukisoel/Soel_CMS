@@ -85,6 +85,11 @@ class GoogleController(val googleService: GoogleService) {
     fun updateLocationProfile(@RegisteredOAuth2AuthorizedClient("google") googleClient: OAuth2AuthorizedClient, @RequestParam("locationId") locationId: String, @RequestParam("updateMask") updateMask: String, @RequestBody locationProfile: GoogleLocationProfileModel): ResponseEntity<GoogleLocationProfileModel>? {
         return googleService.updateLocationProfile(googleClient.accessToken.tokenValue, locationId, updateMask, locationProfile)
     }
+
+    @PatchMapping("/location/food_menus")
+    fun updateLocationFoodMenus(@RegisteredOAuth2AuthorizedClient("google") googleClient: OAuth2AuthorizedClient, @RequestParam("accountId") accountId: String, @RequestParam("locationId") locationId: String, @RequestBody foodMenus: GoogleLocationFoodMenusModel): ResponseEntity<GoogleLocationFoodMenusModel>? {
+        return googleService.updateLocationFoodMenus(googleClient.accessToken.tokenValue, accountId, locationId, foodMenus)
+    }
     /*
 
         口コミ取得
