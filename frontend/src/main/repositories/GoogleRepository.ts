@@ -27,6 +27,8 @@ export interface GoogleRepository {
   postLocationLocalPost(accountId: string, locationId: string, localPost: GoogleLocationLocalPostModel, photos: FileList): Promise<void>
 
   updateLocationProfile(locationId: string, updateMask: string, locationProfile: GoogleLocationProfileModel): Promise<GoogleLocationProfileModel>
+
+  updateLocationFoodMenus(accountId: string, locationId: string, foodMenus: GoogleLocationFoodMenusModel): Promise<void>
 }
 
 type AccountListResponse = GoogleAccount[]
@@ -226,6 +228,29 @@ export class GoogleRepositoryImpl implements GoogleRepository {
     } catch (error) {
       console.error(error)
       throw new Error("google update location profile failed")
+    }
+  }
+
+  async updateLocationFoodMenus(accountId: string, locationId: string, foodMenus: GoogleLocationFoodMenusModel): Promise<void> {
+    try {
+      const response: AxiosResponse<void> = await axiosApiClient.patch(
+        'google/location/food_menus',
+        foodMenus,
+        {
+          params: {
+            accountId: accountId,
+            locationId: locationId,
+            // foodMenus: foodMenus
+          },
+          headers: {
+            'Accept': 'application/json; charset=utf-8',
+            'Content-Type': 'application/json',
+          },
+        })
+      console.log(response)
+    } catch (error) {
+      console.error(error)
+      throw new Error("google update location food menus failed")
     }
   }
 }

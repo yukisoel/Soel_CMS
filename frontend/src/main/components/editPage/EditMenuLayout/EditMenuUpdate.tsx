@@ -8,15 +8,15 @@ import { useEffect, useState } from "react";
 import { MenuSectionItem } from "./EditMenuLayout";
 
 type Props = {
-    sectionTitle: string
-    items: {title: string, price: string}[]
+    sectionTitle: MenuSectionItem['sectionTitle']
+    items: MenuSectionItem['items']
     onClickCancel: () => void
     onClickSave: (menuSectionItem: MenuSectionItem) => void
 }
 
 export default function EditMenuUpdate({sectionTitle, items: menuItems, onClickCancel, onClickSave}: Props) {
-    const [section, setSection] = useState(sectionTitle)
-    const [items, setItems] = useState([{ title: '', price: '' }])
+    const [section, setSection] = useState<MenuSectionItem['sectionTitle']>('')
+    const [items, setItems] = useState<MenuSectionItem['items']>([])
 
     const handleAddItem = () => {
         setItems([...items, { title: '', price: '' }])

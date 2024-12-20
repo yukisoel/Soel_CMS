@@ -5,7 +5,7 @@ import {GoogleSelectedLocationContext} from "@/main/contexts/GoogleSelectedLocat
 import {useParams} from "react-router-dom";
 import EditMenuList from "./EditMenuList";
 import EditMenuUpdate from "./EditMenuUpdate";
-import { GoogleLocationFoodMenuSection } from "@/main/model/LocationModel";
+import { GoogleLocationFoodMenu, GoogleLocationFoodMenuSection } from "@/main/model/LocationModel";
 
 type Props = {
   googleService: GoogleService
@@ -17,7 +17,7 @@ export type MenuSectionItem = {
 }
 
 const useMenuFood = (googleService: GoogleService, accountId: string | undefined, locationId: string | undefined) => {
-  const [foodMenuSections, setFoodMenuSections] = useState<GoogleLocationFoodMenuSection[]>([])
+  const [foodMenus, setFoodMenuSections] = useState<GoogleLocationFoodMenu[]>([])
   const [menuSectionItems, setMenuSectionItems] = useState<MenuSectionItem[]>([]);
 
   useEffect(() => {
@@ -27,9 +27,8 @@ const useMenuFood = (googleService: GoogleService, accountId: string | undefined
   const getFoodMenus = () => {
     if (accountId && locationId) {
       googleService.getLocationFoodMenus(accountId, locationId).then(data => {
-        const menu = data.menus[0];
-        setFoodMenuSections(menu.sections)
-        setMenuSectionItems(toMenuSectionItems(menu.sections))
+        setFoodMenuSections(data.menus)
+        setMenuSectionItems(toMenuSectionItems(data.menus[0].sections))
       })
     }
   }
@@ -49,13 +48,18 @@ const useMenuFood = (googleService: GoogleService, accountId: string | undefined
   }
 
   // TODO: リクエストの形式によりfoodMenuSectionsと良い感じにマージする必要があるかも
-  const toFoodMenuSections = (menuSectionItems: MenuSectionItem[]): GoogleLocationFoodMenuSection[] => {
-    return menuSectionItems.map(section => {
+  const toFoodMenuSections = (menuSectionItems: MenuSectionItem[]): GoogleLocationFoodMenu[] => {
+    const currentMenuSections = foodMenus[0].sections
+    const newMenuSections =  menuSectionItems.map((section, index) => {
+      // 編集したsectionLabelsとそれ以外のlabelsをマージ
+      const newSectionLabels = [{displayName: section.sectionTitle}, ...(currentMenuSections[index]?.labels?.slice(1) ?? [])]
+      const currentItems = currentMenuSections[index].items
       return {
-        labels: [{displayName: section.sectionTitle}],
+        labels: newSectionLabels,
         items: section.items.map(item => {
+          const newItemLabels = [{displayName: item.title}, ...(currentItems[index] ? currentItems[index].labels.slice(1) : [])]
           return {
-            labels: [{displayName: item.title}],
+            labels: newItemLabels,
             attributes: {
               price: {
                 units: item.price
@@ -65,13 +69,21 @@ const useMenuFood = (googleService: GoogleService, accountId: string | undefined
         })
       }
     })
+    const newMenu = {
+      labels: foodMenus[0].labels,
+      sections: newMenuSections
+    }
+    return [newMenu, ...foodMenus.slice(1)]
   }
 
-  const updateMenu = (menuSectionItems: MenuSectionItem[]) => {
+  const updateFoodMenus = (menuSectionItems: MenuSectionItem[]) => {
     // TODO: update処理を追加する refetchも必要
+    if (accountId && locationId) {
+      googleService.updateLocationFoodMenus(accountId, locationId, {menus: toFoodMenuSections(menuSectionItems)})
+    }
   }
 
-  return {menuSectionItems, updateMenu}
+  return {menuSectionItems, updateFoodMenus}
 }
 
 export default function EditMenuLayout({googleService}: Props) {
@@ -83,7 +95,7 @@ export default function EditMenuLayout({googleService}: Props) {
   const [mode, setMode] = useState<'list' | 'edit' | 'create'>('list');
   const [selectedMenuSectionItem, setSelectedMenuSectionItem] = useState<MenuSectionItem & { index: number} | null>(null);
 
-  const {menuSectionItems, updateMenu} = useMenuFood(googleService, accountId, locationId)
+  const {menuSectionItems, updateFoodMenus} = useMenuFood(googleService, accountId, locationId)
 
   useEffect(() => {
     setPankuzuItemList([
@@ -112,7 +124,17 @@ export default function EditMenuLayout({googleService}: Props) {
   }
 
   const onClickSave = (menuSectionItem: MenuSectionItem) => {
-    // TODO: 保存する処理
+    // 編集なら編集したものに差し替えて渡す
+    if (selectedMenuSectionItem) {
+      const newMenuSectionItems = [...menuSectionItems]
+      newMenuSectionItems[selectedMenuSectionItem.index] = menuSectionItem
+      updateFoodMenus(newMenuSectionItems)
+    } else {
+      // 追加なら一番後ろに足す形にする
+      updateFoodMenus([...menuSectionItems, menuSectionItem])
+    }
+    setMode('list')
+
   }
 
   return (

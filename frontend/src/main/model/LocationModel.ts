@@ -148,6 +148,7 @@ export type GoogleLocationFoodMenusModel = {
 }
 
 export type GoogleLocationFoodMenu = {
+  labels: GoogleLocationMenuLabel[]
   sections: GoogleLocationFoodMenuSection[]
 }
 
