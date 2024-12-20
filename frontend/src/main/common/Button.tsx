@@ -4,7 +4,7 @@ import classNames from "classnames"
 interface Props extends React.ButtonHTMLAttributes<HTMLButtonElement> {
     children: React.ReactNode
     padding?: string
-    bgColor: 'primary' | 'secondary' | 'tertiary' | 'black' | 'white'
+    bgColor: 'primary' | 'secondary' | 'tertiary' | 'black' | 'white' | 'input'
     className?: string
 }
 

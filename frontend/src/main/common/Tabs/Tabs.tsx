@@ -20,7 +20,7 @@ export function Tabs({ tabs, selectedTab, setSelectedTab }: Props) {
         {tabs.map((tab) => (
             <Button
                 padding="1.1rem 4rem"
-                bgColor={selectedTab === tab.tabKey ? 'primary' : 'secondary'}
+                bgColor={selectedTab === tab.tabKey ? 'primary' : 'input'}
                 onClick={() => setSelectedTab(tab.tabKey)}
                 key={tab.tabKey}
             >
