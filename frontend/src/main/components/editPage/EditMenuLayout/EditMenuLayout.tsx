@@ -5,7 +5,7 @@ import {GoogleSelectedLocationContext} from "@/main/contexts/GoogleSelectedLocat
 import {useParams} from "react-router-dom";
 import EditMenuList from "./EditMenuList";
 import EditMenuUpdate from "./EditMenuUpdate";
-import { GoogleLocationFoodMenu, GoogleLocationFoodMenuSection } from "@/main/model/LocationModel";
+import { GoogleLocationFoodMenu, GoogleLocationFoodMenuSection, GoogleLocationMenuLabel, GoogleLocationFoodMenuItemAttributes, GoogleLocationFoodMenusModel } from "@/main/model/LocationModel";
 
 type Props = {
   googleService: GoogleService
@@ -17,7 +17,7 @@ export type MenuSectionItem = {
 }
 
 const useMenuFood = (googleService: GoogleService, accountId: string | undefined, locationId: string | undefined) => {
-  const [foodMenus, setFoodMenuSections] = useState<GoogleLocationFoodMenu[]>([])
+  const [foodMenu, setFoodMenu] = useState<GoogleLocationFoodMenusModel>()
   const [menuSectionItems, setMenuSectionItems] = useState<MenuSectionItem[]>([]);
 
   useEffect(() => {
@@ -27,7 +27,7 @@ const useMenuFood = (googleService: GoogleService, accountId: string | undefined
   const getFoodMenus = () => {
     if (accountId && locationId) {
       googleService.getLocationFoodMenus(accountId, locationId).then(data => {
-        setFoodMenuSections(data.menus)
+        setFoodMenu(data)
         setMenuSectionItems(toMenuSectionItems(data.menus[0].sections))
       })
     }
@@ -40,46 +40,78 @@ const useMenuFood = (googleService: GoogleService, accountId: string | undefined
           items: section.items.map(item => {
               return {
                   title: item.labels[0].displayName,
-                  price: item.attributes.price?.units || ''
+                  price: item.attributes.price?.units ?? ''
               }
           })
        }
     })
   }
 
+  const createFoodMenuLabels = (sectionTitle: string, currentLabels?: GoogleLocationMenuLabel[]): GoogleLocationMenuLabel[] => {
+    if (currentLabels) {
+      return [{...currentLabels[0], displayName: sectionTitle}, ...currentLabels.slice(1)]
+    }
+    return [
+      {
+        displayName: sectionTitle,
+        description: null,
+        languageCode: null
+      }
+    ]
+  }
+
+  const createFoodMenuAttributes = (price: string, currentAttributes?: GoogleLocationFoodMenuItemAttributes): GoogleLocationFoodMenuItemAttributes => {
+    if (currentAttributes) {
+      return {
+        ...currentAttributes,
+        price: {
+          units: price ?? null,
+          currencyCode: currentAttributes.price?.currencyCode ?? 'JPY',
+          nanos: currentAttributes.price?.nanos ?? null
+        }
+      }
+    }
+    return {
+      price: {
+        units: price ?? null,
+        currencyCode: 'JPY',
+        nanos: null
+      }
+    }
+  }
+
   // TODO: リクエストの形式によりfoodMenuSectionsと良い感じにマージする必要があるかも
   const toFoodMenuSections = (menuSectionItems: MenuSectionItem[]): GoogleLocationFoodMenu[] => {
-    const currentMenuSections = foodMenus[0].sections
+    const menu = foodMenu?.menus[0]
+    const currentMenuSections = menu?.sections || []
     const newMenuSections =  menuSectionItems.map((section, index) => {
       // 編集したsectionLabelsとそれ以外のlabelsをマージ
-      const newSectionLabels = [{displayName: section.sectionTitle}, ...(currentMenuSections[index]?.labels?.slice(1) ?? [])]
       const currentItems = currentMenuSections[index].items
       return {
-        labels: newSectionLabels,
-        items: section.items.map(item => {
-          const newItemLabels = [{displayName: item.title}, ...(currentItems[index] ? currentItems[index].labels.slice(1) : [])]
+        labels: createFoodMenuLabels(section.sectionTitle, currentMenuSections[index].labels),
+        items: section.items.map((item, j) => {
           return {
-            labels: newItemLabels,
-            attributes: {
-              price: {
-                units: item.price
-              }
-            }
+            labels: createFoodMenuLabels(item.title, currentItems[j]?.labels),
+            attributes: createFoodMenuAttributes(item.price, currentItems[j]?.attributes),
+            options: currentItems[j]?.options || null
           }
         })
       }
     })
     const newMenu = {
-      labels: foodMenus[0].labels,
-      sections: newMenuSections
+      labels: menu?.labels || [],
+      sections: newMenuSections,
+      cuisines: menu?.cuisines || null,
+      sourceUrl: menu?.sourceUrl || null,
     }
-    return [newMenu, ...foodMenus.slice(1)]
+    return [newMenu, ...(foodMenu?.menus?.slice(1) || [])]
   }
 
   const updateFoodMenus = (menuSectionItems: MenuSectionItem[]) => {
     // TODO: update処理を追加する refetchも必要
     if (accountId && locationId) {
-      googleService.updateLocationFoodMenus(accountId, locationId, {menus: toFoodMenuSections(menuSectionItems)})
+      console.log('toFoodMenuSections', toFoodMenuSections(menuSectionItems))
+      googleService.updateLocationFoodMenus(accountId, locationId, {menus: toFoodMenuSections(menuSectionItems), name: foodMenu?.name || null})
     }
   }
 
