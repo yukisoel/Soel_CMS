@@ -5,7 +5,11 @@ import CheckCircleIcon from '@/main/assets/CheckCircleIcon.svg';
 import RecommendReservationIcon from '@/main/assets/RecommendReservation.svg';
 import styles from '@/main/components/editPage/EditReservationLayout/EditReservationLayout.module.scss';
 
-export default function EditReservationRecommend() {
+type Props = {
+    handleClick: () => void
+}
+
+export default function EditReservationRecommend({handleClick}: Props) {
     return (
         <Wrapper direction="col" padding="6.8rem 0 5.4rem" gap="5rem" align="align-center" className={styles.reservation_container}>
         <Wrapper direction="col" gap="1.1rem" align="align-center">
@@ -18,7 +22,7 @@ export default function EditReservationRecommend() {
         <Wrapper justify="justify-center" gap="7.5rem">
             <img src={RecommendReservationIcon} alt={'RecommendReservationIcon'} />
             <Wrapper direction="col" padding="3.2rem 0 0" gap="6rem">
-                <Button bgColor="primary" padding="2.2rem 2.8rem 2.4rem 2.9rem">
+                <Button bgColor="primary" padding="2.2rem 2.8rem 2.4rem 2.9rem" onClick={handleClick}>
                     <Typography content="使ってみる" size="medium" color="primary" />
                 </Button>
                 <Wrapper direction="col" gap="3.1rem">

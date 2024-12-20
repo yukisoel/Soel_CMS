@@ -1,14 +1,5 @@
 @use '@/main/styles/variables' as vars;
 
-.reservation_container {
-    width: 100%;
-    box-sizing: border-box;
-
-    flex-grow: 1;
-    flex-basis: 0;
-    overflow-y: scroll;
-}
-
 .edit_button {
     height: fit-content;
 }
@@ -34,6 +25,7 @@
     @include base_text;
     font-size: 3rem;
     box-sizing: border-box;
+    flex: 1;
 
     &::placeholder {
         color: vars.$text-color-gray;
@@ -42,6 +34,8 @@
 }
 
 .wrapper {
+    display: flex;
     padding-bottom: 1rem;
     border-bottom: 2px solid #BEBEBE;
+    gap: 1rem;
 }

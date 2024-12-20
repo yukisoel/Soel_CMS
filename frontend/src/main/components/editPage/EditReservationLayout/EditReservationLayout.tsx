@@ -19,10 +19,16 @@ export default function EditReservationLayout({ googleService }: Props) {
 
   const { accountId, locationId } = useParams();
 
-  const { selectedTab, tabsRender } = useTabs([
+  const { selectedTab, setSelectedTab, tabsRender } = useTabs([
     { tabKey: 'recommended', content: 'おすすめの予約ボタン' },
     { tabKey: 'onlineTool', content: 'オンライン予約ツールへのリンク' },
   ])
+
+  const linkItems = [
+    { label: '食べログ', text: 'https://tabelog.com/soel' },
+    { label: 'ぐるなび', text: 'https://tabelog.com/soel' },
+    { label: 'ホットペッパーグルメ', text: 'https://tabelog.com/soel' },
+  ]
 
   useEffect(() => {
     setPankuzuItemList([
@@ -44,10 +50,10 @@ export default function EditReservationLayout({ googleService }: Props) {
       </Wrapper>
       <>
         {selectedTab === 'recommended' && (
-          <EditReservationRecommend />
+          <EditReservationRecommend handleClick={() => setSelectedTab('onlineTool')} />
         )}
         {selectedTab === 'onlineTool' && (
-          <EditReservationOnlineToolLink />
+          <EditReservationOnlineToolLink items={linkItems} onSave={() => {}} />
         )}
       </>
     </Wrapper>
