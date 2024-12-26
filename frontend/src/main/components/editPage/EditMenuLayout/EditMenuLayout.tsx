@@ -111,7 +111,7 @@ const useMenuFood = (googleService: GoogleService, accountId: string | undefined
     // TODO: update処理を追加する refetchも必要
     if (accountId && locationId) {
       console.log('toFoodMenuSections', toFoodMenuSections(menuSectionItems))
-      googleService.updateLocationFoodMenus(accountId, locationId, {menus: toFoodMenuSections(menuSectionItems), name: foodMenu?.name || null})
+      // googleService.updateLocationFoodMenus(accountId, locationId, {menus: toFoodMenuSections(menuSectionItems), name: foodMenu?.name || null})
     }
   }
 
@@ -166,7 +166,6 @@ export default function EditMenuLayout({googleService}: Props) {
       updateFoodMenus([...menuSectionItems, menuSectionItem])
     }
     setMode('list')
-
   }
 
   return (
