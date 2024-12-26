@@ -5,38 +5,89 @@ import Button from "@/main/common/Button";
 import Input from "@/main/common/Input";
 import CloseButton from "@/main/common/CloseButton";
 import { useEffect, useState } from "react";
-import { MenuSectionItem } from "./EditMenuLayout";
+import { GoogleLocationFoodMenuSection } from "@/main/model/LocationModel";
+import cloneDeep from "lodash.clonedeep";
 
 type Props = {
-    sectionTitle: MenuSectionItem['sectionTitle']
-    items: MenuSectionItem['items']
+    menuSectionItem: GoogleLocationFoodMenuSection
     onClickCancel: () => void
-    onClickSave: (menuSectionItem: MenuSectionItem) => void
+    onClickSave: (menuSectionItem: GoogleLocationFoodMenuSection) => void
 }
 
-export default function EditMenuUpdate({sectionTitle, items: menuItems, onClickCancel, onClickSave}: Props) {
-    const [section, setSection] = useState<MenuSectionItem['sectionTitle']>('')
-    const [items, setItems] = useState<MenuSectionItem['items']>([])
+export default function EditMenuUpdate({menuSectionItem: item, onClickCancel, onClickSave}: Props) {
+    const [menuSectionItem, setMenuSectionItem] = useState<GoogleLocationFoodMenuSection>(cloneDeep(item))
 
     const handleAddItem = () => {
-        setItems([...items, { title: '', price: '' }])
+        menuSectionItem.items.push({
+            labels: [{
+                displayName: '',
+                description: null,
+                languageCode: 'ja'
+            }],
+            attributes: {
+                price: {
+                    units: '',
+                    currencyCode: 'JPY',
+                    nanos: null
+                },
+                spiciness: null,
+                allergen: null,
+                dietaryRestriction: null,
+                nutritionFacts: undefined,
+                ingredients: null,
+                servesNumPeople: null,
+                portionSize: undefined,
+                mediaKeys: null
+            },
+            options: null
+        })
+        setMenuSectionItem({...menuSectionItem})
     };
 
     const handleRemoveItem = (index: number) => {
-        const newItems = items.filter((_, i) => i !== index)
-        setItems(newItems)
+        menuSectionItem.items.splice(index, 1)
+        setMenuSectionItem({...menuSectionItem})
     };
 
-    const handleChange = (index: number, field: string, value: string) => {
-        const newItems = items.map((item, i) =>
-            i === index ? { ...item, [field]: value } : item
-        );
-        setItems(newItems)
-    };
+    const handleChangeItemDisplayName = (index: number, value: string) => {
+        menuSectionItem.items[index].labels[0].displayName = value
+        setMenuSectionItem({...menuSectionItem})
+    }
+
+    const handleChangeItemPriceUnits = (index: number, value: string) => {
+        const price = menuSectionItem.items[index].attributes.price
+        if (price) {
+            if (value) {
+                price.units = value
+            } else {
+                menuSectionItem.items[index].attributes.price = null
+            }
+        } else {
+            menuSectionItem.items[index].attributes.price = {
+                units: value,
+                currencyCode: 'JPY',
+                nanos: null
+            }
+        }
+        setMenuSectionItem({...menuSectionItem})
+    }
+
+    const handleChangeSectionDisplayName = (section: string) => {
+        const label = menuSectionItem.labels[0]
+        if (label) {
+            label.displayName = section
+        } else {
+            menuSectionItem.labels.push({
+                displayName: section,
+                description: null,
+                languageCode: 'ja'
+            })
+        }
+        setMenuSectionItem({...menuSectionItem})
+    }
 
     useEffect(() => {
-        setSection(sectionTitle)
-        setItems(menuItems)
+        setMenuSectionItem(cloneDeep(item))
     }, [])
 
   return (
@@ -45,7 +96,7 @@ export default function EditMenuUpdate({sectionTitle, items: menuItems, onClickC
             <Button bgColor="secondary" padding="2rem 3.2rem 2.1rem 3.1rem" onClick={onClickCancel}>
                 <Typography content="キャンセル" size="medium" color="primary"/>
             </Button>
-            <Button bgColor="primary" padding="2rem 6.9rem 2.1rem" onClick={() => onClickSave({sectionTitle: section, items})}>
+            <Button bgColor="primary" padding="2rem 6.9rem 2.1rem" onClick={() => onClickSave(menuSectionItem)}>
                 <Typography content="保存" size="medium" color="primary" />
             </Button>
         </Wrapper>
@@ -54,19 +105,19 @@ export default function EditMenuUpdate({sectionTitle, items: menuItems, onClickC
                 <Wrapper padding="0 0 0 3.8rem">
                     <Typography content="セクション" size="medium" color="primary" />
                 </Wrapper>
-                <Input placeholder="セクション名を入力" width="1066px" padding="2.3rem 0 2.3rem 3.8rem" value={section} onChange={(e) => setSection(e.target.value)} onClear={() => {setSection('')}} />
+                <Input placeholder="セクション名を入力" width="1066px" padding="2.3rem 0 2.3rem 3.8rem" value={menuSectionItem.labels[0]?.displayName ?? ''} onChange={(e) => handleChangeSectionDisplayName(e.target.value)} onClear={() => {handleChangeSectionDisplayName('')}} />
             </Wrapper>
             <Wrapper direction="col" gap="1rem">
                 <Wrapper padding="0 0 0 3.8rem">
                     <Typography content="内容" size="medium" color="primary" />
                 </Wrapper>
                 <Wrapper direction="col" gap="2rem">
-                    {items.map((item, index) => (
+                    {menuSectionItem.items.map((item, index) => (
                     <Wrapper gap="1.5rem" key={index}>
-                        <Input placeholder="商品名を入力" width="787px" padding="2.3rem 0 2.3rem 3.8rem" value={item.title} onChange={(e) => handleChange(index, 'title', e.target.value)} />
+                        <Input placeholder="商品名を入力" width="787px" padding="2.3rem 0 2.3rem 3.8rem" value={item.labels[0].displayName} onChange={(e) => handleChangeItemDisplayName(index, e.target.value)} />
                         <Wrapper gap="3.1rem" align="align-center">
                             <Wrapper gap="1.2rem" align="align-center">
-                                <Input placeholder="0" width="143px" padding="2.3rem 1rem 2.3rem 3.8rem" value={item.price} onChange={(e) => handleChange(index, 'price', e.target.value)} />
+                                <Input placeholder="0" width="143px" padding="2.3rem 1rem 2.3rem 3.8rem" value={item.attributes.price?.units ?? ''} onChange={(e) => handleChangeItemPriceUnits(index, e.target.value)} />
                                 <Typography content="円" size="medium" color="primary" />
                             </Wrapper>
                             <CloseButton onClick={() => handleRemoveItem(index)} color="primary"/>

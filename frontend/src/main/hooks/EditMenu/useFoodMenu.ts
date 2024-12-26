@@ -109,6 +109,7 @@ export const useMenuFood = (googleService: GoogleService, accountId: string | un
   const [foodMenu, setFoodMenu] = useState<GoogleLocationFoodMenusModel>()
   const [menuSectionItems, setMenuSectionItems] = useState<MenuSectionItem[]>([])
 
+
   useEffect(() => {
     getFoodMenus()
   }, [accountId, locationId])
@@ -122,13 +123,12 @@ export const useMenuFood = (googleService: GoogleService, accountId: string | un
     }
   }
 
-  const updateFoodMenus = (menuSectionItems: MenuSectionItem[]) => {
+  const updateFoodMenus = (foodMenu: GoogleLocationFoodMenusModel) => {
     if (accountId && locationId) {
-      console.log('toFoodMenuSections', toFoodMenus(menuSectionItems, foodMenu))
-      // googleService.updateLocationFoodMenus(accountId, locationId, {menus: toFoodMenuSections(menuSectionItems), name: foodMenu?.name || null})
+      googleService.updateLocationFoodMenus(accountId, locationId, foodMenu)
     }
   }
 
-  return { menuSectionItems, updateFoodMenus }
+  return { foodMenu, menuSectionItems, updateFoodMenus }
 }
 
