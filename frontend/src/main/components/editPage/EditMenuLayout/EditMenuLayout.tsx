@@ -27,7 +27,7 @@ export default function EditMenuLayout({googleService}: Props) {
   const [mode, setMode] = useState<'list' | 'edit' | 'create'>('list');
   const [selectedMenuSectionItem, setSelectedMenuSectionItem] = useState<GoogleLocationFoodMenuSection & { index: number} | null>(null);
 
-  const {foodMenu, updateFoodMenus} = useMenuFood(googleService, accountId, locationId)
+  const {foodMenu, updateFoodMenus} = useMenuFood(googleService, accountId ?? '', locationId ?? '')
 
   useEffect(() => {
     setPankuzuItemList([
@@ -55,20 +55,17 @@ export default function EditMenuLayout({googleService}: Props) {
     setMode('list');
   }
 
-  const onClickSave = (menuSectionItem: GoogleLocationFoodMenuSection) => {
+  const onClickSave = async (menuSectionItem: GoogleLocationFoodMenuSection) => {
     // 編集なら編集したものに差し替えて渡す
     const newFoodMenu = cloneDeep(foodMenu)
-    if (selectedMenuSectionItem) {
-      if (newFoodMenu?.menus[0]) {
+    if (newFoodMenu?.menus[0]) {
+      if (selectedMenuSectionItem) {
         newFoodMenu.menus[0].sections[selectedMenuSectionItem.index] = menuSectionItem
-        updateFoodMenus(newFoodMenu)
-      }
-    } else {
-      // 追加なら一番後ろに足す形にする
-      if (newFoodMenu?.menus[0]) {
+      } else {
+        // 追加なら一番後ろに足す形にする
         newFoodMenu.menus[0].sections.push(menuSectionItem)
-        updateFoodMenus(newFoodMenu)
       }
+      await updateFoodMenus(newFoodMenu)
     }
     setMode('list')
   }

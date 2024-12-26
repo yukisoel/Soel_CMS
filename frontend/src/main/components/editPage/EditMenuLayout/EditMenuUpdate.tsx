@@ -4,9 +4,8 @@ import Wrapper from "@/main/common/Wrapper";
 import Button from "@/main/common/Button";
 import Input from "@/main/common/Input";
 import CloseButton from "@/main/common/CloseButton";
-import { useEffect, useState } from "react";
 import { GoogleLocationFoodMenuSection } from "@/main/model/LocationModel";
-import cloneDeep from "lodash.clonedeep";
+import { useFoodMenuForm } from "@/main/hooks/EditMenu/useFoodMenuForm";
 
 type Props = {
     menuSectionItem: GoogleLocationFoodMenuSection
@@ -15,80 +14,14 @@ type Props = {
 }
 
 export default function EditMenuUpdate({menuSectionItem: item, onClickCancel, onClickSave}: Props) {
-    const [menuSectionItem, setMenuSectionItem] = useState<GoogleLocationFoodMenuSection>(cloneDeep(item))
-
-    const handleAddItem = () => {
-        menuSectionItem.items.push({
-            labels: [{
-                displayName: '',
-                description: null,
-                languageCode: 'ja'
-            }],
-            attributes: {
-                price: {
-                    units: '',
-                    currencyCode: 'JPY',
-                    nanos: null
-                },
-                spiciness: null,
-                allergen: null,
-                dietaryRestriction: null,
-                nutritionFacts: undefined,
-                ingredients: null,
-                servesNumPeople: null,
-                portionSize: undefined,
-                mediaKeys: null
-            },
-            options: null
-        })
-        setMenuSectionItem({...menuSectionItem})
-    };
-
-    const handleRemoveItem = (index: number) => {
-        menuSectionItem.items.splice(index, 1)
-        setMenuSectionItem({...menuSectionItem})
-    };
-
-    const handleChangeItemDisplayName = (index: number, value: string) => {
-        menuSectionItem.items[index].labels[0].displayName = value
-        setMenuSectionItem({...menuSectionItem})
-    }
-
-    const handleChangeItemPriceUnits = (index: number, value: string) => {
-        const price = menuSectionItem.items[index].attributes.price
-        if (price) {
-            if (value) {
-                price.units = value
-            } else {
-                menuSectionItem.items[index].attributes.price = null
-            }
-        } else {
-            menuSectionItem.items[index].attributes.price = {
-                units: value,
-                currencyCode: 'JPY',
-                nanos: null
-            }
-        }
-        setMenuSectionItem({...menuSectionItem})
-    }
-
-    const handleChangeSectionDisplayName = (section: string) => {
-        const label = menuSectionItem.labels[0]
-        if (label) {
-            label.displayName = section
-        } else {
-            menuSectionItem.labels.push({
-                displayName: section,
-                description: null,
-                languageCode: 'ja'
-            })
-        }
-        setMenuSectionItem({...menuSectionItem})
-    }
-
-    useEffect(() => {
-        setMenuSectionItem(cloneDeep(item))
-    }, [])
+  const {
+    menuSectionItem,
+    handleAddItem,
+    handleRemoveItem,
+    handleChangeItemDisplayName,
+    handleChangeItemPriceUnits,
+    handleChangeSectionDisplayName
+  } = useFoodMenuForm(item)
 
   return (
     <Wrapper direction="col" className={styles.edit_menu_container}>
