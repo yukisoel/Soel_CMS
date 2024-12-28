@@ -13,11 +13,7 @@ export const useFoodMenuForm = (item: GoogleLocationFoodMenuSection) => {
                 languageCode: 'ja'
             }],
             attributes: {
-                price: {
-                    units: '',
-                    currencyCode: 'JPY',
-                    nanos: null
-                },
+                price: null,
                 spiciness: null,
                 allergen: null,
                 dietaryRestriction: null,

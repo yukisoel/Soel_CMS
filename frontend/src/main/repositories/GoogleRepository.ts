@@ -247,9 +247,8 @@ export class GoogleRepositoryImpl implements GoogleRepository {
             'Content-Type': 'application/json',
           },
         })
-      console.log(response)
+        return response.data
     } catch (error) {
-      console.error(error)
       throw new Error("google update location food menus failed")
     }
   }
