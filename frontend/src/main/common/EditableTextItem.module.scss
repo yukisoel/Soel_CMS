@@ -1,0 +1,41 @@
+@use '@/main/styles/variables' as vars;
+
+.edit_button {
+    height: fit-content;
+}
+
+.cancel_button {
+    width: 48px;
+    height: 48px;
+    padding: 0;
+    border-radius: 4.2rem;
+}
+
+
+
+@mixin base_text {
+    font-family: "Noto Sans CJK JP", sans-serif;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    color: vars.$text-color-primary;
+}
+
+.input {
+    @include base_text;
+    font-size: 3rem;
+    box-sizing: border-box;
+    flex: 1;
+
+    &::placeholder {
+        color: vars.$text-color-gray;
+        font-weight: 500;
+    }
+}
+
+.wrapper {
+    display: flex;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #BEBEBE;
+    gap: 1rem;
+}

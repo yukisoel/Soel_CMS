@@ -22,9 +22,18 @@
     font-size: 2.5rem;
 }
 
+.normal {
+    @include base_text;
+    font-size: 2rem;
+}
+
 .small {
     @include base_text;
     font-size: 1.8rem;
+}
+
+.weight-normal {
+    font-weight: 400;
 }
 
 .primary {
@@ -37,4 +46,8 @@
 
 .black {
     color: vars.$text-color-black;
+}
+
+.gray {
+    color: vars.$text-color-gray;
 }

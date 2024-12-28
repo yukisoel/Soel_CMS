@@ -78,7 +78,7 @@ export default function EditGBPDashboard({googleService}: Props) {
           altText={"edit_item"}
         />
         <DashboardItem
-          navigation={""}
+          navigation={"reservation"}
           text={"予約"}
           src={EditReserveIcon}
           altText={"edit_reserve"}

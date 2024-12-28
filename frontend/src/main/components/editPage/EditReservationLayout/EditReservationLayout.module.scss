@@ -1,0 +1,20 @@
+.edit_reservation_container {
+    flex-grow: 1;
+}
+
+.header_container {
+    box-sizing: border-box;
+    width: 100%;
+    padding: 4.2rem 0 3rem;
+
+    border-bottom: 0.1rem solid #282828; // TODO: あとから差し替える
+}
+
+.reservation_container {
+    width: 100%;
+    box-sizing: border-box;
+
+    flex-grow: 1;
+    flex-basis: 0;
+    overflow-y: scroll;
+}

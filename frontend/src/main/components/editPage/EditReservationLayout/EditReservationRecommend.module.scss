@@ -1,0 +1,8 @@
+.reservation_container {
+    width: 100%;
+    box-sizing: border-box;
+
+    flex-grow: 1;
+    flex-basis: 0;
+    overflow-y: scroll;
+}
