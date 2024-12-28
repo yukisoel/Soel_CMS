@@ -240,7 +240,6 @@ export class GoogleRepositoryImpl implements GoogleRepository {
           params: {
             accountId: accountId,
             locationId: locationId,
-            // foodMenus: foodMenus
           },
           headers: {
             'Accept': 'application/json; charset=utf-8',
