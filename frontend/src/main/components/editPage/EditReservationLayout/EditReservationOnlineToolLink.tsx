@@ -52,7 +52,7 @@ export default function EditReservationOnlineToolLink({items: linkItems, onSave}
             </Wrapper>
             <Wrapper direction="col" gap="4.9rem" padding="0 0 3.8rem 0">
                 {items.map((item, index) => (
-                    <EditableTextItem label={item.label} text={item.text} handleSaveClick={(text) => handleChange(index, text)} width="635px" />
+                    <EditableTextItem key={index} label={item.label} text={item.text} handleSaveClick={(text) => handleChange(index, text)} width="635px" />
                 ))}
             </Wrapper>
         </Wrapper>
