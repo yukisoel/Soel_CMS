@@ -6,6 +6,8 @@ import {useParams} from "react-router-dom";
 import EditMenuList from "./EditMenuList";
 import EditMenuUpdate from "./EditMenuUpdate";
 import { GoogleLocationFoodMenuSection } from "@/main/model/LocationModel";
+import { useMenuFood } from "@/main/hooks/EditMenu/useFoodMenu";
+import cloneDeep from 'lodash.clonedeep';
 
 type Props = {
   googleService: GoogleService
@@ -16,64 +18,6 @@ export type MenuSectionItem = {
   items: {title: string, price: string}[]
 }
 
-const useMenuFood = (googleService: GoogleService, accountId: string | undefined, locationId: string | undefined) => {
-  const [foodMenuSections, setFoodMenuSections] = useState<GoogleLocationFoodMenuSection[]>([])
-  const [menuSectionItems, setMenuSectionItems] = useState<MenuSectionItem[]>([]);
-
-  useEffect(() => {
-    getFoodMenus()
-  }, [accountId, locationId])
-
-  const getFoodMenus = () => {
-    if (accountId && locationId) {
-      googleService.getLocationFoodMenus(accountId, locationId).then(data => {
-        const menu = data.menus[0];
-        setFoodMenuSections(menu.sections)
-        setMenuSectionItems(toMenuSectionItems(menu.sections))
-      })
-    }
-  }
-
-  const toMenuSectionItems = (foodMenuSections: GoogleLocationFoodMenuSection[]): MenuSectionItem[] => {
-    return foodMenuSections.map(section => {
-       return {
-          sectionTitle: section.labels[0].displayName,
-          items: section.items.map(item => {
-              return {
-                  title: item.labels[0].displayName,
-                  price: item.attributes.price?.units || ''
-              }
-          })
-       }
-    })
-  }
-
-  // TODO: リクエストの形式によりfoodMenuSectionsと良い感じにマージする必要があるかも
-  const toFoodMenuSections = (menuSectionItems: MenuSectionItem[]): GoogleLocationFoodMenuSection[] => {
-    return menuSectionItems.map(section => {
-      return {
-        labels: [{displayName: section.sectionTitle}],
-        items: section.items.map(item => {
-          return {
-            labels: [{displayName: item.title}],
-            attributes: {
-              price: {
-                units: item.price
-              }
-            }
-          }
-        })
-      }
-    })
-  }
-
-  const updateMenu = (menuSectionItems: MenuSectionItem[]) => {
-    // TODO: update処理を追加する refetchも必要
-  }
-
-  return {menuSectionItems, updateMenu}
-}
-
 export default function EditMenuLayout({googleService}: Props) {
   const {setPankuzuItemList} = useContext(PankuzuItemListContext)
   const {googleSelectedLocation, setGoogleSelectedLocation} = useContext(GoogleSelectedLocationContext)
@@ -81,9 +25,9 @@ export default function EditMenuLayout({googleService}: Props) {
   const {accountId, locationId} = useParams()
 
   const [mode, setMode] = useState<'list' | 'edit' | 'create'>('list');
-  const [selectedMenuSectionItem, setSelectedMenuSectionItem] = useState<MenuSectionItem & { index: number} | null>(null);
+  const [selectedMenuSectionItem, setSelectedMenuSectionItem] = useState<GoogleLocationFoodMenuSection & { index: number} | null>(null);
 
-  const {menuSectionItems, updateMenu} = useMenuFood(googleService, accountId, locationId)
+  const {foodMenu, updateFoodMenus} = useMenuFood(googleService, accountId ?? '', locationId ?? '')
 
   useEffect(() => {
     setPankuzuItemList([
@@ -97,7 +41,7 @@ export default function EditMenuLayout({googleService}: Props) {
     }
   }, [])
 
-  const onClickEdit = (item: MenuSectionItem & { index: number }) => {
+  const onClickEdit = (item: GoogleLocationFoodMenuSection & { index: number }) => {
     setSelectedMenuSectionItem(item);
     setMode('edit');
   }
@@ -111,15 +55,26 @@ export default function EditMenuLayout({googleService}: Props) {
     setMode('list');
   }
 
-  const onClickSave = (menuSectionItem: MenuSectionItem) => {
-    // TODO: 保存する処理
+  const onClickSave = async (menuSectionItem: GoogleLocationFoodMenuSection) => {
+    // 編集なら編集したものに差し替えて渡す
+    const newFoodMenu = cloneDeep(foodMenu)
+    if (newFoodMenu?.menus[0]) {
+      if (selectedMenuSectionItem) {
+        newFoodMenu.menus[0].sections[selectedMenuSectionItem.index] = menuSectionItem
+      } else {
+        // 追加なら一番後ろに足す形にする
+        newFoodMenu.menus[0].sections.push(menuSectionItem)
+      }
+      await updateFoodMenus(newFoodMenu)
+    }
+    setMode('list')
   }
 
   return (
     <>
-      {mode === 'list' && <EditMenuList menuSectionItems={menuSectionItems} onClickEdit={onClickEdit} onClickCreate={onClickCreate} />}
-      {mode === 'edit' && <EditMenuUpdate sectionTitle={selectedMenuSectionItem?.sectionTitle || ''} items={selectedMenuSectionItem?.items || []} onClickCancel={onClickCancel} onClickSave={onClickSave} />}
-      {mode === 'create' && <EditMenuUpdate sectionTitle="" items={[]} onClickCancel={onClickCancel} onClickSave={onClickSave} />}
+      {mode === 'list' && <EditMenuList menuSectionItems={foodMenu?.menus[0].sections ?? []} onClickEdit={onClickEdit} onClickCreate={onClickCreate} />}
+      {mode === 'edit' && selectedMenuSectionItem && <EditMenuUpdate menuSectionItem={selectedMenuSectionItem} onClickCancel={onClickCancel} onClickSave={onClickSave} />}
+      {mode === 'create' && <EditMenuUpdate menuSectionItem={{items: [], labels: []}} onClickCancel={onClickCancel} onClickSave={onClickSave} />}
     </>
   )
 }

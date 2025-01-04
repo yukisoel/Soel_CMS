@@ -144,15 +144,21 @@ export type GoogleLocationOffer = {
 }
 
 export type GoogleLocationFoodMenusModel = {
+  name: string | null
   menus: GoogleLocationFoodMenu[]
 }
 
 export type GoogleLocationFoodMenu = {
+  labels: GoogleLocationMenuLabel[]
   sections: GoogleLocationFoodMenuSection[]
+  sourceUrl: string | null
+  cuisines: string | null
 }
 
 export type GoogleLocationMenuLabel = {
+  description: string | null
   displayName: string
+  languageCode: string | null
 }
 
 export type GoogleLocationFoodMenuSection = {
@@ -162,13 +168,30 @@ export type GoogleLocationFoodMenuSection = {
 
 export type GoogleLocationFoodMenuItem = {
   labels: GoogleLocationMenuLabel[]
-  attributes: GoogleLocationFoodMenuItemAttributes
+  attributes: GoogleLocationFoodMenuItemAttributes,
+  options: GoogleLocationFoodMenuItemOption[] | null
 }
 
 export type GoogleLocationFoodMenuItemAttributes = {
-  price?: GoogleLocationMoeny
+  price: GoogleLocationMoeny | null
+  spiciness: string  | null
+  allergen: string[] | null
+  dietaryRestriction: string[] | null
+  nutritionFacts: unknown | null
+  ingredients: unknown[] | null
+  servesNumPeople: unknown[] | null
+  preparationMethods?: unknown[] | null
+  portionSize: unknown | null
+  mediaKeys: string[] | null
 }
 
 export type GoogleLocationMoeny = {
-  units: string
+  units: string | null
+  currencyCode: string | null
+  nanos: number | null
+}
+
+export type GoogleLocationFoodMenuItemOption = {
+  labels: GoogleLocationMenuLabel[]
+  attributes: GoogleLocationFoodMenuItemAttributes
 }
