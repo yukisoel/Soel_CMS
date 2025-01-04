@@ -1,5 +1,5 @@
 import Wrapper from "@/main/common/Wrapper";
-import styles from '@/main/components/editPage/EditProductLayout/EditProductLayout.module.scss';
+import styles from '@/main/components/editPage/EditProductLayout/EditProductList.module.scss';
 import PhotoPullDownMenu from "../PhotoPullDownMenu";
 import Button from "@/main/common/Button";
 import Typography from "@/main/common/Typography";

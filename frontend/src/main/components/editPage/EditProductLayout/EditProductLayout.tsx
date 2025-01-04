@@ -4,6 +4,7 @@ import {PankuzuItemListContext} from "@/main/contexts/PankuzuItemListContext.tsx
 import {GoogleSelectedLocationContext} from "@/main/contexts/GoogleSelectedLocationContext.tsx";
 import {useParams} from "react-router-dom";
 import EditProductList from "./EditProductList";
+import EditProductCreate from "./EditProductCreate";
 
 type Props = {
   googleService: GoogleService
@@ -53,6 +54,12 @@ export default function EditProductLayout({googleService}: Props) {
     <>
       {mode === 'list' && (
         <EditProductList pullDownSections={pullDownSections} productList={productList} onClickCreate={onClickCreate} onClickEdit={onClickEdit} />
+      )}
+      {mode === 'create' && (
+        <EditProductCreate onClickSave={onClickSave} onClickCancel={onClickCancel} />
+      )}
+      {mode === 'edit' && (
+        <EditProductCreate onClickSave={onClickSave} onClickCancel={onClickCancel} />
       )}
     </>
   )

@@ -11,9 +11,8 @@ export default function useFileUpload({size = 'regular'}: Props) {
     const render = () =>
     (<FileUpload setUploadedPhotoFileList={setUploadedPhotoFileList} size={size} />)
 
-    console.log('size', size)
-  return {
-    render,
-    uploadedPhotoFileList
-  }
+    return {
+        render,
+        uploadedPhotoFileList
+    }
 }
