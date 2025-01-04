@@ -44,33 +44,6 @@ export default function FileUpload({setUploadedPhotoFileList, size}: Props) {
         }
     }
 
-    const regularButton = () => (
-        <>
-            <div className={styles.file_upload_text_regular}>
-                <p>写真をドラッグアンドドロップ</p>
-                <p>または</p>
-                <button className={styles.select_file_button}
-                    onClick={clickSelectFileButton}>
-                    ファイルを選択
-                </button>
-            </div>
-        </>
-    )
-
-    const largeButton = () => (
-        <>
-            <div className={styles.file_upload_text_large}>
-                <p>写真をドラッグアンドドロップ</p>
-                <p>または</p>
-            </div>
-            <button className={styles.select_file_button}
-                    onClick={clickSelectFileButton}
-            >
-                ファイルを選択
-            </button>
-        </>
-    )
-
     return (
     <>
         {!showAddPhotoListPage && (
@@ -87,8 +60,14 @@ export default function FileUpload({setUploadedPhotoFileList, size}: Props) {
                         ref={fileUploadInputRef}
                         onChange={onInputChange}
                     />
-                    {size === 'regular' && regularButton()}
-                    {size === 'large' && largeButton()}
+                    <div className={styles[`file_upload_text_${size}`]}>
+                        <p>写真をドラッグアンドドロップ</p>
+                        <p>または</p>
+                        <button className={styles.select_file_button}
+                            onClick={clickSelectFileButton}>
+                            ファイルを選択
+                        </button>
+                    </div>
                 </div>
             </div>
         )}
