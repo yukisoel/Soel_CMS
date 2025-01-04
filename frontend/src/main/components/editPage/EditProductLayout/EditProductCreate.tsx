@@ -26,7 +26,7 @@ export default function EditProductCreate({onClickSave, onClickCancel}: Props) {
             <Typography content="公開する" size="medium" color="primary" />
         </Button>
       </Wrapper>
-      <Wrapper padding="5rem 4rem 5rem 10rem" gap="5rem" direction="col" justify="justify-center" align="align-center" className={styles.product_container}>
+      <Wrapper padding="5rem 4rem 2rem 10rem" gap="5rem" direction="col" justify="justify-center" align="align-center" className={styles.product_container}>
         <Wrapper gap="5rem" direction="col" padding="0 8rem 0 0" className={styles.product_form_container}>
           {render()}
           <Wrapper direction="col" gap="4rem">
