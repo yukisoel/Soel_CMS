@@ -1,0 +1,92 @@
+@mixin base_button {
+    width: 188.7px;
+    height: 82.65px;
+
+    border-radius: 4.2rem;
+
+    color: #282828;
+    text-align: center;
+    font-family: "Noto Sans CJK JP", sans-serif;
+    font-size: 2.5rem;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+}
+
+.file_upload_area_container {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.file_upload_area_large {
+    display: flex;
+    gap: 28px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    width: 628.49px;
+    height: 266.58px;
+
+    background-color: #EBEBEB;
+
+    border-radius: 15px;
+    border: 1px dashed #A0A0A0;
+}
+
+.file_upload_text_large {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+
+    text-align: center;
+
+    color: #A0A0A0;
+    font-family: "Noto Sans CJK JP", sans-serif;
+    font-size: 25px;
+    font-style: normal;
+    font-weight: 500;
+
+    p {
+        margin: 0;
+    }
+}
+
+.file_upload_area_regular {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 775px;
+    height: 127.5px;
+
+    background-color: #EBEBEB;
+
+    border-radius: 15px;
+    border: 1px dashed #A0A0A0;
+}
+
+.file_upload_text_regular {
+    display: flex;
+    gap: 18px;
+
+    color: #A0A0A0;
+    font-family: "Noto Sans CJK JP", sans-serif;
+    font-size: 25px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 11px;
+}
+
+.select_file_button {
+    @include base_button;
+
+    width: 212px;
+    height: 60px;
+
+    font-size: 20px;
+
+    background-color: #D2D2D2;
+}

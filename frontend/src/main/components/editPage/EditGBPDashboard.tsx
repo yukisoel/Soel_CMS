@@ -72,7 +72,7 @@ export default function EditGBPDashboard({googleService}: Props) {
           altText={"edit_info"}
         />
         <DashboardItem
-          navigation={""}
+          navigation={"product"}
           text={"商品を編集"}
           src={EditItemIcon}
           altText={"edit_item"}

@@ -1,0 +1,48 @@
+.edit_product_container {
+    flex-grow: 1;
+}
+
+.header_container {
+    box-sizing: border-box;
+    width: 100%;
+    padding: 2.8rem 18rem 2.1rem;
+
+    border-bottom: 0.1rem solid #282828; // TODO: あとから差し替える
+}
+
+.product_container {
+    width: 100%;
+    box-sizing: border-box;
+    flex-grow: 1;
+    flex-basis: 0;
+    overflow-y: hidden;
+}
+
+.product_form_container {
+    width: 100;
+    box-sizing: border-box;
+    overflow-y: scroll;
+    flex-grow: 1;
+    flex-basis: 0;
+
+
+    &::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: #FFC42C;
+        border-radius: 10px;
+    }
+
+    &::-webkit-scrollbar-track {
+        background-color: #EBEBEB;
+        border-radius: 10px;
+    }
+}
+
+.pull_down_menu {
+    width: 58rem;
+    height: 8.2rem;
+    z-index: 1;
+}
