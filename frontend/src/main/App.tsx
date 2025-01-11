@@ -15,6 +15,7 @@ import EditLocalPostLayout from "@/main/components/editPage/EditLocalPostLayout.
 import EditMenuLayout from "@/main/components/editPage/EditMenuLayout/EditMenuLayout.tsx";
 import EditReservationLayout from "@/main/components/editPage/EditReservationLayout/EditReservationLayout.tsx";
 import EditProductLayout from "./components/editPage/EditProductLayout/EditProductLayout.tsx";
+import SelectStore from "./components/stores/SelectStore.tsx";
 
 const googleRepository = new GoogleRepositoryImpl()
 const googleService = new GoogleServiceImpl({googleRepository})
@@ -62,6 +63,7 @@ function App() {
                   element={<EditProductLayout googleService={googleService}/>}/>
         </Route>
       </Route>
+      <Route path="stores/select" element={<SelectStore googleService={googleService}/>}/>
     </Routes>
   )
 }
