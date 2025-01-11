@@ -14,7 +14,7 @@
     justify-content: space-between;
     width: 235px;
     padding-left: 4.4rem;
-    padding-right: 5.1rem;
+    padding-right: 5rem;
     cursor: pointer;
 }
 
@@ -32,4 +32,8 @@
 
 .icon_flipped {
     transform: scaleX(-1);
+}
+
+.sub_menu_container_selected {
+    background-color: #FFE9B2;
 }
