@@ -5,6 +5,7 @@ type Props = {
   width?: string
   value?: string
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void
+  className?: string
 }
 
 export default function SearchBox({placeholder, width, value = "", onChange}: Props) {
