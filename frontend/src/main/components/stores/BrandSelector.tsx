@@ -54,7 +54,7 @@ function BrandWithBranches({ name, branches }: Store) {
                     </Wrapper>
                     <div className={styles.close_button_wrapper} onClick={() => setIsOpen(!isOpen)}>
                         <Typography content="閉じる" size="small" color="primary" className={styles.close_button} />
-                        <img src={ArrowIconYellow} alt="icon" className={classNames()} />
+                        <img src={ArrowIconYellow} alt="icon" />
                     </div>
                 </Wrapper>
             )}

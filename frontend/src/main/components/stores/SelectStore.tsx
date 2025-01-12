@@ -5,6 +5,7 @@ import Wrapper from "@/main/common/Wrapper";
 import Typography from "@/main/common/Typography";
 import { useAdvancedTabs } from "@/main/common/AdvancedTabs/useAdvancedTabs";
 import BrandSelector from "./BrandSelector";
+import AreaSelector from "./AreaSelector";
 
 type Props = {
   googleService: GoogleService
@@ -33,8 +34,121 @@ const stores = [
   }
 ]
 
+const regions = [
+  {
+    name: '東北',
+    prefectures: [
+      {
+        name: '青森',
+        stores: [
+          {
+            name: '鳥貴族',
+            branches: [
+              '熱海店',
+              '青山一丁目駅前',
+              '六本木ヒルズ',
+              '文字数が多い場合は改行です',
+              '六本木ヒルズ',
+            ]
+          },
+          {
+            name: '焼肉きんぐ',
+            branches: [
+              '熱海店',
+              '青山一丁目駅前',
+              '六本木ヒルズ',
+              '文字数が多い場合は改行です',
+              '六本木ヒルズ',
+            ]
+          }
+        ]
+      },
+      {
+        name: '岩手',
+        stores: [
+          {
+            name: '鳥貴族',
+            branches: [
+              '熱海店',
+              '青山一丁目駅前',
+              '六本木ヒルズ',
+              '文字数が多い場合は改行です',
+              '六本木ヒルズ',
+            ]
+          },
+          {
+            name: '焼肉きんぐ',
+            branches: [
+              '熱海店',
+              '青山一丁目駅前',
+              '六本木ヒルズ',
+              '文字数が多い場合は改行です',
+              '六本木ヒルズ',
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    name: '関東',
+    prefectures: [
+      {
+        name: '茨城',
+        stores: [
+          {
+            name: '鳥貴族',
+            branches: [
+              '熱海店',
+              '青山一丁目駅前',
+              '六本木ヒルズ',
+              '文字数が多い場合は改行です',
+              '六本木ヒルズ',
+            ]
+          },
+          {
+            name: '焼肉きんぐ',
+            branches: [
+              '熱海店',
+              '青山一丁目駅前',
+              '六本木ヒルズ',
+              '文字数が多い場合は改行です',
+              '六本木ヒルズ',
+            ]
+          }
+        ]
+      },
+      {
+        name: '栃木',
+        stores: [
+          {
+            name: '鳥貴族',
+            branches: [
+              '熱海店',
+              '青山一丁目駅前',
+              '六本木ヒルズ',
+              '文字数が多い場合は改行です',
+              '六本木ヒルズ',
+            ]
+          },
+          {
+            name: '焼肉きんぐ',
+            branches: [
+              '熱海店',
+              '青山一丁目駅前',
+              '六本木ヒルズ',
+              '文字数が多い場合は改行です',
+              '六本木ヒルズ',
+            ]
+          }
+        ]
+      }
+    ]
+  }
+]
+
 export default function SelectStore({googleService}: Props) {
-  const { tabsRender } = useAdvancedTabs([
+  const { selectedTab, tabsRender } = useAdvancedTabs([
     {tabKey: 'brand', content: 'ブランドから選択'},
     {tabKey: 'area', content: 'エリアから選択'}
   ])
@@ -47,7 +161,16 @@ export default function SelectStore({googleService}: Props) {
           <Typography content="投稿する店舗を選択" color="primary" size="medium" />
           {tabsRender()}
         </Wrapper>
-        <BrandSelector stores={stores} />
+        {
+          selectedTab === 'brand' && (
+            <BrandSelector stores={stores} />
+          )
+        }
+        {
+          selectedTab === 'area' && (
+            <AreaSelector regions={regions} />
+          )
+        }
       </Wrapper>
     </Wrapper>
   )
