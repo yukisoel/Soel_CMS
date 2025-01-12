@@ -1,0 +1,16 @@
+.search_box {
+    background-color: #F0F0F0;
+    border-radius: 10px;
+    padding: 1.5rem 5rem 1.5rem 3rem;
+    font-size: 20px;
+    color: #282828;
+    background-color: #E3E3E3;
+    background-image: url('@/main/assets/SearchIcon.svg'); /* アイコンのパスを指定 */
+    background-repeat: no-repeat;
+    background-position: right 3rem center; /* アイコンの位置を調整 */
+    background-size: 1.6rem;
+
+    &::placeholder {
+        color: #8D8D8D;
+    }
+}
