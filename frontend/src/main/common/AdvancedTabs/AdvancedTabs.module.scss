@@ -23,7 +23,7 @@
     position: relative;
     &::after {
         content: '';
-        border-bottom: 4px solid #FFC42C;
+        border-bottom: 4px solid vars.$background-color-primary;
         width: calc(100% - 6rem);
         position: absolute;
         bottom: -3px;
