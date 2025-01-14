@@ -4,38 +4,40 @@ import AdvancedSidebarMenu from "@/main/common/AdvancedSidebarMenu";
 import Wrapper from "@/main/common/Wrapper";
 import Typography from "@/main/common/Typography";
 import { useAdvancedTabs } from "@/main/common/AdvancedTabs/useAdvancedTabs";
-import BrandSelector from "./BrandSelector";
-import AreaSelector from "./AreaSelector";
+import BrandSelector, { Store } from "./BrandSelector";
+import AreaSelector, { Region } from "./AreaSelector";
 import Button from "@/main/common/Button";
 
 type Props = {
   googleService: GoogleService
 }
 
-const stores = [
+const brandSelectorProps: Store[] = [
   {
     name: '鳥貴族',
     branches: [
-      '熱海店',
-      '青山一丁目駅前',
-      '六本木ヒルズ',
-      '文字数が多い場合は改行です',
-      '六本木ヒルズ',
-    ]
+      { id: '1', name: '熱海店', checked: false },
+      { id: '2', name: '青山一丁目駅前', checked: false },
+      { id: '3', name: '六本木ヒルズ', checked: false },
+      { id: '4', name: '文字数が多い場合は改行です', checked: false },
+      { id: '5', name: '六本木ヒルズ', checked: false },
+    ],
+    checked: false
   },
   {
     name: '焼肉きんぐ',
     branches: [
-      '熱海店',
-      '青山一丁目駅前',
-      '六本木ヒルズ',
-      '文字数が多い場合は改行です',
-      '六本木ヒルズ',
-    ]
+      { id: '1', name: '熱海店', checked: false },
+      { id: '2', name: '青山一丁目駅前', checked: false },
+      { id: '3', name: '六本木ヒルズ', checked: false },
+      { id: '4', name: '文字数が多い場合は改行です', checked: false },
+      { id: '5', name: '六本木ヒルズ', checked: false },
+    ],
+    checked: false
   }
 ]
 
-const regions = [
+const areaSelectorProps: Region[] = [
   {
     name: '東北',
     prefectures: [
@@ -45,24 +47,27 @@ const regions = [
           {
             name: '鳥貴族',
             branches: [
-              '熱海店',
-              '青山一丁目駅前',
-              '六本木ヒルズ',
-              '文字数が多い場合は改行です',
-              '六本木ヒルズ',
-            ]
+              { id: '1', name: '熱海店', checked: false },
+              { id: '2', name: '青山一丁目駅前', checked: false },
+              { id: '3', name: '六本木ヒルズ', checked: false },
+              { id: '4', name: '文字数が多い場合は改行です', checked: false },
+              { id: '5', name: '六本木ヒルズ', checked: false },
+            ],
+            checked: false
           },
           {
             name: '焼肉きんぐ',
             branches: [
-              '熱海店',
-              '青山一丁目駅前',
-              '六本木ヒルズ',
-              '文字数が多い場合は改行です',
-              '六本木ヒルズ',
-            ]
+              { id: '1', name: '熱海店', checked: false },
+              { id: '2', name: '青山一丁目駅前', checked: false },
+              { id: '3', name: '六本木ヒルズ', checked: false },
+              { id: '4', name: '文字数が多い場合は改行です', checked: false },
+              { id: '5', name: '六本木ヒルズ', checked: false },
+            ],
+            checked: false
           }
-        ]
+        ],
+        checked: false
       },
       {
         name: '岩手',
@@ -70,26 +75,30 @@ const regions = [
           {
             name: '鳥貴族',
             branches: [
-              '熱海店',
-              '青山一丁目駅前',
-              '六本木ヒルズ',
-              '文字数が多い場合は改行です',
-              '六本木ヒルズ',
-            ]
+              { id: '1', name: '熱海店', checked: false },
+              { id: '2', name: '青山一丁目駅前', checked: false },
+              { id: '3', name: '六本木ヒルズ', checked: false },
+              { id: '4', name: '文字数が多い場合は改行です', checked: false },
+              { id: '5', name: '六本木ヒルズ', checked: false },
+            ],
+            checked: false
           },
           {
             name: '焼肉きんぐ',
             branches: [
-              '熱海店',
-              '青山一丁目駅前',
-              '六本木ヒルズ',
-              '文字数が多い場合は改行です',
-              '六本木ヒルズ',
-            ]
+              { id: '1', name: '熱海店', checked: false },
+              { id: '2', name: '青山一丁目駅前', checked: false },
+              { id: '3', name: '六本木ヒルズ', checked: false },
+              { id: '4', name: '文字数が多い場合は改行です', checked: false },
+              { id: '5', name: '六本木ヒルズ', checked: false },
+            ],
+            checked: false
           }
-        ]
+        ],
+        checked: false
       }
-    ]
+    ],
+    checked: false
   },
   {
     name: '関東',
@@ -100,24 +109,27 @@ const regions = [
           {
             name: '鳥貴族',
             branches: [
-              '熱海店',
-              '青山一丁目駅前',
-              '六本木ヒルズ',
-              '文字数が多い場合は改行です',
-              '六本木ヒルズ',
-            ]
+              { id: '1', name: '熱海店', checked: false },
+              { id: '2', name: '青山一丁目駅前', checked: false },
+              { id: '3', name: '六本木ヒルズ', checked: false },
+              { id: '4', name: '文字数が多い場合は改行です', checked: false },
+              { id: '5', name: '六本木ヒルズ', checked: false },
+            ],
+            checked: false
           },
           {
             name: '焼肉きんぐ',
             branches: [
-              '熱海店',
-              '青山一丁目駅前',
-              '六本木ヒルズ',
-              '文字数が多い場合は改行です',
-              '六本木ヒルズ',
-            ]
+              { id: '1', name: '熱海店', checked: false },
+              { id: '2', name: '青山一丁目駅前', checked: false },
+              { id: '3', name: '六本木ヒルズ', checked: false },
+              { id: '4', name: '文字数が多い場合は改行です', checked: false },
+              { id: '5', name: '六本木ヒルズ', checked: false },
+            ],
+            checked: false
           }
-        ]
+        ],
+        checked: false
       },
       {
         name: '栃木',
@@ -125,26 +137,30 @@ const regions = [
           {
             name: '鳥貴族',
             branches: [
-              '熱海店',
-              '青山一丁目駅前',
-              '六本木ヒルズ',
-              '文字数が多い場合は改行です',
-              '六本木ヒルズ',
-            ]
+              { id: '1', name: '熱海店', checked: false },
+              { id: '2', name: '青山一丁目駅前', checked: false },
+              { id: '3', name: '六本木ヒルズ', checked: false },
+              { id: '4', name: '文字数が多い場合は改行です', checked: false },
+              { id: '5', name: '六本木ヒルズ', checked: false },
+            ],
+            checked: false
           },
           {
             name: '焼肉きんぐ',
             branches: [
-              '熱海店',
-              '青山一丁目駅前',
-              '六本木ヒルズ',
-              '文字数が多い場合は改行です',
-              '六本木ヒルズ',
-            ]
+              { id: '1', name: '熱海店', checked: false },
+              { id: '2', name: '青山一丁目駅前', checked: false },
+              { id: '3', name: '六本木ヒルズ', checked: false },
+              { id: '4', name: '文字数が多い場合は改行です', checked: false },
+              { id: '5', name: '六本木ヒルズ', checked: false },
+            ],
+            checked: false
           }
-        ]
+        ],
+        checked: false
       }
-    ]
+    ],
+    checked: false
   }
 ]
 
@@ -164,12 +180,12 @@ export default function SelectStore({googleService}: Props) {
         </Wrapper>
         {
           selectedTab === 'brand' && (
-            <BrandSelector stores={stores} />
+            <BrandSelector stores={brandSelectorProps} />
           )
         }
         {
           selectedTab === 'area' && (
-            <AreaSelector regions={regions} />
+            <AreaSelector regions={areaSelectorProps} />
           )
         }
         <Wrapper direction="col" padding="5rem 0 0" gap="8.1rem">
