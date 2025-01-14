@@ -1,4 +1,4 @@
-import styles from "@/main/components/stores/BrandSelector.module.scss";
+import styles from "@/main/components/stores/SelectStore/BrandSelector.module.scss";
 import Wrapper from "@/main/common/Wrapper";
 import Typography from "@/main/common/Typography";
 import SearchBox from "@/main/common/SearchBox";

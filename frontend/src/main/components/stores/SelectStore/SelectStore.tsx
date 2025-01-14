@@ -1,4 +1,4 @@
-import styles from "@/main/components/stores/SelectStore.module.scss";
+import styles from "@/main/components/stores/SelectStore/SelectStore.module.scss";
 import {GoogleService} from "@/main/service/GoogleService.ts";
 import AdvancedSidebarMenu from "@/main/common/AdvancedSidebarMenu";
 import Wrapper from "@/main/common/Wrapper";

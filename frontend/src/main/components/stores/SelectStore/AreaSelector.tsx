@@ -1,4 +1,4 @@
-import styles from "@/main/components/stores/AreaSelector.module.scss";
+import styles from "@/main/components/stores/SelectStore/AreaSelector.module.scss";
 import Wrapper from "@/main/common/Wrapper";
 import Typography from "@/main/common/Typography";
 import Checkbox from "@/main/common/Checkbox";

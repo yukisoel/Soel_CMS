@@ -15,7 +15,7 @@ import EditLocalPostLayout from "@/main/components/editPage/EditLocalPostLayout.
 import EditMenuLayout from "@/main/components/editPage/EditMenuLayout/EditMenuLayout.tsx";
 import EditReservationLayout from "@/main/components/editPage/EditReservationLayout/EditReservationLayout.tsx";
 import EditProductLayout from "./components/editPage/EditProductLayout/EditProductLayout.tsx";
-import SelectStore from "./components/stores/SelectStore.tsx";
+import SelectStore from "./components/stores/SelectStore/SelectStore.tsx";
 
 const googleRepository = new GoogleRepositoryImpl()
 const googleService = new GoogleServiceImpl({googleRepository})
