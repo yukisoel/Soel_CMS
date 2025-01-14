@@ -6,6 +6,7 @@ import Typography from "@/main/common/Typography";
 import { useAdvancedTabs } from "@/main/common/AdvancedTabs/useAdvancedTabs";
 import BrandSelector from "./BrandSelector";
 import AreaSelector from "./AreaSelector";
+import Button from "@/main/common/Button";
 
 type Props = {
   googleService: GoogleService
@@ -171,6 +172,18 @@ export default function SelectStore({googleService}: Props) {
             <AreaSelector regions={regions} />
           )
         }
+        <Wrapper direction="col" padding="5rem 0 0" gap="8.1rem">
+          <Wrapper>
+            <Button bgColor="primary" padding="0.7rem 3.5rem" className={styles.button}>
+              <Typography content="次に進む" color="primary" size="normal" />
+            </Button>
+          </Wrapper>
+          <Wrapper>
+            <Button bgColor="secondary" padding="0.7rem 3.5rem" className={styles.button}>
+              <Typography content="戻る" color="primary" size="normal" />
+            </Button>
+          </Wrapper>
+        </Wrapper>
       </Wrapper>
     </Wrapper>
   )
