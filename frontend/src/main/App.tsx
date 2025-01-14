@@ -15,7 +15,8 @@ import EditLocalPostLayout from "@/main/components/editPage/EditLocalPostLayout.
 import EditMenuLayout from "@/main/components/editPage/EditMenuLayout/EditMenuLayout.tsx";
 import EditReservationLayout from "@/main/components/editPage/EditReservationLayout/EditReservationLayout.tsx";
 import EditProductLayout from "./components/editPage/EditProductLayout/EditProductLayout.tsx";
-import SelectStore from "./components/stores/SelectStore/SelectStore.tsx";
+import EditPageAdvanced from "./pages/EditPageAdvanced.tsx";
+import SchedulePost from "./components/stores/SchedulePost/SchedulePost.tsx";
 
 const googleRepository = new GoogleRepositoryImpl()
 const googleService = new GoogleServiceImpl({googleRepository})
@@ -63,7 +64,17 @@ function App() {
                   element={<EditProductLayout googleService={googleService}/>}/>
         </Route>
       </Route>
-      <Route path="stores/select" element={<SelectStore googleService={googleService}/>}/>
+      <Route path={'/basic'}
+        element={
+          <GoogleAccountsContextProvider>
+            <GoogleSelectedLocationContextProvider>
+                    <EditPageAdvanced />
+            </GoogleSelectedLocationContextProvider>
+          </GoogleAccountsContextProvider>
+        }>
+          <Route path={'bulk/schedule-post'}
+            element={<SchedulePost googleService={googleService} />} />
+      </Route>
     </Routes>
   )
 }

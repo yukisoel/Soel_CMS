@@ -6,27 +6,25 @@ import Checkbox from "@/main/common/Checkbox";
 import ArrowIcon from "@/main/assets/ArrowIcon.svg";
 import ArrowIconYellow from "@/main/assets/ArrowIconYellow.svg";
 import classNames from "classnames";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Separator from "@/main/common/Separator";
-
-type Branch = {
-    id: string
-    name: string
-    checked: boolean
-}
-
-export type Store = {
-    name: string
-    branches: Branch[]
-    checked: boolean
-}
+import { Branch, Store } from "./SelectStore";
 
 type Props = {
     stores: Store[]
+    onChangeSelectedBranches: (branches: Branch[]) => void
 }
 
-export default function BrandSelector({ stores }: Props) {
+export default function BrandSelector({ stores, onChangeSelectedBranches }: Props) {
   const [storeData, setStoreData] = useState<Store[]>(stores);
+
+  useEffect(() => {
+    const branches = storeData.reduce((acc, store) => {
+      const selectedBranches = store.branches.filter(branch => branch.checked);
+      return [...acc, ...selectedBranches];
+    }, [] as Branch[]);
+    onChangeSelectedBranches(branches);
+  },[storeData])
 
   const handleStoreChange = (storeIndex: number) => {
     const newStoreData = [...storeData];
@@ -78,8 +76,8 @@ function BrandWithBranches({ name, branches, checked, storeIndex, onStoreChange,
             {isOpen && (
                 <Wrapper direction="col">
                     <Wrapper padding="0 0 2.6rem" gap="2rem" className={styles.checkbox_container}>
-                        {branches.map(({name, id, checked}, branchIndex) => (
-                            <div className={styles.checkbox_wrapper} key={id}>
+                        {branches.map(({name, checked}, branchIndex) => (
+                            <div className={styles.checkbox_wrapper} key={branchIndex}>
                                 <Checkbox label={name} checked={checked} onChange={() => onBranchChange(storeIndex, branchIndex)} />
                             </div>
                         ))}

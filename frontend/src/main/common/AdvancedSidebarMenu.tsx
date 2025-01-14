@@ -18,7 +18,7 @@ const SidebarItems = [
         icon: StoreMangeIcon,
         items: [
             {title: '各店基本情報変更', link: '/stores/select'},
-            {title: '基本情報一括変更', link: '/edit/bulk'}
+            {title: '基本情報一括変更', link: '/basic/bulk/schedule-post'}
         ],
         flipIcon: true
     },

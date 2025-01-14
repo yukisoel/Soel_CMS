@@ -1,178 +1,49 @@
 import styles from "@/main/components/stores/SelectStore/SelectStore.module.scss";
-import {GoogleService} from "@/main/service/GoogleService.ts";
-import AdvancedSidebarMenu from "@/main/common/AdvancedSidebarMenu";
 import Wrapper from "@/main/common/Wrapper";
 import Typography from "@/main/common/Typography";
 import { useAdvancedTabs } from "@/main/common/AdvancedTabs/useAdvancedTabs";
-import BrandSelector, { Store } from "./BrandSelector";
-import AreaSelector, { Region } from "./AreaSelector";
+import BrandSelector from "./BrandSelector";
+import AreaSelector from "./AreaSelector";
 import Button from "@/main/common/Button";
 
-type Props = {
-  googleService: GoogleService
+export type Branch = {
+  id: string
+  name: string
+  checked: boolean
 }
 
-const brandSelectorProps: Store[] = [
-  {
-    name: '鳥貴族',
-    branches: [
-      { id: '1', name: '熱海店', checked: false },
-      { id: '2', name: '青山一丁目駅前', checked: false },
-      { id: '3', name: '六本木ヒルズ', checked: false },
-      { id: '4', name: '文字数が多い場合は改行です', checked: false },
-      { id: '5', name: '六本木ヒルズ', checked: false },
-    ],
-    checked: false
-  },
-  {
-    name: '焼肉きんぐ',
-    branches: [
-      { id: '1', name: '熱海店', checked: false },
-      { id: '2', name: '青山一丁目駅前', checked: false },
-      { id: '3', name: '六本木ヒルズ', checked: false },
-      { id: '4', name: '文字数が多い場合は改行です', checked: false },
-      { id: '5', name: '六本木ヒルズ', checked: false },
-    ],
-    checked: false
-  }
-]
+export type Store = {
+  name: string
+  branches: Branch[]
+  checked: boolean
+}
 
-const areaSelectorProps: Region[] = [
-  {
-    name: '東北',
-    prefectures: [
-      {
-        name: '青森',
-        stores: [
-          {
-            name: '鳥貴族',
-            branches: [
-              { id: '1', name: '熱海店', checked: false },
-              { id: '2', name: '青山一丁目駅前', checked: false },
-              { id: '3', name: '六本木ヒルズ', checked: false },
-              { id: '4', name: '文字数が多い場合は改行です', checked: false },
-              { id: '5', name: '六本木ヒルズ', checked: false },
-            ],
-            checked: false
-          },
-          {
-            name: '焼肉きんぐ',
-            branches: [
-              { id: '1', name: '熱海店', checked: false },
-              { id: '2', name: '青山一丁目駅前', checked: false },
-              { id: '3', name: '六本木ヒルズ', checked: false },
-              { id: '4', name: '文字数が多い場合は改行です', checked: false },
-              { id: '5', name: '六本木ヒルズ', checked: false },
-            ],
-            checked: false
-          }
-        ],
-        checked: false
-      },
-      {
-        name: '岩手',
-        stores: [
-          {
-            name: '鳥貴族',
-            branches: [
-              { id: '1', name: '熱海店', checked: false },
-              { id: '2', name: '青山一丁目駅前', checked: false },
-              { id: '3', name: '六本木ヒルズ', checked: false },
-              { id: '4', name: '文字数が多い場合は改行です', checked: false },
-              { id: '5', name: '六本木ヒルズ', checked: false },
-            ],
-            checked: false
-          },
-          {
-            name: '焼肉きんぐ',
-            branches: [
-              { id: '1', name: '熱海店', checked: false },
-              { id: '2', name: '青山一丁目駅前', checked: false },
-              { id: '3', name: '六本木ヒルズ', checked: false },
-              { id: '4', name: '文字数が多い場合は改行です', checked: false },
-              { id: '5', name: '六本木ヒルズ', checked: false },
-            ],
-            checked: false
-          }
-        ],
-        checked: false
-      }
-    ],
-    checked: false
-  },
-  {
-    name: '関東',
-    prefectures: [
-      {
-        name: '茨城',
-        stores: [
-          {
-            name: '鳥貴族',
-            branches: [
-              { id: '1', name: '熱海店', checked: false },
-              { id: '2', name: '青山一丁目駅前', checked: false },
-              { id: '3', name: '六本木ヒルズ', checked: false },
-              { id: '4', name: '文字数が多い場合は改行です', checked: false },
-              { id: '5', name: '六本木ヒルズ', checked: false },
-            ],
-            checked: false
-          },
-          {
-            name: '焼肉きんぐ',
-            branches: [
-              { id: '1', name: '熱海店', checked: false },
-              { id: '2', name: '青山一丁目駅前', checked: false },
-              { id: '3', name: '六本木ヒルズ', checked: false },
-              { id: '4', name: '文字数が多い場合は改行です', checked: false },
-              { id: '5', name: '六本木ヒルズ', checked: false },
-            ],
-            checked: false
-          }
-        ],
-        checked: false
-      },
-      {
-        name: '栃木',
-        stores: [
-          {
-            name: '鳥貴族',
-            branches: [
-              { id: '1', name: '熱海店', checked: false },
-              { id: '2', name: '青山一丁目駅前', checked: false },
-              { id: '3', name: '六本木ヒルズ', checked: false },
-              { id: '4', name: '文字数が多い場合は改行です', checked: false },
-              { id: '5', name: '六本木ヒルズ', checked: false },
-            ],
-            checked: false
-          },
-          {
-            name: '焼肉きんぐ',
-            branches: [
-              { id: '1', name: '熱海店', checked: false },
-              { id: '2', name: '青山一丁目駅前', checked: false },
-              { id: '3', name: '六本木ヒルズ', checked: false },
-              { id: '4', name: '文字数が多い場合は改行です', checked: false },
-              { id: '5', name: '六本木ヒルズ', checked: false },
-            ],
-            checked: false
-          }
-        ],
-        checked: false
-      }
-    ],
-    checked: false
-  }
-]
+export type Prefecture = {
+  name: string
+  stores: Store[]
+  checked: boolean
+}
 
-export default function SelectStore({googleService}: Props) {
+export type Region = {
+  name: string
+  prefectures: Prefecture[]
+  checked: boolean
+}
+
+type Props = {
+  areaSelectorProps: Region[]
+  brandSelectorProps: Store[]
+  onChangeSelectedBranches: (branches: Branch[]) => void
+}
+
+export default function SelectStore({areaSelectorProps, brandSelectorProps, onChangeSelectedBranches}: Props) {
   const { selectedTab, tabsRender } = useAdvancedTabs([
     {tabKey: 'brand', content: 'ブランドから選択'},
     {tabKey: 'area', content: 'エリアから選択'}
   ])
 
   return (
-    <Wrapper className={styles.wrapper}>
-      <AdvancedSidebarMenu />
+    <>
       <Wrapper direction="col" padding="5rem 4.3rem 5.9rem 5rem" className={styles.content_container}>
         <Wrapper direction="col" gap="5rem">
           <Typography content="投稿する店舗を選択" color="primary" size="medium" />
@@ -180,12 +51,12 @@ export default function SelectStore({googleService}: Props) {
         </Wrapper>
         {
           selectedTab === 'brand' && (
-            <BrandSelector stores={brandSelectorProps} />
+            <BrandSelector stores={brandSelectorProps} onChangeSelectedBranches={onChangeSelectedBranches} />
           )
         }
         {
           selectedTab === 'area' && (
-            <AreaSelector regions={areaSelectorProps} />
+            <AreaSelector regions={areaSelectorProps} onChangeSelectedBranches={onChangeSelectedBranches} />
           )
         }
         <Wrapper direction="col" padding="5rem 0 0" gap="8.1rem">
@@ -201,6 +72,6 @@ export default function SelectStore({googleService}: Props) {
           </Wrapper>
         </Wrapper>
       </Wrapper>
-    </Wrapper>
+    </>
   )
 }

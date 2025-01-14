@@ -5,39 +5,31 @@ import Checkbox from "@/main/common/Checkbox";
 import ArrowIcon from "@/main/assets/ArrowIcon.svg";
 import ArrowIconYellow from "@/main/assets/ArrowIconYellow.svg";
 import classNames from "classnames";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Separator from "@/main/common/Separator";
-
-type Branch = {
-    id: string
-    name: string
-    checked: boolean
-}
-
-type Store = {
-    name: string
-    branches: Branch[]
-    checked: boolean
-}
-
-type Prefecture = {
-    name: string
-    stores: Store[]
-    checked: boolean
-}
-
-export type Region = {
-    name: string
-    prefectures: Prefecture[]
-    checked: boolean
-}
+import { Branch, Prefecture, Region, Store } from "./SelectStore";
 
 type Props = {
     regions: Region[]
+    onChangeSelectedBranches: (branches: Branch[]) => void
 }
 
-export default function AreaSelector({ regions }: Props) {
+export default function AreaSelector({ regions, onChangeSelectedBranches }: Props) {
   const [regionData, setRegionData] = useState<Region[]>(regions);
+
+  useEffect(() => {
+    const branches = regionData.reduce((acc, region) => {
+      const selectedBranches = region.prefectures.reduce((acc, prefecture) => {
+        const selectedStores = prefecture.stores.reduce((acc, store) => {
+          const selectedBranches = store.branches.filter(branch => branch.checked);
+          return [...acc, ...selectedBranches];
+        }, [] as Branch[]);
+        return [...acc, ...selectedStores];
+      }, [] as Branch[]);
+      return [...acc, ...selectedBranches];
+    }, [] as Branch[]);
+    onChangeSelectedBranches(branches);
+  }, [regionData]);
 
   const handleRegionChange = (regionIndex: number) => {
     const newRegionData = [...regionData];
@@ -212,7 +204,7 @@ function StoreWithBranches({ name, branches, checked, regionIndex, prefectureInd
             {isOpen && (
                 <Wrapper direction="col">
                     <Wrapper padding="0 0 2.6rem 2rem" gap="2rem" className={styles.checkbox_container}>
-                        {branches.map(({name, id, checked}, branchIndex) => (
+                        {branches.map(({name, checked}, branchIndex) => (
                             <div className={styles.checkbox_wrapper} key={branchIndex}>
                                 <Checkbox label={name} checked={checked} onChange={() => onBranchChange(regionIndex, prefectureIndex, storeIndex, branchIndex)} />
                             </div>

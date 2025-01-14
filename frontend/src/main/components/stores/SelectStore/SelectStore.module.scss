@@ -1,50 +1,5 @@
-.wrapper {
-    width: 100%;
-    max-width: 1920px;
-}
-
 .content_container {
     flex: 1;
-}
-
-.search_box {
-    padding: 0 0 0 3rem;
-}
-
-.store_container {
-    display: flex;
-    justify-content: space-between;
-    width: 458px;
-    cursor: pointer;
-}
-
-.arrow_icon {
-    transition: transform 0.3s ease;
-}
-
-.arrow_icon_open {
-    transform: rotate(180deg);
-}
-
-.checkbox_container {
-    width: 940px;
-    flex-wrap: wrap;
-}
-
-.checkbox_wrapper {
-    width: 215px;
-}
-
-.close_button_wrapper {
-    display: flex;
-    cursor: pointer;
-    gap: 1rem;
-    width: 7.2rem;
-}
-
-.close_button {
-    color: #D69507;
-    font-size: 1.6rem;
 }
 
 .button {
