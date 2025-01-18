@@ -1,0 +1,28 @@
+.radio_button {
+    cursor: pointer;
+}
+
+.radio_input {
+    display: none;
+}
+
+.radio_label {
+    display: flex;
+    align-items: center;
+}
+
+.radio_label::before {
+    content: '';
+    display: inline-block;
+    width: 22px;
+    height: 22px;
+    background-image: url('@/main/assets/RadioUnchecked.svg');
+    background-size: cover;
+    margin-right: 1rem;
+}
+
+.radio_input:checked + .radio_label::before {
+    background-image: url('@/main/assets/RadioChecked.svg');
+}
+
+

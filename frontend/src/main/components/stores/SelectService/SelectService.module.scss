@@ -1,0 +1,14 @@
+@use '@/main/styles/variables' as vars;
+
+.content_container {
+    flex: 1;
+}
+
+.selected_store {
+    width: 884px;
+    background-color: vars.$background-color-secondary;
+    border-radius: 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
