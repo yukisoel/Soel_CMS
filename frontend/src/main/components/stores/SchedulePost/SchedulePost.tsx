@@ -1,24 +1,42 @@
 import styles from "@/main/components/stores/SchedulePost/SchedulePost.module.scss";
 import { GoogleService } from "@/main/service/GoogleService"
 import { useSelectStore } from "../SelectStore/useSelectStore"
-import Wrapper from "@/main/common/Wrapper"
-import Typography from "@/main/common/Typography"
-import Button from "@/main/common/Button"
-import Checkbox from "@/main/common/Checkbox";
-import ButtonCheckbox from "@/main/common/ButtonCheckbox";
-import SelectService from "../SelectService/SelectService";
+import { useSelectService } from "../SelectService/useSelectService";
+import { useMemo, useState } from "react";
 
 type Props = {
     googleService: GoogleService
 }
 
 export default function SchedulePost({googleService}: Props) {
-    const { selectedBranches, selectStoreRender } = useSelectStore({googleService})
+    const [mode, setMode] = useState<'selectStore' | 'selectService' | 'schedulePost'>('selectStore');
+
+    const { selectedBranches, selectStoreRender } = useSelectStore({
+        googleService,
+        onNextClick: () => setMode('selectService'),
+        onBackClick: () => {}
+    })
+
+    const selectedStores = useMemo(() => selectedBranches.map((branch) => branch.name), [selectedBranches])
+
+    const {checkedServices, selectServiceRender} = useSelectService({
+        googleService,
+        selectedStores,
+        onNextClick: () => setMode('schedulePost'),
+        onBackClick: () => setMode('selectStore')
+    })
+
+
+
+
 
     return (
         <>
-            {/* {selectStoreRender()} */}
-            {/* <SelectService googleService={googleService} selectedStores={[]} /> */}
+            {mode === 'selectStore' && selectStoreRender()}
+            {mode === 'selectService' && selectServiceRender()}
+            {mode === 'schedulePost' && (
+                <>render</>
+            )}
         </>
     )
 }

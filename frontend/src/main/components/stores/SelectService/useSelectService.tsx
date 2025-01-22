@@ -5,9 +5,11 @@ import { GoogleService } from "@/main/service/GoogleService"
 type Props = {
     googleService: GoogleService
     selectedStores: string[]
+    onNextClick: () => void
+    onBackClick: () => void
 }
 
-export const useSelectStore = ({googleService, selectedStores }: Props) => {
+export const useSelectService = ({googleService, selectedStores, onNextClick, onBackClick}: Props) => {
     // TODO: 組み込みで取得する
     const Services = [
         { label: "Googleビジネスプロフィール", value: "google", checked: false },
@@ -34,6 +36,8 @@ export const useSelectStore = ({googleService, selectedStores }: Props) => {
             services={Services}
             selectedServices={checkedServices}
             handleServiceChange={handleServiceChange}
+            onNextClick={onNextClick}
+            onBackClick={onBackClick}
         />
     )
 

@@ -4,6 +4,10 @@
     flex: 1;
 }
 
+.selected_store_container {
+    align-items: flex-end;
+}
+
 .selected_store {
     width: 884px;
     background-color: vars.$background-color-secondary;
@@ -11,4 +15,8 @@
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem;
+}
+
+.edit_button {
+    height: 4.2rem;
 }

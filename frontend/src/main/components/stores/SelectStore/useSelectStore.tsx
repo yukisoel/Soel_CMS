@@ -4,6 +4,8 @@ import SelectStore, { Branch, Region, Store } from "./SelectStore";
 
 type Props = {
     googleService: GoogleService
+    onNextClick: () => void
+    onBackClick: () => void
 }
 
 const brandSelectorProps: Store[] = [
@@ -158,7 +160,7 @@ const areaSelectorProps: Region[] = [
 }
 ]
 
-export const useSelectStore = ({googleService}: Props) => {
+export const useSelectStore = ({googleService, onNextClick, onBackClick}: Props) => {
     const [selectedBranches, setSelectedBranches] = useState<Array<Omit<Branch, 'checked'>>>([])
 
     const onChangeSelectedBranches = (stores: Branch[]) => {
@@ -170,6 +172,8 @@ export const useSelectStore = ({googleService}: Props) => {
             areaSelectorProps={areaSelectorProps}
             brandSelectorProps={brandSelectorProps}
             onChangeSelectedBranches={onChangeSelectedBranches}
+            onNextClick={onNextClick}
+            onBackClick={onBackClick}
         />
     )
 
