@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useMemo, useState } from "react"
 import SelectService from "./SelectService"
 import { GoogleService } from "@/main/service/GoogleService"
 
@@ -86,7 +86,18 @@ const initialForms: SelectServiceForm[] = [
 
 export const useSelectService = ({googleService, selectedStores, onNextClick, onBackClick}: Props) => {
     // TODO: 組み込みで取得する
-    const [selectServiceForms, setSelectServiceForms] = useState<SelectServiceForm[]>(initialForms);
+    const [selectServiceForms, setSelectServiceForms] = useState<SelectServiceForm[]>(initialForms)
+
+    const selectedServiceForms = useMemo(() => {
+        return selectServiceForms
+            .filter(service => service.checked)
+            .map(service => ({
+                ...service,
+                languages: service.languages.filter(lang => lang.checked),
+                options: service.options.filter(option => option.checked),
+            }));
+
+    }, [selectServiceForms])
 
     const handleFormCheckedChange = (index: number) => {
         setSelectServiceForms((prevForms) =>
@@ -140,7 +151,7 @@ export const useSelectService = ({googleService, selectedStores, onNextClick, on
     )
 
     return {
-        selectServiceForms,
+        selectedServiceForms,
         selectServiceRender,
     }
 }

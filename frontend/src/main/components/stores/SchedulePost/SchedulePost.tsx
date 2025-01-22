@@ -5,6 +5,8 @@ import { useSelectService } from "../SelectService/useSelectService";
 import { useMemo, useState } from "react";
 import Wrapper from "@/main/common/Wrapper";
 import Typography from "@/main/common/Typography";
+import SelectedStoreList from "../SelectStore/SelectedStoreList";
+import SelectedServiceList from "../SelectService/SelectedServiceList";
 
 type Props = {
     googleService: GoogleService
@@ -21,16 +23,19 @@ export default function SchedulePost({googleService}: Props) {
 
     const selectedStores = useMemo(() => selectedBranches.map((branch) => branch.name), [selectedBranches])
 
-    const {selectServiceForms, selectServiceRender} = useSelectService({
+    const {selectedServiceForms, selectServiceRender} = useSelectService({
         googleService,
         selectedStores,
         onNextClick: () => setMode('schedulePost'),
         onBackClick: () => setMode('selectStore')
     })
 
-
-
-
+    const selectedServices = useMemo(() => selectedServiceForms.map(service => {
+        const name = service.label
+        const option = service.options[0].label
+        const languages = service.languages.map(lang => lang.label).join(', ')
+        return `${name} | ${option} | ${languages}`
+    }), [selectedServiceForms])
 
     return (
         <>
@@ -40,6 +45,10 @@ export default function SchedulePost({googleService}: Props) {
             <Wrapper direction="col" padding="5rem 4.3rem 5.9rem 5rem" className={styles.content_container}>
                 <Wrapper direction="col" gap="5rem">
                     <Typography content="投稿するサービスを選択" color="primary" size="medium" />
+                    <Wrapper direction="col" gap="4rem">
+                        <SelectedStoreList selectedStores={selectedStores} onBackClick={() => setMode('selectStore')} />
+                        <SelectedServiceList selectedServicies={selectedServices} onBackClick={() => setMode('selectService')} />
+                    </Wrapper>
                 </Wrapper>
             </Wrapper>
             )}

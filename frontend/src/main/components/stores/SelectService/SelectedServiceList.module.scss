@@ -1,15 +1,15 @@
 @use '@/main/styles/variables' as vars;
 
-.selected_store_container {
+.selected_service_container {
     align-items: flex-end;
 }
 
-.selected_store {
+.selected_service {
     width: 884px;
     background-color: vars.$background-color-secondary;
     border-radius: 1rem;
     display: flex;
-    flex-wrap: wrap;
+    flex-direction: column;
     gap: 0.5rem;
 }
 
