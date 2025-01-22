@@ -17,6 +17,8 @@ type Props = {
 
 export default function BrandSelector({ stores, onChangeSelectedBranches }: Props) {
   const [storeData, setStoreData] = useState<Store[]>(stores);
+  // TODO: 組み込みのタイミングで検索手法検討
+  const [searchValue, setSearchValue] = useState<string>('');
 
   useEffect(() => {
     const branches = storeData.reduce((acc, store) => {
@@ -46,7 +48,7 @@ export default function BrandSelector({ stores, onChangeSelectedBranches }: Prop
   return (
     <Wrapper direction="col">
         <Wrapper direction="col" gap="2rem" padding="4rem 0 4rem 3rem">
-            <SearchBox placeholder="店舗名を検索" onChange={() => {}} width="42.7rem" />
+            <SearchBox placeholder="店舗名を検索" value={searchValue} onChange={(e) => {setSearchValue(e.target.value)}} width="42.7rem" />
             <Checkbox supplementaryText="すべて選択" onChange={() => {}} />
         </Wrapper>
         <Separator width="527px" />
