@@ -1,0 +1,18 @@
+@use '@/main/styles/variables' as vars;
+
+.selected_store_container {
+    align-items: flex-end;
+}
+
+.selected_store {
+    width: 884px;
+    background-color: vars.$background-color-secondary;
+    border-radius: 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.back_button {
+    height: 4.2rem;
+}

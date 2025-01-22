@@ -6,12 +6,13 @@ import Checkbox from "@/main/common/Checkbox";
 import ButtonCheckbox from "@/main/common/ButtonCheckbox";
 import classNames from "classnames";
 import RadioButton from "@/main/common/RadioButton";
+import { SelectServiceForm } from "./useSelectService";
 
 type Props = {
-    label: string
-    value: string
-    checked?: boolean
-    onChange: (value: string) => void
+    selectServiceForm: SelectServiceForm
+    onFormCheckedChange: () => void
+    onLanguageCheckedChange: (langIndex: number) => void;
+    onOptionCheckedChange: (optionIndex: number) => void;
 }
 
 const TranslateLanguages = [
@@ -28,44 +29,31 @@ const RadioButtons = [
     { label: "クーポン", value: "coupon" },
 ]
 
-export default function ServiceSelector({ label, value, checked, onChange }: Props) {
-    const [selectedLanguages, setSelectedLanguages] = useState<string[]>(['ja'])
-    const [selectedRadio, setSelectedRadio] = useState<string>('base');
-
-    const handleLanguageChange = (langValue: string) => {
-        setSelectedLanguages((prev) =>
-            prev.includes(langValue)
-                ? prev.filter((lang) => lang !== langValue)
-                : [...prev, langValue]
-        )
-    }
-
-    const handleRadioChange = (radioValue: string) => {
-        setSelectedRadio(radioValue);
-    }
+export default function ServiceSelector({ selectServiceForm, onFormCheckedChange, onLanguageCheckedChange, onOptionCheckedChange }: Props) {
+    const { label, value, checked, languages, options } = selectServiceForm
 
     return (
         <>
             <Wrapper padding="0.8rem 0.8rem 0.8rem 1.8rem" align="align-center" className={classNames(styles.service_wrapper, { [styles.selected]: checked })}>
-                <Checkbox checked={checked} onChange={() => onChange(value)} />
+                <Checkbox checked={checked} onChange={onFormCheckedChange} />
                 <div className={styles.service_image} />
                 <Typography content={label} color="primary" size="normal" className={styles.service_content} />
                 <Wrapper gap="1rem" align="align-center">
                     <Typography content="翻訳言語" color="primary" size="normal" weight="normal" />
-                    {TranslateLanguages.map((lang) => (
+                    {languages.map((lang, index) => (
                         <ButtonCheckbox
                             key={lang.value}
                             label={lang.label}
-                            checked={selectedLanguages.includes(lang.value)}
-                            onChange={() => handleLanguageChange(lang.value)}
+                            checked={lang.checked}
+                            onChange={() => onLanguageCheckedChange(index)}
                         />
                     ))}
                 </Wrapper>
             </Wrapper>
             {checked && (
                 <Wrapper padding="2rem 0 3.9rem 1.8rem" gap="3rem" className={styles.selected_service}>
-                    {RadioButtons.map((radio) => (
-                        <RadioButton key={radio.value} name={value} label={radio.label} value={radio.value} checked={selectedRadio === radio.value} onChange={() => handleRadioChange(radio.value)}/>
+                    {options.map((option, index) => (
+                        <RadioButton key={option.value} name={value} label={option.label} value={option.value} checked={option.checked} onChange={() => onOptionCheckedChange(index)}/>
                     ))}
                 </Wrapper>
             )}

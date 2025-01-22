@@ -9,40 +9,138 @@ type Props = {
     onBackClick: () => void
 }
 
+export type SelectServiceForm = {
+    label: string
+    value: string
+    checked?: boolean
+    languages: {
+        label: string
+        value: string
+        checked?: boolean
+    }[]
+    options: {
+        label: string
+        value: string
+        checked?: boolean
+    }[]
+}
+
+const translateLanguages: SelectServiceForm['languages'] = [
+    { label: "日本語", value: "ja", checked: true },
+    { label: "英語", value: "en", checked: false},
+    { label: "簡体", value: "jian", checked: false },
+    { label: "繁体", value: "fan", checked: false },
+    { label: "韓国語", value: "ko", checked: false },
+]
+
+const options: SelectServiceForm['options'] = [
+    { label: "基本", value: "base", checked: true },
+    { label: "COVID19", value: "covid19", checked: false },
+    { label: "クーポン", value: "coupon", checked: false },
+]
+
+const initialForms: SelectServiceForm[] = [
+    {
+        label: "Googleビジネスプロフィール",
+        value: "google",
+        checked: false,
+        languages: translateLanguages.slice(),
+        options: options.slice(),
+    },
+    {
+        label: "食べログ",
+        value: "tabelog",
+        checked: false,
+        languages: translateLanguages.slice(),
+        options: options.slice(),
+    },
+    {
+        label: "Instagram",
+        value: "instagram",
+        checked: false,
+        languages: translateLanguages.slice(),
+        options: options.slice(),
+    },
+    {
+        label: "Twitter（新:X）",
+        value: "twitter",
+        checked: false,
+        languages: translateLanguages.slice(),
+        options: options.slice(),
+    },
+    {
+        label: "Facebook",
+        value: "facebook",
+        checked: false,
+        languages: translateLanguages.slice(),
+        options: options.slice(),
+    },
+    {
+        label: "大衆点評",
+        value: "tanshin",
+        checked: false,
+        languages: translateLanguages.slice(),
+        options: options.slice(),
+    },
+]
+
 export const useSelectService = ({googleService, selectedStores, onNextClick, onBackClick}: Props) => {
     // TODO: 組み込みで取得する
-    const Services = [
-        { label: "Googleビジネスプロフィール", value: "google", checked: false },
-        { label: "食べログ", value: "tabelog", checked: false },
-        { label: "Instagram", value: "instagram", checked: false },
-        { label: "Twitter（新:X）", value: "twitter", checked: false },
-        { label: "Facebook", value: "facebook", checked: false },
-        { label: "大衆点評", value: "tanshin", checked: false },
-    ]
+    const [selectServiceForms, setSelectServiceForms] = useState<SelectServiceForm[]>(initialForms);
 
-    const [checkedServices, setCheckedServices] = useState<string[]>([]);
+    const handleFormCheckedChange = (index: number) => {
+        setSelectServiceForms((prevForms) =>
+            prevForms.map((form, i) =>
+                i === index ? { ...form, checked: !form.checked } : form
+            )
+        );
+    };
 
-    const handleServiceChange = (value: string) => {
-        setCheckedServices((prev) =>
-            prev.includes(value)
-                ? prev.filter((service) => service !== value)
-                : [...prev, value]
+    const handleLanguageCheckedChange = (formIndex: number, langIndex: number) => {
+        setSelectServiceForms((prevForms) =>
+            prevForms.map((form, i) =>
+                i === formIndex
+                    ? {
+                          ...form,
+                          languages: form.languages.map((lang, j) =>
+                              j === langIndex ? { ...lang, checked: !lang.checked } : lang
+                          ),
+                      }
+                    : form
+            )
+        );
+    };
+
+    const handleOptionCheckedChange = (formIndex: number, optionIndex: number) => {
+        setSelectServiceForms((prevForms) =>
+            prevForms.map((form, i) =>
+                i === formIndex
+                    ? {
+                          ...form,
+                          options: form.options.map((option, j) => ({
+                              ...option,
+                              checked: j === optionIndex,
+                          })),
+                      }
+                    : form
+            )
         );
     };
 
     const selectServiceRender = () => (
         <SelectService
             selectedStores={selectedStores}
-            services={Services}
-            selectedServices={checkedServices}
-            handleServiceChange={handleServiceChange}
+            selectServiceForms={selectServiceForms}
+            onFormCheckedChange={handleFormCheckedChange}
+            onLanguageCheckedChange={handleLanguageCheckedChange}
+            onOptionCheckedChange={handleOptionCheckedChange}
             onNextClick={onNextClick}
             onBackClick={onBackClick}
         />
     )
 
     return {
-        checkedServices,
+        selectServiceForms,
         selectServiceRender,
-    };
+    }
 }
