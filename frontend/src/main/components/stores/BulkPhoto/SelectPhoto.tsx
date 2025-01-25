@@ -11,6 +11,7 @@ import React from "react";
 import Ellipsis from "@/main/assets/Ellipsis.svg";
 import FolderIcon from "@/main/assets/FolderIcon.svg";
 import classNames from "classnames";
+import useFileUploadModal from "@/main/common/FileUploadModal/useFileUploadModal";
 
 type Props = {
   onNextClick: () => void
@@ -59,6 +60,8 @@ export default function SelectPhoto({onNextClick, onBackClick}: Props) {
         );
     };
 
+    const { openModal, render } = useFileUploadModal({})
+
     return (
     <Wrapper direction="col" padding="5rem 4.3rem 5.9rem 5rem" className={styles.content_container}>
         <Wrapper direction="col" gap="2rem">
@@ -67,7 +70,7 @@ export default function SelectPhoto({onNextClick, onBackClick}: Props) {
                 <Wrapper gap="4rem" align="align-center">
                     <SearchBox placeholder="ファイル名で検索" width="42.7rem" onChange={() => {}} />
                     <Wrapper gap="2rem">
-                        <Button bgColor="primary" padding="0.7rem 1.8rem" className={styles.button}>
+                        <Button bgColor="primary" padding="0.7rem 1.8rem" className={styles.button} onClick={openModal}>
                             <img src={FileIcon} alt="ファイル" />
                             <Typography content="写真をアップロード" color="primary" size="normal" weight="normal" />
                         </Button>
@@ -136,5 +139,6 @@ export default function SelectPhoto({onNextClick, onBackClick}: Props) {
             </Button>
             </Wrapper>
         </Wrapper>
+        {render()}
     </Wrapper>
 )}
