@@ -32,6 +32,11 @@
     font-size: 1.8rem;
 }
 
+.xsmall {
+    @include base_text;
+    font-size: 1.6rem;
+}
+
 .weight-normal {
     font-weight: 400;
 }
@@ -50,4 +55,8 @@
 
 .gray {
     color: vars.$text-color-gray;
+}
+
+.white {
+    color: vars.$background-color-white;
 }

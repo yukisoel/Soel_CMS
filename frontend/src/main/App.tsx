@@ -17,6 +17,7 @@ import EditReservationLayout from "@/main/components/editPage/EditReservationLay
 import EditProductLayout from "./components/editPage/EditProductLayout/EditProductLayout.tsx";
 import EditPageAdvanced from "./pages/EditPageAdvanced.tsx";
 import SchedulePost from "./components/stores/SchedulePost/SchedulePost.tsx";
+import BlukPhoto from "./components/stores/BulkPhoto/BulkPhoto.tsx";
 
 const googleRepository = new GoogleRepositoryImpl()
 const googleService = new GoogleServiceImpl({googleRepository})
@@ -74,6 +75,8 @@ function App() {
         }>
           <Route path={'bulk/schedule-post'}
             element={<SchedulePost googleService={googleService} />} />
+          <Route path={'bulk/photo'}
+            element={<BlukPhoto googleService={googleService} />} />
       </Route>
     </Routes>
   )
