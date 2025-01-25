@@ -1,0 +1,30 @@
+.container {
+    align-items: flex-end;
+}
+
+.photo_item {
+    width: 129px;
+    height: 129px;
+    text-align: center;
+    background-color: #D9D9D9;
+    border-radius: 0.5rem;
+}
+
+.photo {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+}
+
+.photo_container {
+    flex-wrap: wrap;
+    border-radius: 10px;
+    background-color: #F0F0F0;
+    width: 725px;
+    max-height: 447px;
+}
+
+.back_button {
+    height: 4.2rem;
+}
