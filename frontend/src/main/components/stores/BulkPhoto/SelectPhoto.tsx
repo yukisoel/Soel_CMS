@@ -9,6 +9,7 @@ import Separator from "@/main/common/Separator";
 import { useState } from "react";
 import React from "react";
 import Ellipsis from "@/main/assets/Ellipsis.svg";
+import FolderIcon from "@/main/assets/FolderIcon.svg";
 import classNames from "classnames";
 
 type Props = {
@@ -43,6 +44,8 @@ type Photo = {
     { name: "photo19.jpg", sourceUrl: "https://example.com/photo19.jpg" },
     { name: "photo20.jpg", sourceUrl: "https://example.com/photo20.jpg" },
 ]
+
+const folders = ['2021年', '2020年']
 
 export default function SelectPhoto({onNextClick, onBackClick}: Props) {
     const [folderHierarchy, setFolderHierarchy] = useState<string[]>(['南青山店', '外観写真'])
@@ -108,6 +111,17 @@ export default function SelectPhoto({onNextClick, onBackClick}: Props) {
                     <div className={styles.photo_button_img} />
                 </div>
             ))}
+            </Wrapper>
+            <Wrapper gap="3rem">
+                {folders.map((folder, i) => (
+                    <div className={styles.photo_folder} key={i}>
+                        <Wrapper gap="1rem">
+                            <img src={FolderIcon} alt="フォルダ" width="32px" height="27px" />
+                            <Typography content={folder} color="primary" size="xsmall" />
+                        </Wrapper>
+                        <img src={Ellipsis} alt="..." width="16px" height="16px" />
+                    </div>
+                ))}
             </Wrapper>
         </Wrapper>
         <Wrapper direction="col" padding="5rem 0 0" gap="8.1rem">
