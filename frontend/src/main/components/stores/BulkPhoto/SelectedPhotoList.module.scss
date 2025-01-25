@@ -1,3 +1,5 @@
+@import '@/main/styles/scrollbar.scss';
+
 .container {
     align-items: flex-end;
 }
@@ -19,12 +21,13 @@
 
 .photo_container {
     flex-wrap: wrap;
-    border-radius: 10px;
-    background-color: #F0F0F0;
-    width: 725px;
+    width: 730px;
     max-height: 447px;
+
+    @include custom-scrollbar();
 }
 
-.back_button {
-    height: 4.2rem;
+.photo_container_wrapper {
+    background-color: #F0F0F0;
+    border-radius: 10px;
 }

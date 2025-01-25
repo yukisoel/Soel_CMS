@@ -7,6 +7,7 @@ import Typography from "@/main/common/Typography";
 import SelectedStoreList from "../SelectStore/SelectedStoreList";
 import useSelectPhoto from "./useSelectPhoto";
 import SelectedPhotoList from "./SelectedPhotoList";
+import Button from "@/main/common/Button";
 
 type Props = {
     googleService: GoogleService;
@@ -39,6 +40,14 @@ export default function BulkPhoto({ googleService }: Props) {
                         <Wrapper direction="col" gap="4rem">
                             <SelectedStoreList selectedStores={selectedStores} onBackClick={() => setMode('selectStore')} />
                             <SelectedPhotoList  selectedPhotos={selectedPhotoIndices} onBackClick={() => setMode('selectPhoto')} />
+                        </Wrapper>
+                        <Wrapper gap="4rem">
+                            <Button bgColor="secondary" padding="0.7rem 1.9rem" onClick={() => setMode('selectPhoto')}>
+                                <Typography content="修正する" color="primary" size="normal" />
+                            </Button>
+                            <Button bgColor="primary" padding="0.7rem 3.4rem" onClick={() => setMode('selectPhoto')}>
+                                <Typography content="投稿を登録" color="primary" size="normal" />
+                            </Button>
                         </Wrapper>
                     </Wrapper>
                 </Wrapper>
