@@ -9,7 +9,7 @@ import ArrowIcon from '@/main/assets/ArrowIcon.svg';
 registerLocale('ja', ja);
 
 type Props = {
-    defaultValue?: Date;
+    defaultValue?: Date | null;
     onChange?: (date: Date | null) => void;
 };
 
@@ -32,6 +32,7 @@ const DatePicker: React.FC<Props> = ({ defaultValue, onChange }) => {
                 dateFormat="yyyy年MM月dd日"
                 placeholderText="日付を選択"
                 className={styles.date_picker_input}
+                popperClassName="date_picker"
             />
             <img src={ArrowIcon} alt="Arrow Icon" className={styles.arrow_icon} />
         </div>

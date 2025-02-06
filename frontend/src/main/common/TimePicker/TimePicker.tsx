@@ -9,7 +9,7 @@ import ArrowIcon from '@/main/assets/ArrowIcon.svg';
 registerLocale('ja', ja);
 
 type Props = {
-    defaultValue?: Date;
+    defaultValue?: Date | null;
     onChange?: (date: Date | null) => void;
 };
 
@@ -36,6 +36,7 @@ const TimePicker: React.FC<Props> = ({ defaultValue, onChange }) => {
                 locale="ja"
                 placeholderText="00:00"
                 className={styles.time_picker_input}
+                popperClassName="time_picker"
             />
             <img src={ArrowIcon} alt="Arrow Icon" className={styles.arrow_icon} />
         </div>

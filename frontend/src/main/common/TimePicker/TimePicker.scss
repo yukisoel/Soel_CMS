@@ -1,22 +1,24 @@
-.react-datepicker {
-    width: 90px;
-    font-size: 16px;
-}
+.time_picker {
+    .react-datepicker {
+        width: 90px;
+        font-size: 16px;
+    }
 
-.react-datepicker__header {
-    padding-top: 1rem;
-    padding-bottom: 1rem;
-}
+    .react-datepicker__header {
+        padding-top: 1rem;
+        padding-bottom: 1rem;
+    }
 
-.react-datepicker__time-container {
-    width: 90px;
-}
+    .react-datepicker__time-container {
+        width: 90px;
+    }
 
-.react-datepicker__time-list {
-    overflow-x: hidden;
-}
+    .react-datepicker__time-list {
+        overflow-x: hidden;
+    }
 
-.react-datepicker__time-list-item {
-    width: 100%;
-    line-height: 2.5rem;
+    .react-datepicker__time-list-item {
+        width: 100%;
+        line-height: 2.5rem;
+    }
 }
