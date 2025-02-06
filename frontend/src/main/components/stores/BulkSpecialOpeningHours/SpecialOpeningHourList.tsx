@@ -17,7 +17,7 @@ type SpecialOpeningHourItem = {
 
 type Props = {
     onNextClick: () => void;
-    items: SpecialOpeningHourItem[];
+    // items: SpecialOpeningHourItem[];
 };
 
 const stores = ['青山店', '表参道店', '渋谷店', '新宿店', '池袋店', '上野店', '秋葉原店', '六本木店', '銀座店', '日本橋店', '品川店', 'お台場店', '赤坂店', '田町店', '恵比寿店', '目黒店', '自由が丘']
