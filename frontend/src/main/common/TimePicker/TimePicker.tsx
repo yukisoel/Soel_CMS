@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import ReactDatePicker, { registerLocale } from 'react-datepicker';
 import { ja } from 'date-fns/locale/ja';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -14,10 +14,7 @@ type Props = {
 };
 
 const TimePicker: React.FC<Props> = ({ defaultValue, onChange }) => {
-    const [selectedTime, setSelectedTime] = useState<Date | null>(defaultValue || null);
-
     const handleChange = (time: Date | null) => {
-        setSelectedTime(time);
         if (onChange) {
             onChange(time);
         }
@@ -26,7 +23,7 @@ const TimePicker: React.FC<Props> = ({ defaultValue, onChange }) => {
     return (
         <div className={styles.time_picker_container}>
             <ReactDatePicker
-                selected={selectedTime}
+                selected={defaultValue}
                 onChange={handleChange}
                 showTimeSelect
                 showTimeSelectOnly

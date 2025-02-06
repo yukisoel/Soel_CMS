@@ -29,13 +29,15 @@ export default function SpecialOpeningHoursSettings({ onNextClick, onBackClick, 
     };
 
     const handleRemoveTimeRange = (index: number) => {
-        setTimeRanges(timeRanges.filter((_, i) => i !== index));
+        setTimeRanges((prevTimeRanges) => prevTimeRanges.filter((_, i) => i !== index));
     };
 
     const handleTimeChange = (index: number, type: 'start' | 'end', date: Date | null) => {
-        const newTimeRanges = [...timeRanges];
-        newTimeRanges[index][type] = date;
-        setTimeRanges(newTimeRanges);
+        setTimeRanges((prevTimeRanges) => {
+            const newTimeRanges = [...prevTimeRanges];
+            newTimeRanges[index][type] = date;
+            return newTimeRanges;
+        });
     };
 
     return (
