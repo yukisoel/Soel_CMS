@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import styles from "@/main/components/stores/BulkSpecialOpeningHours/SpecialOpeningHoursSettings.module.scss";
 import Wrapper from "@/main/common/Wrapper";
 import Typography from "@/main/common/Typography";
@@ -6,14 +7,37 @@ import Button from "@/main/common/Button";
 import ToggleButton from "@/main/common/ToggleButton";
 import DatePicker from "@/main/common/DatePicker/DatePicker";
 import TimePicker from "@/main/common/TimePicker/TimePicker";
+import CloseIcon from '@/main/assets/CloseIcon.svg';
 
-type Props = {
-    selectedStores: string[]
-    onNextClick: () => void
-    onBackClick: () => void
+type TimeRange = {
+    start: Date | null;
+    end: Date | null;
 };
 
-export default function SpecialOpeningHoursSettings({ onNextClick, onBackClick, selectedStores}: Props) {
+type Props = {
+    selectedStores: string[];
+    onNextClick: () => void;
+    onBackClick: () => void;
+};
+
+export default function SpecialOpeningHoursSettings({ onNextClick, onBackClick, selectedStores }: Props) {
+    const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
+    const [timeRanges, setTimeRanges] = useState<TimeRange[]>([{ start: null, end: null }]);
+
+    const handleAddTimeRange = () => {
+        setTimeRanges([...timeRanges, { start: null, end: null }]);
+    };
+
+    const handleRemoveTimeRange = (index: number) => {
+        setTimeRanges(timeRanges.filter((_, i) => i !== index));
+    };
+
+    const handleTimeChange = (index: number, type: 'start' | 'end', date: Date | null) => {
+        const newTimeRanges = [...timeRanges];
+        newTimeRanges[index][type] = date;
+        setTimeRanges(newTimeRanges);
+    };
+
     return (
         <Wrapper direction="col" padding="5rem 4.3rem 5.9rem 5rem" className={styles.content_container}>
             <Wrapper direction="col" align="align-start" gap="5rem">
@@ -25,18 +49,38 @@ export default function SpecialOpeningHoursSettings({ onNextClick, onBackClick, 
                         <Typography content="休業に設定" color="primary" size="normal" />
                         <ToggleButton />
                     </Wrapper>
-                    <Wrapper gap="2rem">
-                        <DatePicker onChange={() => {}} />
-                        <TimePicker onChange={() => {}} />
-                        <TimePicker onChange={() => {}} />
+                    <Wrapper gap="2rem" align="align-start">
+                        <DatePicker defaultValue={selectedDate} onChange={setSelectedDate} />
+                        <Wrapper direction="col" gap="2rem" align="align-start">
+                            {timeRanges.map((timeRange, index) => (
+                                <Wrapper key={index} direction="row" gap="1rem" align="align-center">
+                                    <TimePicker
+                                        defaultValue={timeRange.start}
+                                        onChange={(date) => handleTimeChange(index, 'start', date)}
+                                    />
+                                    <TimePicker
+                                        defaultValue={timeRange.end}
+                                        onChange={(date) => handleTimeChange(index, 'end', date)}
+                                    />
+                                    {index !== 0 && (
+                                        <button className={styles.close_button} onClick={() => handleRemoveTimeRange(index)}>
+                                            <img src={CloseIcon} width="22px" height="22px" alt="close icon"  />
+                                        </button>
+                                    )}
+                                </Wrapper>
+                            ))}
+                            <Button bgColor="primary" padding="0.5rem 1rem" onClick={handleAddTimeRange} className={styles.hours_add_button}>
+                                <Typography content="時間を追加" color="primary" size="small" weight="normal" />
+                            </Button>
+                        </Wrapper>
                     </Wrapper>
                 </Wrapper>
                 <Wrapper direction="col" gap="4rem" align="align-start">
                     <Button bgColor="primary" padding="0.7rem 3.5rem" onClick={onNextClick}>
-                        <Typography content="次に進む" color="primary" size="normal" />
+                        <Typography content="次に進む" color="primary" size="normal" weight="normal" />
                     </Button>
                     <Button bgColor="secondary" padding="0.7rem 3.4rem" onClick={onBackClick}>
-                        <Typography content="戻る" color="primary" size="normal" />
+                        <Typography content="戻る" color="primary" size="normal" weight="normal" />
                     </Button>
                 </Wrapper>
             </Wrapper>
