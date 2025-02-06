@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import ReactDatePicker, { registerLocale } from 'react-datepicker';
 import { ja } from 'date-fns/locale/ja';
 import 'react-datepicker/dist/react-datepicker.css';
-import './TimePicker.scss'
+import './TimePicker.scss';
 import styles from './TimePicker.module.scss';
 import ArrowIcon from '@/main/assets/ArrowIcon.svg';
 
@@ -14,15 +14,24 @@ type Props = {
 };
 
 const TimePicker: React.FC<Props> = ({ defaultValue, onChange }) => {
+    const datePickerRef = useRef<ReactDatePicker>(null);
+
     const handleChange = (time: Date | null) => {
         if (onChange) {
             onChange(time);
         }
     };
 
+    const handleContainerClick = () => {
+        if (datePickerRef.current) {
+            datePickerRef.current.setFocus();
+        }
+    };
+
     return (
-        <div className={styles.time_picker_container}>
+        <div className={styles.time_picker_container} onClick={handleContainerClick}>
             <ReactDatePicker
+                ref={datePickerRef}
                 selected={defaultValue}
                 onChange={handleChange}
                 showTimeSelect

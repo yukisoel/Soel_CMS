@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import ReactDatePicker, { registerLocale } from 'react-datepicker';
 import { ja } from 'date-fns/locale/ja';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -14,15 +14,24 @@ type Props = {
 };
 
 const DatePicker: React.FC<Props> = ({ defaultValue, onChange }) => {
+    const datePickerRef = useRef<ReactDatePicker>(null);
+
     const handleChange = (date: Date | null) => {
         if (onChange) {
             onChange(date);
         }
     };
 
+    const handleContainerClick = () => {
+        if (datePickerRef.current) {
+            datePickerRef.current.setFocus();
+        }
+    };
+
     return (
-        <div className={styles.date_picker_container}>
+        <div className={styles.date_picker_container} onClick={handleContainerClick}>
             <ReactDatePicker
+                ref={datePickerRef}
                 selected={defaultValue}
                 onChange={handleChange}
                 locale="ja"
