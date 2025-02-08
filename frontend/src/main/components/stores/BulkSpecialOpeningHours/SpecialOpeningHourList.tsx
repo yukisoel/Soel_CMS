@@ -67,7 +67,7 @@ export default function SpecialOpeningHourList({ onNextClick }: Props) {
             <Typography content="特別営業時間" color="primary" size="medium" />
             <Wrapper gap="4rem" align="align-center">
                 <SearchBox placeholder="変更履歴を検索" width="42.7rem" onChange={() => {}} />
-                <Button bgColor="primary" padding="0.7rem 1.8rem" className={styles.button} onClick={() => {}}>
+                <Button bgColor="primary" padding="0.7rem 1.8rem" className={styles.button} onClick={onNextClick}>
                     <Typography content="新規作成" color="primary" size="normal" weight="normal" />
                 </Button>
             </Wrapper>

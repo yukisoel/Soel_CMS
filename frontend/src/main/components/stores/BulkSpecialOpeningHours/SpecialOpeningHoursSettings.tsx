@@ -9,21 +9,22 @@ import DatePicker from "@/main/common/DatePicker/DatePicker";
 import TimePicker from "@/main/common/TimePicker/TimePicker";
 import CloseIcon from '@/main/assets/CloseIcon.svg';
 
-type TimeRange = {
+export type TimeRange = {
     start: Date | null;
     end: Date | null;
 };
 
 type Props = {
     selectedStores: string[];
+    selectedDate: Date | null;
+    setSelectedDate: React.Dispatch<React.SetStateAction<Date | null>>
+    timeRanges: TimeRange[];
+    setTimeRanges: React.Dispatch<React.SetStateAction<TimeRange[]>>
     onNextClick: () => void;
     onBackClick: () => void;
 };
 
-export default function SpecialOpeningHoursSettings({ onNextClick, onBackClick, selectedStores }: Props) {
-    const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
-    const [timeRanges, setTimeRanges] = useState<TimeRange[]>([{ start: null, end: null }]);
-
+export default function SpecialOpeningHoursSettings({ onNextClick, onBackClick, selectedStores, selectedDate, setSelectedDate, timeRanges, setTimeRanges }: Props) {
     const handleAddTimeRange = () => {
         setTimeRanges([...timeRanges, { start: null, end: null }]);
     };
