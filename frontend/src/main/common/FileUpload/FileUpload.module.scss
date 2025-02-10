@@ -66,6 +66,8 @@
 
 .file_upload_text_regular {
     display: flex;
+    align-items: center;
+    justify-content: center;
     gap: 18px;
 
     color: #282828;
@@ -87,4 +89,16 @@
     font-weight: 400;
 
     background-color: #D9D9D9;
+}
+
+.photo_list_container {
+    display: flex;
+    align-items: flex-end;
+    gap: 2rem;
+}
+
+.photo {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
 }
