@@ -10,7 +10,7 @@ type Props = {
 }
 
 export default function SchedulePost({googleService}: Props) {
-    const [mode, setMode] = useState<'selectStore' | 'selectService' | 'schedulePost'>('selectStore');
+    const [mode, setMode] = useState<'selectStore' | 'selectService' | 'schedulePost'>('schedulePost');
 
     const { selectedBranches, selectStoreRender } = useSelectStore({
         googleService,

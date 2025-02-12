@@ -4,6 +4,7 @@ import Typography from "@/main/common/Typography";
 import SelectedStoreList from "../SelectStore/SelectedStoreList";
 import SelectedServiceList from "../SelectService/SelectedServiceList";
 import useFileUpload from "@/main/common/FileUpload/useFileUpload";
+import Textarea from "@/main/common/Textarea";
 
 type Props = {
     selectedStores: string[]
@@ -26,6 +27,10 @@ export default function SchedulePost({selectedStores, selectedServices, onEditSe
                 <Wrapper direction="col" gap="1.6rem">
                     <Typography content="写真を追加" color="primary" size="normal" />
                     {render()}
+                </Wrapper>
+                <Wrapper direction="col" gap="1.6rem">
+                    <Typography content="投稿内容" color="primary" size="normal" />
+                    <Textarea placeholder="投稿内容を入力してください" width="100%" />
                 </Wrapper>
             </Wrapper>
         </Wrapper>
