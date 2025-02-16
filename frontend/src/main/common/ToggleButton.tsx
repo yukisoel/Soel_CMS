@@ -3,11 +3,19 @@ import styles from './ToggleButton.module.scss';
 import toggleOffImage from '@/main/assets/ToggleOff.svg';
 import toggleOnImage from '@/main/assets/ToggleOn.svg';
 
-const ToggleButton = () => {
-    const [isOn, setIsOn] = useState(false);
+type Props = {
+    checked?: boolean
+    onChange?: () => void
+}
+
+const ToggleButton = ({checked, onChange}: Props) => {
+    const [isOn, setIsOn] = useState(checked);
 
     const handleToggle = () => {
         setIsOn(!isOn);
+        if (onChange) {
+            onChange()
+        }
     };
 
     return (

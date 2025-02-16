@@ -1,15 +1,17 @@
 import styles from "@/main/common/Checkbox.module.scss";
 import Typography from "@/main/common/Typography";
+import classNames from "classnames";
 import { useId } from "react";
 
 type Props = {
     label?: string
     supplementaryText?: string
     checked?: boolean
+    reverse?: boolean
     onChange: (event: React.ChangeEvent<HTMLInputElement>) => void
 }
 
-export default function Checkbox({ label, supplementaryText, checked, onChange }: Props) {
+export default function Checkbox({ label, supplementaryText, checked, reverse = false, onChange }: Props) {
     const id = useId();
     return (
         <>
@@ -20,7 +22,7 @@ export default function Checkbox({ label, supplementaryText, checked, onChange }
                 checked={checked}
                 onChange={onChange}
             />
-            <label htmlFor={id} className={styles.custom_checkbox_label}>
+            <label htmlFor={id} className={classNames(styles.custom_checkbox_label, reverse && styles.reverse)}>
                 {label && (
                     <Typography content={label} color="primary" size="normal" />
                 )}

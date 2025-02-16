@@ -13,7 +13,7 @@ interface Props extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
 
 const Textarea: React.FC<Props> = ({ width, height, padding, fwMedium = false, className, ref, ...props }) => {
     return (
-        <div className={styles.textarea_wrapper}>
+        <div className={styles.textarea_wrapper} style={{width: width, height: height}}>
             <textarea
                 className={classNames(
                     className,
