@@ -12,6 +12,7 @@ import Checkbox from "@/main/common/Checkbox";
 import ToggleButton from "@/main/common/ToggleButton";
 import DatePicker from "@/main/common/DatePicker/DatePicker";
 import TimePicker from "@/main/common/TimePicker/TimePicker";
+import TemplateManagerModal from '@/main/common/TemplatePostModal/TemplateManagerModal';
 
 type Props = {
     selectedStores: string[];
@@ -131,6 +132,7 @@ export default function SchedulePost({ selectedStores, selectedServices, onEditS
                     </Button>
                 </Wrapper>
             </Wrapper>
+            <TemplateManagerModal isOpen={false} onClose={() => {}} />
         </Wrapper>
     );
 }
