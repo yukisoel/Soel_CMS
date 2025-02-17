@@ -1,8 +1,8 @@
-import Modal from '../Modal/Modal';
-import { useTabs } from '../Tabs/useTabs';
 import { useEffect, useMemo, useState } from 'react';
 import TemplateSelect, { Template } from './TemplateSelect';
 import TemplateCreate from './TemplateCreate';
+import Modal from '@/main/common/Modal/Modal';
+import { useTabs } from '@/main/common/Tabs/useTabs';
 
 type Props = {
     isOpen: boolean;

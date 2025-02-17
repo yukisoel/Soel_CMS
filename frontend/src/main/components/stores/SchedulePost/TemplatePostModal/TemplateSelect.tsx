@@ -1,8 +1,8 @@
+import Wrapper from '@/main/common/Wrapper';
 import styles from './TemplateSelect.module.scss';
-import Wrapper from '../Wrapper';
-import Typography from '../Typography';
-import Button from '../Button';
-import Separator from '../Separator';
+import Button from '@/main/common/Button';
+import Typography from '@/main/common/Typography';
+import Separator from '@/main/common/Separator';
 
 type Props = {
     tabsRender: () => React.ReactNode

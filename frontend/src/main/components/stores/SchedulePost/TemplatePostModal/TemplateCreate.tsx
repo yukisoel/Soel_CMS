@@ -1,9 +1,9 @@
-import Wrapper from '../Wrapper';
-import Typography from '../Typography';
-import Button from '../Button';
 import CloseSymbol from '@/main/assets/CloseSymbol.svg'
-import Input from '../Input';
-import Textarea from '../Textarea';
+import Button from '@/main/common/Button';
+import Input from '@/main/common/Input';
+import Textarea from '@/main/common/Textarea';
+import Typography from '@/main/common/Typography';
+import Wrapper from '@/main/common/Wrapper';
 
 type Props = {
     tabsRender: () => React.ReactNode
