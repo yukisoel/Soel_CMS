@@ -117,7 +117,7 @@ export default function SchedulePost({ selectedStores, selectedServices, onEditS
                         <ToggleButton checked={schedulePost} onChange={() => setSchedulePost(!schedulePost)} />
                     </Wrapper>
                     {schedulePost && (
-                        <Wrapper>
+                        <Wrapper gap="2rem">
                             <DatePicker defaultValue={selectedDate} onChange={setSelectedDate} />
                             <TimePicker defaultValue={selectedTime} onChange={setSelectedTime} />
                         </Wrapper>
