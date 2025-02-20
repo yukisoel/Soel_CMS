@@ -76,7 +76,7 @@ export default function TemplateManagerModal({ isOpen, onClose }: Props) {
                 mode === 'select' && <TemplateSelect templates={templates} tabsRender={tabsRender} onCreateClick={() => setMode('create')} />
             }
             {
-                mode === 'create' && <TemplateCreate tabsRender={tabsRender} setSelectedTab={setSelectedTab}/>
+                mode === 'create' && <TemplateCreate tabsRender={tabsRender} setSelectedTab={setSelectedTab} onBack={() => setMode('select')}/>
             }
             </>
         )}
