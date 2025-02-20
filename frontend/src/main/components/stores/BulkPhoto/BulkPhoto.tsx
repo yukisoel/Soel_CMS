@@ -1,4 +1,4 @@
-import styles from "@/main/components/stores/SchedulePost/SchedulePost.module.scss";
+import styles from "@/main/components/stores/BulkPhoto/BulkPhoto.module.scss";
 import { GoogleService } from "@/main/service/GoogleService";
 import { useSelectStore } from "../SelectStore/useSelectStore";
 import { useMemo, useState } from "react";

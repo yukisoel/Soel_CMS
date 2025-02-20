@@ -8,10 +8,11 @@ interface Props extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
     height?: string;
     fwMedium?: boolean;
     className?: string;
+    readOnly?: boolean;
     ref?: React.Ref<HTMLTextAreaElement>;
 }
 
-const Textarea: React.FC<Props> = ({ width, height, padding, fwMedium = false, className, ref, ...props }) => {
+const Textarea: React.FC<Props> = ({ width, height, padding, fwMedium = false, className, readOnly = false, ref, ...props }) => {
     return (
         <div className={styles.textarea_wrapper} style={{width: width, height: height}}>
             <textarea
@@ -22,6 +23,7 @@ const Textarea: React.FC<Props> = ({ width, height, padding, fwMedium = false, c
                 )}
                 style={{ padding: padding, width: width, height: height }}
                 ref={ref}
+                readOnly={readOnly}
                 {...props}
             />
         </div>

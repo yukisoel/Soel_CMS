@@ -4,14 +4,15 @@ import classNames from "classnames";
 import { useId } from "react";
 
 type Props = {
-    label?: string
-    supplementaryText?: string
-    checked?: boolean
-    reverse?: boolean
-    onChange: (event: React.ChangeEvent<HTMLInputElement>) => void
-}
+    label?: string;
+    supplementaryText?: string;
+    checked?: boolean;
+    reverse?: boolean;
+    readOnly?: boolean;
+    onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
+};
 
-export default function Checkbox({ label, supplementaryText, checked, reverse = false, onChange }: Props) {
+export default function Checkbox({ label, supplementaryText, checked, reverse = false, readOnly = false, onChange }: Props) {
     const id = useId();
     return (
         <>
@@ -20,7 +21,8 @@ export default function Checkbox({ label, supplementaryText, checked, reverse = 
                 id={id}
                 className={styles.custom_checkbox}
                 checked={checked}
-                onChange={onChange}
+                onChange={readOnly ? undefined : onChange}
+                disabled={readOnly}
             />
             <label htmlFor={id} className={classNames(styles.custom_checkbox_label, reverse && styles.reverse)}>
                 {label && (

@@ -1,16 +1,16 @@
-import styles from "@/main/components/stores/SchedulePost/SchedulePost.module.scss";
 import { GoogleService } from "@/main/service/GoogleService"
 import { useSelectStore } from "../SelectStore/useSelectStore"
 import { useSelectService } from "../SelectService/useSelectService";
 import { useMemo, useState } from "react";
-import PostContentForm from "./PostContentForm";
+import PostContentConfirm from "./PostContentConfirm";
+import usePostContentForm from "./usePostContentForm";
 
 type Props = {
     googleService: GoogleService
 }
 
 export default function SchedulePost({googleService}: Props) {
-    const [mode, setMode] = useState<'selectStore' | 'selectService' | 'schedulePost'>('schedulePost');
+    const [mode, setMode] = useState<'selectStore' | 'selectService' | 'schedulePost' | 'confirmPost'>('selectStore');
 
     const { selectedBranches, selectStoreRender } = useSelectStore({
         googleService,
@@ -34,12 +34,37 @@ export default function SchedulePost({googleService}: Props) {
         return `${name} | ${option} | ${languages}`
     }), [selectedServiceForms])
 
+    const { formState, render: renderFormContent, uploadedPhotoFileList } = usePostContentForm({
+        selectedStores,
+        selectedServices,
+        onEditSelectStore: () => setMode('selectStore'),
+        onEditSelectService: () => setMode('selectService'),
+        onNext: () => setMode('confirmPost')
+    })
+
     return (
         <>
             {mode === 'selectStore' && selectStoreRender()}
             {mode === 'selectService' && selectServiceRender()}
-            {mode === 'schedulePost' && (
-            <PostContentForm selectedStores={selectedStores} selectedServices={selectedServices} onEditSelectStore={() => setMode('selectStore')} onEditSelectService={() => setMode('selectService')} />
+            {mode === 'schedulePost' && renderFormContent()}
+            {mode === 'confirmPost' && (
+                <PostContentConfirm
+                    selectedStores={selectedStores}
+                    selectedServices={selectedServices}
+                    formState={formState}
+                    uploadedPhotoFileList={uploadedPhotoFileList}
+                    onEdit={() => setMode('schedulePost')}
+                    onSubmit={() => {
+                        // 投稿内容を送信する処理をここに追加
+                        console.log('投稿内容:', formState.content);
+                        console.log('ハッシュタグ:', formState.hashtags);
+                        console.log('店舗のタグをつける:', formState.tagStore);
+                        console.log('店舗の位置情報をつける:', formState.tagLocation);
+                        console.log('投稿予約をする:', formState.schedulePost);
+                        console.log('選択された日付:', formState.selectedDate);
+                        console.log('選択された時間:', formState.selectedTime);
+                    }}
+                />
             )}
         </>
     )
