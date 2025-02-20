@@ -3,6 +3,7 @@ package com.soel.backend.backend.service
 import com.soel.backend.backend.SecurityConfig
 import com.soel.backend.backend.model.*
 import com.soel.backend.backend.repository.GoogleRepository
+import com.soel.backend.backend.repository.MenuLogRepository
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpHeaders
@@ -75,7 +76,7 @@ interface GoogleService {
 }
 
 @Service
-class GoogleServicImpl(val googleRepository: GoogleRepository) : GoogleService {
+class GoogleServicImpl(val googleRepository: GoogleRepository, val menuLogRepository: MenuLogRepository) : GoogleService {
     private val logger: Logger = LoggerFactory.getLogger(SecurityConfig::class.java)
 
     override fun getMe(accessToken: String): GoogleMe? {
@@ -274,8 +275,10 @@ class GoogleServicImpl(val googleRepository: GoogleRepository) : GoogleService {
         locationId: String
     ): ResponseEntity<GoogleLocationFoodMenusModel>? {
         try {
-                val googleLocationFoodMenusModel =
-                    googleRepository.getLocationFoodMenus(accessToken, accountId, locationId)
+            val dbMenuLogs = menuLogRepository.findAll()
+            println("dbMenuLogs: $dbMenuLogs")
+            val googleLocationFoodMenusModel =
+                googleRepository.getLocationFoodMenus(accessToken, accountId, locationId)
             return ResponseEntity.ok(googleLocationFoodMenusModel)
         } catch (e: Exception) {
             logger.error("Error getting location food menus", e)
