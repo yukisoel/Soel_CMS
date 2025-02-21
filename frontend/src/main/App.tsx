@@ -59,7 +59,7 @@ function App() {
           <Route path={"accounts/:accountId/location/:locationId/reservation"}
                   element={<EditReservationLayout googleService={googleService}/>}/>
           <Route path={"accounts/:accountId/location/:locationId/product"}
-                  element={<EditProductLayout googleService={googleService}/>}/>
+                  element={<EditProductLayout />}/>
         </Route>
       </Route>
     </Routes>

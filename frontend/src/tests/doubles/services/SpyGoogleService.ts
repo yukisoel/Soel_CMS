@@ -76,4 +76,8 @@ export default class SpyGoogleService implements GoogleService {
 
     return this.postLocationLocalPost_returnValue
   }
+
+  updateLocationFoodMenus(_accountId: string, _locationId: string, _foodMenus: GoogleLocationFoodMenusModel): Promise<void> {
+    return Promise.resolve(undefined);
+  }
 }

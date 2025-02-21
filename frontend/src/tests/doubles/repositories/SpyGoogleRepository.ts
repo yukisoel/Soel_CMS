@@ -73,4 +73,9 @@ export default class SpyGoogleRepository implements GoogleRepository {
       return this.postLocationLocalPost_returnValue
     }
 
+  updateLocationFoodMenus(_accountId: string, _locationId: string, _foodMenus: GoogleLocationFoodMenusModel): Promise<void> {
+    return Promise.resolve(undefined);
+  }
+
+
 }
