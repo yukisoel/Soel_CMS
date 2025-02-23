@@ -1,8 +1,6 @@
 package com.soel.backend.backend.entity
 
-import io.hypersistence.utils.hibernate.type.json.JsonType
 import jakarta.persistence.*
-import org.hibernate.annotations.Type
 import java.time.LocalDateTime
 
 @Entity
@@ -18,7 +16,7 @@ data class MenuLog(
     val locationId: String,
     @Column(name = "created_at")
     val createdAt: LocalDateTime = LocalDateTime.now(),
-    @Type(JsonType::class)
+
     @Column(name = "menu", columnDefinition = "jsonb")
     val menu: String
 ){

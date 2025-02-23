@@ -1,8 +1,6 @@
 package com.soel.backend.backend.service
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.soel.backend.backend.SecurityConfig
-import com.soel.backend.backend.entity.MenuLog
 import com.soel.backend.backend.model.*
 import com.soel.backend.backend.repository.GoogleRepository
 import com.soel.backend.backend.repository.MenuLogRepository
@@ -35,19 +33,16 @@ interface GoogleService {
         accountId: String,
         locationId: String
     ): ResponseEntity<List<GoogleLocationPhotoModel>>?
-
     fun getLocationLocalPosts(
         accessToken: String,
         accountId: String,
         locationId: String
     ): ResponseEntity<List<GoogleLocationLocalPostModel>>?
-
     fun getLocationFoodMenus(
         accessToken: String,
         accountId: String,
         locationId: String
     ): ResponseEntity<GoogleLocationFoodMenusModel>?
-
     fun getLocationPhotoLocal(filename: String): ResponseEntity<StreamingResponseBody>?
     fun deleteLocationPhotoLocal(filename: String)
     fun postLocationPhotos(
@@ -81,11 +76,7 @@ interface GoogleService {
 }
 
 @Service
-class GoogleServicImpl(
-    val googleRepository: GoogleRepository,
-    val menuLogRepository: MenuLogRepository,
-    val objectMapper: ObjectMapper
-) : GoogleService {
+class GoogleServicImpl(val googleRepository: GoogleRepository, val menuLogRepository: MenuLogRepository) : GoogleService {
     private val logger: Logger = LoggerFactory.getLogger(SecurityConfig::class.java)
 
     override fun getMe(accessToken: String): GoogleMe? {
@@ -240,7 +231,7 @@ class GoogleServicImpl(
         accountId: String,
         locationId: String
     ): ResponseEntity<List<GoogleLocationLocalPostModel>>? {
-        try {
+        try{
             val googleLocalPostsMutableList: MutableList<GoogleLocationLocalPostModel> = mutableListOf()
             var nextPageToken: String? = null
             do {
@@ -248,24 +239,23 @@ class GoogleServicImpl(
                 val googleLocationLocalPostsResponse =
                     googleRepository.getLocationLocalPosts(accessToken, accountId, locationId, nextPageToken)
                 println("googleLocationLocalPostsResponse: $googleLocationLocalPostsResponse")
-                val googleLocationLocalPostModels =
-                    googleLocationLocalPostsResponse?.localPosts?.map { localPostModel ->
-                        GoogleLocationLocalPostModel(
-                            localPostModel.name,
-                            localPostModel.languageCode,
-                            localPostModel.summary,
-                            localPostModel.callToAction,
-                            localPostModel.createTime,
-                            localPostModel.updateTime,
-                            localPostModel.event,
-                            localPostModel.state,
-                            localPostModel.media,
-                            localPostModel.searchUrl,
-                            localPostModel.topicType,
-                            localPostModel.alertType,
-                            localPostModel.offer,
-                        )
-                    }
+                val googleLocationLocalPostModels = googleLocationLocalPostsResponse?.localPosts?.map { localPostModel ->
+                    GoogleLocationLocalPostModel(
+                        localPostModel.name,
+                        localPostModel.languageCode,
+                        localPostModel.summary,
+                        localPostModel.callToAction,
+                        localPostModel.createTime,
+                        localPostModel.updateTime,
+                        localPostModel.event,
+                        localPostModel.state,
+                        localPostModel.media,
+                        localPostModel.searchUrl,
+                        localPostModel.topicType,
+                        localPostModel.alertType,
+                        localPostModel.offer,
+                    )
+                }
                 nextPageToken = googleLocationLocalPostsResponse?.nextPageToken
                 googleLocalPostsMutableList.addAll(googleLocationLocalPostModels!!.toMutableList())
                 println(nextPageToken)
@@ -285,16 +275,10 @@ class GoogleServicImpl(
         locationId: String
     ): ResponseEntity<GoogleLocationFoodMenusModel>? {
         try {
+            val dbMenuLogs = menuLogRepository.findAll()
+            println("dbMenuLogs: $dbMenuLogs")
             val googleLocationFoodMenusModel =
                 googleRepository.getLocationFoodMenus(accessToken, accountId, locationId)
-            val menuJson = objectMapper.writeValueAsString(googleLocationFoodMenusModel?.menus)
-            val menuLog = MenuLog(
-                userName = googleLocationFoodMenusModel?.name ?: "",
-                locationId = locationId,
-                menu = menuJson
-            )
-            val savedMenuLog = menuLogRepository.save(menuLog)
-            println("success savedMenuLog:createdAt=${savedMenuLog.createdAt}, id=${savedMenuLog.id}, userName=${savedMenuLog.userName}, locationId=${savedMenuLog.locationId}")
             return ResponseEntity.ok(googleLocationFoodMenusModel)
         } catch (e: Exception) {
             logger.error("Error getting location food menus", e)
@@ -304,7 +288,7 @@ class GoogleServicImpl(
         }
     }
 
-    override fun getLocationPhotoLocal(filename: String): ResponseEntity<StreamingResponseBody>? {
+    override fun getLocationPhotoLocal(filename: String):ResponseEntity<StreamingResponseBody>? {
         println("getLocationPhotoLocal")
         val uploadDir = System.getProperty("user.dir")
         val filePath: Path = Paths.get(uploadDir).resolve(filename).normalize()
@@ -367,7 +351,7 @@ class GoogleServicImpl(
                 val targetLocation = Paths.get(uploadDir).resolve(fileName)
                 println("fileName = $fileName")
                 Files.copy(file.inputStream, targetLocation)
-                val response = googleRepository.postLocationPhoto(accessToken, accountId, locationId, fileName)
+                val response = googleRepository.postLocationPhoto(accessToken, accountId, locationId,fileName)
             }
         } catch (e: Exception) {
             logger.error("Error posting location photos", e)
@@ -401,8 +385,7 @@ class GoogleServicImpl(
                 println("fileName = $fileName")
                 Files.copy(file.inputStream, targetLocation)
             }
-            val response =
-                googleRepository.postLocationLocalPost(accessToken, accountId, locationId, localPost, filenameList)
+            val response = googleRepository.postLocationLocalPost(accessToken, accountId, locationId, localPost, filenameList)
         } catch (e: Exception) {
             logger.error("Error posting location local posts", e)
         }
