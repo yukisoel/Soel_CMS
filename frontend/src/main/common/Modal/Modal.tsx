@@ -1,3 +1,4 @@
+import React, { MouseEvent } from 'react';
 import styles from './Modal.module.scss';
 import Typography from '../Typography';
 import CloseIcon from '@/main/assets/CloseIcon.svg';
@@ -14,8 +15,14 @@ type Props = {
 export default function Modal({ headerContent, isOpen, onClose, contentRender }: Props) {
     if (!isOpen) return null;
 
+    const handleOverlayClick = (e: MouseEvent<HTMLDivElement>) => {
+        if (e.target === e.currentTarget) {
+            onClose();
+        }
+    };
+
     return (
-        <div className={styles.modal_overlay}>
+        <div className={styles.modal_overlay} onClick={handleOverlayClick}>
             <div className={styles.modal_content}>
                 <Wrapper direction="col" gap="2rem">
                     <div className={styles.modal_header}>
