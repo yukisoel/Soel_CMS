@@ -4,7 +4,7 @@ import classNames from "classnames"
 type Props = {
     content: string
     size: 'xsmall' | 'small' | 'normal' | 'medium' | 'large' | 'xlarge'
-    color: 'primary' | 'secondary' | 'black' | 'gray' | 'white'
+    color: 'primary' | 'secondary' | 'black' | 'gray' | 'white' | 'yellow'
     weight?: 'normal'
     className?: string
 }

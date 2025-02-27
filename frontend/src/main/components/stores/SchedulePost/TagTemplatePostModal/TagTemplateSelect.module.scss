@@ -1,0 +1,29 @@
+@use '@/main/styles/variables' as vars;
+
+.tag_container {
+    flex-wrap: wrap;
+    cursor: pointer;
+}
+
+.tag {
+    padding: 7px;
+    background-color: #FFE9B2;
+    border-radius: 6px;
+}
+
+.selected {
+    background-color: #FFD580;
+}
+
+.selected_tag_container {
+    background-color: vars.$background-color-secondary;
+    flex-wrap: wrap;
+    border-radius: 10px;
+    min-height: 170px;
+}
+
+.selected_tag {
+    padding: 7px;
+    background-color: vars.$background-color-primary;
+    border-radius: 6px;
+}

@@ -10,10 +10,11 @@ registerLocale('ja', ja);
 
 type Props = {
     defaultValue?: Date | null;
+    readOnly?: boolean;
     onChange?: (date: Date | null) => void;
 };
 
-const DatePicker: React.FC<Props> = ({ defaultValue, onChange }) => {
+const DatePicker: React.FC<Props> = ({ defaultValue, readOnly = false, onChange }) => {
     const datePickerRef = useRef<ReactDatePicker>(null);
 
     const handleChange = (date: Date | null) => {
@@ -23,7 +24,7 @@ const DatePicker: React.FC<Props> = ({ defaultValue, onChange }) => {
     };
 
     const handleContainerClick = () => {
-        if (datePickerRef.current) {
+        if (datePickerRef.current && !readOnly) {
             datePickerRef.current.setFocus();
         }
     };
@@ -39,6 +40,7 @@ const DatePicker: React.FC<Props> = ({ defaultValue, onChange }) => {
                 placeholderText="日付を選択"
                 className={styles.date_picker_input}
                 popperClassName="date_picker"
+                disabled={readOnly}
             />
             <img src={ArrowIcon} alt="Arrow Icon" className={styles.arrow_icon} />
         </div>

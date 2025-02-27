@@ -10,10 +10,11 @@ registerLocale('ja', ja);
 
 type Props = {
     defaultValue?: Date | null;
+    readOnly?: boolean;
     onChange?: (date: Date | null) => void;
 };
 
-const TimePicker: React.FC<Props> = ({ defaultValue, onChange }) => {
+const TimePicker: React.FC<Props> = ({ defaultValue, readOnly = false, onChange }) => {
     const datePickerRef = useRef<ReactDatePicker>(null);
 
     const handleChange = (time: Date | null) => {
@@ -23,7 +24,7 @@ const TimePicker: React.FC<Props> = ({ defaultValue, onChange }) => {
     };
 
     const handleContainerClick = () => {
-        if (datePickerRef.current) {
+        if (datePickerRef.current && !readOnly) {
             datePickerRef.current.setFocus();
         }
     };
@@ -43,6 +44,7 @@ const TimePicker: React.FC<Props> = ({ defaultValue, onChange }) => {
                 placeholderText="00:00"
                 className={styles.time_picker_input}
                 popperClassName="time_picker"
+                disabled={readOnly}
             />
             <img src={ArrowIcon} alt="Arrow Icon" className={styles.arrow_icon} />
         </div>
