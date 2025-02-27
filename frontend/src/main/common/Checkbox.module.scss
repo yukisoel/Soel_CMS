@@ -31,3 +31,7 @@
 .custom_checkbox:checked + .custom_checkbox_label::before {
     background-image: url('@/main/assets/CheckedIcon.svg');
 }
+
+.reverse {
+    flex-direction: row-reverse;
+}

@@ -1,0 +1,32 @@
+.toggle_button {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    background: none;
+    padding: 0;
+    position: relative;
+    width: 50px;
+    height: 50px;
+    outline: none;
+}
+
+.toggle_button:focus {
+    outline: none;
+}
+
+.toggle_image {
+    width: 100%;
+    height: auto;
+    position: absolute;
+    transition: opacity 0.3s ease;
+}
+
+.visible {
+    opacity: 1;
+}
+
+.hidden {
+    opacity: 0;
+}

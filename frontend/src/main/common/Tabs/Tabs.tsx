@@ -1,7 +1,7 @@
 import styles from './Tabs.module.scss';
-import Wrapper from '../Wrapper';
 import Button from '../Button';
 import Typography from '../Typography';
+import Separator from '../Separator';
 
 export type TabItem = {
   tabKey: string;
@@ -12,21 +12,28 @@ type Props = {
   tabs: TabItem[];
   selectedTab: string;
   setSelectedTab: (tabKey: string) => void;
+  size?: 'normal' | 'medium';
+  width?: string;
 };
 
-export function Tabs({ tabs, selectedTab, setSelectedTab }: Props) {
+export function Tabs({ tabs, selectedTab, setSelectedTab, width, size = "medium" }: Props) {
   return (
-    <Wrapper justify="justify-between" align="align-center" className={styles.tabs_container}>
-        {tabs.map((tab) => (
-            <Button
-                padding="1.1rem 4rem"
-                bgColor={selectedTab === tab.tabKey ? 'primary' : 'input'}
-                onClick={() => setSelectedTab(tab.tabKey)}
-                key={tab.tabKey}
-            >
-                <Typography content={tab.content} color="primary" size="medium" />
-            </Button>
+    <div className={styles.tabs_container} style={{ width: width }}>
+        {tabs.map((tab, index) => (
+            <>
+              <Button
+                  bgColor={selectedTab === tab.tabKey ? 'primary' : 'input'}
+                  onClick={() => setSelectedTab(tab.tabKey)}
+                  key={tab.tabKey}
+              >
+                  <Typography content={tab.content} color="primary" size={size} weight="normal" />
+              </Button>
+              {
+                (index < tabs.length -1 && tab.tabKey !== selectedTab) &&
+                <Separator orientation="vertical" height="27px" borderWidth="2px" />
+              }
+            </>
         ))}
-    </Wrapper>
+    </div>
   )
 }

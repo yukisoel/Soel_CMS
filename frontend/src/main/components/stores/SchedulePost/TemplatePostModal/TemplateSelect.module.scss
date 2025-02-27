@@ -1,0 +1,14 @@
+.template_title {
+    width: 320px;
+}
+
+.template_content {
+    width: 710px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: normal;
+}
