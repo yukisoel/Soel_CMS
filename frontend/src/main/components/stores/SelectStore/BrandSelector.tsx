@@ -11,59 +11,73 @@ import Separator from "@/main/common/Separator";
 import { Branch, Store } from "./SelectStore";
 
 type Props = {
-    stores: Store[]
-    onChangeSelectedBranches: (branches: Branch[]) => void
-}
+    stores: Store[];
+    onChangeSelectedBranches: (branches: Branch[]) => void;
+};
 
 export default function BrandSelector({ stores, onChangeSelectedBranches }: Props) {
-  const [storeData, setStoreData] = useState<Store[]>(stores);
-  // TODO: 組み込みのタイミングで検索手法検討
-  const [searchValue, setSearchValue] = useState<string>('');
+    const [storeData, setStoreData] = useState<Store[]>(stores);
+    const [searchValue, setSearchValue] = useState<string>('');
+    const [selectAll, setSelectAll] = useState<boolean>(false);
 
-  useEffect(() => {
-    const branches = storeData.reduce((acc, store) => {
-      const selectedBranches = store.branches.filter(branch => branch.checked);
-      return [...acc, ...selectedBranches];
-    }, [] as Branch[]);
-    onChangeSelectedBranches(branches);
-  },[storeData])
+    useEffect(() => {
+        const branches = storeData.reduce((acc, store) => {
+            const selectedBranches = store.branches.filter(branch => branch.checked);
+            return [...acc, ...selectedBranches];
+        }, [] as Branch[]);
+        onChangeSelectedBranches(branches);
+    }, [storeData]);
 
-  const handleStoreChange = (storeIndex: number) => {
-    const newStoreData = [...storeData];
-    newStoreData[storeIndex].checked = !newStoreData[storeIndex].checked;
-    newStoreData[storeIndex].branches = newStoreData[storeIndex].branches.map(branch => ({
-      ...branch,
-      checked: newStoreData[storeIndex].checked
-    }));
-    setStoreData(newStoreData);
-  };
+    const handleStoreChange = (storeIndex: number) => {
+        const newStoreData = [...storeData];
+        newStoreData[storeIndex].checked = !newStoreData[storeIndex].checked;
+        newStoreData[storeIndex].branches = newStoreData[storeIndex].branches.map(branch => ({
+            ...branch,
+            checked: newStoreData[storeIndex].checked
+        }));
+        setStoreData(newStoreData);
+    };
 
-  const handleBranchChange = (storeIndex: number, branchIndex: number) => {
-    const newStoreData = [...storeData];
-    newStoreData[storeIndex].branches[branchIndex].checked = !newStoreData[storeIndex].branches[branchIndex].checked;
-    newStoreData[storeIndex].checked = newStoreData[storeIndex].branches.every(branch => branch.checked);
-    setStoreData(newStoreData);
-  };
+    const handleBranchChange = (storeIndex: number, branchIndex: number) => {
+        const newStoreData = [...storeData];
+        newStoreData[storeIndex].branches[branchIndex].checked = !newStoreData[storeIndex].branches[branchIndex].checked;
+        newStoreData[storeIndex].checked = newStoreData[storeIndex].branches.every(branch => branch.checked);
+        setStoreData(newStoreData);
+    };
 
-  return (
-    <Wrapper direction="col">
-        <Wrapper direction="col" gap="2rem" padding="4rem 0 4rem 3rem">
-            <SearchBox placeholder="店舗名を検索" value={searchValue} onChange={(e) => {setSearchValue(e.target.value)}} width="42.7rem" />
-            <Checkbox supplementaryText="すべて選択" onChange={() => {}} />
+    const handleSelectAllChange = () => {
+        const newSelectAll = !selectAll;
+        setSelectAll(newSelectAll);
+        const newStoreData = storeData.map(store => ({
+            ...store,
+            checked: newSelectAll,
+            branches: store.branches.map(branch => ({
+                ...branch,
+                checked: newSelectAll
+            }))
+        }));
+        setStoreData(newStoreData);
+    };
+
+    return (
+        <Wrapper direction="col">
+            <Wrapper direction="col" gap="2rem" padding="4rem 0 4rem 3rem">
+                <SearchBox placeholder="店舗名を検索" value={searchValue} onChange={(e) => { setSearchValue(e.target.value) }} width="42.7rem" />
+                <Checkbox label="すべて選択" checked={selectAll} onChange={handleSelectAllChange} />
+            </Wrapper>
+            <Separator width="527px" />
+            {storeData.map((store, index) => (
+                <BrandWithBranches {...store} key={index} storeIndex={index} onStoreChange={handleStoreChange} onBranchChange={handleBranchChange} />
+            ))}
         </Wrapper>
-        <Separator width="527px" />
-        {storeData.map((store, index) => (
-            <BrandWithBranches {...store} key={index} storeIndex={index} onStoreChange={handleStoreChange} onBranchChange={handleBranchChange} />
-        ))}
-    </Wrapper>
-  )
+    );
 }
 
 type BrandWithBranchesProps = Store & {
-  storeIndex: number;
-  onStoreChange: (storeIndex: number) => void;
-  onBranchChange: (storeIndex: number, branchIndex: number) => void;
-}
+    storeIndex: number;
+    onStoreChange: (storeIndex: number) => void;
+    onBranchChange: (storeIndex: number, branchIndex: number) => void;
+};
 
 function BrandWithBranches({ name, branches, checked, storeIndex, onStoreChange, onBranchChange }: BrandWithBranchesProps) {
     const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -75,23 +89,23 @@ function BrandWithBranches({ name, branches, checked, storeIndex, onStoreChange,
                     <Checkbox label={name} supplementaryText={`(${branches.length}店舗)`} checked={checked} onChange={() => onStoreChange(storeIndex)} />
                     <img src={ArrowIcon} alt="icon" className={classNames(styles.arrow_icon, isOpen ? styles.arrow_icon_open : '')} />
                 </div>
-            {isOpen && (
-                <Wrapper direction="col">
-                    <Wrapper padding="0 0 2.6rem" gap="2rem" className={styles.checkbox_container}>
-                        {branches.map(({name, checked}, branchIndex) => (
-                            <div className={styles.checkbox_wrapper} key={branchIndex}>
-                                <Checkbox label={name} checked={checked} onChange={() => onBranchChange(storeIndex, branchIndex)} />
-                            </div>
-                        ))}
+                {isOpen && (
+                    <Wrapper direction="col">
+                        <Wrapper padding="0 0 2.6rem" gap="2rem" className={styles.checkbox_container}>
+                            {branches.map(({ name, checked }, branchIndex) => (
+                                <div className={styles.checkbox_wrapper} key={branchIndex}>
+                                    <Checkbox label={name} checked={checked} onChange={() => onBranchChange(storeIndex, branchIndex)} />
+                                </div>
+                            ))}
+                        </Wrapper>
+                        <div className={styles.close_button_wrapper} onClick={() => setIsOpen(!isOpen)}>
+                            <Typography content="閉じる" size="small" color="primary" className={styles.close_button} />
+                            <img src={ArrowIconYellow} alt="icon" />
+                        </div>
                     </Wrapper>
-                    <div className={styles.close_button_wrapper} onClick={() => setIsOpen(!isOpen)}>
-                        <Typography content="閉じる" size="small" color="primary" className={styles.close_button} />
-                        <img src={ArrowIconYellow} alt="icon" />
-                    </div>
-                </Wrapper>
-            )}
+                )}
             </Wrapper>
             <Separator width="527px" />
         </>
-    )
+    );
 }
