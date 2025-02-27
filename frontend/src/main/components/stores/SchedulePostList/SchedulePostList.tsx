@@ -1,13 +1,11 @@
 import styles from "@/main/components/stores/SchedulePostList/SchedulePostList.module.scss";
 import { GoogleService } from "@/main/service/GoogleService"
-import { useSelectStore } from "../SelectStore/useSelectStore"
-import { useSelectService } from "../SelectService/useSelectService";
-import { useMemo, useState } from "react";
 import Wrapper from "@/main/common/Wrapper";
 import Typography from "@/main/common/Typography";
 import SearchBox from "@/main/common/SearchBox";
 import Separator from "@/main/common/Separator";
 import Button from "@/main/common/Button";
+import PostDetailModal from "./PostDetailModal/PostDetailModal";
 
 type Props = {
     googleService: GoogleService
@@ -65,6 +63,7 @@ export default function SchedulePost({googleService}: Props) {
                     </Button>
                 </Wrapper>
             </Wrapper>
+            <PostDetailModal isOpen={true} onClose={() => {}} post={{title: "title", date: "2024年12月20日", time: "12時34分", shopList: shopList, postContent: postContent, images: [], serviceList: '【Googleビジネスプロフィール】クーポン', hashtags: ['#ハッシュタグ', '#ハッシュタグ', '#ハッシュタグ', '#ハッシュタグ', '#ハッシュタグ', ]}} />
         </Wrapper>
     )
 }

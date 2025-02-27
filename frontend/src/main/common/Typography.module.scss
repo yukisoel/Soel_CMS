@@ -37,6 +37,11 @@
     font-size: 1.6rem;
 }
 
+.xxsmall {
+    @include base_text;
+    font-size: 1.4rem;
+}
+
 .weight-normal {
     font-weight: 400;
 }
