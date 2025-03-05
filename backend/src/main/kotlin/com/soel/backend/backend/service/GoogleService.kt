@@ -30,62 +30,30 @@ interface GoogleService {
     fun getLocations(accessToken: String, accountId: String): ResponseEntity<List<GoogleLocation>>?
     fun getLocation(accessToken: String, locationId: String): ResponseEntity<GoogleLocation>?
     fun getLocationProfile(accessToken: String, locationId: String): ResponseEntity<GoogleLocationProfileModel>?
-    fun getLocationPhotos(
-        accessToken: String,
-        accountId: String,
-        locationId: String
-    ): ResponseEntity<List<GoogleLocationPhotoModel>>?
-
-    fun getLocationLocalPosts(
-        accessToken: String,
-        accountId: String,
-        locationId: String
-    ): ResponseEntity<List<GoogleLocationLocalPostModel>>?
-
-    fun getLocationFoodMenus(
-        accessToken: String,
-        accountId: String,
-        locationId: String
-    ): ResponseEntity<GoogleLocationFoodMenusModel>?
-
+    fun getLocationPhotos(accessToken: String, accountId: String, locationId: String): ResponseEntity<List<GoogleLocationPhotoModel>>?
+    fun getLocationLocalPosts(accessToken: String, accountId: String, locationId: String): ResponseEntity<List<GoogleLocationLocalPostModel>>?
+    fun getLocationFoodMenus(accessToken: String, accountId: String, locationId: String): ResponseEntity<GoogleLocationFoodMenusModel>?
+    fun getLocationQuestions(accessToken: String, locationId: String): ResponseEntity<List<GoogleLocationQuestion>>?
+    fun getLocationAnswers(accessToken: String, locationId: String, questionId: String): ResponseEntity<List<GoogleLocationAnswer>>?
     fun getLocationPhotoLocal(filename: String): ResponseEntity<StreamingResponseBody>?
+
     fun deleteLocationPhotoLocal(filename: String)
-    fun postLocationPhotos(
-        accessToken: String,
-        accountId: String,
-        locationId: String,
-        files: List<MultipartFile>
-    )
 
-    fun postLocationLocalPosts(
-        accessToken: String,
-        accountId: String,
-        locationId: String,
-        localPost: GoogleLocationLocalPostModel,
-        files: List<MultipartFile>
-    )
+    fun postLocationPhotos(accessToken: String, accountId: String, locationId: String, files: List<MultipartFile>)
+    fun postLocationLocalPosts(accessToken: String, accountId: String, locationId: String, localPost: GoogleLocationLocalPostModel, files: List<MultipartFile>)
+    fun postLocationQuestion(accessToken: String, locationId: String, text: String)
+    fun postLocationAnswer(accessToken: String, locationId: String, questionId: String, text: String)
 
-    fun updateLocationProfile(
-        accessToken: String,
-        locationId: String,
-        updateMask: String,
-        locationProfile: GoogleLocationProfileModel
-    ): ResponseEntity<GoogleLocationProfileModel>?
+    fun updateLocationProfile(accessToken: String, locationId: String, updateMask: String, locationProfile: GoogleLocationProfileModel): ResponseEntity<GoogleLocationProfileModel>?
+    fun updateLocationFoodMenus(accessToken: String, accountId: String, locationId: String, locationFoodMenus: GoogleLocationFoodMenusModel): ResponseEntity<GoogleLocationFoodMenusModel>?
+    fun updateLocationQuestion(accessToken: String, locationId: String, questionId: String, text: String): ResponseEntity<GoogleLocationQuestion>?
 
-    fun updateLocationFoodMenus(
-        accessToken: String,
-        accountId: String,
-        locationId: String,
-        locationFoodMenus: GoogleLocationFoodMenusModel
-    ): ResponseEntity<GoogleLocationFoodMenusModel>?
+    fun deleteLocationQuestion(accessToken: String, locationId: String, questionId: String)
+    fun deleteLocationAnswer(accessToken: String, locationId: String, questionId: String)
 }
 
 @Service
-class GoogleServicImpl(
-    val googleRepository: GoogleRepository,
-    val menuLogRepository: MenuLogRepository,
-    val objectMapper: ObjectMapper
-) : GoogleService {
+class GoogleServicImpl(val googleRepository: GoogleRepository, val menuLogRepository: MenuLogRepository, val objectMapper: ObjectMapper) : GoogleService {
     private val logger: Logger = LoggerFactory.getLogger(SecurityConfig::class.java)
 
     override fun getMe(accessToken: String): GoogleMe? {
@@ -169,10 +137,7 @@ class GoogleServicImpl(
         }
     }
 
-    override fun getLocationProfile(
-        accessToken: String,
-        locationId: String
-    ): ResponseEntity<GoogleLocationProfileModel>? {
+    override fun getLocationProfile(accessToken: String, locationId: String): ResponseEntity<GoogleLocationProfileModel>? {
         try {
             val googleLocationProfile = googleRepository.getLocationProfile(accessToken, locationId)
             println("googleLocationProfile")
@@ -199,11 +164,7 @@ class GoogleServicImpl(
         }
     }
 
-    override fun getLocationPhotos(
-        accessToken: String,
-        accountId: String,
-        locationId: String
-    ): ResponseEntity<List<GoogleLocationPhotoModel>>? {
+    override fun getLocationPhotos(accessToken: String, accountId: String, locationId: String): ResponseEntity<List<GoogleLocationPhotoModel>>? {
         try {
             val googlePhotosMutableList: MutableList<GoogleLocationPhotoModel> = mutableListOf()
             var nextPageToken: String? = null
@@ -235,11 +196,7 @@ class GoogleServicImpl(
         }
     }
 
-    override fun getLocationLocalPosts(
-        accessToken: String,
-        accountId: String,
-        locationId: String
-    ): ResponseEntity<List<GoogleLocationLocalPostModel>>? {
+    override fun getLocationLocalPosts(accessToken: String, accountId: String, locationId: String): ResponseEntity<List<GoogleLocationLocalPostModel>>? {
         try {
             val googleLocalPostsMutableList: MutableList<GoogleLocationLocalPostModel> = mutableListOf()
             var nextPageToken: String? = null
@@ -279,11 +236,7 @@ class GoogleServicImpl(
         }
     }
 
-    override fun getLocationFoodMenus(
-        accessToken: String,
-        accountId: String,
-        locationId: String
-    ): ResponseEntity<GoogleLocationFoodMenusModel>? {
+    override fun getLocationFoodMenus(accessToken: String, accountId: String, locationId: String): ResponseEntity<GoogleLocationFoodMenusModel>? {
         try {
             val googleLocationFoodMenusModel =
                 googleRepository.getLocationFoodMenus(accessToken, accountId, locationId)
@@ -298,6 +251,68 @@ class GoogleServicImpl(
             return ResponseEntity.ok(googleLocationFoodMenusModel)
         } catch (e: Exception) {
             logger.error("Error getting location food menus", e)
+            return ResponseEntity
+                .badRequest()
+                .body(null)
+        }
+    }
+
+    override fun getLocationQuestions(accessToken: String, locationId: String): ResponseEntity<List<GoogleLocationQuestion>>? {
+        try {
+            val googleLocalQuestionMutableList: MutableList<GoogleLocationQuestion> = mutableListOf()
+            var nextPageToken: String? = null
+            do {
+                val googleLocationQuestionsResponse =
+                    googleRepository.getLocationQuestions(accessToken, locationId, nextPageToken)
+                val googleLocationQuestions = googleLocationQuestionsResponse?.questions?.map { question ->
+                    GoogleLocationQuestion(
+                        question.name,
+                        question.text,
+                        question.createTime,
+                        question.updateTime,
+                        question.upvoteCount,
+                        question.totalAnswerCount,
+                        question.author,
+                        question.topAnswers,
+                    )
+                }
+                nextPageToken = googleLocationQuestionsResponse?.nextPageToken
+                googleLocalQuestionMutableList.addAll(googleLocationQuestions!!.toMutableList())
+                println(nextPageToken)
+            } while (nextPageToken != null)
+            return ResponseEntity.ok(googleLocalQuestionMutableList)
+        } catch (e: Exception) {
+            logger.error("Error getting location questions", e)
+            return ResponseEntity
+                .badRequest()
+                .body(null)
+        }
+    }
+
+    override fun getLocationAnswers(accessToken: String, locationId: String, questionId: String): ResponseEntity<List<GoogleLocationAnswer>>? {
+        try {
+            val googleLocalAnswerMutableList: MutableList<GoogleLocationAnswer> = mutableListOf()
+            var nextPageToken: String? = null
+            do {
+                val googleLocationAnswersResponse =
+                    googleRepository.getLocationAnswers(accessToken, locationId, questionId, nextPageToken)
+                val googleLocationAnswers = googleLocationAnswersResponse?.answers?.map { answer ->
+                    GoogleLocationAnswer(
+                        answer.name,
+                        answer.text,
+                        answer.createTime,
+                        answer.updateTime,
+                        answer.upvoteCount,
+                        answer.author,
+                    )
+                }
+                nextPageToken = googleLocationAnswersResponse?.nextPageToken
+                googleLocalAnswerMutableList.addAll(googleLocationAnswers!!.toMutableList())
+                println(nextPageToken)
+            } while (nextPageToken != null)
+            return ResponseEntity.ok(googleLocalAnswerMutableList)
+        } catch (e: Exception) {
+            logger.error("Error getting location answers", e)
             return ResponseEntity
                 .badRequest()
                 .body(null)
@@ -344,12 +359,7 @@ class GoogleServicImpl(
         Files.delete(filePath)
     }
 
-    override fun postLocationPhotos(
-        accessToken: String,
-        accountId: String,
-        locationId: String,
-        files: List<MultipartFile>
-    ) {
+    override fun postLocationPhotos(accessToken: String, accountId: String, locationId: String, files: List<MultipartFile>) {
         println("postLocationPhotos")
         if (files.isEmpty()) {
             return
@@ -374,13 +384,7 @@ class GoogleServicImpl(
         }
     }
 
-    override fun postLocationLocalPosts(
-        accessToken: String,
-        accountId: String,
-        locationId: String,
-        localPost: GoogleLocationLocalPostModel,
-        files: List<MultipartFile>
-    ) {
+    override fun postLocationLocalPosts(accessToken: String, accountId: String, locationId: String, localPost: GoogleLocationLocalPostModel, files: List<MultipartFile>) {
         println("postLocationLocalPosts")
         if (files.isEmpty()) {
             return
@@ -408,12 +412,23 @@ class GoogleServicImpl(
         }
     }
 
-    override fun updateLocationProfile(
-        accessToken: String,
-        locationId: String,
-        updateMask: String,
-        locationProfile: GoogleLocationProfileModel
-    ): ResponseEntity<GoogleLocationProfileModel>? {
+    override fun postLocationQuestion(accessToken: String, locationId: String, text: String) {
+        try {
+            val response = googleRepository.postLocationQuestion(accessToken, locationId, text)
+        } catch (e: Exception) {
+            logger.error("Error posting location question", e)
+        }
+    }
+
+    override fun postLocationAnswer(accessToken: String, locationId: String, questionId: String, text: String) {
+        try {
+            val response = googleRepository.postLocationAnswer(accessToken, locationId, questionId, text)
+        } catch (e: Exception) {
+            logger.error("Error posting location answer", e)
+        }
+    }
+
+    override fun updateLocationProfile(accessToken: String, locationId: String, updateMask: String, locationProfile: GoogleLocationProfileModel): ResponseEntity<GoogleLocationProfileModel>? {
         try {
             val googleLocationProfile =
                 googleRepository.updateLocationProfile(accessToken, locationId, updateMask, locationProfile)
@@ -438,12 +453,7 @@ class GoogleServicImpl(
         }
     }
 
-    override fun updateLocationFoodMenus(
-        accessToken: String,
-        accountId: String,
-        locationId: String,
-        locationFoodMenus: GoogleLocationFoodMenusModel
-    ): ResponseEntity<GoogleLocationFoodMenusModel>? {
+    override fun updateLocationFoodMenus(accessToken: String, accountId: String, locationId: String, locationFoodMenus: GoogleLocationFoodMenusModel): ResponseEntity<GoogleLocationFoodMenusModel>? {
         try {
             val googleLocationFoodMenusModel =
                 googleRepository.updateLocationFoodMenus(accessToken, accountId, locationId, locationFoodMenus)
@@ -453,6 +463,35 @@ class GoogleServicImpl(
             return ResponseEntity
                 .badRequest()
                 .body(null)
+        }
+    }
+
+    override fun updateLocationQuestion(accessToken: String, locationId: String, questionId: String, text: String): ResponseEntity<GoogleLocationQuestion>? {
+        try {
+            val googleLocationQuestion =
+                googleRepository.updateLocationQuestion(accessToken, locationId, questionId, text)
+            return ResponseEntity.ok(googleLocationQuestion)
+        } catch (e: Exception) {
+            logger.error("Error updating location question", e)
+            return ResponseEntity
+                .badRequest()
+                .body(null)
+        }
+    }
+
+    override fun deleteLocationQuestion(accessToken: String, locationId: String, questionId: String) {
+        try {
+            googleRepository.deleteLocationQuestion(accessToken, locationId, questionId)
+        } catch (e: Exception) {
+            logger.error("Error deleting location question", e)
+        }
+    }
+
+    override fun deleteLocationAnswer(accessToken: String, locationId: String, questionId: String) {
+        try {
+            googleRepository.deleteLocationAnswer(accessToken, locationId, questionId)
+        } catch (e: Exception) {
+            logger.error("Error deleting location answer", e)
         }
     }
 }
