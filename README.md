@@ -13,7 +13,7 @@ make start
 ```
 
 ## バックエンド
-JDK: 22以降推奨
+JDK: 21推奨
 #### 初回
 .env.templateをコピーして.envを作成
 ```bash
