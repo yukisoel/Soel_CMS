@@ -1,3 +1,5 @@
+SHELL := /bin/bash
+
 start:
 	cd frontend && npm run build
 	test -d ./backend/src/main/resources/public & rm -rf ./backend/src/main/resources/public
