@@ -50,6 +50,8 @@ jobs:
         run: |
           cd ${{github.workspace}}/gitops  
           
+          aws ecs list-task-definitions --status ACTIVE 
+          
           export APPSPEC_STRING=$(cat appspec.json | jq '@json')
           echo $APPSPEC_STRING
           aws deploy create-deployment \
