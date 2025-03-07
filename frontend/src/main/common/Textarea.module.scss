@@ -1,0 +1,43 @@
+@use '@/main/styles/variables' as vars;
+@import '@/main/styles/scrollbar.scss';
+
+@mixin base_text {
+    font-family: "Noto Sans CJK JP", sans-serif;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    color: vars.$text-color-primary;
+}
+
+.textarea {
+    @include base_text;
+    font-size: 2rem;
+    box-sizing: border-box;
+    background-color: vars.$background-color-secondary;
+    border-radius: 1rem;
+    resize: none;
+    overflow-y: auto;
+    border: none;
+    outline: none;
+    margin: 5px 10px;
+    padding: 20px 10px;
+
+    &::placeholder {
+        color: vars.$text-color-gray;
+        font-weight: 500;
+    }
+
+    @include custom-scrollbar();
+}
+
+.fw_medium {
+    font-weight: 500;
+}
+
+.textarea_wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background-color: vars.$background-color-secondary;
+    border-radius: 1rem;
+}

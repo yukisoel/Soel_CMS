@@ -1,0 +1,17 @@
+@use '@/main/styles/variables' as vars;
+
+.custom_checkbox {
+    display: none;
+}
+
+.custom_checkbox_label {
+    display: flex;
+    cursor: pointer;
+    padding: 0.7rem 0.9rem;
+    border-radius: 0.6rem;
+    background-color: #D9D9D9;
+}
+
+.custom_checkbox:checked + .custom_checkbox_label {
+    background-color: vars.$background-color-primary;
+}

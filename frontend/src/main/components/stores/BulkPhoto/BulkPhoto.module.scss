@@ -1,0 +1,19 @@
+@use '@/main/styles/variables' as vars;
+
+.content_container {
+    flex: 1;
+}
+
+.selected_store {
+    width: 884px;
+    background-color: vars.$background-color-secondary;
+    border-radius: 1rem;
+    word-wrap: break-word;
+    word-break: break-all;
+}
+
+.service_wrapper {
+    border-radius: 1rem;
+    background-color: vars.$background-color-secondary;
+    width: 884px;
+}

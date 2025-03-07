@@ -15,6 +15,10 @@ import EditLocalPostLayout from "@/main/components/editPage/EditLocalPostLayout.
 import EditMenuLayout from "@/main/components/editPage/EditMenuLayout/EditMenuLayout.tsx";
 import EditReservationLayout from "@/main/components/editPage/EditReservationLayout/EditReservationLayout.tsx";
 import EditProductLayout from "./components/editPage/EditProductLayout/EditProductLayout.tsx";
+import EditPageAdvanced from "./pages/EditPageAdvanced.tsx";
+import SchedulePost from "./components/stores/SchedulePost/SchedulePost.tsx";
+import BlukPhoto from "./components/stores/BulkPhoto/BulkPhoto.tsx";
+import BulkSpecialOpeningHours from "./components/stores/BulkSpecialOpeningHours/BulkSpecialOpeningHours.tsx";
 
 const googleRepository = new GoogleRepositoryImpl()
 const googleService = new GoogleServiceImpl({googleRepository})
@@ -61,6 +65,21 @@ function App() {
           <Route path={"accounts/:accountId/location/:locationId/product"}
                   element={<EditProductLayout />}/>
         </Route>
+      </Route>
+      <Route path={'/basic'}
+        element={
+          <GoogleAccountsContextProvider>
+            <GoogleSelectedLocationContextProvider>
+                    <EditPageAdvanced />
+            </GoogleSelectedLocationContextProvider>
+          </GoogleAccountsContextProvider>
+        }>
+          <Route path={'bulk/schedule-post'}
+            element={<SchedulePost googleService={googleService} />} />
+          <Route path={'bulk/photo'}
+            element={<BlukPhoto googleService={googleService} />} />
+          <Route path={'bulk/special'}
+            element={<BulkSpecialOpeningHours googleService={googleService} />} />
       </Route>
     </Routes>
   )

@@ -1,0 +1,41 @@
+@use '@/main/styles/variables' as vars;
+
+.sidebar_container {
+    width: 32.9rem;
+}
+
+.separator {
+    width: 286px;
+    height: 1px;
+    margin: 0 21px;
+    background-color: #DCDCDC;
+}
+
+.menu_container {
+    display: flex;
+    justify-content: space-between;
+    width: 235px;
+    padding-left: 4.4rem;
+    padding-right: 5rem;
+    cursor: pointer;
+}
+
+.menu_container_selected {
+    background-color: vars.$background-color-primary;
+}
+
+.arrow_icon {
+    transition: transform 0.3s ease;
+}
+
+.arrow_icon_open {
+    transform: rotate(180deg);
+}
+
+.icon_flipped {
+    transform: scaleX(-1);
+}
+
+.sub_menu_container_selected {
+    background-color: vars.$background-color-primary-light;
+}

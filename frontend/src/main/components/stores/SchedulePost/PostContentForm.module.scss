@@ -1,0 +1,22 @@
+@use '@/main/styles/variables' as vars;
+
+.content_container {
+    flex: 1;
+}
+
+.photo_container {
+    width: 884px;
+}
+
+.textarea_container {
+    width: 884px;
+    height: 411px;
+    border-radius: 1rem;
+    background-color: vars.$background-color-secondary;
+}
+
+.insert_template_variable_button {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}

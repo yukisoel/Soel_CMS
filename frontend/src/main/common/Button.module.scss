@@ -2,7 +2,7 @@
 
 .button {
     cursor: pointer;
-    border-radius: 4.2rem;
+    border-radius: 1rem;
 }
 
 .primary {
@@ -23,4 +23,8 @@
 
 .input {
     background-color: vars.$background-color-input;
+}
+
+.black {
+    background-color: vars.$background-color-black;
 }

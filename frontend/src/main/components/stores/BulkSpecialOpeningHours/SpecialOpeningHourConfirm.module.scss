@@ -1,0 +1,27 @@
+@import '@/main/styles/scrollbar.scss';
+
+.content_container {
+    flex: 1;
+}
+
+.hours_add_button {
+    margin-left: 8rem;
+}
+
+.close_button {
+    background: none;
+    padding: 0;
+}
+
+.selected_hours_container_wrapper {
+    background-color: #F0F0F0;
+    border-radius: 10px;
+}
+
+.selected_hours_container {
+    width: 914px;
+    box-sizing: border-box;
+    max-height: 193px;
+
+    @include custom-scrollbar();
+}

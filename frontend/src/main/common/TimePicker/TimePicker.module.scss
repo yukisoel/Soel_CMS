@@ -1,0 +1,31 @@
+@use '@/main/styles/variables' as vars;
+
+.time_picker_container {
+    position: relative;
+    display: inline-block;
+    border-radius: 10px;
+    background: vars.$background-color-secondary;
+    padding: 7px 40px 7px 10px;
+    cursor: pointer;
+}
+
+.time_picker_input {
+    border: none;
+    background: transparent;
+    width: 40px;
+    padding: 0;
+    outline: none;
+    font-size: 16px;
+    color: #333;
+    cursor: pointer;
+}
+
+.arrow_icon {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 11px;
+    height: 11px;
+    pointer-events: none;
+}

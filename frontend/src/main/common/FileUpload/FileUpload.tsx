@@ -1,5 +1,7 @@
 import styles from '@/main/common/FileUpload/FileUpload.module.scss';
 import { useRef, useState } from "react";
+import Typography from '../Typography';
+import Button from '../Button';
 
 type Props = {
     setUploadedPhotoFileList: (fileList: FileList) => void
@@ -44,6 +46,14 @@ export default function FileUpload({setUploadedPhotoFileList, size}: Props) {
         }
     }
 
+    const handleReset = () => {
+        setUploadedPhotoUrlList([]);
+        setShowAddPhotoListPage(false);
+        if (fileUploadInputRef.current) {
+            fileUploadInputRef.current.value = ''
+        }
+    }
+
     return (
     <>
         {!showAddPhotoListPage && (
@@ -61,11 +71,11 @@ export default function FileUpload({setUploadedPhotoFileList, size}: Props) {
                         onChange={onInputChange}
                     />
                     <div className={styles[`file_upload_text_${size}`]}>
-                        <p>写真をドラッグアンドドロップ</p>
+                        <p>写真をドラッグ&ドロップ</p>
                         <p>または</p>
                         <button className={styles.select_file_button}
                             onClick={clickSelectFileButton}>
-                            ファイルを選択
+                            コンピュータから選択
                         </button>
                     </div>
                 </div>
@@ -83,6 +93,9 @@ export default function FileUpload({setUploadedPhotoFileList, size}: Props) {
                 />
                 )
             })}
+                <Button bgColor="black" padding="3px 7px" onClick={handleReset}>
+                    <Typography content="削除" color="yellow" size="xsmall" weight="normal" />
+                </Button>
             </div>
         )}
     </>

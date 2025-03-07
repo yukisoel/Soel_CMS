@@ -1,0 +1,18 @@
+@use '@/main/styles/variables' as vars;
+
+.selected_service_container {
+    align-items: flex-end;
+}
+
+.selected_service {
+    width: 884px;
+    background-color: vars.$background-color-secondary;
+    border-radius: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.back_button {
+    height: 4.2rem;
+}

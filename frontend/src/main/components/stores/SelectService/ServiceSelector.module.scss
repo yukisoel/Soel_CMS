@@ -1,0 +1,27 @@
+@use '@/main/styles/variables' as vars;
+
+.service_wrapper {
+    border-radius: 1rem;
+    background-color: vars.$background-color-secondary;
+    width: 884px;
+
+    &.selected {
+        background-color: vars.$background-color-primary-light;
+    }
+}
+
+.selected {
+    background-color: vars.$background-color-primary-light;
+}
+
+.service_image {
+    width: 4.2rem;
+    height: 4.2rem;
+    margin: 0 1rem 0 1.5rem;
+    background-color: #0F0;
+}
+
+.service_content {
+    width: 26.9rem;
+    margin-right: 3rem;
+}
