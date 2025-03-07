@@ -2,19 +2,20 @@
   position: relative;
   display: flex;
   flex-direction: column;
-  padding-left: 3.8rem;
-  padding-right: 3.8rem;
+  padding: 7px 20px 7px 10px;
+  box-sizing: border-box;
+  gap: 10px;
 
-  background-color: #EBEBEB;
+  background-color: #F0F0F0;
 
-  border-radius: 4.15rem;
+  border-radius: 1rem;
 }
 
 .pull_down_menu_content {
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  height: 8.3rem;
+  height: 28px;
   width: 100%;
 
   &:hover {
@@ -29,7 +30,7 @@
 .pull_down_menu_placeholder {
   color: #A0A0A0;
   font-family: "Noto Sans CJK JP", sans-serif;
-  font-size: 2.5rem;
+  font-size: 2rem;
   font-style: normal;
   font-weight: 400;
   line-height: normal;
@@ -37,7 +38,7 @@
 
 .pull_down_menu_input {
   font-family: "Noto Sans CJK JP", sans-serif;
-  font-size: 2.5rem;
+  font-size: 2rem;
   font-style: normal;
   font-weight: 400;
   line-height: normal;
@@ -51,18 +52,18 @@
 .pull_down_menu_option {
   color: #282828;
   font-family: "Noto Sans CJK JP", sans-serif;
-  font-size: 2.5rem;
+  font-size: 2rem;
   font-style: normal;
-  font-weight: 500;
+  font-weight: 400;
   line-height: normal;
 }
 
-.triangle {
+.arrow {
   position: absolute;
-  top: 3.3rem;
-  right: 4.35rem;
-  width: 2rem;
-  height: 1.35rem;
+  top: 16px;
+  right: 8px;
+  width: 11px;
+  height: 11px;
 
   &:hover {
     cursor: pointer;

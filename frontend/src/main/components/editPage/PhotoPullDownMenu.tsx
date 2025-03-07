@@ -1,7 +1,7 @@
 import styles from '@/main/components/editPage/PhotoPullDownMenu.module.scss'
 import {ChangeEvent, useState} from "react";
 import classNames from "classnames";
-import TriangleIcon from "@/main/assets/PullDownMenuTriangle.svg";
+import ArrowIcon from "@/main/assets/ArrowIcon.svg";
 
 export type Props = {
   placeholder?: string
@@ -34,12 +34,12 @@ export default function PhotoPullDownMenu({
       <div data-testid={'pull_down_menu'} className={styles.pull_down_menu_container}
       >
         <div
-          className={styles.triangle}
+          className={styles.arrow}
           onClick={() => {
             toggleIsOpen()
           }}
         >
-          <img src={TriangleIcon} alt={'triangle_icon'}/>
+          <img src={ArrowIcon} alt={'arrow_icon'}/>
         </div>
         {!isOpen && (
           <>
@@ -60,7 +60,7 @@ export default function PhotoPullDownMenu({
           <>
             <input
               className={`${styles.pull_down_menu_content} ${styles.pull_down_menu_input} ${styles.pull_down_menu_border}`}
-              placeholder={"入力して検索"}
+              placeholder={effectivePlaceholder}
               onChange={handleShowSearchOptions}
             />
             {options.map((value, index) => {

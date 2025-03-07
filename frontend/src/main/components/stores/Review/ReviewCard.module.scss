@@ -1,0 +1,33 @@
+@use '@/main/styles/variables' as vars;
+
+.card {
+    width: 980px;
+    box-sizing: border-box;
+    background-color: vars.$background-color-secondary;
+    border-radius: 10px;
+}
+
+.icon {
+    width: 68px;
+    height: 68px;
+    background-color: #D9D9D9;
+    border-radius: 10px;
+}
+
+.post_wrapper {
+    width: 940px;
+    height: 108px;
+    box-sizing: border-box;
+    border-radius: 1rem;
+    background-color: vars.$background-color-white;
+}
+
+.post_content {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: normal;
+}
