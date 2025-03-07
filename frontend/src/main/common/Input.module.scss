@@ -10,14 +10,13 @@
 
 .input {
     @include base_text;
-    font-size: 2.5rem;
+    font-size: 2rem;
     box-sizing: border-box;
     background-color: vars.$background-color-input;
-    border-radius: 4.2rem;
+    border-radius: 6px;
 
     &::placeholder {
         color: vars.$text-color-gray;
-        font-weight: 500;
     }
 }
 

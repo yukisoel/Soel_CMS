@@ -1,43 +1,43 @@
-import { useMemo, useState } from "react"
-import SelectService from "./SelectService"
-import { GoogleService } from "@/main/service/GoogleService"
+import { useMemo, useState } from "react";
+import SelectService from "./SelectService";
+import { GoogleService } from "@/main/service/GoogleService";
 
 type Props = {
-    googleService: GoogleService
-    selectedStores: string[]
-    onNextClick: () => void
-    onBackClick: () => void
-}
+    googleService: GoogleService;
+    selectedStores: string[];
+    onNextClick: () => void;
+    onBackClick: () => void;
+};
 
 export type SelectServiceForm = {
-    label: string
-    value: string
-    checked?: boolean
+    label: string;
+    value: string;
+    checked?: boolean;
     languages: {
-        label: string
-        value: string
-        checked?: boolean
-    }[]
+        label: string;
+        value: string;
+        checked?: boolean;
+    }[];
     options: {
-        label: string
-        value: string
-        checked?: boolean
-    }[]
-}
+        label: string;
+        value: string;
+        checked?: boolean;
+    }[];
+};
 
 const translateLanguages: SelectServiceForm['languages'] = [
     { label: "日本語", value: "ja", checked: true },
-    { label: "英語", value: "en", checked: false},
+    { label: "英語", value: "en", checked: false },
     { label: "簡体", value: "jian", checked: false },
     { label: "繁体", value: "fan", checked: false },
     { label: "韓国語", value: "ko", checked: false },
-]
+];
 
 const options: SelectServiceForm['options'] = [
     { label: "基本", value: "base", checked: true },
     { label: "COVID19", value: "covid19", checked: false },
     { label: "クーポン", value: "coupon", checked: false },
-]
+];
 
 const initialForms: SelectServiceForm[] = [
     {
@@ -82,11 +82,10 @@ const initialForms: SelectServiceForm[] = [
         languages: translateLanguages.slice(),
         options: options.slice(),
     },
-]
+];
 
-export const useSelectService = ({googleService, selectedStores, onNextClick, onBackClick}: Props) => {
-    // TODO: 組み込みで取得する
-    const [selectServiceForms, setSelectServiceForms] = useState<SelectServiceForm[]>(initialForms)
+export const useSelectService = ({ googleService, selectedStores, onNextClick, onBackClick }: Props) => {
+    const [selectServiceForms, setSelectServiceForms] = useState<SelectServiceForm[]>(initialForms);
 
     const selectedServiceForms = useMemo(() => {
         return selectServiceForms
@@ -96,8 +95,7 @@ export const useSelectService = ({googleService, selectedStores, onNextClick, on
                 languages: service.languages.filter(lang => lang.checked),
                 options: service.options.filter(option => option.checked),
             }));
-
-    }, [selectServiceForms])
+    }, [selectServiceForms]);
 
     const handleFormCheckedChange = (index: number) => {
         setSelectServiceForms((prevForms) =>
@@ -147,11 +145,12 @@ export const useSelectService = ({googleService, selectedStores, onNextClick, on
             onOptionCheckedChange={handleOptionCheckedChange}
             onNextClick={onNextClick}
             onBackClick={onBackClick}
+            isNextButtonDisabled={selectedServiceForms.length === 0}
         />
-    )
+    );
 
     return {
         selectedServiceForms,
         selectServiceRender,
-    }
-}
+    };
+};

@@ -24,7 +24,7 @@ export default function SelectedStoreList({ selectedStores, onBackClick }: Props
                         </React.Fragment>
                     ))}
                 </Wrapper>
-                <Button bgColor="primary" padding="0.7rem 0.9rem" className={styles.back_button} onClick={onBackClick}>
+                <Button bgColor="primary" padding="0.7rem" className={styles.back_button} onClick={onBackClick}>
                     <Typography content="編集" color="primary" size="normal" />
                 </Button>
             </Wrapper>
