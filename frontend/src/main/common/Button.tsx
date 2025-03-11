@@ -8,12 +8,13 @@ interface Props extends React.ButtonHTMLAttributes<HTMLButtonElement> {
     className?: string
 }
 
-export default function Button({children, padding, bgColor, className, ...props}: Props) {
+export default function Button({children, padding, bgColor, className, disabled, ...props}: Props) {
     return (
         <button className={classNames(
             className,
             styles.button,
-            styles[bgColor]
+            styles[bgColor],
+            { [styles.disabled]: disabled }
         )} style={{padding: padding}} {...props}>{children}</button>
     )
 }
