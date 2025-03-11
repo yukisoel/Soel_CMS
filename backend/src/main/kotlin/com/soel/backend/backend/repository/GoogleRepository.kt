@@ -1,6 +1,7 @@
 package com.soel.backend.backend.repository
 
 import com.soel.backend.backend.model.*
+import io.swagger.v3.oas.annotations.Operation
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Primary
 import org.springframework.http.HttpEntity
@@ -18,46 +19,23 @@ interface GoogleRepository {
     fun getLocations(accessToken: String, accountId: String, nextPageToken: String?): GoogleLocationsResponse?
     fun getLocation(accessToken: String, locationId: String): GoogleLocation?
     fun getLocationProfile(accessToken: String, locationId: String): GoogleLocationProfileModel?
-    fun getLocationPhotos(
-        accessToken: String,
-        accountId: String,
-        locationId: String,
-        nextPageToken: String?
-    ): GoogleLocationPhotosResponse?
-    fun getLocationLocalPosts(
-        accessToken: String,
-        accountId: String,
-        locationId: String,
-        nextPageToken: String?
-    ): GoogleLocationLocalPostsResponse?
-    fun getLocationFoodMenus(
-        accessToken: String,
-        accountId: String,
-        locationId: String,
-    ): GoogleLocationFoodMenusModel?
+    fun getLocationPhotos(accessToken: String, accountId: String, locationId: String, nextPageToken: String?): GoogleLocationPhotosResponse?
+    fun getLocationLocalPosts(accessToken: String, accountId: String, locationId: String, nextPageToken: String?): GoogleLocationLocalPostsResponse?
+    fun getLocationFoodMenus(accessToken: String, accountId: String, locationId: String): GoogleLocationFoodMenusModel?
+    fun getLocationQuestions(accessToken: String, locationId: String, nextPageToken: String?): GoogleLocationQuestionsResponse?
+    fun getLocationAnswers(accessToken: String, locationId: String, questionId: String, nextPageToken: String?): GoogleLocationAnswersResponse?
 
     fun postLocationPhoto(accessToken: String, accountId: String, locationId: String, filename: String)
-    fun postLocationLocalPost(
-        accessToken: String,
-        accountId: String,
-        locationId: String,
-        localPost: GoogleLocationLocalPostModel,
-        filenameList: List<String>
-    )
+    fun postLocationLocalPost(accessToken: String, accountId: String, locationId: String, localPost: GoogleLocationLocalPostModel, filenameList: List<String>)
+    fun postLocationQuestion(accessToken: String, locationId: String, text: String)
+    fun postLocationAnswer(accessToken: String, locationId: String, questionId: String, text: String)
 
-    fun updateLocationProfile(
-        accessToken: String,
-        locationId: String,
-        updateMask: String,
-        locationProfile: GoogleLocationProfileModel
-    ): GoogleLocationProfileModel?
+    fun updateLocationProfile(accessToken: String, locationId: String, updateMask: String, locationProfile: GoogleLocationProfileModel): GoogleLocationProfileModel?
+    fun updateLocationFoodMenus(accessToken: String, accountId: String, locationId: String, foodMenus: GoogleLocationFoodMenusModel): GoogleLocationFoodMenusModel?
+    fun updateLocationQuestion(accessToken: String, locationId: String, questionId: String, text: String): GoogleLocationQuestion?
 
-    fun updateLocationFoodMenus(
-        accessToken: String,
-        accountId: String,
-        locationId: String,
-        foodMenus: GoogleLocationFoodMenusModel
-    ): GoogleLocationFoodMenusModel?
+    fun deleteLocationQuestion(accessToken: String, locationId: String, questionId: String)
+    fun deleteLocationAnswer(accessToken: String, locationId: String, questionId: String)
 }
 
 @Primary
@@ -121,11 +99,7 @@ class GoogleRepositoryImpl(val restTemplate: RestTemplate) : GoogleRepository {
         ).body
     }
 
-    override fun getLocations(
-        accessToken: String,
-        accountId: String,
-        nextPageToken: String?
-    ): GoogleLocationsResponse? {
+    override fun getLocations(accessToken: String, accountId: String, nextPageToken: String?): GoogleLocationsResponse? {
         val requestUrl = "https://mybusinessaccountmanagement.googleapis.com/v1/accounts/$accountId/locations"
         val uri = UriComponentsBuilder.fromHttpUrl(requestUrl)
             .queryParam("readMask", "name,title")
@@ -199,12 +173,7 @@ class GoogleRepositoryImpl(val restTemplate: RestTemplate) : GoogleRepository {
         ).body
     }
 
-    override fun getLocationPhotos(
-        accessToken: String,
-        accountId: String,
-        locationId: String,
-        nextPageToken: String?
-    ): GoogleLocationPhotosResponse? {
+    override fun getLocationPhotos(accessToken: String, accountId: String, locationId: String, nextPageToken: String?): GoogleLocationPhotosResponse? {
         val requestUrl = "https://mybusiness.googleapis.com/v4/accounts/$accountId/locations/$locationId/media"
         val uri = UriComponentsBuilder.fromHttpUrl(requestUrl)
             .queryParam("pageToken", nextPageToken)
@@ -227,12 +196,7 @@ class GoogleRepositoryImpl(val restTemplate: RestTemplate) : GoogleRepository {
         ).body
     }
 
-    override fun getLocationLocalPosts(
-        accessToken: String,
-        accountId: String,
-        locationId: String,
-        nextPageToken: String?
-    ): GoogleLocationLocalPostsResponse? {
+    override fun getLocationLocalPosts(accessToken: String, accountId: String, locationId: String, nextPageToken: String?): GoogleLocationLocalPostsResponse? {
         val requestUrl = "https://mybusiness.googleapis.com/v4/accounts/$accountId/locations/$locationId/localPosts"
 
         val uri = UriComponentsBuilder.fromHttpUrl(requestUrl)
@@ -257,11 +221,7 @@ class GoogleRepositoryImpl(val restTemplate: RestTemplate) : GoogleRepository {
         ).body
     }
 
-    override fun getLocationFoodMenus(
-        accessToken: String,
-        accountId: String,
-        locationId: String,
-    ): GoogleLocationFoodMenusModel? {
+    override fun getLocationFoodMenus(accessToken: String, accountId: String, locationId: String, ): GoogleLocationFoodMenusModel? {
         val requestUrl = "https://mybusiness.googleapis.com/v4/accounts/$accountId/locations/$locationId/foodMenus"
 
         val uri = UriComponentsBuilder.fromHttpUrl(requestUrl)
@@ -286,12 +246,53 @@ class GoogleRepositoryImpl(val restTemplate: RestTemplate) : GoogleRepository {
         ).body
     }
 
-    override fun postLocationPhoto(
-        accessToken: String,
-        accountId: String,
-        locationId: String,
-        filename: String,
-    ) {
+    override fun getLocationQuestions(accessToken: String, locationId: String, nextPageToken: String?): GoogleLocationQuestionsResponse? {
+        val requestUrl = "https://mybusinessqanda.googleapis.com/v1/locations/$locationId/questions"
+        val uri = UriComponentsBuilder.fromHttpUrl(requestUrl)
+            .queryParam("pageToken", nextPageToken)
+            .build()
+            .toUri()
+
+        val headers = HttpHeaders()
+
+        headers.apply {
+            setBearerAuth(accessToken)
+        }
+
+        val entity = HttpEntity<String>(headers)
+
+        return restTemplate.exchange(
+            uri,
+            HttpMethod.GET,
+            entity,
+            GoogleLocationQuestionsResponse::class.java
+        ).body
+    }
+
+    override fun getLocationAnswers(accessToken: String, locationId: String, questionId: String, nextPageToken: String?): GoogleLocationAnswersResponse? {
+        val requestUrl = "https://mybusinessqanda.googleapis.com/v1/locations/$locationId/questions/$questionId/answers"
+        val uri = UriComponentsBuilder.fromHttpUrl(requestUrl)
+            .queryParam("pageToken", nextPageToken)
+            .build()
+            .toUri()
+
+        val headers = HttpHeaders()
+
+        headers.apply {
+            setBearerAuth(accessToken)
+        }
+
+        val entity = HttpEntity<String>(headers)
+
+        return restTemplate.exchange(
+            uri,
+            HttpMethod.GET,
+            entity,
+            GoogleLocationAnswersResponse::class.java
+        ).body
+    }
+
+    override fun postLocationPhoto(accessToken: String, accountId: String, locationId: String, filename: String, ) {
         val requestUrl = "https://mybusiness.googleapis.com/v4/accounts/$accountId/locations/$locationId/media"
         val uri = UriComponentsBuilder.fromHttpUrl(requestUrl)
             .build()
@@ -326,13 +327,7 @@ class GoogleRepositoryImpl(val restTemplate: RestTemplate) : GoogleRepository {
         )
     }
 
-    override fun postLocationLocalPost(
-        accessToken: String,
-        accountId: String,
-        locationId: String,
-        localPost: GoogleLocationLocalPostModel,
-        filenameList: List<String>
-    ) {
+    override fun postLocationLocalPost(accessToken: String, accountId: String, locationId: String, localPost: GoogleLocationLocalPostModel, filenameList: List<String>) {
         val requestUrl = "https://mybusiness.googleapis.com/v4/accounts/$accountId/locations/$locationId/localPosts"
         val uri = UriComponentsBuilder.fromHttpUrl(requestUrl)
             .build()
@@ -377,12 +372,65 @@ class GoogleRepositoryImpl(val restTemplate: RestTemplate) : GoogleRepository {
         println(result)
     }
 
-    override fun updateLocationProfile(
-        accessToken: String,
-        locationId: String,
-        updateMask: String,
-        locationProfile: GoogleLocationProfileModel
-    ): GoogleLocationProfileModel? {
+    override fun postLocationQuestion(accessToken: String, locationId: String, text: String) {
+        val requestUrl = "https://mybusinessqanda.googleapis.com/v1/locations/$locationId/questions"
+        val uri = UriComponentsBuilder.fromHttpUrl(requestUrl)
+            .build()
+            .toUri()
+
+        val headers = HttpHeaders()
+
+        headers.apply {
+            contentType = MediaType.APPLICATION_JSON
+            setBearerAuth(accessToken)
+        }
+
+        val request = GoogleLocationQuestion(
+            text = text
+        )
+
+        val entity = HttpEntity(request, headers)
+
+        val result = restTemplate.postForObject(
+            uri,
+            entity,
+            GoogleLocationQuestion::class.java
+        )
+
+        println(result)
+    }
+
+    override fun postLocationAnswer(accessToken: String, locationId: String, questionId: String, text: String) {
+        val requestUrl = "https://mybusinessqanda.googleapis.com/v1/locations/$locationId/questions/$questionId/answers:upsert"
+        val uri = UriComponentsBuilder.fromHttpUrl(requestUrl)
+            .build()
+            .toUri()
+
+        val headers = HttpHeaders()
+
+        headers.apply {
+            contentType = MediaType.APPLICATION_JSON
+            setBearerAuth(accessToken)
+        }
+
+        val request = GoogleLocationAnswerUpsert(
+            answer = GoogleLocationAnswer(
+                text = text
+            )
+        )
+
+        val entity = HttpEntity(request, headers)
+
+        val result = restTemplate.postForObject(
+            uri,
+            entity,
+            GoogleLocationAnswer::class.java
+        )
+
+        println(result)
+    }
+
+    override fun updateLocationProfile(accessToken: String, locationId: String, updateMask: String, locationProfile: GoogleLocationProfileModel): GoogleLocationProfileModel? {
         val requestUrl = "https://mybusinessaccountmanagement.googleapis.com/v1/locations/$locationId"
         val uri = UriComponentsBuilder.fromHttpUrl(requestUrl)
             .queryParam("updateMask", updateMask)
@@ -404,12 +452,7 @@ class GoogleRepositoryImpl(val restTemplate: RestTemplate) : GoogleRepository {
         )
     }
 
-    override fun updateLocationFoodMenus(
-        accessToken: String,
-        accountId: String,
-        locationId: String,
-        foodMenus: GoogleLocationFoodMenusModel
-    ): GoogleLocationFoodMenusModel? {
+    override fun updateLocationFoodMenus(accessToken: String, accountId: String, locationId: String, foodMenus: GoogleLocationFoodMenusModel): GoogleLocationFoodMenusModel? {
         val requestUrl = "https://mybusiness.googleapis.com/v4/accounts/$accountId/locations/$locationId/foodMenus"
         val uri = UriComponentsBuilder.fromHttpUrl(requestUrl)
             .build()
@@ -429,4 +472,70 @@ class GoogleRepositoryImpl(val restTemplate: RestTemplate) : GoogleRepository {
             GoogleLocationFoodMenusModel::class.java
         )
     }
+
+    override fun updateLocationQuestion(accessToken: String, locationId: String, questionId: String, text: String): GoogleLocationQuestion? {
+        val requestUrl = "https://mybusinessqanda.googleapis.com/v1/locations/$locationId/questions/$questionId?updateMask=text"
+        val uri = UriComponentsBuilder.fromHttpUrl(requestUrl)
+            .build()
+            .toUri()
+
+        val headers = HttpHeaders()
+
+        headers.apply {
+            setBearerAuth(accessToken)
+        }
+
+        val entity = HttpEntity(GoogleLocationQuestion(text = text), headers)
+
+        return restTemplate.patchForObject(
+            uri,
+            entity,
+            GoogleLocationQuestion::class.java
+        )
+    }
+
+    override fun deleteLocationQuestion(accessToken: String, locationId: String, questionId: String) {
+        val requestUrl = "https://mybusinessqanda.googleapis.com/v1/locations/$locationId/questions/$questionId"
+        val uri = UriComponentsBuilder.fromHttpUrl(requestUrl)
+            .build()
+            .toUri()
+
+        val headers = HttpHeaders()
+
+        headers.apply {
+            setBearerAuth(accessToken)
+        }
+
+        val entity = HttpEntity<String>(headers)
+
+        restTemplate.exchange(
+            uri,
+            HttpMethod.DELETE,
+            entity,
+            String::class.java
+        )
+    }
+
+    override fun deleteLocationAnswer(accessToken: String, locationId: String, questionId: String) {
+        val requestUrl = "https://mybusinessqanda.googleapis.com/v1/locations/$locationId/questions/$questionId/answers:delete"
+        val uri = UriComponentsBuilder.fromHttpUrl(requestUrl)
+            .build()
+            .toUri()
+
+        val headers = HttpHeaders()
+
+        headers.apply {
+            setBearerAuth(accessToken)
+        }
+
+        val entity = HttpEntity<String>(headers)
+
+        restTemplate.exchange(
+            uri,
+            HttpMethod.DELETE,
+            entity,
+            String::class.java
+        )
+    }
+
 }

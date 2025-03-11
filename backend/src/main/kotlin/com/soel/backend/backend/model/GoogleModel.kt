@@ -1,7 +1,5 @@
 package com.soel.backend.backend.model
 
-import io.swagger.v3.oas.models.security.SecurityScheme.In
-
 data class GoogleMe(
     val names: List<GoogleName>,
 )
@@ -269,5 +267,52 @@ data class GoogleLocationPortionSize(
     val unit: List<GoogleLocationMenuLabel>? = null,
 )
 
+data class GoogleLocationQuestionsResponse(
+    val pageSize: Int? = null,
+    val questions: List<GoogleLocationQuestion>? = null,
+    val nextPageToken: String? = null,
+)
 
+data class GoogleLocationAnswersResponse(
+    val pageSize: Int? = null,
+    val answers: List<GoogleLocationAnswer>? = null,
+    val nextPageToken: String? = null,
+)
+
+data class GoogleLocationQuestion(
+    val name: String? = null,
+    val text: String? = null,
+    val createTime: String? = null,
+    val updateTime: String? = null,
+    val upvoteCount: Int? = null,
+    val totalAnswerCount: Int? = null,
+    val author: GoogleLocationAuthor? = null,
+    val topAnswers: List<GoogleLocationAnswer>? = null,
+)
+
+data class GoogleLocationAnswerUpsert(
+    val answer: GoogleLocationAnswer,
+)
+
+data class GoogleLocationAnswer(
+    val name: String? = null,
+    val text: String? = null,
+    val createTime: String? = null,
+    val updateTime: String? = null,
+    val upvoteCount: Int? = null,
+    val author: GoogleLocationAuthor? = null,
+)
+
+data class GoogleLocationAuthor(
+    val name: String? = null,
+    val profilePhotoUrl: String? = null,
+    val type: GoogleLocationAuthorType? = null,
+)
+
+enum class GoogleLocationAuthorType {
+    AUTHOR_TYPE_UNSPECIFIED,
+    REGULAR_USER,
+    LOCAL_GUIDE,
+    MERCHANT,
+}
 

@@ -1,4 +1,3 @@
-import {GoogleService} from "@/main/service/GoogleService.ts";
 import {useContext, useEffect, useState} from "react";
 import {PankuzuItemListContext} from "@/main/contexts/PankuzuItemListContext.tsx";
 import {GoogleSelectedLocationContext} from "@/main/contexts/GoogleSelectedLocationContext.tsx";
@@ -6,15 +5,11 @@ import {useParams} from "react-router-dom";
 import EditProductList from "./EditProductList";
 import EditProductCreate from "./EditProductCreate";
 
-type Props = {
-  googleService: GoogleService
-}
-
-export default function EditProductLayout({googleService}: Props) {
+export default function EditProductLayout() {
   const {setPankuzuItemList} = useContext(PankuzuItemListContext)
-  const {googleSelectedLocation, setGoogleSelectedLocation} = useContext(GoogleSelectedLocationContext)
+  const {googleSelectedLocation} = useContext(GoogleSelectedLocationContext)
 
-  const {accountId, locationId} = useParams()
+  const { locationId} = useParams()
 
   const [mode, setMode] = useState<'list' | 'edit' | 'create'>('list');
 

@@ -36,9 +36,10 @@ type Props = {
   onChangeSelectedBranches: (branches: Branch[]) => void
   onNextClick: () => void
   onBackClick: () => void
+  isNextButtonDisabled: boolean
 }
 
-export default function SelectStore({areaSelectorProps, brandSelectorProps, onChangeSelectedBranches, onNextClick, onBackClick}: Props) {
+export default function SelectStore({areaSelectorProps, brandSelectorProps, onChangeSelectedBranches, onNextClick, onBackClick, isNextButtonDisabled}: Props) {
   const { selectedTab, tabsRender } = useAdvancedTabs([
     {tabKey: 'brand', content: 'ブランドから選択'},
     {tabKey: 'area', content: 'エリアから選択'}
@@ -63,7 +64,7 @@ export default function SelectStore({areaSelectorProps, brandSelectorProps, onCh
         }
         <Wrapper direction="col" padding="5rem 0 0" gap="8.1rem">
           <Wrapper>
-            <Button bgColor="primary" padding="0.7rem 3.5rem" className={styles.button} onClick={onNextClick}>
+            <Button bgColor="primary" padding="0.7rem 3.5rem" className={styles.button} onClick={onNextClick} disabled={isNextButtonDisabled}>
               <Typography content="次に進む" color="primary" size="normal" />
             </Button>
           </Wrapper>
