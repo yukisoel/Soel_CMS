@@ -6,15 +6,22 @@ import NoReplyIcon from "@/main/assets/NoReplyIcon.svg";
 import ReplyedIcon from "@/main/assets/ReplyedIcon.svg";
 import Button from "@/main/common/Button";
 
-type Props = {
-    customer: string;
+export type Review = {
+    id: number;
+    serviceName: string;
     rating: number;
     date: string;
     content: string;
     replied: boolean;
 };
 
-export default function ReviewCard({ customer, rating, date, content, replied }: Props) {
+type Props = {
+    review: Review;
+    onClick: () => void;
+};
+
+export default function ReviewCard({ review, onClick }: Props) {
+    const { serviceName, rating, date, content, replied } = review;
     return (
         <Wrapper gap="1rem" align="align-end">
             <Wrapper direction="col" padding="2rem" gap="1rem" className={styles.card}>
@@ -23,7 +30,7 @@ export default function ReviewCard({ customer, rating, date, content, replied }:
                         <div className={styles.icon} />
                         <Wrapper direction="col" gap="0.7rem">
                             <Wrapper>
-                                <Typography content={`評価${rating}・${customer}`} color="primary" size="normal" />
+                                <Typography content={`評価${rating}・${serviceName}`} color="primary" size="normal" />
                                 <Typography content={`・${date}`} color="secondary" size="normal" />
                             </Wrapper>
                             <Wrapper>
@@ -39,7 +46,7 @@ export default function ReviewCard({ customer, rating, date, content, replied }:
                     <Typography content={content} color="primary" size="xsmall" weight="normal" className={styles.post_content} />
                 </Wrapper>
             </Wrapper>
-            <Button bgColor="primary" onClick={() => {}}>
+            <Button bgColor="primary" onClick={onClick}>
                 <Typography content="返信" color="primary" size="normal" weight="normal" />
             </Button>
         </Wrapper>

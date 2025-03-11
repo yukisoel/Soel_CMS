@@ -5,6 +5,7 @@
     box-sizing: border-box;
     background-color: vars.$background-color-secondary;
     border-radius: 10px;
+    cursor: pointer;
 }
 
 .icon {
@@ -16,7 +17,7 @@
 
 .post_wrapper {
     width: 940px;
-    height: 108px;
+    height: 92px;
     box-sizing: border-box;
     border-radius: 1rem;
     background-color: vars.$background-color-white;
@@ -30,4 +31,5 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: normal;
+    height: 100%;
 }
