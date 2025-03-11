@@ -1,4 +1,4 @@
-import React, { MouseEvent } from 'react';
+import { MouseEvent } from 'react';
 import Wrapper from "@/main/common/Wrapper";
 import Typography from "@/main/common/Typography";
 import Button from "@/main/common/Button";
@@ -24,9 +24,10 @@ type Props = {
     post: Post;
     onNextClick: () => void;
     onPrevClick: () => void;
+    isEditDisabled?: boolean; // 修正するボタンを無効にするためのプロパティ
 };
 
-const PostDetailModal = ({ isOpen, onClose, post, onPrevClick, onNextClick }: Props) => {
+const PostDetailModal = ({ isOpen, onClose, post, onPrevClick, onNextClick, isEditDisabled = false }: Props) => {
     if (!isOpen) return null;
 
     const handleOverlayClick = (e: MouseEvent<HTMLDivElement>) => {
@@ -96,7 +97,7 @@ const PostDetailModal = ({ isOpen, onClose, post, onPrevClick, onNextClick }: Pr
                                 <Button bgColor="secondary" padding="7px 10px" onClick={() => { }}>
                                     <Typography content="複製して新規投稿を作成" color="primary" size="normal" weight="normal" />
                                 </Button>
-                                <Button bgColor="primary" padding="7px 10px" onClick={() => { }}>
+                                <Button bgColor="primary" padding="7px 10px" onClick={() => { }} disabled={isEditDisabled}>
                                     <Typography content="修正する" color="primary" size="normal" weight="normal" />
                                 </Button>
                             </Wrapper>
