@@ -174,6 +174,7 @@ export const useSelectStore = ({googleService, onNextClick, onBackClick}: Props)
             onChangeSelectedBranches={onChangeSelectedBranches}
             onNextClick={onNextClick}
             onBackClick={onBackClick}
+            isNextButtonDisabled={selectedBranches.length === 0}
         />
     )
 

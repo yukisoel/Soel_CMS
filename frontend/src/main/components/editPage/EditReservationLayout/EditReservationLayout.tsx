@@ -17,7 +17,7 @@ export default function EditReservationLayout({ googleService }: Props) {
   const { setPankuzuItemList } = useContext(PankuzuItemListContext);
   const { googleSelectedLocation, setGoogleSelectedLocation } = useContext(GoogleSelectedLocationContext);
 
-  const { accountId, locationId } = useParams();
+  const { locationId } = useParams();
 
   const { selectedTab, setSelectedTab, tabsRender } = useTabs([
     { tabKey: 'recommended', content: 'おすすめの予約ボタン' },

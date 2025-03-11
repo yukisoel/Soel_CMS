@@ -1,6 +1,9 @@
 start:
 	source .env && ./gradlew bootRun
 
+build-local:
+	source .env && ./gradlew build
+
 build-docker:
 	aws ecr get-login-password --region ap-northeast-1 --profile soel_cms | docker login --username AWS --password-stdin 211125631266.dkr.ecr.ap-northeast-1.amazonaws.com
 	docker build -t dev-soel-cms .

@@ -1,9 +1,11 @@
 name: Build and Deploy to AWS ECR
 
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch:
+
+#  push:
+#    branches:
+#      - main
 
 jobs:
   build:
@@ -20,8 +22,9 @@ jobs:
           aws-region: ap-northeast-1
 
       - name: Build Docker image
+        shell: bash
         run: |
-          make build
+          make build_for_actions
           
           aws ecr get-login-password --region ${{vars.AWS_REGION}} | docker login --username AWS --password-stdin ${{vars.AWS_ACCOUNT_ID}}.dkr.ecr.${{vars.AWS_REGION}}.amazonaws.com
           cd backend
@@ -46,6 +49,8 @@ jobs:
       - name: Deploy to ECS
         run: |
           cd ${{github.workspace}}/gitops  
+          
+          aws ecs list-task-definitions --status ACTIVE 
           
           export APPSPEC_STRING=$(cat appspec.json | jq '@json')
           echo $APPSPEC_STRING

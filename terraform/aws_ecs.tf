@@ -28,6 +28,26 @@ locals {
         {
           "name"      = "GOOGLE_CLIENT_SECRET"
           "valueFrom" = "${data.aws_secretsmanager_secret.project_secrets.arn}:GOOGLE_CLIENT_SECRET::"
+        },
+        {
+          "name" = "POSTGRES_HOST"
+            "valueFrom" = "${data.aws_secretsmanager_secret.project_secrets.arn}:POSTGRES_HOST::"
+        },
+        {
+          "name" = "POSTGRES_PORT"
+            "valueFrom" = "${data.aws_secretsmanager_secret.project_secrets.arn}:POSTGRES_PORT::"
+        },
+        {
+          "name" = "POSTGRES_USER"
+          "valueFrom" = "arn:aws:secretsmanager:ap-northeast-1:211125631266:secret:rds!db-1ccd67f6-96d9-4f6b-a402-744e4d1e5cea-xbmbJc:username::"
+        },
+        {
+          "name" = "POSTGRES_PASSWORD"
+            "valueFrom" = "arn:aws:secretsmanager:ap-northeast-1:211125631266:secret:rds!db-1ccd67f6-96d9-4f6b-a402-744e4d1e5cea-xbmbJc:password::"
+        },
+        {
+          "name" = "POSTGRES_DB"
+            "valueFrom" = "${data.aws_secretsmanager_secret.project_secrets.arn}:POSTGRES_DB::"
         }
       ]
       logConfiguration = {
@@ -83,7 +103,10 @@ resource "aws_iam_role_policy" "ecsTaskExecutionRoleSMPolicy" {
         Action = [
           "secretsmanager:GetSecretValue",
         ]
-        Resource = data.aws_secretsmanager_secret.project_secrets.arn
+        Resource = [
+          data.aws_secretsmanager_secret.project_secrets.arn,
+          "arn:aws:secretsmanager:ap-northeast-1:211125631266:secret:rds!db-1ccd67f6-96d9-4f6b-a402-744e4d1e5cea-xbmbJc"
+        ]
       }
     ]
   })
