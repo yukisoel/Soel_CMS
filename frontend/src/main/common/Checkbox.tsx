@@ -1,19 +1,28 @@
 import styles from "@/main/common/Checkbox.module.scss";
 import Typography from "@/main/common/Typography";
 import classNames from "classnames";
-import { useId } from "react";
+import { useId, useEffect, useRef } from "react";
 
 type Props = {
     label?: string;
     supplementaryText?: string;
     checked?: boolean;
+    indeterminate?: boolean;
     reverse?: boolean;
     readOnly?: boolean;
     onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
-export default function Checkbox({ label, supplementaryText, checked, reverse = false, readOnly = false, onChange }: Props) {
+export default function Checkbox({ label, supplementaryText, checked, indeterminate = false, reverse = false, readOnly = false, onChange }: Props) {
     const id = useId();
+    const checkboxRef = useRef<HTMLInputElement>(null);
+
+    useEffect(() => {
+        if (checkboxRef.current) {
+            checkboxRef.current.indeterminate = indeterminate;
+        }
+    }, [indeterminate]);
+
     return (
         <>
             <input
@@ -21,6 +30,7 @@ export default function Checkbox({ label, supplementaryText, checked, reverse = 
                 id={id}
                 className={styles.custom_checkbox}
                 checked={checked}
+                ref={checkboxRef}
                 onChange={readOnly ? undefined : onChange}
                 disabled={readOnly}
             />

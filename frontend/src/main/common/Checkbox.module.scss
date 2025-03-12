@@ -32,6 +32,10 @@
     background-image: url('@/main/assets/CheckedIcon.svg');
 }
 
+.custom_checkbox:indeterminate + .custom_checkbox_label::before {
+    background-image: url('@/main/assets/CheckboxIndeterminateIcon.svg'); // インデターミネート状態のアイコンを設定
+}
+
 .reverse {
     flex-direction: row-reverse;
 }
