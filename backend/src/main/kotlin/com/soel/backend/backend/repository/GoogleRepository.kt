@@ -16,6 +16,7 @@ interface GoogleRepository {
     fun getMe(accessToken: String): GoogleMe?
     fun getAccounts(accessToken: String): GoogleAccountsResponse?
     fun getAccount(accessToken: String, accountId: String): GoogleAccount?
+    fun getCategories(accessToken: String, languageCode: String, regionCode: String, view: String, nextPageToken: String?): GoogleCategoriesResponse?
     fun getLocations(accessToken: String, accountId: String, nextPageToken: String?): GoogleLocationsResponse?
     fun getLocation(accessToken: String, locationId: String): GoogleLocation?
     fun getLocationProfile(accessToken: String, locationId: String): GoogleLocationProfileModel?
@@ -96,6 +97,32 @@ class GoogleRepositoryImpl(val restTemplate: RestTemplate) : GoogleRepository {
             HttpMethod.GET,
             entity,
             GoogleAccount::class.java
+        ).body
+    }
+
+    override fun getCategories(accessToken: String, languageCode: String, regionCode: String, view: String, nextPageToken: String?): GoogleCategoriesResponse? {
+        val requestUrl = "https://mybusinessbusinessinformation.googleapis.com/v1/categories"
+        val uri = UriComponentsBuilder.fromHttpUrl(requestUrl)
+            .queryParam("languageCode", languageCode)
+            .queryParam("regionCode", regionCode)
+            .queryParam("view", view)
+            .queryParam("pageToken", nextPageToken)
+            .build()
+            .toUri()
+
+        val headers = HttpHeaders()
+
+        headers.apply {
+            setBearerAuth(accessToken)
+        }
+
+        val entity = HttpEntity<String>(headers)
+
+        return restTemplate.exchange(
+            uri,
+            HttpMethod.GET,
+            entity,
+            GoogleCategoriesResponse::class.java
         ).body
     }
 

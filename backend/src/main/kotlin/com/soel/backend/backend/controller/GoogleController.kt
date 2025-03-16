@@ -34,6 +34,12 @@ class GoogleController(val googleService: GoogleService) {
         return googleService.getAccount(googleClient.accessToken.tokenValue, accountId)
     }
 
+    @Operation(summary = "Google:カテゴリ一覧の取得", description = "Google:カテゴリ一覧の取得を行います", tags = ["Google:GETメソッド"])
+    @GetMapping("/categories")
+    fun getCategories(@RegisteredOAuth2AuthorizedClient("google") googleClient: OAuth2AuthorizedClient): ResponseEntity<List<GoogleLocationCategory>>? {
+        return googleService.getCategories(googleClient.accessToken.tokenValue)
+    }
+
     @Operation(summary = "Google:店舗一覧の取得", description = "Google:店舗一覧の取得を行います", tags = ["Google:GETメソッド"])
     @GetMapping("/locations")
     fun getLocations(@RegisteredOAuth2AuthorizedClient("google") googleClient: OAuth2AuthorizedClient, @RequestParam("accountId") accountId: String): ResponseEntity<List<GoogleLocation>>? {

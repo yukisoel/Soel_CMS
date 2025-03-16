@@ -24,6 +24,11 @@ data class GoogleAccount (
     val accountName: String
 )
 
+data class GoogleCategoriesResponse(
+    val categories: List<GoogleLocationCategory>,
+    val nextPageToken: String? = null,
+)
+
 data class GoogleLocation (
     val name: String,
     val title: String

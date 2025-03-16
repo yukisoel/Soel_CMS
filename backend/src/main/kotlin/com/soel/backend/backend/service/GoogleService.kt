@@ -27,6 +27,7 @@ interface GoogleService {
     fun getMe(accessToken: String): GoogleMe?
     fun getAccounts(accessToken: String): ResponseEntity<List<GoogleAccount>>?
     fun getAccount(accessToken: String, accountId: String): ResponseEntity<GoogleAccount>?
+    fun getCategories(accessToken: String): ResponseEntity<List<GoogleLocationCategory>>?
     fun getLocations(accessToken: String, accountId: String): ResponseEntity<List<GoogleLocation>>?
     fun getLocation(accessToken: String, locationId: String): ResponseEntity<GoogleLocation>?
     fun getLocationProfile(accessToken: String, locationId: String): ResponseEntity<GoogleLocationProfileModel>?
@@ -89,6 +90,34 @@ class GoogleServicImpl(val googleRepository: GoogleRepository, val menuLogReposi
             )
         } catch (e: Exception) {
             logger.error("Error getting account", e)
+            return ResponseEntity
+                .badRequest()
+                .body(null)
+        }
+    }
+
+    override fun getCategories(accessToken: String): ResponseEntity<List<GoogleLocationCategory>>? {
+        val languageCode = "ja"
+        val regionCode = "jp"
+        val view = "basic"
+        try {
+            val googleCategoriesMutableList: MutableList<GoogleLocationCategory> = mutableListOf()
+            var nextPageToken: String? = null
+            do {
+                val googleCategoriesResponse = googleRepository.getCategories(accessToken, languageCode, regionCode, view, nextPageToken)
+                val googleCategories = googleCategoriesResponse?.categories?.map { category ->
+                    GoogleLocationCategory(
+                        category.name,
+                        category.displayName
+                    )
+                }
+                nextPageToken = googleCategoriesResponse?.nextPageToken
+                googleCategoriesMutableList.addAll(googleCategories!!.toMutableList())
+                println(nextPageToken)
+            } while (nextPageToken != null)
+            return ResponseEntity.ok(googleCategoriesMutableList)
+        } catch (e: Exception) {
+            logger.error("Error getting categories", e)
             return ResponseEntity
                 .badRequest()
                 .body(null)
