@@ -1,4 +1,5 @@
 @use '@/main/styles/variables' as vars;
+@import '@/main/styles/scrollbar';
 
 .selected_store_container {
     align-items: flex-end;
@@ -11,4 +12,6 @@
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem;
+    max-height: 150px;
+    @include custom-scrollbar();
 }

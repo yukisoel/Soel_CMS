@@ -6,6 +6,7 @@ import styles from "./PostDetailModal.module.scss";
 import CloseIcon from '@/main/assets/CloseIcon.svg';
 import Separator from "@/main/common/Separator";
 import ModalNavIcon from '@/main/assets/ModalNavIcon.svg';
+import Scroll from '@/main/common/Scroll';
 
 export type Post = {
     title: string;
@@ -69,27 +70,35 @@ const PostDetailModal = ({ isOpen, onClose, post, onPrevClick, onNextClick, isEd
                                     </Wrapper>
                                     <Wrapper direction="col" gap="1.8rem">
                                         <Typography content="予約日時" color="primary" size="normal" />
-                                        <Typography content={`${post.date} ${post.time}`} color="primary" size="normal" weight="normal" className={styles.text_wrapper} />
+                                        <Typography content={`${post.date} ${post.time}`} color="primary" size="normal" weight="normal" className={styles.date_wrapper} />
                                     </Wrapper>
                                 </Wrapper>
                                 <Wrapper direction="col" gap="4rem">
                                     <Wrapper gap="3.3rem">
-                                        <Wrapper direction="col" gap="1.8rem" style={{ flex: 1 }}>
+                                        <Wrapper direction="col" gap="1.8rem">
                                             <Typography content="投稿予定店舗" color="primary" size="normal" />
-                                            <Typography content={post.shopList} color="primary" size="normal" weight="normal" className={styles.text_wrapper} />
+                                            <Scroll height="154px" width="495px">
+                                                <Typography content={post.shopList} color="primary" size="normal" weight="normal" />
+                                            </Scroll>
                                         </Wrapper>
-                                        <Wrapper direction="col" gap="1.8rem" style={{ flex: 1 }}>
+                                        <Wrapper direction="col" gap="1.8rem">
                                             <Typography content="投稿サービス" color="primary" size="normal" />
-                                            <Typography content={post.serviceList} color="primary" size="normal" weight="normal" className={styles.text_wrapper} />
+                                            <Scroll height="154px" width="495px">
+                                                <Typography content={post.serviceList} color="primary" size="normal" weight="normal" />
+                                            </Scroll>
                                         </Wrapper>
                                     </Wrapper>
                                     <Wrapper direction="col" gap="1.8rem">
                                         <Typography content="投稿文章" color="primary" size="normal" />
-                                        <Typography content={post.postContent} color="primary" size="normal" weight="normal" className={styles.text_wrapper} />
+                                        <Scroll height="154px">
+                                            <Typography content={post.postContent} color="primary" size="normal" weight="normal" />
+                                        </Scroll>
                                     </Wrapper>
                                     <Wrapper direction="col" gap="1.8rem">
                                         <Typography content="Instagramハッシュタグ" color="primary" size="normal" />
-                                        <Typography content={post.hashtags.join(' ')} color="primary" size="normal" weight="normal" className={styles.text_wrapper} />
+                                        <Scroll height="105px">
+                                            <Typography content={post.hashtags.join(' ')} color="primary" size="normal" weight="normal" />
+                                        </Scroll>
                                     </Wrapper>
                                 </Wrapper>
                             </Wrapper>

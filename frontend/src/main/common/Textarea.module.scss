@@ -22,12 +22,12 @@
     margin: 5px 10px;
     padding: 20px 10px;
 
+    @include custom-scrollbar();
+
     &::placeholder {
         color: vars.$text-color-gray;
         font-weight: 500;
     }
-
-    @include custom-scrollbar();
 }
 
 .fw_medium {

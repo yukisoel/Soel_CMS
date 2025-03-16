@@ -1,0 +1,10 @@
+@import '@/main/styles/scrollbar';
+
+.scroll {
+    border-radius: 10px;
+    box-sizing: border-box;
+
+    .scrollContent {
+        @include custom-scrollbar();
+    }
+}
