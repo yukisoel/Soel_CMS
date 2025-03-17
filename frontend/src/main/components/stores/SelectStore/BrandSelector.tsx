@@ -1,7 +1,6 @@
 import styles from "@/main/components/stores/SelectStore/BrandSelector.module.scss";
 import Wrapper from "@/main/common/Wrapper";
 import Typography from "@/main/common/Typography";
-import SearchBox from "@/main/common/SearchBox";
 import Checkbox from "@/main/common/Checkbox";
 import ArrowIcon from "@/main/assets/ArrowIcon.svg";
 import ArrowIconYellow from "@/main/assets/ArrowIconYellow.svg";
@@ -17,7 +16,6 @@ type Props = {
 
 export default function BrandSelector({ stores, onChangeSelectedBranches }: Props) {
     const [storeData, setStoreData] = useState<Store[]>(stores);
-    const [searchValue, setSearchValue] = useState<string>('');
     const [selectAll, setSelectAll] = useState<boolean>(false);
     const [indeterminate, setIndeterminate] = useState<boolean>(false);
 
@@ -68,7 +66,6 @@ export default function BrandSelector({ stores, onChangeSelectedBranches }: Prop
     return (
         <Wrapper direction="col">
             <Wrapper direction="col" gap="2rem" padding="4rem 0 4rem 3rem">
-                <SearchBox placeholder="店舗名を検索" value={searchValue} onChange={(e) => { setSearchValue(e.target.value) }} width="42.7rem" />
                 <Checkbox label="すべて選択" checked={selectAll} indeterminate={indeterminate} onChange={handleSelectAllChange} />
             </Wrapper>
             <Separator width="527px" />
