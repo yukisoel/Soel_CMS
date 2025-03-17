@@ -1,4 +1,3 @@
-import { useState } from "react";
 import styles from "@/main/components/stores/SelectService/ServiceSelector.module.scss";
 import Wrapper from "@/main/common/Wrapper"
 import Typography from "@/main/common/Typography"
@@ -14,20 +13,6 @@ type Props = {
     onLanguageCheckedChange: (langIndex: number) => void;
     onOptionCheckedChange: (optionIndex: number) => void;
 }
-
-const TranslateLanguages = [
-    { label: "日本語", value: "ja" },
-    { label: "英語", value: "en" },
-    { label: "簡体", value: "jian" },
-    { label: "繁体", value: "fan" },
-    { label: "韓国語", value: "ko" },
-]
-
-const RadioButtons = [
-    { label: "基本", value: "base" },
-    { label: "COVID19", value: "covid19" },
-    { label: "クーポン", value: "coupon" },
-]
 
 export default function ServiceSelector({ selectServiceForm, onFormCheckedChange, onLanguageCheckedChange, onOptionCheckedChange }: Props) {
     const { label, value, checked, languages, options } = selectServiceForm

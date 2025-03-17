@@ -84,7 +84,7 @@ const initialForms: SelectServiceForm[] = [
     },
 ];
 
-export const useSelectService = ({ googleService, selectedStores, onNextClick, onBackClick }: Props) => {
+export const useSelectService = ({ selectedStores, onNextClick, onBackClick }: Props) => {
     const [selectServiceForms, setSelectServiceForms] = useState<SelectServiceForm[]>(initialForms);
 
     const selectedServiceForms = useMemo(() => {

@@ -19,10 +19,12 @@ export default function EditReservationLayout({ googleService }: Props) {
 
   const { locationId } = useParams();
 
-  const { selectedTab, setSelectedTab, tabsRender } = useTabs([
-    { tabKey: 'recommended', content: 'おすすめの予約ボタン' },
-    { tabKey: 'onlineTool', content: 'オンライン予約ツールへのリンク' },
-  ])
+  const { selectedTab, setSelectedTab, tabsRender } = useTabs({
+    tabs: [
+      { tabKey: 'recommended', content: 'おすすめの予約ボタン' },
+      { tabKey: 'onlineTool', content: 'オンライン予約ツールへのリンク' },
+    ]
+  })
 
   const linkItems = [
     { label: '食べログ', text: 'https://tabelog.com/soel' },
