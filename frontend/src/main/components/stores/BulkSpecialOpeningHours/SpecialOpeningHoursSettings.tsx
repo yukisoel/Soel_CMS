@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import styles from "@/main/components/stores/BulkSpecialOpeningHours/SpecialOpeningHoursSettings.module.scss";
 import Wrapper from "@/main/common/Wrapper";
 import Typography from "@/main/common/Typography";
