@@ -21,6 +21,7 @@ import BlukPhoto from "./components/stores/BulkPhoto/BulkPhoto.tsx";
 import BulkSpecialOpeningHours from "./components/stores/BulkSpecialOpeningHours/BulkSpecialOpeningHours.tsx";
 import SchedulePostList from "./components/stores/SchedulePostList/SchedulePostList.tsx";
 import HistoryPostList from "./components/stores/HistorypostList/HistoryPostList.tsx";
+import SelectStoreSingleRender from "./components/stores/SelectStoreSingle/SelectStoreSingleRender.tsx";
 
 const googleRepository = new GoogleRepositoryImpl()
 const googleService = new GoogleServiceImpl({googleRepository})
@@ -86,7 +87,8 @@ function App() {
             element={<BlukPhoto googleService={googleService} />} />
           <Route path={'bulk/special'}
             element={<BulkSpecialOpeningHours googleService={googleService} />} />
-
+          <Route path={'store'}
+            element={<SelectStoreSingleRender googleService={googleService} />} />
       </Route>
     </Routes>
   )
