@@ -5,7 +5,7 @@ import Typography from "@/main/common/Typography";
 import SearchBox from "@/main/common/SearchBox";
 import Separator from "@/main/common/Separator";
 import Button from "@/main/common/Button";
-import PostDetailModal, { Post } from "./PostDetailModal/PostDetailModal";
+import PostDetailModal, { Post } from "../SchedulePostList/PostDetailModal/PostDetailModal";
 import { useState } from "react";
 
 type Props = {
@@ -32,50 +32,10 @@ const posts: Post[] = [
         postContent: "別の文章サンプル投稿の文章サンプル投稿の文章サンプル投稿の文章サンプル投稿の文章サンプル投稿の文章サンプル投稿の文章サンプル投稿の文章サンプル投稿の文章サンプル投稿の文章サンプル投稿の文章サンプル投稿の文章サンプル投稿の文章サンプル投稿の文章サンプル投",
         hashtags: ["#別のハッシュタグ", "#別のハッシュタグ", "#別のハッシュタグ", "#別のハッシュタグ", "#別のハッシュタグ"],
         images: []
-    },
-    {
-        title: "タイトル2",
-        date: "2024年12月21日",
-        time: "14時00分",
-        shopList: "渋谷店｜新宿店｜渋谷店｜新宿店｜渋谷店｜新宿店｜渋谷店｜新宿店｜渋谷",
-        serviceList: "【Instagram】ストーリーズ",
-        postContent: "別の文章サンプル投稿の文章サンプル投稿の文章サンプル投稿の文章サンプル投稿の文章サンプル投稿の文章サンプル投稿の文章サンプル投稿の文章サンプル投稿の文章サンプル投稿の文章サンプル投稿の文章サンプル投稿の文章サンプル投稿の文章サンプル投稿の文章サンプル投",
-        hashtags: ["#別のハッシュタグ", "#別のハッシュタグ", "#別のハッシュタグ", "#別のハッシュタグ", "#別のハッシュタグ"],
-        images: []
-    },
-    {
-        title: "タイトル2",
-        date: "2024年12月21日",
-        time: "14時00分",
-        shopList: "渋谷店｜新宿店｜渋谷店｜新宿店｜渋谷店｜新宿店｜渋谷店｜新宿店｜渋谷",
-        serviceList: "【Instagram】ストーリーズ",
-        postContent: "別の文章サンプル投稿の文章サンプル投稿の文章サンプル投稿の文章サンプル投稿の文章サンプル投稿の文章サンプル投稿の文章サンプル投稿の文章サンプル投稿の文章サンプル投稿の文章サンプル投稿の文章サンプル投稿の文章サンプル投稿の文章サンプル投稿の文章サンプル投",
-        hashtags: ["#別のハッシュタグ", "#別のハッシュタグ", "#別のハッシュタグ", "#別のハッシュタグ", "#別のハッシュタグ"],
-        images: []
-    },
-    {
-        title: "タイトル2",
-        date: "2024年12月21日",
-        time: "14時00分",
-        shopList: "渋谷店｜新宿店｜渋谷店｜新宿店｜渋谷店｜新宿店｜渋谷店｜新宿店｜渋谷",
-        serviceList: "【Instagram】ストーリーズ",
-        postContent: "別の文章サンプル投稿の文章サンプル投稿の文章サンプル投稿の文章サンプル投稿の文章サンプル投稿の文章サンプル投稿の文章サンプル投稿の文章サンプル投稿の文章サンプル投稿の文章サンプル投稿の文章サンプル投稿の文章サンプル投稿の文章サンプル投稿の文章サンプル投",
-        hashtags: ["#別のハッシュタグ", "#別のハッシュタグ", "#別のハッシュタグ", "#別のハッシュタグ", "#別のハッシュタグ"],
-        images: []
-    },
-    {
-        title: "タイトル2",
-        date: "2024年12月21日",
-        time: "14時00分",
-        shopList: "渋谷店｜新宿店｜渋谷店｜新宿店｜渋谷店｜新宿店｜渋谷店｜新宿店｜渋谷",
-        serviceList: "【Instagram】ストーリーズ",
-        postContent: "別の文章サンプル投稿の文章サンプル投稿の文章サンプル投稿の文章サンプル投稿の文章サンプル投稿の文章サンプル投稿の文章サンプル投稿の文章サンプル投稿の文章サンプル投稿の文章サンプル投稿の文章サンプル投稿の文章サンプル投稿の文章サンプル投稿の文章サンプル投",
-        hashtags: ["#別のハッシュタグ", "#別のハッシュタグ", "#別のハッシュタグ", "#別のハッシュタグ", "#別のハッシュタグ"],
-        images: []
     }
 ];
 
-export default function SchedulePost({ googleService }: Props) {
+export default function HistoryPostList({ googleService }: Props) {
     const [selectedPost, setSelectedPost] = useState<Post | null>(null);
 
     const handleOpenModal = (post: Post) => {
@@ -115,7 +75,7 @@ export default function SchedulePost({ googleService }: Props) {
             </Wrapper>
             <Wrapper direction="col" gap="2rem" align="align-start" padding="4rem 0 0 0">
                 {posts.map((post, index) => (
-                    <Wrapper key={index} gap="1rem" align="align-end" justify="justify-start">
+                    <Wrapper key={index} gap="1rem" align="align-end" justify="justify-start" onClick={() => handleOpenModal(post)}>
                         <Wrapper padding="2.2rem" align="align-start" className={styles.card}>
                             <Wrapper gap="1.5rem">
                                 <div className={styles.image_large} />
@@ -147,13 +107,13 @@ export default function SchedulePost({ googleService }: Props) {
                             </Wrapper>
                         </Wrapper>
                         <Button bgColor="primary" onClick={() => handleOpenModal(post)} className={styles.edit_button}>
-                            <Typography content="編集" color="primary" size="normal" weight="normal" />
+                            <Typography content="確認" color="primary" size="normal" weight="normal" />
                         </Button>
                     </Wrapper>
                 ))}
             </Wrapper>
             {selectedPost && (
-                <PostDetailModal isOpen={!!selectedPost} onClose={handleCloseModal} post={selectedPost} onNextClick={handleNextPost} onPrevClick={handlePrevPost} />
+                <PostDetailModal isOpen={!!selectedPost} onClose={handleCloseModal} post={selectedPost} onNextClick={handleNextPost} onPrevClick={handlePrevPost} isEditDisabled />
             )}
         </Wrapper>
     );
