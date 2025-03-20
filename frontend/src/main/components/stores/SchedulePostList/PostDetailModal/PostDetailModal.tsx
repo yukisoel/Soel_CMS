@@ -1,4 +1,4 @@
-import { MouseEvent } from 'react';
+import { MouseEvent, useEffect } from 'react';
 import Wrapper from "@/main/common/Wrapper";
 import Typography from "@/main/common/Typography";
 import Button from "@/main/common/Button";
@@ -28,6 +28,18 @@ type Props = {
 };
 
 const PostDetailModal = ({ isOpen, onClose, post, onPrevClick, onNextClick, isEditDisabled = false }: Props) => {
+    useEffect(() => {
+        if (isOpen) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = 'auto';
+        }
+
+        return () => {
+            document.body.style.overflow = 'auto';
+        };
+    }, [isOpen]);
+
     if (!isOpen) return null;
 
     const handleOverlayClick = (e: MouseEvent<HTMLDivElement>) => {
