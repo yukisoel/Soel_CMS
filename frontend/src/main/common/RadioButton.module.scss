@@ -8,7 +8,17 @@
     display: none;
 }
 
-.radio_button::before {
+.radio_input:checked + .radio_label::before {
+    background-image: url('@/main/assets/RadioChecked.svg');
+}
+
+.radio_label {
+    display: flex;
+    flex: 1;
+    align-items: flex-start;
+}
+
+.radio_label::before {
     content: '';
     display: inline-block;
     width: 22px;
@@ -18,9 +28,3 @@
     margin: 5px 10px 0 0;
     flex-shrink: 0;
 }
-
-.radio_input:checked + .radio_button::before {
-    background-image: url('@/main/assets/RadioChecked.svg');
-}
-
-
