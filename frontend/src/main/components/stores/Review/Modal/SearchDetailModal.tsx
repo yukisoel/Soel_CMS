@@ -51,7 +51,7 @@ export default function SearchDetailModal({ isOpen, onClose }: Props) {
                         />
                     </LayoutLabeledFormItem>
                     <LayoutLabeledFormItem label="開始日">
-                        <DatePicker onChange={(date) => setStartDate(date)} />
+                        <DatePicker defaultValue={startDate} onChange={(date) => setStartDate(date)} />
                     </LayoutLabeledFormItem>
                 </Wrapper>
                 <Wrapper gap="10rem">
@@ -63,7 +63,7 @@ export default function SearchDetailModal({ isOpen, onClose }: Props) {
                         />
                     </LayoutLabeledFormItem>
                     <LayoutLabeledFormItem label="終了日">
-                        <DatePicker onChange={(date) => setEndDate(date)} />
+                        <DatePicker defaultValue={endDate} onChange={(date) => setEndDate(date)} />
                     </LayoutLabeledFormItem>
                 </Wrapper>
                 <LayoutLabeledFormItem label="店舗名" className={styles.input_wrapper}>
