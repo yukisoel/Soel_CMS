@@ -75,7 +75,7 @@ export default function SchedulePost({ googleService }: Props) {
             </Wrapper>
             <Wrapper direction="col" gap="2rem" align="align-start" padding="4rem 0 0 0">
                 {posts.map((post, index) => (
-                    <Wrapper key={index} gap="1rem" align="align-end" justify="justify-start" onClick={() => handleOpenModal(post)}>
+                    <Wrapper key={index} gap="1rem" align="align-end" justify="justify-start">
                         <Wrapper padding="2.2rem" align="align-start" className={styles.card}>
                             <Wrapper gap="1.5rem">
                                 <div className={styles.image_large} />
