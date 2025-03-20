@@ -21,7 +21,7 @@ const RadioButton: React.FC<Props> = ({ label, value, name, checked, onChange })
                 onChange={() => onChange(value)}
                 className={styles.radio_input}
             />
-            <Typography content={label} size="normal" color="primary" weight="normal" className={styles.radio_label} />
+            <Typography content={label} size="normal" color="primary" weight="normal" />
         </label>
     );
 };
