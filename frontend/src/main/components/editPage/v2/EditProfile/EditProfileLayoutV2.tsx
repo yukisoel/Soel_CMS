@@ -14,6 +14,13 @@ type Props = {
     googleService: GoogleService;
 };
 
+const formatDateToJapanese = (date: Date): string => {
+    const year = date.getFullYear();
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+    return `${year}年${month}月${day}日`;
+};
+
 export default function EditProfileLayoutV2({
     googleService,
 }: Props) {
@@ -81,6 +88,10 @@ export default function EditProfileLayoutV2({
         { tabKey: 'other', content: 'その他' },
     ]);
 
+    const handleUpdateOpeningDate = (date: Date) => {
+        setOpeningDate(formatDateToJapanese(date));
+    };
+
     const renderContent = () => {
         switch (selectedTab) {
             case 'overview':
@@ -90,6 +101,10 @@ export default function EditProfileLayoutV2({
                         businessCategories={businessCategories}
                         description={description}
                         openingDate={openingDate}
+                        onUpdateBusinessName={setBusinessName}
+                        onUpdateDescription={setDescription}
+                        onUpdateOpeningDate={handleUpdateOpeningDate}
+                        onUpdateBusinessCategories={setBusinessCategories}
                     />
                 );
             case 'contact':
@@ -129,9 +144,9 @@ export default function EditProfileLayoutV2({
                         businessOwnerInfo={businessOwnerInfo}
                         serviceInfo={serviceInfo}
                         serviceOptionInfo={serviceOptionInfo}
-                        onEditBusinessOwner={() => {/* 編集処理を実装 */}}
-                        onEditService={() => {/* 編集処理を実装 */}}
-                        onEditServiceOption={() => {/* 編集処理を実装 */}}
+                        onEditBusinessOwner={setBusinessOwnerInfo}
+                        onEditService={setServiceInfo}
+                        onEditServiceOption={setServiceOptionInfo}
                     />
                 );
             default:

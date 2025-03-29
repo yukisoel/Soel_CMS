@@ -72,3 +72,55 @@
         height: 16px;
     }
 }
+
+.textarea_field {
+    width: 100%;
+    min-height: 120px;
+    padding: 16px;
+    border: none;
+    background-color: #F0F0F0;
+    border-radius: 6px;
+    font-family: 'Noto Sans CJK JP';
+    font-size: 20px;
+    font-weight: 400;
+    color: #282828;
+    resize: vertical;
+
+    &::placeholder {
+        color: #8D8D8D;
+    }
+
+    &:focus {
+        outline: none;
+    }
+}
+
+.modal_input_container {
+    border-radius: 6px;
+    width: 100%;
+}
+
+.categories_container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    width: 100%;
+    border-radius: 6px;
+
+    :global(.scroll) {
+        padding: 0 !important;
+    }
+}
+
+.category_tag {
+    background-color: #FFC42C;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+
+    img {
+        width: 16px;
+        height: 16px;
+    }
+}

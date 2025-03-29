@@ -13,14 +13,14 @@ interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
 
 export default function Input({width, padding, fwMedium = false, className, ref, onClear, ...props}: Props) {
     return (
-        <div className={styles.inputWrapper}>
+        <div className={styles.inputWrapper} style={{ width }}>
             <input
                 className={classNames(
                     className,
                     styles.input,
                     fwMedium ? styles['fw-medium'] : ''
                 )}
-                style={{ padding: padding, width: width }}
+                style={{ padding, width }}
                 ref={ref}
                 {...props}
             />
