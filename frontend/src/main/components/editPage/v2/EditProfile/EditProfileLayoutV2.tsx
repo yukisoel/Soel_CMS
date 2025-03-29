@@ -14,6 +14,12 @@ type Props = {
     googleService: GoogleService;
 };
 
+type Service = {
+    id: string;
+    name: string;
+    isAvailable: boolean;
+};
+
 const formatDateToJapanese = (date: Date): string => {
     const year = date.getFullYear();
     const month = date.getMonth() + 1;
@@ -42,6 +48,7 @@ export default function EditProfileLayoutV2({
 
     // 連絡先タブの状態
     const [phoneNumber, setPhoneNumber] = useState("03-1234-5678");
+    const [email, setEmail] = useState("info@soel-gourmet.com");
     const [website, setWebsite] = useState("https://www.soel-gourmet.com");
     const [menuLink, setMenuLink] = useState("https://www.soel-gourmet.com/menu");
     const [snsLinks, setSnsLinks] = useState([
@@ -80,6 +87,13 @@ export default function EditProfileLayoutV2({
     const [serviceInfo, setServiceInfo] = useState("内容が入ります。");
     const [serviceOptionInfo, setServiceOptionInfo] = useState("内容が入ります。");
 
+    const [services, setServices] = useState<Service[]>([
+        { id: 'alcohol', name: 'アルコール飲料あり', isAvailable: false },
+        { id: 'cocktail', name: 'カクテルあり', isAvailable: false },
+        { id: 'coffee', name: 'コーヒーあり', isAvailable: false },
+        { id: 'drinkService', name: 'ドリンクのサービスタイムあり', isAvailable: false },
+    ]);
+
     const { selectedTab, tabsRender } = useAdvancedTabs([
         { tabKey: 'overview', content: '概要' },
         { tabKey: 'contact', content: '連絡先' },
@@ -114,15 +128,19 @@ export default function EditProfileLayoutV2({
                         website={website}
                         menuLink={menuLink}
                         snsLinks={snsLinks}
+                        onPhoneNumberChange={setPhoneNumber}
+                        onWebsiteChange={setWebsite}
+                        onMenuLinkChange={setMenuLink}
+                        onSnsLinksChange={setSnsLinks}
                     />
                 );
             case 'location':
                 return (
                     <LocationTab
                         address={address}
-                        serviceArea={serviceArea}
+                        accessInfo={serviceArea}
                         onAddressChange={setAddress}
-                        onServiceAreaChange={setServiceArea}
+                        onAccessInfoChange={setServiceArea}
                     />
                 );
             case 'hours':
@@ -147,6 +165,8 @@ export default function EditProfileLayoutV2({
                         onEditBusinessOwner={setBusinessOwnerInfo}
                         onEditService={setServiceInfo}
                         onEditServiceOption={setServiceOptionInfo}
+                        services={services}
+                        onServicesChange={setServices}
                     />
                 );
             default:

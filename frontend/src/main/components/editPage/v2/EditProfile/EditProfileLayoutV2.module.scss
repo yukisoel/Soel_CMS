@@ -164,3 +164,50 @@
         text-align: center;
     }
 }
+
+.service_row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    border-radius: 6px;
+    background-color: var(--color-gray-100);
+    width: 100%;
+
+    .service_buttons {
+        display: flex;
+        gap: 1rem;
+    }
+}
+
+.service_button {
+    min-width: 120px;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+
+    &.active {
+        background-color: var(--color-primary);
+    }
+
+    &:not(.active) {
+        background-color: var(--color-gray-200);
+    }
+}
+
+.service_item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    width: 100%;
+
+    .service_name {
+        min-width: 200px;
+    }
+
+    .radio_group {
+        display: flex;
+        gap: 3rem;
+        margin-right: 50rem;
+    }
+}

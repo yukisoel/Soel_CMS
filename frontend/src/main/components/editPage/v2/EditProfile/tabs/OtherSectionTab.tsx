@@ -1,9 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Wrapper from "@/main/common/Wrapper";
 import Typography from "@/main/common/Typography";
 import Button from "@/main/common/Button";
 import styles from "../EditProfileLayoutV2.module.scss";
 import EditOtherModal from "../modals/EditOtherModal";
+import EditServicesModal from '../modals/EditServicesModal';
+
+type Service = {
+  id: string;
+  name: string;
+  isAvailable: boolean;
+};
 
 type Props = {
   businessOwnerInfo?: string;
@@ -12,6 +19,8 @@ type Props = {
   onEditBusinessOwner?: (value: string) => void;
   onEditService?: (value: string) => void;
   onEditServiceOption?: (value: string) => void;
+  services: Service[];
+  onServicesChange: (services: Service[]) => void;
 };
 
 export default function OtherSectionTab({
@@ -21,6 +30,8 @@ export default function OtherSectionTab({
   onEditBusinessOwner = () => {},
   onEditService = () => {},
   onEditServiceOption = () => {},
+  services,
+  onServicesChange,
 }: Props) {
   const [editModalConfig, setEditModalConfig] = React.useState<{
     isOpen: boolean;
@@ -34,6 +45,8 @@ export default function OtherSectionTab({
     onSave: () => {},
   });
 
+  const [isServicesModalOpen, setIsServicesModalOpen] = useState(false);
+
   const handleOpenModal = (title: string, content: string, onSave: (value: string) => void) => {
     setEditModalConfig({
       isOpen: true,
@@ -45,6 +58,12 @@ export default function OtherSectionTab({
 
   const handleCloseModal = () => {
     setEditModalConfig(prev => ({ ...prev, isOpen: false }));
+  };
+
+  const formatServices = (services: Service[]): string => {
+    const availableServices = services.filter(service => service.isAvailable);
+    if (availableServices.length === 0) return 'なし';
+    return availableServices.map(service => service.name).join('、');
   };
 
   return (
@@ -89,7 +108,7 @@ export default function OtherSectionTab({
           <Wrapper className={styles.field_row}>
             <Wrapper className={styles.field_container}>
               <Typography
-                content={serviceInfo}
+                content={formatServices(services)}
                 color="secondary"
                 size="normal"
               />
@@ -97,7 +116,7 @@ export default function OtherSectionTab({
             <Button
               bgColor="primary"
               padding="0.5rem 1.8rem"
-              onClick={() => handleOpenModal('サービス', serviceInfo, onEditService)}
+              onClick={() => setIsServicesModalOpen(true)}
             >
               <Typography
                 content="編集"
@@ -144,6 +163,13 @@ export default function OtherSectionTab({
         title={editModalConfig.title}
         content={editModalConfig.content}
         onSave={editModalConfig.onSave}
+      />
+
+      <EditServicesModal
+        isOpen={isServicesModalOpen}
+        onClose={() => setIsServicesModalOpen(false)}
+        services={services}
+        onSave={onServicesChange}
       />
     </>
   );
