@@ -122,5 +122,45 @@
     img {
         width: 16px;
         height: 16px;
+        cursor: pointer;
+    }
+}
+
+.scroll {
+    padding: 0;
+}
+
+.business_hours_input {
+    background-color: #F0F0F0;
+    border-radius: 10px;
+    padding: 0.5rem 1rem;
+    font-family: 'Noto Sans CJK JP';
+    font-size: 20px;
+    font-weight: 400;
+    color: #282828;
+    border: none;
+    width: 120px;
+    text-align: center;
+
+    &::placeholder {
+        color: #8D8D8D;
+    }
+
+    &:focus {
+        outline: none;
+    }
+}
+
+.business_hours_row {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    padding: 0.5rem 0;
+
+    :global(.button) {
+        background-color: #F0F0F0;
+        border-radius: 10px;
+        min-width: 120px;
+        text-align: center;
     }
 }
