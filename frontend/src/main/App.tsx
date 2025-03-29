@@ -22,7 +22,7 @@ import BulkSpecialOpeningHours from "./components/stores/BulkSpecialOpeningHours
 import SchedulePostList from "./components/stores/SchedulePostList/SchedulePostList.tsx";
 import HistoryPostList from "./components/stores/HistorypostList/HistoryPostList.tsx";
 import SelectStoreSingleRender from "./components/stores/SelectStoreSingle/SelectStoreSingleRender.tsx";
-import EditProfileLayoutV2 from "./components/editPage/v2/EditProfileLayoutV2.tsx";
+import EditProfileLayoutV2 from "./components/editPage/v2/EditProfile/EditProfileLayoutV2.tsx";
 
 const googleRepository = new GoogleRepositoryImpl()
 const googleService = new GoogleServiceImpl({googleRepository})
