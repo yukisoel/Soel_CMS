@@ -1,0 +1,42 @@
+.container {
+    background-color: #FFFFFF;
+    min-height: 100vh;
+}
+
+.header {
+    margin-bottom: 3rem;
+}
+
+.navigation {
+    margin: 2rem 0 4rem;
+    padding-bottom: 1rem;
+    border-bottom: 1.5px solid #DCDCDC;
+}
+
+.main_content {
+    padding: 0 3.6rem;
+    margin-top: 4rem;
+}
+
+.field_row {
+    display: flex;
+    align-items: flex-end;
+    gap: 1rem;
+
+    :global(.button) {
+        background-color: #FFC42C;
+        border-radius: 10px;
+        height: fit-content;
+    }
+}
+
+.field_container {
+    background-color: #E3E3E3;
+    box-sizing: border-box;
+    padding: 0.9rem 2rem;
+    border-radius: 6px;
+    flex: 1;
+    min-height: 4.2rem;
+    display: flex;
+    align-items: center;
+}

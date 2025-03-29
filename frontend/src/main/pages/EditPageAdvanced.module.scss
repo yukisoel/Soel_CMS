@@ -1,4 +1,25 @@
+@use '@/main/styles/variables' as vars;
+
 .wrapper {
     width: 100%;
     max-width: 1920px;
+    display: flex;
+    height: 100vh;
+    min-height: 100vh;
+    position: relative;
+}
+
+.sidebar {
+    height: 100vh;
+    min-height: 100vh;
+    background-color: vars.$background-color-secondary;
+    position: sticky;
+    top: 0;
+}
+
+.content {
+    flex: 1;
+    height: 100%;
+    min-height: 100%;
+    overflow-y: auto;
 }
