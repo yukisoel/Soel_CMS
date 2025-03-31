@@ -4,26 +4,31 @@ import Typography from "@/main/common/Typography";
 import Button from "@/main/common/Button";
 import styles from "../EditProfileLayoutV2.module.scss";
 import EditOtherModal from '../modals/EditOtherModal';
+import { ServiceAreaInfo } from '@/main/model/LocationModel';
+
+type EditModalConfig = {
+    isOpen: boolean;
+    title: string;
+    content: string;
+    onSave: (value: string) => void;
+};
 
 type Props = {
     address: string;
-    accessInfo: string;
-    onAddressChange: (value: string) => void;
-    onAccessInfoChange: (value: string) => void;
+    serviceArea: ServiceAreaInfo;
+    onAddressChange: (address: string) => void;
+    onServiceAreaChange: (serviceArea: ServiceAreaInfo) => void;
+    isUpdating: boolean;
 };
 
 export default function LocationTab({
     address,
-    accessInfo,
+    serviceArea,
     onAddressChange,
-    onAccessInfoChange,
+    onServiceAreaChange,
+    isUpdating
 }: Props) {
-    const [editModalConfig, setEditModalConfig] = useState<{
-        isOpen: boolean;
-        title: string;
-        content: string;
-        onSave: (value: string) => void;
-    }>({
+    const [editModalConfig, setEditModalConfig] = useState<EditModalConfig>({
         isOpen: false,
         title: '',
         content: '',
@@ -43,12 +48,29 @@ export default function LocationTab({
         setEditModalConfig(prev => ({ ...prev, isOpen: false }));
     };
 
+    const handleServiceAreaChange = (value: string) => {
+        const placeInfos = value.split('、')
+            .filter(area => area.trim() !== '')
+            .map(area => ({
+                placeId: '', // placeIdは必要に応じてGoogle Places APIから取得
+                placeName: area
+            }));
+
+        // businessTypeは既存の値を維持
+        onServiceAreaChange({
+            ...serviceArea, // 既存のserviceAreaの値（businessTypeを含む）を保持
+            places: {
+                placeInfos
+            }
+        });
+    };
+
     return (
         <Wrapper direction="col" gap="3rem" className={styles.main_content}>
-            {/* 住所 */}
+            {/* 店舗の住所 */}
             <Wrapper direction="col" gap="1rem">
                 <Typography
-                    content="住所"
+                    content="店舗の住所"
                     color="primary"
                     size="normal"
                 />
@@ -74,17 +96,17 @@ export default function LocationTab({
                 </Wrapper>
             </Wrapper>
 
-            {/* アクセス */}
+            {/* サービス提供地域 */}
             <Wrapper direction="col" gap="1rem">
                 <Typography
-                    content="アクセス"
+                    content="サービス提供地域"
                     color="primary"
                     size="normal"
                 />
                 <Wrapper className={styles.field_row}>
                     <Wrapper className={styles.field_container}>
                         <Typography
-                            content={accessInfo}
+                            content={serviceArea.places?.placeInfos.map(place => place.placeName).join('、') || ''}
                             color="secondary"
                             size="normal"
                         />
@@ -92,7 +114,11 @@ export default function LocationTab({
                     <Button
                         bgColor="primary"
                         padding="0.5rem 1.8rem"
-                        onClick={() => handleOpenModal('アクセス', accessInfo, onAccessInfoChange)}
+                        onClick={() => handleOpenModal(
+                            'サービス提供地域',
+                            serviceArea.places?.placeInfos.map(place => place.placeName).join('、') || '',
+                            handleServiceAreaChange
+                        )}
                     >
                         <Typography
                             content="編集"

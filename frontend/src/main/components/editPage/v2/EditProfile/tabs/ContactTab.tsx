@@ -9,11 +9,12 @@ type Props = {
     phoneNumber: string;
     website: string;
     menuLink: string;
-    snsLinks: Array<{ type: string; url: string; }>;
-    onPhoneNumberChange: (value: string) => void;
-    onWebsiteChange: (value: string) => void;
-    onMenuLinkChange: (value: string) => void;
-    onSnsLinksChange: (value: Array<{ type: string; url: string; }>) => void;
+    snsLinks: { type: string; url: string; }[];
+    isUpdating: boolean;
+    onPhoneNumberChange: (phone: string) => void;
+    onWebsiteChange: (site: string) => void;
+    onMenuLinkChange: (link: string) => void;
+    onSnsLinksChange: (links: { type: string; url: string; }[]) => void;
 };
 
 export default function ContactTab({
@@ -21,6 +22,7 @@ export default function ContactTab({
     website,
     menuLink,
     snsLinks,
+    isUpdating,
     onPhoneNumberChange,
     onWebsiteChange,
     onMenuLinkChange,

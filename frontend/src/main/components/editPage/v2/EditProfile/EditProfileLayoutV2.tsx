@@ -2,13 +2,16 @@ import styles from "./EditProfileLayoutV2.module.scss";
 import Wrapper from "@/main/common/Wrapper";
 import Typography from "@/main/common/Typography";
 import { useAdvancedTabs } from "@/main/common/AdvancedTabs/useAdvancedTabs";
-import { useState } from "react";
+import { useState, useCallback, useMemo, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import OverviewTab from "./tabs/OverviewTab";
 import ContactTab from "./tabs/ContactTab";
 import LocationTab from "./tabs/LocationTab";
 import HoursTab from "./tabs/HoursTab";
 import OtherSectionTab from "./tabs/OtherSectionTab";
-import { GoogleService } from "@/main/service/GoogleService.ts";
+import { GoogleService } from "@/main/service/GoogleService";
+import { ProfileUpdateService, ProfileField } from "@/main/service/ProfileUpdateService";
+import { GoogleLocationBusinessHours, DayOfWeek, ServiceAreaInfo } from "@/main/model/LocationModel";
 
 type Props = {
     googleService: GoogleService;
@@ -18,6 +21,16 @@ type Service = {
     id: string;
     name: string;
     isAvailable: boolean;
+};
+
+type WeeklyHours = {
+    monday: string;
+    tuesday: string;
+    wednesday: string;
+    thursday: string;
+    friday: string;
+    saturday: string;
+    sunday: string;
 };
 
 const formatDateToJapanese = (date: Date): string => {
@@ -30,62 +43,56 @@ const formatDateToJapanese = (date: Date): string => {
 export default function EditProfileLayoutV2({
     googleService,
 }: Props) {
+    const { locationId } = useParams();
+    const profileUpdateService = useMemo(() => new ProfileUpdateService(googleService), [googleService]);
+    const [isUpdating, setIsUpdating] = useState(false);
+
     // 概要タブの状態
-    const [businessName, setBusinessName] = useState("SOELグルメ通り店");
-    const [businessCategories, setBusinessCategories] = useState([
-        "寿司店",
-        "回転寿司店",
-        "テイクアウト寿司店",
-        "シーフード・海鮮料理店",
-        "和食店"
-    ]);
-    const [description, setDescription] = useState(
-        "こだわりが廻るグルメ回転寿司。こころを握る美味しい時間。\n" +
-        "日本海の魚介を職人の目利きで仕入れ、さばき、握る。米、醤油、調味料はもちろん、国産の\n" +
-        "割箸にまでこだわる。安心して美味しい寿司を召し上がっていただ..."
-    );
-    const [openingDate, setOpeningDate] = useState("2024年8月26日");
+    const [businessName, setBusinessName] = useState("");
+    const [businessCategories, setBusinessCategories] = useState<string[]>([]);
+    const [description, setDescription] = useState("");
+    const [openingDate, setOpeningDate] = useState("");
 
     // 連絡先タブの状態
-    const [phoneNumber, setPhoneNumber] = useState("03-1234-5678");
-    const [email, setEmail] = useState("info@soel-gourmet.com");
-    const [website, setWebsite] = useState("https://www.soel-gourmet.com");
-    const [menuLink, setMenuLink] = useState("https://www.soel-gourmet.com/menu");
-    const [snsLinks, setSnsLinks] = useState([
-        { type: "Instagram", url: "https://www.instagram.com/soel_gourmet" },
-        { type: "Twitter", url: "https://twitter.com/soel_gourmet" },
-        { type: "Facebook", url: "https://www.facebook.com/soel.gourmet" }
-    ]);
+    const [phoneNumber, setPhoneNumber] = useState("");
+    const [website, setWebsite] = useState("");
+    const [menuLink, setMenuLink] = useState("");
+    const [snsLinks, setSnsLinks] = useState<{ type: string; url: string; }[]>([]);
 
     // 所在地タブの状態
-    const [address, setAddress] = useState("191-0041　東京都日野市南平1-37-1");
-    const [serviceArea, setServiceArea] = useState("東京都日野市");
-
-    // 営業時間タブの状態
-    const [regularHours, setRegularHours] = useState({
-        monday: "10:00-21:00",
-        tuesday: "10:00-21:00",
-        wednesday: "10:00-21:00",
-        thursday: "10:00-21:00",
-        friday: "10:00-21:00",
-        saturday: "10:00-21:00",
-        sunday: "10:00-21:00"
+    const [address, setAddress] = useState("");
+    const [serviceArea, setServiceArea] = useState<ServiceAreaInfo>({
+        businessType: 'BUSINESS_TYPE_UNSPECIFIED',
+        places: {
+            placeInfos: []
+        }
     });
 
-    const [lunchHours, setLunchHours] = useState({
-        monday: "11:00-15:00",
-        tuesday: "11:00-15:00",
-        wednesday: "11:00-15:00",
-        thursday: "11:00-15:00",
-        friday: "11:00-15:00",
-        saturday: "11:00-15:00",
-        sunday: "11:00-15:00"
+    // 営業時間タブの状態
+    const [regularHours, setRegularHours] = useState<WeeklyHours>({
+        monday: "",
+        tuesday: "",
+        wednesday: "",
+        thursday: "",
+        friday: "",
+        saturday: "",
+        sunday: ""
+    });
+
+    const [lunchHours, setLunchHours] = useState<WeeklyHours>({
+        monday: "",
+        tuesday: "",
+        wednesday: "",
+        thursday: "",
+        friday: "",
+        saturday: "",
+        sunday: ""
     });
 
     // その他タブの状態
-    const [businessOwnerInfo, setBusinessOwnerInfo] = useState("内容が入ります。");
-    const [serviceInfo, setServiceInfo] = useState("内容が入ります。");
-    const [serviceOptionInfo, setServiceOptionInfo] = useState("内容が入ります。");
+    const [businessOwnerInfo, setBusinessOwnerInfo] = useState("");
+    const [serviceInfo, setServiceInfo] = useState("");
+    const [serviceOptionInfo, setServiceOptionInfo] = useState("");
 
     const [services, setServices] = useState<Service[]>([
         { id: 'alcohol', name: 'アルコール飲料あり', isAvailable: false },
@@ -102,8 +109,213 @@ export default function EditProfileLayoutV2({
         { tabKey: 'other', content: 'その他' },
     ]);
 
+    useEffect(() => {
+        if (locationId) {
+            profileUpdateService.fetchLocationProfile(locationId).then(profile => {
+                // 概要タブの状態を設定
+                setBusinessName(profile.title || "");
+                if (profile.categories) {
+                    const categoryNames = [
+                        profile.categories.primaryCategory.displayName,
+                        // ...(profile.categories.additionalCategories?.map(cat => cat.displayName) || [])
+                    ];
+                    setBusinessCategories(categoryNames);
+                }
+                setDescription(profile.profile?.description || "");
+                if (profile.openInfo?.openingDate) {
+                    const { year, month, day } = profile.openInfo.openingDate;
+                    setOpeningDate(`${year}年${month}月${day}日`);
+                }
+
+                // 連絡先タブの状態を設定
+                setPhoneNumber(profile.phoneNumbers?.primaryPhone || "");
+                setWebsite(profile.websiteUri || "");
+                setMenuLink(profile.menuUri || "");
+                setSnsLinks(profile.socialLinks?.map(link => ({
+                    type: link.type,
+                    url: link.url
+                })) || []);
+
+                // 所在地タブの状態を設定
+                setAddress(profile.storefrontAddress?.addressLines?.join(" ") || "");
+                if (profile.serviceArea) {
+                    setServiceArea({
+                        businessType: profile.serviceArea.businessType,
+                        places: {
+                            placeInfos: profile.serviceArea.places?.placeInfos.map(place => ({
+                                placeId: place.placeId || '',
+                                placeName: place.placeName
+                            })) || []
+                        }
+                    });
+                }
+
+                // 営業時間タブの状態を設定
+                if (profile.regularHours?.periods) {
+                    const defaultHours: WeeklyHours = {
+                        monday: "",
+                        tuesday: "",
+                        wednesday: "",
+                        thursday: "",
+                        friday: "",
+                        saturday: "",
+                        sunday: ""
+                    };
+
+                    const hours = profile.regularHours.periods.reduce((acc, period) => {
+                        const day = period.openDay.toLowerCase() as keyof WeeklyHours;
+                        acc[day] = `${period.openTime}-${period.closeTime}`;
+                        return acc;
+                    }, defaultHours);
+
+                    setRegularHours(hours);
+                }
+
+                if (profile.specialHours?.periods) {
+                    const defaultHours: WeeklyHours = {
+                        monday: "",
+                        tuesday: "",
+                        wednesday: "",
+                        thursday: "",
+                        friday: "",
+                        saturday: "",
+                        sunday: ""
+                    };
+
+                    const hours = profile.specialHours.periods.reduce((acc, period) => {
+                        const day = period.openDay.toLowerCase() as keyof WeeklyHours;
+                        acc[day] = `${period.openTime}-${period.closeTime}`;
+                        return acc;
+                    }, defaultHours);
+
+                    setLunchHours(hours);
+                }
+
+                // その他タブの状態を設定
+                setBusinessOwnerInfo(profile.businessOwnerInfo || "");
+                setServiceInfo(profile.serviceInfo || "");
+                setServiceOptionInfo(profile.serviceOptionInfo || "");
+                if (profile.services) {
+                    setServices(prev => prev.map(service => ({
+                        ...service,
+                        isAvailable: profile.services?.some(s => s.id === service.id) || false
+                    })));
+                }
+            }).catch(error => {
+                // TODO: エラー通知の実装
+                console.error('店舗情報の取得に失敗しました:', error);
+            });
+        }
+    }, [locationId, profileUpdateService]);
+
+    const handleProfileUpdate = useCallback(async (
+        field: ProfileField,
+        value: string | object,
+        onSuccess?: () => void
+    ) => {
+        if (!locationId) {
+            // TODO: エラー通知の実装
+            console.error('店舗情報が見つかりません');
+            return;
+        }
+
+        setIsUpdating(true);
+        try {
+            const result = await profileUpdateService.updateProfile(
+                locationId,
+                field,
+                value
+            );
+
+            if (result.success) {
+                // TODO: 成功通知の実装
+                console.log('更新が完了しました');
+                onSuccess?.();
+            } else {
+                // TODO: エラー通知の実装
+                console.error(result.error || '更新に失敗しました');
+            }
+        } catch (error) {
+            // TODO: エラー通知の実装
+            console.error('予期せぬエラーが発生しました');
+        } finally {
+            setIsUpdating(false);
+        }
+    }, [locationId, profileUpdateService]);
+
+    const handleUpdateBusinessName = (name: string) => {
+        setBusinessName(name);
+        handleProfileUpdate('title', name);
+    };
+
+    const handleUpdateDescription = (desc: string) => {
+        setDescription(desc);
+        handleProfileUpdate('profile.description', desc);
+    };
+
+    const handleUpdatePhoneNumber = (phone: string) => {
+        setPhoneNumber(phone);
+        handleProfileUpdate('phoneNumbers.primaryPhone', phone);
+    };
+
+    const handleUpdateWebsite = (site: string) => {
+        setWebsite(site);
+        handleProfileUpdate('websiteUri', site);
+    };
+
+    const handleUpdateMenuLink = (link: string) => {
+        setMenuLink(link);
+        handleProfileUpdate('menuUri', link);
+    };
+
+    const handleUpdateAddress = (address: string) => {
+        setAddress(address);
+        // TODO: 住所のパース処理を実装
+        const addressObject = {
+            addressLines: [address],
+            locality: "東京都",  // TODO: 住所から自動取得
+            postalCode: "000-0000",  // TODO: 住所から自動取得
+            administrativeArea: "東京都",  // TODO: 住所から自動取得
+            regionCode: "JP"
+        };
+        handleProfileUpdate('storefrontAddress', addressObject);
+    };
+
+    const handleUpdateRegularHours = (hours: typeof regularHours) => {
+        setRegularHours(hours);
+        // Google Business Profile APIの形式に変換
+        const formattedHours: GoogleLocationBusinessHours = {
+            periods: Object.entries(hours).map(([day, time]) => {
+                const [open, close] = time.split('-');
+                return {
+                    openDay: day.toUpperCase() as DayOfWeek,
+                    closeDay: day.toUpperCase() as DayOfWeek,
+                    openTime: open,
+                    closeTime: close
+                };
+            })
+        };
+        handleProfileUpdate('regularHours', formattedHours);
+    };
+
     const handleUpdateOpeningDate = (date: Date) => {
         setOpeningDate(formatDateToJapanese(date));
+
+        // Google Business Profile APIの形式に変換して更新
+        handleProfileUpdate('openInfo.openingDate', {
+            openInfo: {
+                openingDate: {
+                    year: date.getFullYear(),
+                    month: date.getMonth() + 1,
+                    day: date.getDate()
+                }
+            }
+        });
+    };
+
+    const handleUpdateServiceArea = (newServiceArea: ServiceAreaInfo) => {
+        setServiceArea(newServiceArea);
+        handleProfileUpdate('serviceArea', newServiceArea);
     };
 
     const renderContent = () => {
@@ -115,10 +327,11 @@ export default function EditProfileLayoutV2({
                         businessCategories={businessCategories}
                         description={description}
                         openingDate={openingDate}
-                        onUpdateBusinessName={setBusinessName}
-                        onUpdateDescription={setDescription}
+                        onUpdateBusinessName={handleUpdateBusinessName}
+                        onUpdateDescription={handleUpdateDescription}
                         onUpdateOpeningDate={handleUpdateOpeningDate}
                         onUpdateBusinessCategories={setBusinessCategories}
+                        isUpdating={isUpdating}
                     />
                 );
             case 'contact':
@@ -128,19 +341,21 @@ export default function EditProfileLayoutV2({
                         website={website}
                         menuLink={menuLink}
                         snsLinks={snsLinks}
-                        onPhoneNumberChange={setPhoneNumber}
-                        onWebsiteChange={setWebsite}
-                        onMenuLinkChange={setMenuLink}
+                        onPhoneNumberChange={handleUpdatePhoneNumber}
+                        onWebsiteChange={handleUpdateWebsite}
+                        onMenuLinkChange={handleUpdateMenuLink}
                         onSnsLinksChange={setSnsLinks}
+                        isUpdating={isUpdating}
                     />
                 );
             case 'location':
                 return (
                     <LocationTab
                         address={address}
-                        accessInfo={serviceArea}
-                        onAddressChange={setAddress}
-                        onAccessInfoChange={setServiceArea}
+                        serviceArea={serviceArea}
+                        onAddressChange={handleUpdateAddress}
+                        onServiceAreaChange={handleUpdateServiceArea}
+                        isUpdating={isUpdating}
                     />
                 );
             case 'hours':
@@ -148,12 +363,13 @@ export default function EditProfileLayoutV2({
                     <HoursTab
                         regularHours={regularHours}
                         lunchHours={lunchHours}
-                        onRegularHoursChange={setRegularHours}
+                        onRegularHoursChange={handleUpdateRegularHours}
                         onLunchHoursChange={setLunchHours}
                         onAddOtherHours={() => {
                             // TODO: その他の営業時間追加モーダルを表示
                             console.log("その他の営業時間を追加");
                         }}
+                        isUpdating={isUpdating}
                     />
                 );
             case 'other':
@@ -167,6 +383,7 @@ export default function EditProfileLayoutV2({
                         onEditServiceOption={setServiceOptionInfo}
                         services={services}
                         onServicesChange={setServices}
+                        isUpdating={isUpdating}
                     />
                 );
             default:

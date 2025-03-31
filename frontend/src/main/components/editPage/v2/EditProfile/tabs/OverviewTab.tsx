@@ -11,10 +11,11 @@ type Props = {
     businessCategories: string[];
     description: string;
     openingDate: string;
-    onUpdateBusinessName?: (value: string) => void;
-    onUpdateDescription?: (value: string) => void;
-    onUpdateOpeningDate?: (value: Date) => void;
-    onUpdateBusinessCategories?: (categories: string[]) => void;
+    isUpdating: boolean;
+    onUpdateBusinessName: (name: string) => void;
+    onUpdateDescription: (description: string) => void;
+    onUpdateOpeningDate: (date: Date) => void;
+    onUpdateBusinessCategories: (categories: string[]) => void;
 };
 
 type EditModalType = 'businessName' | 'description' | 'openingDate' | null;
@@ -24,10 +25,11 @@ export default function OverviewTab({
     businessCategories,
     description,
     openingDate,
+    isUpdating,
     onUpdateBusinessName,
     onUpdateDescription,
     onUpdateOpeningDate,
-    onUpdateBusinessCategories,
+    onUpdateBusinessCategories
 }: Props) {
     const [editModalType, setEditModalType] = useState<EditModalType>(null);
     const [isCategoriesModalOpen, setIsCategoriesModalOpen] = useState(false);
@@ -35,13 +37,13 @@ export default function OverviewTab({
     const handleSave = (value: string | Date) => {
         switch (editModalType) {
             case 'businessName':
-                onUpdateBusinessName?.(value as string);
+                onUpdateBusinessName(value as string);
                 break;
             case 'description':
-                onUpdateDescription?.(value as string);
+                onUpdateDescription(value as string);
                 break;
             case 'openingDate':
-                onUpdateOpeningDate?.(value as Date);
+                onUpdateOpeningDate(value as Date);
                 break;
         }
     };

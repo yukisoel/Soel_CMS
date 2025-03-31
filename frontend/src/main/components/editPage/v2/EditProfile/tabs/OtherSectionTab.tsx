@@ -16,10 +16,11 @@ type Props = {
   businessOwnerInfo?: string;
   serviceInfo?: string;
   serviceOptionInfo?: string;
+  services: Service[];
+  isUpdating: boolean;
   onEditBusinessOwner?: (value: string) => void;
   onEditService?: (value: string) => void;
   onEditServiceOption?: (value: string) => void;
-  services: Service[];
   onServicesChange: (services: Service[]) => void;
 };
 
@@ -32,6 +33,7 @@ export default function OtherSectionTab({
   onEditServiceOption = () => {},
   services,
   onServicesChange,
+  isUpdating,
 }: Props) {
   const [editModalConfig, setEditModalConfig] = React.useState<{
     isOpen: boolean;

@@ -2,46 +2,65 @@ import { LocationAssociationName } from "@/main/model/LocationAssociationName.ts
 
 export type GoogleLocationProfileModel = {
   name?: string
-  title?: string
+  title: string
   phoneNumbers?: GoogleLocationPhoneNumbers
   categories?: GoogleLocationCategories
-  storefrontAddress?: GoogleLocatiionPostalAddress
+  storefrontAddress?: GoogleLocationAddress
   websiteUri?: string
   regularHours?: GoogleLocationBusinessHours
   profile?: GoogleLocationProfile
   openInfo?: GoogleLocationOpenInfo
   serviceArea?: GoogleLocationServiceArea
+  menuUri?: string
+  socialLinks?: GoogleLocationSocialLink[]
+  specialHours?: GoogleLocationBusinessHours
+  businessOwnerInfo?: string
+  serviceInfo?: string
+  serviceOptionInfo?: string
+  services?: GoogleLocationService[]
 }
 
 export type GoogleLocationPhoneNumbers = {
-  primaryPhone: string
+  primaryPhone?: string
+  additionalPhones?: {
+    email?: string
+  }
 }
 
 export type GoogleLocationCategories = {
-  primaryCategory?: GoogleLocationCategory
+  primaryCategory: GoogleLocationCategory
   additionalCategories?: GoogleLocationCategory[]
 }
 
 export type GoogleLocationCategory = {
-  name?: string
-  displayName?: string
+  displayName: string
+  categoryId: string
 }
 
-export type GoogleLocatiionPostalAddress = {
+export type GoogleLocationAddress = {
+  addressLines: string[]
+  locality: string
   postalCode: string
   administrativeArea: string
-  addressLines: string[]
+  regionCode: string
 }
 
 export type GoogleLocationBusinessHours = {
-  periods: GoogleLocationTimePeriod[]
+  periods: BusinessHoursPeriod[]
+}
+
+export type BusinessHoursPeriod = {
+  openDay: DayOfWeek
+  closeDay: DayOfWeek
+  openTime: string
+  closeTime: string
 }
 
 export type GoogleLocationTimePeriod = {
   openDay: DayOfWeek
-  openTime: GoogleLocationTimeOfDay
   closeDay: DayOfWeek
-  closeTime: GoogleLocationTimeOfDay
+  openTime: string
+  closeTime: string
 }
 
 export type GoogleLocationTimeOfDay = {
@@ -51,16 +70,7 @@ export type GoogleLocationTimeOfDay = {
   nanos: number
 }
 
-export enum DayOfWeek {
-  DAY_OF_WEEK_UNSPECIFIED = "The day of the week is unspecified.",
-  MONDAY = "Monday",
-  TUESDAY = "Tuesday",
-  WEDNESDAY = "Wednesday",
-  THURSDAY = "Thursday",
-  FRIDAY = "Friday",
-  SATURDAY = "Saturday",
-  SUNDAY = "Sunday",
-}
+export type DayOfWeek = 'MONDAY' | 'TUESDAY' | 'WEDNESDAY' | 'THURSDAY' | 'FRIDAY' | 'SATURDAY' | 'SUNDAY'
 
 export type GoogleLocationProfile = {
   description?: string
@@ -79,18 +89,25 @@ export type GoogleLocationDate = {
 }
 
 export type GoogleLocationServiceArea = {
-  businessType?: string
+  businessType: BusinessType
   regionCode?: string
-  places?: GoogleLocationPlaceInfos
+  places?: {
+    placeInfos: GoogleLocationPlaceInfo[]
+  }
 }
+
+export type BusinessType =
+  | 'BUSINESS_TYPE_UNSPECIFIED'        // ビジネスタイプが指定されていません。
+  | 'CUSTOMER_LOCATION_ONLY'           // ビジネスは顧客の場所でのみサービスを提供します。
+  | 'CUSTOMER_AND_BUSINESS_LOCATION'   // ビジネスは顧客の場所とビジネスの場所の両方でサービスを提供します。
 
 export type GoogleLocationPlaceInfos = {
   placeInfos?: GoogleLocationPlaceInfo[]
 }
 
 export type GoogleLocationPlaceInfo = {
-  placeName?: string
-  placeId?: string
+  placeId: string;
+  placeName: string;
 }
 
 export type GoogleLocationPhotoModel = {
@@ -195,3 +212,37 @@ export type GoogleLocationFoodMenuItemOption = {
   labels: GoogleLocationMenuLabel[]
   attributes: GoogleLocationFoodMenuItemAttributes
 }
+
+export type RegularHours = {
+  periods: {
+    openDay: string;
+    closeDay: string;
+    openTime: string;
+    closeTime: string;
+  }[];
+};
+
+export type StorefrontAddress = {
+  addressLines: string[];
+  locality: string;
+  postalCode: string;
+  administrativeArea: string;
+  regionCode: string;
+};
+
+export type GoogleLocationSocialLink = {
+  type: string
+  url: string
+}
+
+export type GoogleLocationService = {
+  id: string
+  name: string
+}
+
+export type ServiceAreaInfo = {
+  businessType: BusinessType;
+  places?: {
+    placeInfos: GoogleLocationPlaceInfo[];
+  };
+};

@@ -19,6 +19,7 @@ type BusinessHours = {
 type Props = {
     regularHours: BusinessHours;
     lunchHours: BusinessHours;
+    isUpdating: boolean;
     onRegularHoursChange: (hours: BusinessHours) => void;
     onLunchHoursChange: (hours: BusinessHours) => void;
     onAddOtherHours: () => void;
