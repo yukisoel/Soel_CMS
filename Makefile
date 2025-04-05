@@ -29,3 +29,7 @@ build_for_actions:
 submit:
 	make build
 	git push
+
+kt2openApi2ts:
+	cd backend && make kt2openApiDocs
+	cd frontend && make openApiDocs2ts
