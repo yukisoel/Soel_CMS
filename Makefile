@@ -18,6 +18,10 @@ build:
 	cp -a ./frontend/dist/* ./backend/src/main/resources/public
 	cd backend && source .env && ./gradlew build
 
+frontend_build:
+	cd frontend && npm install
+	cd frontend && npm run build
+
 build_for_actions:
 	cd frontend && npm install
 	cd frontend && npm run build
