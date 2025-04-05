@@ -1,7 +1,6 @@
 package com.soel.backend.backend.repository
 
 import com.soel.backend.backend.model.*
-import io.swagger.v3.oas.annotations.Operation
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Primary
 import org.springframework.http.HttpEntity
@@ -20,6 +19,7 @@ interface GoogleRepository {
     fun getLocations(accessToken: String, accountId: String, nextPageToken: String?): GoogleLocationsResponse?
     fun getLocation(accessToken: String, locationId: String): GoogleLocation?
     fun getLocationProfile(accessToken: String, locationId: String): GoogleLocationProfileModel?
+    fun getLocationAttributes(accessToken: String, locationId: String): GoogleLocationAttributesModel?
     fun getLocationPhotos(accessToken: String, accountId: String, locationId: String, nextPageToken: String?): GoogleLocationPhotosResponse?
     fun getLocationLocalPosts(accessToken: String, accountId: String, locationId: String, nextPageToken: String?): GoogleLocationLocalPostsResponse?
     fun getLocationFoodMenus(accessToken: String, accountId: String, locationId: String): GoogleLocationFoodMenusModel?
@@ -34,6 +34,7 @@ interface GoogleRepository {
     fun updateLocationProfile(accessToken: String, locationId: String, updateMask: String, locationProfile: GoogleLocationProfileModel): GoogleLocationProfileModel?
     fun updateLocationFoodMenus(accessToken: String, accountId: String, locationId: String, foodMenus: GoogleLocationFoodMenusModel): GoogleLocationFoodMenusModel?
     fun updateLocationQuestion(accessToken: String, locationId: String, questionId: String, text: String): GoogleLocationQuestion?
+    fun updateLocationAttributes(accessToken: String, locationId: String, attributeMask: String, attributes: GoogleLocationAttributesModel): GoogleLocationAttributesModel?
 
     fun deleteLocationQuestion(accessToken: String, locationId: String, questionId: String)
     fun deleteLocationAnswer(accessToken: String, locationId: String, questionId: String)
@@ -197,6 +198,28 @@ class GoogleRepositoryImpl(val restTemplate: RestTemplate) : GoogleRepository {
             HttpMethod.GET,
             entity,
             GoogleLocationProfileModel::class.java
+        ).body
+    }
+
+    override fun getLocationAttributes(accessToken: String, locationId: String): GoogleLocationAttributesModel? {
+        val requestUrl = "https://mybusinessbusinessinformation.googleapis.com/v1/locations/$locationId/attributes"
+        val uri = UriComponentsBuilder.fromHttpUrl(requestUrl)
+            .build()
+            .toUri()
+
+        val headers = HttpHeaders()
+
+        headers.apply {
+            setBearerAuth(accessToken)
+        }
+
+        val entity = HttpEntity<String>(headers)
+
+        return restTemplate.exchange(
+            uri,
+            HttpMethod.GET,
+            entity,
+            GoogleLocationAttributesModel::class.java
         ).body
     }
 
@@ -518,6 +541,29 @@ class GoogleRepositoryImpl(val restTemplate: RestTemplate) : GoogleRepository {
             uri,
             entity,
             GoogleLocationQuestion::class.java
+        )
+    }
+
+    override fun updateLocationAttributes(accessToken: String, locationId: String, attributeMask: String, attributes: GoogleLocationAttributesModel): GoogleLocationAttributesModel? {
+        println("attributeMask: $attributeMask, attributes: $attributes")
+        val requestUrl = "https://mybusinessbusinessinformation.googleapis.com/v1/locations/$locationId/attributes"
+        val uri = UriComponentsBuilder.fromHttpUrl(requestUrl)
+            .queryParam("attributeMask", attributeMask)
+            .build()
+            .toUri()
+
+        val headers = HttpHeaders()
+
+        headers.apply {
+            setBearerAuth(accessToken)
+        }
+
+        val entity = HttpEntity(attributes, headers)
+
+        return restTemplate.patchForObject(
+            uri,
+            entity,
+            GoogleLocationAttributesModel::class.java
         )
     }
 

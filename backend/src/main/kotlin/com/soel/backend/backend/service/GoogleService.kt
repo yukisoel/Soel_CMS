@@ -31,6 +31,7 @@ interface GoogleService {
     fun getLocations(accessToken: String, accountId: String): ResponseEntity<List<GoogleLocation>>?
     fun getLocation(accessToken: String, locationId: String): ResponseEntity<GoogleLocation>?
     fun getLocationProfile(accessToken: String, locationId: String): ResponseEntity<GoogleLocationProfileModel>?
+    fun getLocationAttributes(accessToken: String, locationId: String): ResponseEntity<GoogleLocationAttributesModel>?
     fun getLocationPhotos(accessToken: String, accountId: String, locationId: String): ResponseEntity<List<GoogleLocationPhotoModel>>?
     fun getLocationLocalPosts(accessToken: String, accountId: String, locationId: String): ResponseEntity<List<GoogleLocationLocalPostModel>>?
     fun getLocationFoodMenus(accessToken: String, accountId: String, locationId: String): ResponseEntity<GoogleLocationFoodMenusModel>?
@@ -48,6 +49,7 @@ interface GoogleService {
     fun updateLocationProfile(accessToken: String, locationId: String, updateMask: String, locationProfile: GoogleLocationProfileModel): ResponseEntity<GoogleLocationProfileModel>?
     fun updateLocationFoodMenus(accessToken: String, accountId: String, locationId: String, locationFoodMenus: GoogleLocationFoodMenusModel): ResponseEntity<GoogleLocationFoodMenusModel>?
     fun updateLocationQuestion(accessToken: String, locationId: String, questionId: String, text: String): ResponseEntity<GoogleLocationQuestion>?
+    fun updateLocationAttributes(accessToken: String, locationId: String, attributeMask: String, attributes: GoogleLocationAttributesModel): ResponseEntity<GoogleLocationAttributesModel>?
 
     fun deleteLocationQuestion(accessToken: String, locationId: String, questionId: String)
     fun deleteLocationAnswer(accessToken: String, locationId: String, questionId: String)
@@ -187,6 +189,23 @@ class GoogleServicImpl(val googleRepository: GoogleRepository, val menuLogReposi
             )
         } catch (e: Exception) {
             logger.error("Error getting location profile", e)
+            return ResponseEntity
+                .badRequest()
+                .body(null)
+        }
+    }
+
+    override fun getLocationAttributes(accessToken: String, locationId: String): ResponseEntity<GoogleLocationAttributesModel>? {
+        try {
+            val googleLocationAttributes = googleRepository.getLocationAttributes(accessToken, locationId)
+            return ResponseEntity.ok(
+                GoogleLocationAttributesModel(
+                    googleLocationAttributes!!.name,
+                    googleLocationAttributes.attributes,
+                )
+            )
+        } catch (e: Exception) {
+            logger.error("Error getting location attributes", e)
             return ResponseEntity
                 .badRequest()
                 .body(null)
@@ -502,6 +521,19 @@ class GoogleServicImpl(val googleRepository: GoogleRepository, val menuLogReposi
             return ResponseEntity.ok(googleLocationQuestion)
         } catch (e: Exception) {
             logger.error("Error updating location question", e)
+            return ResponseEntity
+                .badRequest()
+                .body(null)
+        }
+    }
+
+    override fun updateLocationAttributes(accessToken: String, locationId: String, attributeMask: String, attributes: GoogleLocationAttributesModel): ResponseEntity<GoogleLocationAttributesModel>? {
+        try {
+            val googleLocationAttributes =
+                googleRepository.updateLocationAttributes(accessToken, locationId, attributeMask, attributes)
+            return ResponseEntity.ok(googleLocationAttributes)
+        } catch (e: Exception) {
+            logger.error("Error updating location attributes", e)
             return ResponseEntity
                 .badRequest()
                 .body(null)

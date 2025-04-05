@@ -1,5 +1,6 @@
 package com.soel.backend.backend.model
 
+//Google Business Profile APIのレスポンスモデル
 data class GoogleMe(
     val names: List<GoogleName>,
 )
@@ -32,6 +33,21 @@ data class GoogleCategoriesResponse(
 data class GoogleLocation (
     val name: String,
     val title: String
+)
+
+data class GoogleLocationAttributesModel(
+    val name: String? = null,
+    val attributes: List<GoogleLocationAttribute>? = null,
+)
+
+data class GoogleLocationAttribute(
+    val name: String? = null,
+    val valueType: GoogleLocationAttributeValueType? = null,
+    val uriValues: List<GoogleLocationAttributeUriValue>? = null,
+)
+
+data class GoogleLocationAttributeUriValue(
+    val uri: String? = null,
 )
 
 data class GoogleLocationProfileModel(
@@ -314,10 +330,47 @@ data class GoogleLocationAuthor(
     val type: GoogleLocationAuthorType? = null,
 )
 
+enum class GoogleLocationAttributeValueType {
+    ATTRIBUTE_VALUE_TYPE_UNSPECIFIED,
+    URL,
+    BOOL,
+    ENUM,
+    REPEATED_ENUM,
+}
+
 enum class GoogleLocationAuthorType {
     AUTHOR_TYPE_UNSPECIFIED,
     REGULAR_USER,
     LOCAL_GUIDE,
     MERCHANT,
 }
+
+//backend用
+enum class GoogleAttributeSnsType(
+    val snsType: String,
+    val attributeName: String
+) {
+    TWITTER("twitter", "attributes/url_twitter"),
+    TIKTOK("tiktok", "attributes/url_tiktok"),
+    YOUTUBE("youtube", "attributes/url_youtube"),
+    INSTAGRAM("instagram", "attributes/url_instagram"),
+    FACEBOOK("facebook", "attributes/url_facebook"),
+    LINKEDIN("linkedin", "attributes/url_linkedin"),
+    PINTEREST("pinterest", "attributes/url_pinterest");
+
+    companion object {
+        private val snsTypeMap: Map<String, GoogleAttributeSnsType> = entries.associateBy { it.snsType }
+
+        private fun fromSnsType(type: String): GoogleAttributeSnsType? {
+            return snsTypeMap[type]
+        }
+
+        fun fromSnsTypeOrThrow(type: String): GoogleAttributeSnsType {
+            return fromSnsType(type)
+                ?: throw IllegalArgumentException("Unknown snsType: $type")
+        }
+    }
+}
+
+
 
