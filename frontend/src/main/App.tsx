@@ -20,6 +20,7 @@ import SchedulePost from "./components/stores/SchedulePost/SchedulePost.tsx";
 import BlukPhoto from "./components/stores/BulkPhoto/BulkPhoto.tsx";
 import BulkSpecialOpeningHours from "./components/stores/BulkSpecialOpeningHours/BulkSpecialOpeningHours.tsx";
 import SchedulePostList from "./components/stores/SchedulePostList/SchedulePostList.tsx";
+import ReviewPage from "./components/stores/Review/ReviewPage.tsx";
 import HistoryPostList from "./components/stores/HistorypostList/HistoryPostList.tsx";
 import SelectStoreSingleRender from "./components/stores/SelectStoreSingle/SelectStoreSingleRender.tsx";
 
@@ -89,6 +90,8 @@ function App() {
             element={<BulkSpecialOpeningHours googleService={googleService} />} />
           <Route path={'store'}
             element={<SelectStoreSingleRender googleService={googleService} />} />
+          <Route path={'review'}
+            element={<ReviewPage googleService={googleService} />} />
       </Route>
     </Routes>
   )

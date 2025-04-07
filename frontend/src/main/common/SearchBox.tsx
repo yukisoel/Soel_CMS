@@ -8,7 +8,7 @@ type Props = {
   className?: string
 }
 
-export default function SearchBox({placeholder, width, value = "", onChange}: Props) {
+export default function SearchBox({placeholder, width, value = undefined, onChange}: Props) {
   return (
     <input
         type="text"

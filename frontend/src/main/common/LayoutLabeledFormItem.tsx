@@ -4,14 +4,15 @@ import Wrapper from "@/main/common/Wrapper";
 type Props = {
   children: React.ReactNode
   label: string
+  className?: string
 }
 
-export default function LayoutLabeledFormItem({label, children}: Props) {
+export default function LayoutLabeledFormItem({label, children, className}: Props) {
   return (
-    <Wrapper direction="col" gap="1rem">
-    <Wrapper padding="0 0 0 3.8rem">
-        <Typography content={label} size="medium" color="primary" />
-    </Wrapper>
+    <Wrapper direction="col" gap="1rem" className={className}>
+      <Wrapper>
+          <Typography content={label} size="normal" color="primary" />
+      </Wrapper>
       {children}
     </Wrapper>
   )
