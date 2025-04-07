@@ -3,49 +3,52 @@ import Typography from "@/main/common/Typography";
 import Button from "@/main/common/Button";
 import styles from "../EditProfileLayoutV2.module.scss";
 import EditBusinessInfoModal from "../modals/EditBusinessInfoModal";
-import EditBusinessCategoriesModal from "../modals/EditBusinessCategoriesModal";
 import { useState } from "react";
+import { UseFormRegister, FieldErrors } from "react-hook-form";
+import { ProfileFormData } from "@/main/schemas/profileSchema";
+import { SetValueType } from "../EditProfileLayoutV2";
 
 type Props = {
-    businessName: string;
-    businessCategories: string[];
-    description: string;
-    openingDate: string;
+    register: UseFormRegister<ProfileFormData>;
+    errors: FieldErrors<ProfileFormData>;
+    values: {
+        businessName: string;
+        description?: string;
+        openingDate?: Date;
+    };
+    setValueAndValidate: (name: keyof ProfileFormData, value: SetValueType) => Promise<boolean>;
     isUpdating: boolean;
-    onUpdateBusinessName: (name: string) => void;
-    onUpdateDescription: (description: string) => void;
-    onUpdateOpeningDate: (date: Date) => void;
-    onUpdateBusinessCategories: (categories: string[]) => void;
+    validationErrors: {
+        businessName?: string;
+        description?: string;
+        openingDate?: string;
+    };
 };
 
 type EditModalType = 'businessName' | 'description' | 'openingDate' | null;
 
+const FIELD_MAP: Record<Exclude<EditModalType, null>, keyof ProfileFormData> = {
+    businessName: 'title',
+    description: 'description',
+    openingDate: 'openingDate',
+};
+
 export default function OverviewTab({
-    businessName,
-    businessCategories,
-    description,
-    openingDate,
+    register,
+    errors,
+    values,
+    setValueAndValidate,
     isUpdating,
-    onUpdateBusinessName,
-    onUpdateDescription,
-    onUpdateOpeningDate,
-    onUpdateBusinessCategories
+    validationErrors
 }: Props) {
     const [editModalType, setEditModalType] = useState<EditModalType>(null);
-    const [isCategoriesModalOpen, setIsCategoriesModalOpen] = useState(false);
 
-    const handleSave = (value: string | Date) => {
-        switch (editModalType) {
-            case 'businessName':
-                onUpdateBusinessName(value as string);
-                break;
-            case 'description':
-                onUpdateDescription(value as string);
-                break;
-            case 'openingDate':
-                onUpdateOpeningDate(value as Date);
-                break;
-        }
+    const handleSave = async (value: string | Date) => {
+        if (!editModalType) return false;
+        const fieldName = FIELD_MAP[editModalType];
+
+        const isValid = await setValueAndValidate(fieldName, value);
+        return isValid;
     };
 
     return (
@@ -60,7 +63,7 @@ export default function OverviewTab({
                 <Wrapper className={styles.field_row}>
                     <Wrapper className={styles.field_container}>
                         <Typography
-                            content={businessName}
+                            content={values.businessName}
                             color="secondary"
                             size="normal"
                         />
@@ -69,35 +72,7 @@ export default function OverviewTab({
                         bgColor="primary"
                         padding="0.5rem 1.8rem"
                         onClick={() => setEditModalType('businessName')}
-                    >
-                        <Typography
-                            content="編集"
-                            color="primary"
-                            size="normal"
-                        />
-                    </Button>
-                </Wrapper>
-            </Wrapper>
-
-            {/* ビジネスカテゴリセクション */}
-            <Wrapper direction="col" gap="1rem">
-                <Typography
-                    content="ビジネスカテゴリ"
-                    color="primary"
-                    size="normal"
-                />
-                <Wrapper className={styles.field_row}>
-                    <Wrapper className={styles.field_container}>
-                        <Typography
-                            content={businessCategories.join(', ')}
-                            color="secondary"
-                            size="normal"
-                        />
-                    </Wrapper>
-                    <Button
-                        bgColor="primary"
-                        padding="0.5rem 1.8rem"
-                        onClick={() => setIsCategoriesModalOpen(true)}
+                        disabled={isUpdating}
                     >
                         <Typography
                             content="編集"
@@ -118,7 +93,7 @@ export default function OverviewTab({
                 <Wrapper className={styles.field_row}>
                     <Wrapper className={styles.field_container}>
                         <Typography
-                            content={description}
+                            content={values.description || ''}
                             color="secondary"
                             size="normal"
                         />
@@ -127,6 +102,7 @@ export default function OverviewTab({
                         bgColor="primary"
                         padding="0.5rem 1.8rem"
                         onClick={() => setEditModalType('description')}
+                        disabled={isUpdating}
                     >
                         <Typography
                             content="編集"
@@ -147,7 +123,7 @@ export default function OverviewTab({
                 <Wrapper className={styles.field_row}>
                     <Wrapper className={styles.field_container}>
                         <Typography
-                            content={openingDate}
+                            content={values.openingDate ? formatDateToJapanese(values.openingDate) : ''}
                             color="secondary"
                             size="normal"
                         />
@@ -156,6 +132,7 @@ export default function OverviewTab({
                         bgColor="primary"
                         padding="0.5rem 1.8rem"
                         onClick={() => setEditModalType('openingDate')}
+                        disabled={isUpdating}
                     >
                         <Typography
                             content="編集"
@@ -173,21 +150,25 @@ export default function OverviewTab({
                     onClose={() => setEditModalType(null)}
                     type={editModalType}
                     content={
-                        editModalType === 'businessName' ? businessName :
-                        editModalType === 'description' ? description :
-                        openingDate
+                        editModalType === 'businessName' ? values.businessName :
+                        editModalType === 'description' ? values.description || '' :
+                        values.openingDate ? formatDateToJapanese(values.openingDate) : ''
                     }
                     onSave={handleSave}
+                    error={
+                        editModalType === 'businessName' ? validationErrors.businessName :
+                        editModalType === 'description' ? validationErrors.description :
+                        validationErrors.openingDate
+                    }
                 />
             )}
-
-            {/* ビジネスカテゴリ編集モーダル */}
-            <EditBusinessCategoriesModal
-                isOpen={isCategoriesModalOpen}
-                onClose={() => setIsCategoriesModalOpen(false)}
-                categories={businessCategories}
-                onSave={onUpdateBusinessCategories || (() => {})}
-            />
         </Wrapper>
     );
 }
+
+const formatDateToJapanese = (date: Date): string => {
+    const year = date.getFullYear();
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+    return `${year}年${month}月${day}日`;
+};

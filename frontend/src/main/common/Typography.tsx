@@ -5,7 +5,7 @@ import classNames from 'classnames';
 type Props = {
     content: string;
     size: 'xxsmall' | 'xsmall' | 'small' | 'normal' | 'medium' | 'large' | 'xlarge';
-    color: 'primary' | 'secondary' | 'black' | 'gray' | 'white' | 'yellow';
+    color: 'primary' | 'secondary' | 'black' | 'gray' | 'white' | 'yellow' | 'error';
     weight?: 'normal';
     className?: string;
 };

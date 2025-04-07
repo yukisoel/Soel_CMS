@@ -5,96 +5,98 @@ import AddIcon from "@/main/assets/AddIcon.svg";
 import styles from "../EditProfileLayoutV2.module.scss";
 import EditBusinessHoursModal from "../modals/EditBusinessHoursModal";
 import { useState } from "react";
+import { UseFormRegister, FieldErrors, Path } from "react-hook-form";
+import { ProfileFormData } from "@/main/schemas/profileSchema";
+import { BusinessHoursPeriod } from "@/main/model/LocationModel";
 
-type BusinessHours = {
-    monday: string;
-    tuesday: string;
-    wednesday: string;
-    thursday: string;
-    friday: string;
-    saturday: string;
-    sunday: string;
-};
+type EditModalType = 'regularHours' | 'lunchHours' | null;
 
 type Props = {
-    regularHours: BusinessHours;
-    lunchHours: BusinessHours;
+    register: UseFormRegister<ProfileFormData>;
+    errors: FieldErrors<ProfileFormData>;
+    values: {
+        regularHours: {
+            periods: BusinessHoursPeriod[];
+        };
+        specialHours?: {
+            periods: BusinessHoursPeriod[];
+        };
+    };
+    setValueAndValidate: (name: Path<ProfileFormData>, value: ProfileFormData[keyof ProfileFormData] | string[] | { [key: string]: unknown }) => Promise<boolean>;
     isUpdating: boolean;
-    onRegularHoursChange: (hours: BusinessHours) => void;
-    onLunchHoursChange: (hours: BusinessHours) => void;
+    validationErrors: {
+        regularHours?: string;
+        specialHours?: string;
+    };
     onAddOtherHours: () => void;
 };
 
 export default function HoursTab({
-    regularHours,
-    lunchHours,
-    onRegularHoursChange,
-    onLunchHoursChange,
+    register,
+    errors,
+    values,
+    setValueAndValidate,
+    isUpdating,
     onAddOtherHours,
+    validationErrors
 }: Props) {
-    const [isRegularHoursModalOpen, setIsRegularHoursModalOpen] = useState(false);
-    const [isLunchHoursModalOpen, setIsLunchHoursModalOpen] = useState(false);
+    const [editModalType, setEditModalType] = useState<EditModalType>(null);
 
-    const formatBusinessHours = (hours: BusinessHours): string => {
-        const dayMap = {
-            monday: '月',
-            tuesday: '火',
-            wednesday: '水',
-            thursday: '木',
-            friday: '金',
-            saturday: '土',
-            sunday: '日'
+    const handleSave = async (periods: BusinessHoursPeriod[]) => {
+        let isValid = false;
+        switch (editModalType) {
+            case 'regularHours': {
+                isValid = await setValueAndValidate('regularHours', { periods });
+                break;
+            }
+            case 'lunchHours': {
+                isValid = await setValueAndValidate('specialHours', { periods });
+                break;
+            }
+        }
+        if (isValid) {
+            setEditModalType(null);
+        }
+        return isValid;
+    };
+
+    const formatHours = (periods: BusinessHoursPeriod[]): string => {
+        const dayMap: { [key: string]: string } = {
+            MONDAY: '月',
+            TUESDAY: '火',
+            WEDNESDAY: '水',
+            THURSDAY: '木',
+            FRIDAY: '金',
+            SATURDAY: '土',
+            SUNDAY: '日'
         };
 
-        return Object.entries(hours)
-            .map(([key, value]) => {
-                const day = dayMap[key as keyof typeof dayMap];
-                return value === '休業' ? `${day}（休業）` : `${day}（${value}）`;
-            })
-            .join('、');
-    };
-
-    const convertToModalFormat = (hours: BusinessHours) => {
-        return [
-            { day: '月', startTime: hours.monday.split('-')[0], endTime: hours.monday.split('-')[1], isClosed: hours.monday === '休業' },
-            { day: '火', startTime: hours.tuesday.split('-')[0], endTime: hours.tuesday.split('-')[1], isClosed: hours.tuesday === '休業' },
-            { day: '水', startTime: hours.wednesday.split('-')[0], endTime: hours.wednesday.split('-')[1], isClosed: hours.wednesday === '休業' },
-            { day: '木', startTime: hours.thursday.split('-')[0], endTime: hours.thursday.split('-')[1], isClosed: hours.thursday === '休業' },
-            { day: '金', startTime: hours.friday.split('-')[0], endTime: hours.friday.split('-')[1], isClosed: hours.friday === '休業' },
-            { day: '土', startTime: hours.saturday.split('-')[0], endTime: hours.saturday.split('-')[1], isClosed: hours.saturday === '休業' },
-            { day: '日', startTime: hours.sunday.split('-')[0], endTime: hours.sunday.split('-')[1], isClosed: hours.sunday === '休業' },
-        ];
-    };
-
-    const convertFromModalFormat = (modalHours: Array<{ day: string; startTime: string; endTime: string; isClosed: boolean; }>) => {
-        const result: Partial<BusinessHours> = {};
-        modalHours.forEach(hour => {
-            const key = {
-                '月': 'monday',
-                '火': 'tuesday',
-                '水': 'wednesday',
-                '木': 'thursday',
-                '金': 'friday',
-                '土': 'saturday',
-                '日': 'sunday',
-            }[hour.day] as keyof BusinessHours;
-
-            result[key] = hour.isClosed ? '休業' : `${hour.startTime}-${hour.endTime}`;
+        // 同じ営業時間のグループを作成
+        const timeGroups: { [key: string]: string[] } = {};
+        periods.forEach(period => {
+            const timeKey = `${period.openTime}-${period.closeTime}`;
+            if (!timeGroups[timeKey]) {
+                timeGroups[timeKey] = [];
+            }
+            timeGroups[timeKey].push(dayMap[period.openDay]);
         });
-        return result as BusinessHours;
-    };
 
-    const handleSaveRegularHours = (modalHours: Array<{ day: string; startTime: string; endTime: string; isClosed: boolean; }>) => {
-        onRegularHoursChange(convertFromModalFormat(modalHours));
-    };
+        // グループごとに文字列を生成
+        const formattedGroups = Object.entries(timeGroups).map(([time, days]) => {
+            const [openTime, closeTime] = time.split('-');
+            return days.map(day => `${day}（${openTime}-${closeTime}）`).join(',');
+        });
 
-    const handleSaveLunchHours = (modalHours: Array<{ day: string; startTime: string; endTime: string; isClosed: boolean; }>) => {
-        onLunchHoursChange(convertFromModalFormat(modalHours));
+        // 5日目までと残りの日を分割
+        const firstLine = formattedGroups.slice(0, 5).join(',');
+        const remainingLines = formattedGroups.slice(5);
+
+        return [firstLine, ...remainingLines].join('\n');
     };
 
     return (
         <Wrapper direction="col" gap="3rem" className={styles.main_content}>
-            {/* 通常営業時間セクション */}
+            {/* 通常営業時間 */}
             <Wrapper direction="col" gap="1rem">
                 <Typography
                     content="通常営業時間"
@@ -104,7 +106,7 @@ export default function HoursTab({
                 <Wrapper className={styles.field_row}>
                     <Wrapper className={styles.field_container}>
                         <Typography
-                            content={formatBusinessHours(regularHours)}
+                            content={formatHours(values.regularHours.periods)}
                             color="secondary"
                             size="normal"
                         />
@@ -112,7 +114,8 @@ export default function HoursTab({
                     <Button
                         bgColor="primary"
                         padding="0.5rem 1.8rem"
-                        onClick={() => setIsRegularHoursModalOpen(true)}
+                        onClick={() => setEditModalType('regularHours')}
+                        disabled={isUpdating}
                     >
                         <Typography
                             content="編集"
@@ -123,7 +126,7 @@ export default function HoursTab({
                 </Wrapper>
             </Wrapper>
 
-            {/* ランチ営業時間セクション */}
+            {/* ランチ営業時間 */}
             <Wrapper direction="col" gap="1rem">
                 <Typography
                     content="ランチ営業時間"
@@ -133,7 +136,7 @@ export default function HoursTab({
                 <Wrapper className={styles.field_row}>
                     <Wrapper className={styles.field_container}>
                         <Typography
-                            content={formatBusinessHours(lunchHours)}
+                            content={values.specialHours ? formatHours(values.specialHours.periods) : '未設定'}
                             color="secondary"
                             size="normal"
                         />
@@ -141,7 +144,8 @@ export default function HoursTab({
                     <Button
                         bgColor="primary"
                         padding="0.5rem 1.8rem"
-                        onClick={() => setIsLunchHoursModalOpen(true)}
+                        onClick={() => setEditModalType('lunchHours')}
+                        disabled={isUpdating}
                     >
                         <Typography
                             content="編集"
@@ -191,21 +195,17 @@ export default function HoursTab({
                 </Wrapper>
             </Wrapper>
 
-            {/* 営業時間編集モーダル */}
-            <EditBusinessHoursModal
-                isOpen={isRegularHoursModalOpen}
-                onClose={() => setIsRegularHoursModalOpen(false)}
-                businessHours={convertToModalFormat(regularHours)}
-                onSave={handleSaveRegularHours}
-                title="通常営業時間"
-            />
-            <EditBusinessHoursModal
-                isOpen={isLunchHoursModalOpen}
-                onClose={() => setIsLunchHoursModalOpen(false)}
-                businessHours={convertToModalFormat(lunchHours)}
-                onSave={handleSaveLunchHours}
-                title="ランチ営業時間"
-            />
+            {/* 編集モーダル */}
+            {editModalType && (
+                <EditBusinessHoursModal
+                    isOpen={true}
+                    onClose={() => setEditModalType(null)}
+                    title={editModalType === 'regularHours' ? '通常営業時間' : 'ランチ営業時間'}
+                    periods={editModalType === 'regularHours' ? values.regularHours.periods : (values.specialHours?.periods || [])}
+                    onSave={handleSave}
+                    error={editModalType === 'regularHours' ? validationErrors.regularHours : validationErrors.specialHours}
+                />
+            )}
         </Wrapper>
     );
 }

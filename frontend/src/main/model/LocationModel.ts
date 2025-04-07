@@ -107,7 +107,8 @@ export type GoogleLocationPlaceInfos = {
 
 export type GoogleLocationPlaceInfo = {
   placeId: string;
-  placeName: string;
+  displayName: string;
+  placeName?: string;
 }
 
 export type GoogleLocationPhotoModel = {

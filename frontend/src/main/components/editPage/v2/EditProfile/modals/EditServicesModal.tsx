@@ -16,7 +16,8 @@ type Props = {
   isOpen: boolean;
   onClose: () => void;
   services: Service[];
-  onSave: (services: Service[]) => void;
+  onSave: (services: Service[]) => Promise<boolean>;
+  error?: string;
 };
 
 const INITIAL_SERVICES = [
@@ -31,6 +32,7 @@ export default function EditServicesModal({
   onClose,
   services,
   onSave,
+  error
 }: Props) {
   const [serviceList, setServiceList] = useState<Service[]>(
     services.length > 0 ? services : INITIAL_SERVICES
@@ -46,9 +48,11 @@ export default function EditServicesModal({
     );
   };
 
-  const handleSave = () => {
-    onSave(serviceList);
-    onClose();
+  const handleSave = async () => {
+    const isValid = await onSave(serviceList);
+    if (isValid) {
+      onClose();
+    }
   };
 
   const renderContent = () => (
@@ -82,6 +86,14 @@ export default function EditServicesModal({
           </div>
         ))}
       </Wrapper>
+
+      {error && (
+        <Typography
+          content={error}
+          color="error"
+          size="small"
+        />
+      )}
 
       {/* アクションボタン */}
       <Wrapper gap="1rem" justify="justify-end">

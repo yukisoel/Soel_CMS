@@ -1,76 +1,58 @@
-import React, { useState } from 'react';
 import Wrapper from "@/main/common/Wrapper";
 import Typography from "@/main/common/Typography";
 import Button from "@/main/common/Button";
 import styles from "../EditProfileLayoutV2.module.scss";
-import EditOtherModal from '../modals/EditOtherModal';
+import EditOtherModal from "../modals/EditOtherModal";
+import { useState } from "react";
+import { UseFormRegister, FieldErrors, UseFormSetValue, Path } from "react-hook-form";
+import { ProfileFormData } from "@/main/schemas/profileSchema";
 
 type Props = {
-    phoneNumber: string;
-    website: string;
-    menuLink: string;
-    snsLinks: { type: string; url: string; }[];
+    register: UseFormRegister<ProfileFormData>;
+    errors: FieldErrors<ProfileFormData>;
+    values: {
+        phoneNumber?: string;
+        website?: string;
+        menuLink?: string;
+    };
+    setValueAndValidate: (name: Path<ProfileFormData>, value: ProfileFormData[keyof ProfileFormData] | string[] | { [key: string]: unknown }) => Promise<boolean>;
     isUpdating: boolean;
-    onPhoneNumberChange: (phone: string) => void;
-    onWebsiteChange: (site: string) => void;
-    onMenuLinkChange: (link: string) => void;
-    onSnsLinksChange: (links: { type: string; url: string; }[]) => void;
+    validationErrors: {
+        phoneNumber?: string;
+        website?: string;
+        menuLink?: string;
+    };
 };
 
+type EditModalType = 'phoneNumber' | 'website' | 'menuLink' | null;
+
 export default function ContactTab({
-    phoneNumber,
-    website,
-    menuLink,
-    snsLinks,
+    register,
+    errors,
+    values,
+    setValueAndValidate,
     isUpdating,
-    onPhoneNumberChange,
-    onWebsiteChange,
-    onMenuLinkChange,
-    onSnsLinksChange,
+    validationErrors
 }: Props) {
-    const [editModalConfig, setEditModalConfig] = useState<{
-        isOpen: boolean;
-        title: string;
-        content: string;
-        onSave: (value: string) => void;
-        isTextarea?: boolean;
-    }>({
-        isOpen: false,
-        title: '',
-        content: '',
-        onSave: () => {},
-    });
+    const [editModalType, setEditModalType] = useState<EditModalType>(null);
 
-    const handleOpenModal = (title: string, content: string, onSave: (value: string) => void, isTextarea?: boolean) => {
-        setEditModalConfig({
-            isOpen: true,
-            title,
-            content,
-            onSave,
-            isTextarea,
-        });
-    };
-
-    const handleCloseModal = () => {
-        setEditModalConfig(prev => ({ ...prev, isOpen: false }));
-    };
-
-    const handleSnsLinksChange = (value: string) => {
-        try {
-            // SNSリンクを改行で分割し、type:urlの形式をパースする
-            const links = value.split('\n').map(line => {
-                const [type, url] = line.split(':').map(s => s.trim());
-                return { type, url };
-            });
-            onSnsLinksChange(links);
-        } catch (error) {
-            console.error('Invalid SNS links format');
+    const handleSave = async (value: string) => {
+        let isValid = false;
+        switch (editModalType) {
+            case 'phoneNumber':
+                isValid = await setValueAndValidate('phoneNumbers.primaryPhone', value);
+                break;
+            case 'website':
+                isValid = await setValueAndValidate('websiteUri', value);
+                break;
+            case 'menuLink':
+                isValid = await setValueAndValidate('menuUri', value);
+                break;
         }
-    };
-
-    // SNSリンクをテキストエリア用の文字列に変換
-    const formatSnsLinksForTextarea = () => {
-        return snsLinks.map(link => `${link.type}: ${link.url}`).join('\n');
+        if (isValid) {
+            setEditModalType(null);
+        }
+        return isValid;
     };
 
     return (
@@ -85,7 +67,7 @@ export default function ContactTab({
                 <Wrapper className={styles.field_row}>
                     <Wrapper className={styles.field_container}>
                         <Typography
-                            content={phoneNumber}
+                            content={values.phoneNumber || ''}
                             color="secondary"
                             size="normal"
                         />
@@ -93,7 +75,8 @@ export default function ContactTab({
                     <Button
                         bgColor="primary"
                         padding="0.5rem 1.8rem"
-                        onClick={() => handleOpenModal('電話番号', phoneNumber, onPhoneNumberChange)}
+                        onClick={() => setEditModalType('phoneNumber')}
+                        disabled={isUpdating}
                     >
                         <Typography
                             content="編集"
@@ -114,7 +97,7 @@ export default function ContactTab({
                 <Wrapper className={styles.field_row}>
                     <Wrapper className={styles.field_container}>
                         <Typography
-                            content={website}
+                            content={values.website || ''}
                             color="secondary"
                             size="normal"
                         />
@@ -122,40 +105,8 @@ export default function ContactTab({
                     <Button
                         bgColor="primary"
                         padding="0.5rem 1.8rem"
-                        onClick={() => handleOpenModal('Webサイト', website, onWebsiteChange)}
-                    >
-                        <Typography
-                            content="編集"
-                            color="primary"
-                            size="normal"
-                        />
-                    </Button>
-                </Wrapper>
-            </Wrapper>
-
-            {/* SNSリンクセクション */}
-            <Wrapper direction="col" gap="1rem">
-                <Typography
-                    content="SNSリンク"
-                    color="primary"
-                    size="normal"
-                />
-                <Wrapper className={styles.field_row}>
-                    <Wrapper className={`${styles.field_container} ${styles.sns_container}`}>
-                        {snsLinks.map((sns, index) => (
-                            <Wrapper key={index} className={styles.sns_item}>
-                                <Typography
-                                    content={`${sns.type}: ${sns.url}`}
-                                    color="secondary"
-                                    size="normal"
-                                />
-                            </Wrapper>
-                        ))}
-                    </Wrapper>
-                    <Button
-                        bgColor="primary"
-                        padding="0.5rem 1.8rem"
-                        onClick={() => handleOpenModal('SNSリンク', formatSnsLinksForTextarea(), handleSnsLinksChange, true)}
+                        onClick={() => setEditModalType('website')}
+                        disabled={isUpdating}
                     >
                         <Typography
                             content="編集"
@@ -176,7 +127,7 @@ export default function ContactTab({
                 <Wrapper className={styles.field_row}>
                     <Wrapper className={styles.field_container}>
                         <Typography
-                            content={menuLink}
+                            content={values.menuLink || ''}
                             color="secondary"
                             size="normal"
                         />
@@ -184,7 +135,8 @@ export default function ContactTab({
                     <Button
                         bgColor="primary"
                         padding="0.5rem 1.8rem"
-                        onClick={() => handleOpenModal('メニューリンク', menuLink, onMenuLinkChange)}
+                        onClick={() => setEditModalType('menuLink')}
+                        disabled={isUpdating}
                     >
                         <Typography
                             content="編集"
@@ -196,14 +148,28 @@ export default function ContactTab({
             </Wrapper>
 
             {/* 編集モーダル */}
-            <EditOtherModal
-                isOpen={editModalConfig.isOpen}
-                onClose={handleCloseModal}
-                title={editModalConfig.title}
-                content={editModalConfig.content}
-                onSave={editModalConfig.onSave}
-                isTextarea={editModalConfig.isTextarea}
-            />
+            {editModalType && (
+                <EditOtherModal
+                    isOpen={true}
+                    onClose={() => setEditModalType(null)}
+                    title={
+                        editModalType === 'phoneNumber' ? '電話番号' :
+                        editModalType === 'website' ? 'ウェブサイト' :
+                        'メニューリンク'
+                    }
+                    content={
+                        editModalType === 'phoneNumber' ? values.phoneNumber || '' :
+                        editModalType === 'website' ? values.website || '' :
+                        values.menuLink || ''
+                    }
+                    onSave={handleSave}
+                    error={
+                        editModalType === 'phoneNumber' ? validationErrors.phoneNumber :
+                        editModalType === 'website' ? validationErrors.website :
+                        validationErrors.menuLink
+                    }
+                />
+            )}
         </Wrapper>
     );
 }

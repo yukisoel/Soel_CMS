@@ -5,64 +5,67 @@ import Button from "@/main/common/Button";
 import styles from "../EditProfileLayoutV2.module.scss";
 import EditOtherModal from '../modals/EditOtherModal';
 import { ServiceAreaInfo } from '@/main/model/LocationModel';
+import { UseFormRegister, FieldErrors, Path } from "react-hook-form";
+import { ProfileFormData } from "@/main/schemas/profileSchema";
 
-type EditModalConfig = {
-    isOpen: boolean;
-    title: string;
-    content: string;
-    onSave: (value: string) => void;
-};
+type EditModalType = 'address' | 'serviceArea' | null;
 
 type Props = {
-    address: string;
-    serviceArea: ServiceAreaInfo;
-    onAddressChange: (address: string) => void;
-    onServiceAreaChange: (serviceArea: ServiceAreaInfo) => void;
+    register: UseFormRegister<ProfileFormData>;
+    errors: FieldErrors<ProfileFormData>;
+    values: {
+        address: string;
+        serviceArea: ServiceAreaInfo;
+    };
+    setValueAndValidate: (name: Path<ProfileFormData>, value: ProfileFormData[keyof ProfileFormData] | string[] | { [key: string]: unknown }) => Promise<boolean>;
     isUpdating: boolean;
+    validationErrors: {
+        address?: string;
+        serviceArea?: string;
+    };
 };
 
 export default function LocationTab({
-    address,
-    serviceArea,
-    onAddressChange,
-    onServiceAreaChange,
-    isUpdating
+    register,
+    errors,
+    values,
+    setValueAndValidate,
+    isUpdating,
+    validationErrors
 }: Props) {
-    const [editModalConfig, setEditModalConfig] = useState<EditModalConfig>({
-        isOpen: false,
-        title: '',
-        content: '',
-        onSave: () => {},
-    });
+    const [editModalType, setEditModalType] = useState<EditModalType>(null);
 
-    const handleOpenModal = (title: string, content: string, onSave: (value: string) => void) => {
-        setEditModalConfig({
-            isOpen: true,
-            title,
-            content,
-            onSave,
-        });
-    };
+    const handleSave = async (value: string) => {
+        let isValid = false;
+        switch (editModalType) {
+            case 'address': {
+                const [addressLine, locality, administrativeArea, postalCode] = value.split(',').map(s => s.trim());
 
-    const handleCloseModal = () => {
-        setEditModalConfig(prev => ({ ...prev, isOpen: false }));
-    };
-
-    const handleServiceAreaChange = (value: string) => {
-        const placeInfos = value.split('、')
-            .filter(area => area.trim() !== '')
-            .map(area => ({
-                placeId: '', // placeIdは必要に応じてGoogle Places APIから取得
-                placeName: area
-            }));
-
-        // businessTypeは既存の値を維持
-        onServiceAreaChange({
-            ...serviceArea, // 既存のserviceAreaの値（businessTypeを含む）を保持
-            places: {
-                placeInfos
+                // すべてのフィールドを更新し、最後のバリデーション結果を使用
+                await setValueAndValidate('storefrontAddress.addressLines' as Path<ProfileFormData>, [addressLine]);
+                await setValueAndValidate('storefrontAddress.locality' as Path<ProfileFormData>, locality);
+                await setValueAndValidate('storefrontAddress.administrativeArea' as Path<ProfileFormData>, administrativeArea);
+                await setValueAndValidate('storefrontAddress.postalCode' as Path<ProfileFormData>, postalCode);
+                isValid = await setValueAndValidate('storefrontAddress.regionCode' as Path<ProfileFormData>, 'JP');
+                break;
             }
-        });
+            case 'serviceArea': {
+                const placeInfos = value.split('、')
+                    .filter(area => area.trim() !== '')
+                    .map(area => ({
+                        placeId: '',
+                        displayName: area,
+                        placeName: area
+                    }));
+
+                isValid = await setValueAndValidate('serviceArea.places' as Path<ProfileFormData>, { placeInfos });
+                break;
+            }
+        }
+        if (isValid) {
+            setEditModalType(null);
+        }
+        return isValid;
     };
 
     return (
@@ -77,7 +80,7 @@ export default function LocationTab({
                 <Wrapper className={styles.field_row}>
                     <Wrapper className={styles.field_container}>
                         <Typography
-                            content={address}
+                            content={values.address}
                             color="secondary"
                             size="normal"
                         />
@@ -85,7 +88,8 @@ export default function LocationTab({
                     <Button
                         bgColor="primary"
                         padding="0.5rem 1.8rem"
-                        onClick={() => handleOpenModal('住所', address, onAddressChange)}
+                        onClick={() => setEditModalType('address')}
+                        disabled={isUpdating}
                     >
                         <Typography
                             content="編集"
@@ -106,7 +110,7 @@ export default function LocationTab({
                 <Wrapper className={styles.field_row}>
                     <Wrapper className={styles.field_container}>
                         <Typography
-                            content={serviceArea.places?.placeInfos.map(place => place.placeName).join('、') || ''}
+                            content={values.serviceArea.places?.placeInfos.map(place => place.displayName).join('、') || ''}
                             color="secondary"
                             size="normal"
                         />
@@ -114,11 +118,8 @@ export default function LocationTab({
                     <Button
                         bgColor="primary"
                         padding="0.5rem 1.8rem"
-                        onClick={() => handleOpenModal(
-                            'サービス提供地域',
-                            serviceArea.places?.placeInfos.map(place => place.placeName).join('、') || '',
-                            handleServiceAreaChange
-                        )}
+                        onClick={() => setEditModalType('serviceArea')}
+                        disabled={isUpdating}
                     >
                         <Typography
                             content="編集"
@@ -130,13 +131,24 @@ export default function LocationTab({
             </Wrapper>
 
             {/* 編集モーダル */}
-            <EditOtherModal
-                isOpen={editModalConfig.isOpen}
-                onClose={handleCloseModal}
-                title={editModalConfig.title}
-                content={editModalConfig.content}
-                onSave={editModalConfig.onSave}
-            />
+            {editModalType && (
+                <EditOtherModal
+                    isOpen={true}
+                    onClose={() => setEditModalType(null)}
+                    title={editModalType === 'address' ? '住所' : 'サービス提供地域'}
+                    content={
+                        editModalType === 'address'
+                            ? values.address
+                            : values.serviceArea.places?.placeInfos.map(place => place.displayName).join('、') || ''
+                    }
+                    onSave={handleSave}
+                    error={
+                        editModalType === 'address'
+                            ? validationErrors.address
+                            : validationErrors.serviceArea
+                    }
+                />
+            )}
         </Wrapper>
     );
 }

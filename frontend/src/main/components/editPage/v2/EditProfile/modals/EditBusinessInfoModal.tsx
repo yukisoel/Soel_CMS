@@ -14,7 +14,8 @@ type Props = {
   onClose: () => void;
   type: EditType;
   content: string;
-  onSave: (value: string | Date) => void;
+  onSave: (value: string | Date) => Promise<boolean>;
+  error?: string;
 };
 
 const TITLE_MAP: Record<EditType, string> = {
@@ -37,6 +38,7 @@ export default function EditBusinessInfoModal({
   type,
   content,
   onSave,
+  error,
 }: Props) {
   const [value, setValue] = React.useState(content);
   const [date, setDate] = React.useState<Date | null>(() => {
@@ -46,13 +48,27 @@ export default function EditBusinessInfoModal({
     return null;
   });
 
-  const handleSave = () => {
-    if (type === 'openingDate' && date) {
-      onSave(date);
-    } else {
-      onSave(value);
+  React.useEffect(() => {
+    if (isOpen) {
+      setValue(content);
+      if (type === 'openingDate') {
+        setDate(parseJapaneseDateString(content));
+      }
     }
-    onClose();
+  }, [isOpen, content, type]);
+
+  const handleSave = async () => {
+    if (type === 'openingDate' && date) {
+      const isValid = await onSave(date);
+      if (isValid) {
+        onClose();
+      }
+    } else {
+      const isValid = await onSave(value);
+      if (isValid) {
+        onClose();
+      }
+    }
   };
 
   const renderInput = () => {
@@ -93,6 +109,13 @@ export default function EditBusinessInfoModal({
       <Wrapper direction="col" gap="1rem">
         <Typography content={TITLE_MAP[type]} color="primary" size="normal" />
         {renderInput()}
+        {error && (
+          <Typography
+            content={error}
+            color="error"
+            size="small"
+          />
+        )}
       </Wrapper>
       <Wrapper gap="1rem" justify="justify-end">
         <Button
