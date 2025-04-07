@@ -1,0 +1,49 @@
+@use '@/main/styles/variables' as vars;
+
+.brand_container {
+    display: flex;
+    justify-content: space-between;
+    width: 458px;
+    cursor: pointer;
+}
+
+.prefecture_container {
+    display: flex;
+    justify-content: space-between;
+    width: 458px;
+    cursor: pointer;
+}
+
+.arrow_icon {
+    transition: transform 0.3s ease;
+}
+
+.arrow_icon_open {
+    transform: rotate(180deg);
+}
+
+.checkbox_container {
+    width: 940px;
+    flex-wrap: wrap;
+}
+
+.checkbox_wrapper {
+    width: 215px;
+}
+
+.close_button_wrapper {
+    display: flex;
+    cursor: pointer;
+    gap: 1rem;
+    width: 7.2rem;
+    padding-bottom: 3rem;
+}
+
+.close_button {
+    color: vars.$background-color-primary-dark;
+    font-size: 1.6rem;
+}
+
+.branche_separator {
+    margin-left: -40px;
+}
