@@ -1,5 +1,4 @@
 import styles from "@/main/components/stores/BulkSpecialOpeningHours/SpecialOpeningHourList.module.scss";
-import { useMemo, useState } from "react";
 import Wrapper from "@/main/common/Wrapper";
 import Typography from "@/main/common/Typography";
 import Button from "@/main/common/Button";

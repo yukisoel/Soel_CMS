@@ -160,7 +160,7 @@ const areaSelectorProps: Region[] = [
 }
 ]
 
-export const useSelectStore = ({googleService, onNextClick, onBackClick}: Props) => {
+export const useSelectStore = ({onNextClick, onBackClick}: Props) => {
     const [selectedBranches, setSelectedBranches] = useState<Array<Omit<Branch, 'checked'>>>([])
 
     const onChangeSelectedBranches = (stores: Branch[]) => {

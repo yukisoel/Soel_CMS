@@ -20,6 +20,7 @@ import SchedulePost from "./components/stores/SchedulePost/SchedulePost.tsx";
 import BlukPhoto from "./components/stores/BulkPhoto/BulkPhoto.tsx";
 import BulkSpecialOpeningHours from "./components/stores/BulkSpecialOpeningHours/BulkSpecialOpeningHours.tsx";
 import SchedulePostList from "./components/stores/SchedulePostList/SchedulePostList.tsx";
+import ReviewPage from "./components/stores/Review/ReviewPage.tsx";
 import HistoryPostList from "./components/stores/HistorypostList/HistoryPostList.tsx";
 
 const googleRepository = new GoogleRepositoryImpl()
@@ -86,7 +87,8 @@ function App() {
             element={<BlukPhoto googleService={googleService} />} />
           <Route path={'bulk/special'}
             element={<BulkSpecialOpeningHours googleService={googleService} />} />
-
+          <Route path={'review'}
+            element={<ReviewPage googleService={googleService} />} />
       </Route>
     </Routes>
   )

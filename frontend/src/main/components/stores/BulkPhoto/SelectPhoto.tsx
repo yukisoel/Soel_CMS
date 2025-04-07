@@ -50,7 +50,7 @@ const samplePhotos: Photo[] = [
 const folders = ['2021年', '2020年'];
 
 export default function SelectPhoto({ onNextClick, onBackClick, selectedPhotoIndices, handlePhotoClick }:Props) {
-    const [folderHierarchy, setFolderHierarchy] = useState<string[]>(['南青山店', '外観写真']);
+    const [folderHierarchy] = useState<string[]>(['南青山店', '外観写真']);
     const { openModal, render } = useFileUploadModal({});
 
     return (

@@ -15,7 +15,7 @@ export default function SelectedPhotoList({ selectedPhotos, onBackClick }: Props
             <Wrapper gap="1.5rem" className={styles.container}>
                 <Wrapper padding="1rem 2rem 1rem 0" className={styles.photo_container_wrapper}>
                     <Wrapper direction="row" gap="2rem" padding="0 12.9rem 0 1rem" className={styles.photo_container}>
-                        {selectedPhotos.map((photo, index) => (
+                        {selectedPhotos.map((_, index) => (
                             <Wrapper key={index} direction="col" align="align-center" className={styles.photo_item}>
                             </Wrapper>
                         ))}

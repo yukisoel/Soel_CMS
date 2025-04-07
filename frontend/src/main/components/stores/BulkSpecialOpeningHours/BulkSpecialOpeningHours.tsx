@@ -1,4 +1,3 @@
-import styles from "@/main/components/stores/BulkSpecialOpeningHours/BulkSpecialOpeningHours.module.scss";
 import { GoogleService } from "@/main/service/GoogleService";
 import { useSelectStore } from "../SelectStore/useSelectStore";
 import { useMemo, useState } from "react";
