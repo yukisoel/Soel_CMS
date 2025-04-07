@@ -32,8 +32,6 @@ type Props = {
 };
 
 export default function HoursTab({
-    register,
-    errors,
     values,
     setValueAndValidate,
     isUpdating,

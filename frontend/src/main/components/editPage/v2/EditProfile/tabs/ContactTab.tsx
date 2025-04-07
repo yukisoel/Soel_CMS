@@ -4,7 +4,7 @@ import Button from "@/main/common/Button";
 import styles from "../EditProfileLayoutV2.module.scss";
 import EditOtherModal from "../modals/EditOtherModal";
 import { useState } from "react";
-import { UseFormRegister, FieldErrors, UseFormSetValue, Path } from "react-hook-form";
+import { UseFormRegister, FieldErrors, Path } from "react-hook-form";
 import { ProfileFormData } from "@/main/schemas/profileSchema";
 
 type Props = {
@@ -27,8 +27,6 @@ type Props = {
 type EditModalType = 'phoneNumber' | 'website' | 'menuLink' | null;
 
 export default function ContactTab({
-    register,
-    errors,
     values,
     setValueAndValidate,
     isUpdating,

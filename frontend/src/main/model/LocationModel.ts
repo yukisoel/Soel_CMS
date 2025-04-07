@@ -2,7 +2,7 @@ import { LocationAssociationName } from "@/main/model/LocationAssociationName.ts
 
 export type GoogleLocationProfileModel = {
   name?: string
-  title: string
+  title?: string
   phoneNumbers?: GoogleLocationPhoneNumbers
   categories?: GoogleLocationCategories
   storefrontAddress?: GoogleLocationAddress

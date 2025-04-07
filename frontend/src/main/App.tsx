@@ -1,5 +1,4 @@
 import {Route, Routes} from "react-router-dom";
-import EditPage from "./pages/EditPage.tsx";
 import EditGBPLayout from "@/main/components/editPage/EditGBPLayout.tsx";
 import SearchStore from "@/main/components/editPage/SearchStore.tsx";
 import {GoogleAccountsContextProvider} from "@/main/contexts/GoogleAccountsContext.tsx";

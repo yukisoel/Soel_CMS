@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import Wrapper from "@/main/common/Wrapper";
 import Typography from "@/main/common/Typography";
 import Button from "@/main/common/Button";
@@ -34,8 +34,6 @@ type Props = {
 };
 
 export default function OtherSectionTab({
-  register,
-  errors,
   values,
   setValueAndValidate,
   isUpdating,

@@ -1,5 +1,4 @@
 import { z } from 'zod';
-import { DayOfWeek } from '@/main/model/LocationModel';
 
 // 営業時間の時間帯のスキーマ
 const timeRangeSchema = z.object({

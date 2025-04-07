@@ -157,14 +157,14 @@ function validateGoogleLocationProfileModel(name: string, year?: string, month?:
 
 function makeGoogleLocationProfileModel(name: string, year?: number, month?: number, day?: number): GoogleLocationProfileModel {
   switch (name) {
-    case "openInfo":
+    case "openInfo.openingDate":
       return {openInfo: {
         openingDate: {
           year: year,
           month: month,
           day: day
         }
-        }}
+    }}
     default:
       return {}
   }

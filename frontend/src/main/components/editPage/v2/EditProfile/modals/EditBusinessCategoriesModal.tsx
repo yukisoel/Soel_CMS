@@ -50,13 +50,6 @@ export default function EditBusinessCategoriesModal({
     onClose();
   };
 
-  const handleAddCustomCategory = () => {
-    if (searchQuery && !selectedCategories.includes(searchQuery)) {
-      setSelectedCategories([...selectedCategories, searchQuery]);
-      setSearchQuery('');
-    }
-  };
-
   const filteredCategories = availableCategories
     .filter(category => !selectedCategories.includes(category))
     .filter(category =>

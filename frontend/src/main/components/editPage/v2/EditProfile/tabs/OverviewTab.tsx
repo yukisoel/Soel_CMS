@@ -34,8 +34,6 @@ const FIELD_MAP: Record<Exclude<EditModalType, null>, keyof ProfileFormData> = {
 };
 
 export default function OverviewTab({
-    register,
-    errors,
     values,
     setValueAndValidate,
     isUpdating,
