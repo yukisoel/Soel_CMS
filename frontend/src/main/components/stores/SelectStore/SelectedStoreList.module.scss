@@ -1,11 +1,11 @@
 @use '@/main/styles/variables' as vars;
+@import '@/main/styles/scrollbar';
 
 .selected_store_container {
     align-items: flex-end;
 }
 
 .selected_store {
-    width: 884px;
     background-color: vars.$background-color-secondary;
     border-radius: 1rem;
     display: flex;

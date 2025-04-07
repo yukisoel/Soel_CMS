@@ -1,7 +1,6 @@
 import styles from "@/main/components/stores/SelectStore/BrandSelector.module.scss";
 import Wrapper from "@/main/common/Wrapper";
 import Typography from "@/main/common/Typography";
-import SearchBox from "@/main/common/SearchBox";
 import Checkbox from "@/main/common/Checkbox";
 import ArrowIcon from "@/main/assets/ArrowIcon.svg";
 import ArrowIconYellow from "@/main/assets/ArrowIconYellow.svg";
@@ -17,8 +16,8 @@ type Props = {
 
 export default function BrandSelector({ stores, onChangeSelectedBranches }: Props) {
     const [storeData, setStoreData] = useState<Store[]>(stores);
-    const [searchValue, setSearchValue] = useState<string>('');
     const [selectAll, setSelectAll] = useState<boolean>(false);
+    const [indeterminate, setIndeterminate] = useState<boolean>(false);
 
     useEffect(() => {
         const branches = storeData.reduce((acc, store) => {
@@ -26,6 +25,11 @@ export default function BrandSelector({ stores, onChangeSelectedBranches }: Prop
             return [...acc, ...selectedBranches];
         }, [] as Branch[]);
         onChangeSelectedBranches(branches);
+
+        const allChecked = storeData.every(store => store.checked);
+        const someChecked = storeData.some(store => store.checked || store.branches.some(branch => branch.checked));
+        setSelectAll(allChecked);
+        setIndeterminate(!allChecked && someChecked);
     }, [storeData]);
 
     const handleStoreChange = (storeIndex: number) => {
@@ -62,8 +66,7 @@ export default function BrandSelector({ stores, onChangeSelectedBranches }: Prop
     return (
         <Wrapper direction="col">
             <Wrapper direction="col" gap="2rem" padding="4rem 0 4rem 3rem">
-                <SearchBox placeholder="店舗名を検索" value={searchValue} onChange={(e) => { setSearchValue(e.target.value) }} width="42.7rem" />
-                <Checkbox label="すべて選択" checked={selectAll} onChange={handleSelectAllChange} />
+                <Checkbox label="すべて選択" checked={selectAll} indeterminate={indeterminate} onChange={handleSelectAllChange} />
             </Wrapper>
             <Separator width="527px" />
             {storeData.map((store, index) => (
@@ -81,12 +84,13 @@ type BrandWithBranchesProps = Store & {
 
 function BrandWithBranches({ name, branches, checked, storeIndex, onStoreChange, onBranchChange }: BrandWithBranchesProps) {
     const [isOpen, setIsOpen] = useState<boolean>(false);
+    const indeterminate = branches.some(branch => branch.checked) && !branches.every(branch => branch.checked);
 
     return (
         <>
             <Wrapper direction="col" gap="5rem" padding="2.5rem 0 3rem 3rem">
                 <div className={classNames(styles.store_container)} onClick={() => setIsOpen(!isOpen)}>
-                    <Checkbox label={name} supplementaryText={`(${branches.length}店舗)`} checked={checked} onChange={() => onStoreChange(storeIndex)} />
+                    <Checkbox label={name} supplementaryText={`(${branches.length}店舗)`} checked={checked} indeterminate={indeterminate} onChange={() => onStoreChange(storeIndex)} />
                     <img src={ArrowIcon} alt="icon" className={classNames(styles.arrow_icon, isOpen ? styles.arrow_icon_open : '')} />
                 </div>
                 {isOpen && (

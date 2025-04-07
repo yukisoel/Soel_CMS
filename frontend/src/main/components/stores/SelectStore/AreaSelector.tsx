@@ -17,8 +17,10 @@ type Props = {
 export default function AreaSelector({ regions, onChangeSelectedBranches }: Props) {
     const [regionData, setRegionData] = useState<Region[]>(regions);
     const [selectAll, setSelectAll] = useState<boolean>(false);
+    const [indeterminate, setIndeterminate] = useState<boolean>(false);
 
     useEffect(() => {
+        // 選択されたブランチを収集
         const branches = regionData.reduce((acc, region) => {
             const selectedBranches = region.prefectures.reduce((acc, prefecture) => {
                 const selectedStores = prefecture.stores.reduce((acc, store) => {
@@ -30,8 +32,15 @@ export default function AreaSelector({ regions, onChangeSelectedBranches }: Prop
             return [...acc, ...selectedBranches];
         }, [] as Branch[]);
         onChangeSelectedBranches(branches);
+
+        // 全てのチェックボックスが選択されているか、一部が選択されているかを確認
+        const allChecked = regionData.every(region => region.checked);
+        const someChecked = regionData.some(region => region.checked || region.prefectures.some(prefecture => prefecture.checked || prefecture.stores.some(store => store.checked || store.branches.some(branch => branch.checked))));
+        setSelectAll(allChecked);
+        setIndeterminate(!allChecked && someChecked);
     }, [regionData]);
 
+    // 地域のチェックボックスの状態を変更
     const handleRegionChange = (regionIndex: number) => {
         const newRegionData = [...regionData];
         newRegionData[regionIndex].checked = !newRegionData[regionIndex].checked;
@@ -50,6 +59,7 @@ export default function AreaSelector({ regions, onChangeSelectedBranches }: Prop
         setRegionData(newRegionData);
     };
 
+    // 県のチェックボックスの状態を変更
     const handlePrefectureChange = (regionIndex: number, prefectureIndex: number) => {
         const newRegionData = [...regionData];
         newRegionData[regionIndex].prefectures[prefectureIndex].checked = !newRegionData[regionIndex].prefectures[prefectureIndex].checked;
@@ -61,9 +71,15 @@ export default function AreaSelector({ regions, onChangeSelectedBranches }: Prop
                 checked: newRegionData[regionIndex].prefectures[prefectureIndex].checked
             }))
         }));
+
+        // 地域のチェック状態を更新
+        const regionChecked = newRegionData[regionIndex].prefectures.every(prefecture => prefecture.checked);
+        newRegionData[regionIndex].checked = regionChecked;
+
         setRegionData(newRegionData);
     };
 
+    // 店舗のチェックボックスの状態を変更
     const handleStoreChange = (regionIndex: number, prefectureIndex: number, storeIndex: number) => {
         const newRegionData = [...regionData];
         newRegionData[regionIndex].prefectures[prefectureIndex].stores[storeIndex].checked = !newRegionData[regionIndex].prefectures[prefectureIndex].stores[storeIndex].checked;
@@ -71,15 +87,39 @@ export default function AreaSelector({ regions, onChangeSelectedBranches }: Prop
             ...branch,
             checked: newRegionData[regionIndex].prefectures[prefectureIndex].stores[storeIndex].checked
         }));
+
+        // 県のチェック状態を更新
+        const prefectureChecked = newRegionData[regionIndex].prefectures[prefectureIndex].stores.every(store => store.checked);
+        newRegionData[regionIndex].prefectures[prefectureIndex].checked = prefectureChecked;
+
+        // 地域のチェック状態を更新
+        const regionChecked = newRegionData[regionIndex].prefectures.every(prefecture => prefecture.checked);
+        newRegionData[regionIndex].checked = regionChecked;
+
         setRegionData(newRegionData);
     };
 
+    // ブランチのチェックボックスの状態を変更
     const handleBranchChange = (regionIndex: number, prefectureIndex: number, storeIndex: number, branchIndex: number) => {
         const newRegionData = [...regionData];
         newRegionData[regionIndex].prefectures[prefectureIndex].stores[storeIndex].branches[branchIndex].checked = !newRegionData[regionIndex].prefectures[prefectureIndex].stores[storeIndex].branches[branchIndex].checked;
+
+        // 店舗のチェック状態を更新
+        const storeChecked = newRegionData[regionIndex].prefectures[prefectureIndex].stores[storeIndex].branches.every(branch => branch.checked);
+        newRegionData[regionIndex].prefectures[prefectureIndex].stores[storeIndex].checked = storeChecked;
+
+        // 県のチェック状態を更新
+        const prefectureChecked = newRegionData[regionIndex].prefectures[prefectureIndex].stores.every(store => store.checked);
+        newRegionData[regionIndex].prefectures[prefectureIndex].checked = prefectureChecked;
+
+        // 地域のチェック状態を更新
+        const regionChecked = newRegionData[regionIndex].prefectures.every(prefecture => prefecture.checked);
+        newRegionData[regionIndex].checked = regionChecked;
+
         setRegionData(newRegionData);
     };
 
+    // すべて選択のチェックボックスの状態を変更
     const handleSelectAllChange = () => {
         const newSelectAll = !selectAll;
         setSelectAll(newSelectAll);
@@ -105,7 +145,7 @@ export default function AreaSelector({ regions, onChangeSelectedBranches }: Prop
     return (
         <Wrapper direction="col">
             <Wrapper direction="col" gap="2rem" padding="4rem 0 4rem 3rem">
-                <Checkbox label="すべて選択" checked={selectAll} onChange={handleSelectAllChange} />
+                <Checkbox label="すべて選択" checked={selectAll} indeterminate={indeterminate} onChange={handleSelectAllChange} />
             </Wrapper>
             <Separator width="527px" />
             {regionData.map((region, regionIndex) => (
@@ -133,12 +173,13 @@ type RegionWithPrefecturesProps = Region & {
 
 function RegionWithPrefectures({ name, prefectures, checked, regionIndex, onRegionChange, onPrefectureChange, onStoreChange, onBranchChange }: RegionWithPrefecturesProps) {
     const [isOpen, setIsOpen] = useState<boolean>(false);
+    const indeterminate = prefectures.some(prefecture => prefecture.checked || prefecture.stores.some(store => store.checked || store.branches.some(branch => branch.checked))) && !prefectures.every(prefecture => prefecture.checked && prefecture.stores.every(store => store.checked && store.branches.every(branch => branch.checked)));
 
     return (
         <>
             <Wrapper direction="col" padding="2.5rem 0 3rem 3rem">
                 <div className={classNames(styles.brand_container)} onClick={() => setIsOpen(!isOpen)}>
-                    <Checkbox label={name} checked={checked} onChange={() => onRegionChange(regionIndex)} />
+                    <Checkbox label={name} checked={checked} indeterminate={indeterminate} onChange={() => onRegionChange(regionIndex)} />
                     <img src={ArrowIcon} alt="icon" className={classNames(styles.arrow_icon, isOpen ? styles.arrow_icon_open : '')} />
                 </div>
                 {isOpen && (
@@ -174,11 +215,12 @@ type PrefectureWithStoresProps = Prefecture & {
 
 function PrefectureWithStores({ name, stores, checked, regionIndex, prefectureIndex, onPrefectureChange, onStoreChange, onBranchChange }: PrefectureWithStoresProps) {
     const [isOpen, setIsOpen] = useState<boolean>(false);
+    const indeterminate = stores.some(store => store.checked || store.branches.some(branch => branch.checked)) && !stores.every(store => store.checked && store.branches.every(branch => branch.checked));
 
     return (
         <Wrapper direction="col" gap="3rem">
             <div className={classNames(styles.prefecture_container)} onClick={() => setIsOpen(!isOpen)}>
-                <Checkbox label={name} checked={checked} onChange={() => onPrefectureChange(regionIndex, prefectureIndex)} />
+                <Checkbox label={name} checked={checked} indeterminate={indeterminate} onChange={() => onPrefectureChange(regionIndex, prefectureIndex)} />
                 <img src={ArrowIcon} alt="icon" className={classNames(styles.arrow_icon, isOpen ? styles.arrow_icon_open : '')} />
             </div>
             {isOpen && (
@@ -215,11 +257,12 @@ type StoreWithBranchesProps = Store & {
 
 function StoreWithBranches({ name, branches, checked, regionIndex, prefectureIndex, storeIndex, onStoreChange, onBranchChange }: StoreWithBranchesProps) {
     const [isOpen, setIsOpen] = useState<boolean>(false);
+    const indeterminate = branches.some(branch => branch.checked) && !branches.every(branch => branch.checked);
 
     return (
         <>
             <div className={classNames(styles.prefecture_container)} onClick={() => setIsOpen(!isOpen)}>
-                <Checkbox label={name} supplementaryText={`(${branches.length}店舗)`} checked={checked} onChange={() => onStoreChange(regionIndex, prefectureIndex, storeIndex)} />
+                <Checkbox label={name} supplementaryText={`(${branches.length}店舗)`} checked={checked} indeterminate={indeterminate} onChange={() => onStoreChange(regionIndex, prefectureIndex, storeIndex)} />
                 <img src={ArrowIcon} alt="icon" className={classNames(styles.arrow_icon, isOpen ? styles.arrow_icon_open : '')} />
             </div>
             {isOpen && (

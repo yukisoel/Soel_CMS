@@ -2,7 +2,6 @@ import styles from "@/main/components/stores/SelectService/ServiceSelector.modul
 import Wrapper from "@/main/common/Wrapper"
 import Typography from "@/main/common/Typography"
 import Checkbox from "@/main/common/Checkbox";
-import ButtonCheckbox from "@/main/common/ButtonCheckbox";
 import classNames from "classnames";
 import RadioButton from "@/main/common/RadioButton";
 import { SelectServiceForm } from "./useSelectService";
@@ -14,8 +13,8 @@ type Props = {
     onOptionCheckedChange: (optionIndex: number) => void;
 }
 
-export default function ServiceSelector({ selectServiceForm, onFormCheckedChange, onLanguageCheckedChange, onOptionCheckedChange }: Props) {
-    const { label, value, checked, languages, options } = selectServiceForm
+export default function ServiceSelector({ selectServiceForm, onFormCheckedChange, onOptionCheckedChange }: Props) {
+    const { label, value, checked, options } = selectServiceForm
 
     return (
         <>
@@ -23,17 +22,6 @@ export default function ServiceSelector({ selectServiceForm, onFormCheckedChange
                 <Checkbox checked={checked} onChange={onFormCheckedChange} />
                 <div className={styles.service_image} />
                 <Typography content={label} color="primary" size="normal" className={styles.service_content} />
-                <Wrapper gap="1rem" align="align-center">
-                    <Typography content="翻訳言語" color="primary" size="normal" weight="normal" />
-                    {languages.map((lang, index) => (
-                        <ButtonCheckbox
-                            key={lang.value}
-                            label={lang.label}
-                            checked={lang.checked}
-                            onChange={() => onLanguageCheckedChange(index)}
-                        />
-                    ))}
-                </Wrapper>
             </Wrapper>
             {checked && (
                 <Wrapper padding="2rem 0 3.9rem 1.8rem" gap="3rem" className={styles.selected_service}>
