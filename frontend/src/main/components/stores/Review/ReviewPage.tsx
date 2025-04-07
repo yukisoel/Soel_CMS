@@ -1,5 +1,4 @@
 import styles from "@/main/components/stores/Review/ReviewPage.module.scss";
-import { GoogleService } from "@/main/service/GoogleService";
 import Wrapper from "@/main/common/Wrapper";
 import Typography from "@/main/common/Typography";
 import SearchBox from "@/main/common/SearchBox";
@@ -11,16 +10,12 @@ import { useModal } from "@/main/common/Modal/useModal";
 import ReviewDetailModal from "./Modal/ReviewDetailModal";
 import { useState } from "react";
 
-type Props = {
-    googleService: GoogleService;
-};
-
 const reviews: Review[] = [
     { id: 1, serviceName: "GBP", rating: 5, date: "2025-03-01", content: "素晴らしいサービスでした！".repeat(50), replied: false },
     { id: 2, serviceName: "GBP", rating: 4, date: "2025-03-02", content: "とても満足しています。", replied: true },
 ];
 
-export default function ReviewPage({ googleService }: Props) {
+export default function ReviewPage() {
     const { isOpen: isSearchModalOpen, openModal: openSearchModal, closeModal: closeSearchModal } = useModal();
     const { isOpen: isReviewDetailModalOpen, openModal: openReviewDetailModal, closeModal: closeReviewDetailModal } = useModal();
     const [selectedReview, setSelectedReview] = useState<Review | null>(null);

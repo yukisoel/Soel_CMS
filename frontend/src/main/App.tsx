@@ -81,9 +81,9 @@ function App() {
           <Route path={'bulk/schedule-post'}
             element={<SchedulePost googleService={googleService} />} />
           <Route path={'bulk/schedule-post-list'}
-            element={<SchedulePostList googleService={googleService} />} />
+            element={<SchedulePostList />} />
           <Route path={'bulk/history-post-list'}
-            element={<HistoryPostList googleService={googleService} />} />
+            element={<HistoryPostList />} />
           <Route path={'bulk/photo'}
             element={<BlukPhoto googleService={googleService} />} />
           <Route path={'bulk/special'}
@@ -91,7 +91,7 @@ function App() {
           <Route path={'store'}
             element={<SelectStoreSingleRender googleService={googleService} />} />
           <Route path={'review'}
-            element={<ReviewPage googleService={googleService} />} />
+            element={<ReviewPage />} />
       </Route>
     </Routes>
   )
