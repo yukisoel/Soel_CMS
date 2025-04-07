@@ -1,4 +1,4 @@
-import React, { MouseEvent } from 'react';
+import React, { MouseEvent, useEffect } from 'react';
 import styles from './Modal.module.scss';
 import Typography from '../Typography';
 import CloseIcon from '@/main/assets/CloseIcon.svg';
@@ -13,6 +13,18 @@ type Props = {
 };
 
 export default function Modal({ headerContent, isOpen, onClose, contentRender }: Props) {
+    useEffect(() => {
+        if (isOpen) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = 'auto';
+        }
+
+        return () => {
+            document.body.style.overflow = 'auto';
+        };
+    }, [isOpen]);
+
     if (!isOpen) return null;
 
     const handleOverlayClick = (e: MouseEvent<HTMLDivElement>) => {

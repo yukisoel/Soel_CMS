@@ -6,8 +6,14 @@ import AdvancedSidebarMenu from '../common/AdvancedSidebarMenu';
 export default function EditPageAdvanced() {
   return (
     <Wrapper className={styles.wrapper}>
+      <div className={styles.sidebar}>
+        <div className={styles.sidebarContent}>
           <AdvancedSidebarMenu />
-          <Outlet />
+        </div>
+      </div>
+      <div className={styles.content}>
+        <Outlet />
+      </div>
     </Wrapper>
   )
 }

@@ -1,21 +1,31 @@
-import styles from '@/main/common/Typography.module.scss'
-import classNames from "classnames"
+import React, { forwardRef } from 'react';
+import styles from '@/main/common/Typography.module.scss';
+import classNames from 'classnames';
 
 type Props = {
-    content: string
-    size: 'xsmall' | 'small' | 'normal' | 'medium' | 'large' | 'xlarge'
-    color: 'primary' | 'secondary' | 'black' | 'gray' | 'white' | 'yellow'
-    weight?: 'normal'
-    className?: string
-}
+    content: string;
+    size: 'xxsmall' | 'xsmall' | 'small' | 'normal' | 'medium' | 'large' | 'xlarge';
+    color: 'primary' | 'secondary' | 'black' | 'gray' | 'white' | 'yellow';
+    weight?: 'normal';
+    className?: string;
+};
 
-export default function Typography({content, size, color, weight, className}: Props) {
+const Typography = forwardRef<HTMLSpanElement, Props>(({ content, size, color, weight, className }, ref) => {
     return (
-        <span className={classNames(
-            className,
-            styles[color],
-            styles[size],
-            styles[`weight-${weight}`],
-        )}>{content}</span>
-    )
-}
+        <span
+            ref={ref}
+            className={classNames(
+                className,
+                styles[color],
+                styles[size],
+                styles[`weight-${weight}`],
+            )}
+        >
+            {content}
+        </span>
+    );
+});
+
+Typography.displayName = 'Typography';
+
+export default Typography;
