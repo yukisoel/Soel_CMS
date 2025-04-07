@@ -2,8 +2,7 @@ import styles from "./EditProfileLayoutV2.module.scss";
 import Wrapper from "@/main/common/Wrapper";
 import Typography from "@/main/common/Typography";
 import { useAdvancedTabs } from "@/main/common/AdvancedTabs/useAdvancedTabs";
-import { useCallback, useMemo, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useCallback, useEffect, useState, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { profileSchema, type ProfileFormData } from "@/main/schemas/profileSchema";
@@ -14,8 +13,10 @@ import HoursTab from "./tabs/HoursTab";
 import OtherSectionTab from "./tabs/OtherSectionTab";
 import { GoogleService } from "@/main/service/GoogleService";
 import { ProfileUpdateService } from "@/main/service/ProfileUpdateService";
-import { GoogleLocationBusinessHours, DayOfWeek, ServiceAreaInfo, BusinessType } from "@/main/model/LocationModel";
+import { DayOfWeek, BusinessType } from "@/main/model/LocationModel";
 import { Path } from "react-hook-form";
+import { ProfileField } from "@/main/service/ProfileUpdateService";
+import { useParams } from "react-router-dom";
 
 type Props = {
     googleService: GoogleService;
@@ -24,23 +25,11 @@ type Props = {
 export type SetValueType = ProfileFormData[keyof ProfileFormData] | string[] | { [key: string]: unknown };
 
 export default function EditProfileLayoutV2({
-    googleService,
+    googleService
 }: Props) {
-    const { locationId } = useParams();
+    const {locationId} = useParams()
     const profileUpdateService = useMemo(() => new ProfileUpdateService(googleService), [googleService]);
-
-    const {
-        register,
-        handleSubmit,
-        setValue,
-        watch,
-        trigger,
-        formState: { errors, isSubmitting }
-    } = useForm<ProfileFormData>({
-        resolver: zodResolver(profileSchema),
-        mode: "onChange"
-    });
-
+    const [isSubmitting] = useState(false);
     const { selectedTab, tabsRender } = useAdvancedTabs([
         { tabKey: 'overview', content: '概要' },
         { tabKey: 'contact', content: '連絡先' },
@@ -49,6 +38,50 @@ export default function EditProfileLayoutV2({
         { tabKey: 'other', content: 'その他' },
     ]);
 
+    const {
+        register,
+        setValue,
+        watch,
+        trigger,
+        formState: { errors }
+    } = useForm<ProfileFormData>({
+        resolver: zodResolver(profileSchema),
+        mode: "onChange"
+    });
+
+    const convertToProfileField = (name: Path<ProfileFormData>): ProfileField => {
+        switch (name) {
+            case 'title':
+                return 'title';
+            case 'description':
+                return 'profile.description';
+            case 'phoneNumbers.primaryPhone':
+                return 'phoneNumbers.primaryPhone';
+            case 'websiteUri':
+                return 'websiteUri';
+            case 'menuUri':
+                return 'menuUri';
+            case 'storefrontAddress':
+                return 'storefrontAddress';
+            case 'serviceArea':
+                return 'serviceArea';
+            case 'regularHours':
+                return 'regularHours';
+            case 'specialHours':
+                return 'regularHours'; // specialHoursは regularHoursと一緒に更新される
+            case 'businessOwnerInfo':
+                return 'businessOwnerInfo';
+            case 'serviceInfo':
+                return 'serviceInfo';
+            case 'serviceOptionInfo':
+                return 'serviceOptionInfo';
+            case 'openingDate':
+                return 'openInfo.openingDate';
+            default:
+                throw new Error(`Unsupported field: ${name}`);
+        }
+    };
+
     const setValueAndValidate = useCallback(async (
         name: Path<ProfileFormData>,
         value: SetValueType,
@@ -56,14 +89,35 @@ export default function EditProfileLayoutV2({
     ) => {
         setValue(name, value as ProfileFormData[keyof ProfileFormData]);
         if (shouldValidate) {
-            return await trigger(name);
+            const isValid = await trigger(name);
+            if (isValid && locationId) {
+                try {
+                    const result = await profileUpdateService.updateProfile(
+                        locationId,
+                        convertToProfileField(name),
+                        value as ProfileFormData[keyof ProfileFormData]
+                    );
+
+                    if (!result.success) {
+                        console.error(`${name}の更新に失敗しました:`, result.error);
+                        return false;
+                    }
+
+                    console.log(`${name}の更新が完了しました`);
+                    return true;
+                } catch (error) {
+                    console.error('予期せぬエラーが発生しました:', error);
+                    return false;
+                }
+            }
+            return isValid;
         }
         return true;
-    }, [setValue, trigger]);
+    }, [setValue, trigger, locationId, profileUpdateService]);
 
     useEffect(() => {
         if (locationId) {
-            profileUpdateService.fetchLocationProfile(locationId).then(profile => {
+            profileUpdateService.fetchLocationProfile(locationId).then((profile) => {
                 // フォームの初期値を設定
                 setValue("title", profile.title || "");
                 setValue("description", profile.profile?.description || "");
@@ -95,22 +149,11 @@ export default function EditProfileLayoutV2({
                 setValue("businessOwnerInfo", profile.businessOwnerInfo || "");
                 setValue("serviceInfo", profile.serviceInfo || "");
                 setValue("serviceOptionInfo", profile.serviceOptionInfo || "");
-            }).catch(error => {
+            }).catch((error: Error) => {
                 console.error('店舗情報の取得に失敗しました:', error);
             });
         }
     }, [locationId, profileUpdateService, setValue]);
-
-    const onSubmit = useCallback(async (data: ProfileFormData) => {
-        if (!locationId) return;
-
-        try {
-            // TODO: 更新処理の実装
-            console.log('更新データ:', data);
-        } catch (error) {
-            console.error('更新に失敗しました:', error);
-        }
-    }, [locationId]);
 
     const renderContent = () => {
         const formValues = watch();
@@ -233,25 +276,22 @@ export default function EditProfileLayoutV2({
 
     return (
         <Wrapper direction="col" padding="5rem 4.3rem" className={styles.container}>
-            <form onSubmit={handleSubmit(onSubmit)}>
-                {/* ヘッダー部分 */}
-                <Wrapper direction="col" gap="2rem" className={styles.header}>
-                    <Typography
-                        content="プロフィールを編集"
-                        color="primary"
-                        size="large"
-                        weight="normal"
-                    />
-                </Wrapper>
+            <Wrapper direction="col" gap="2rem" className={styles.header}>
+                <Typography
+                    content="プロフィールを編集"
+                    color="primary"
+                    size="large"
+                    weight="normal"
+                />
+            </Wrapper>
 
-                {/* ナビゲーション */}
-                <Wrapper direction="col" gap="5rem">
-                    {tabsRender()}
-                </Wrapper>
+            {/* ナビゲーション */}
+            <Wrapper direction="col" gap="5rem">
+                {tabsRender()}
+            </Wrapper>
 
-                {/* タブコンテンツ */}
-                {renderContent()}
-            </form>
+            {/* タブコンテンツ */}
+            {renderContent()}
         </Wrapper>
     );
 }

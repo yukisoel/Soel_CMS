@@ -1,4 +1,4 @@
-import { GoogleLocationProfileModel, GoogleLocationBusinessHours, GoogleLocationAddress, DayOfWeek, GoogleLocationServiceArea, GoogleLocationDate } from "@/main/model/LocationModel";
+import { GoogleLocationProfileModel, GoogleLocationBusinessHours, GoogleLocationAddress, GoogleLocationServiceArea } from "@/main/model/LocationModel";
 import { GoogleService } from "@/main/service/GoogleService";
 
 export type ProfileField =
@@ -16,11 +16,6 @@ export type ProfileField =
   | 'serviceInfo'
   | 'serviceOptionInfo'
   | 'openInfo.openingDate';
-
-export type ValidationResult = {
-  isValid: boolean;
-  message?: string;
-};
 
 export type ProfileUpdateResult = {
   success: boolean;
@@ -50,24 +45,23 @@ export class ProfileUpdateService {
   async updateProfile(
     locationId: string,
     field: ProfileField,
-    value: string | object
+    value: string | object | undefined
   ): Promise<ProfileUpdateResult> {
     if (!this.currentProfile) {
       return {
         success: false,
-        error: '店舗情報が取得されていません'
+        error: '店舗情報が見つかりません'
+      };
+    }
+
+    if (value === undefined) {
+      return {
+        success: false,
+        error: '値が入力されていません'
       };
     }
 
     try {
-      const validation = this.validateProfileUpdate(field, value);
-      if (!validation.isValid) {
-        return {
-          success: false,
-          error: validation.message || '入力値が不正です'
-        };
-      }
-
       let updateMask: string = field;
       if (field === 'categories') {
         updateMask = 'categories.primaryCategory.displayName';
@@ -97,61 +91,6 @@ export class ProfileUpdateService {
         success: false,
         error: error instanceof Error ? error.message : '予期せぬエラーが発生しました'
       };
-    }
-  }
-
-  validateProfileUpdate(field: ProfileField, value: string | object): ValidationResult {
-    if (value === null || value === undefined) {
-      return { isValid: false, message: '値が入力されていません' };
-    }
-
-    switch (field) {
-      case "title":
-        return {
-          isValid: typeof value === 'string' && value.length > 0,
-          message: '店舗名を入力してください'
-        };
-      case "phoneNumbers.primaryPhone": {
-        if (typeof value !== 'string') return { isValid: false, message: '電話番号は文字列で入力してください' };
-        const phoneNumber = value.replace(/\D/g, '');
-        return {
-          isValid: phoneNumber.length >= 10 && phoneNumber.length <= 11,
-          message: '有効な電話番号を入力してください'
-        };
-      }
-      case "websiteUri":
-      case "menuUri": {
-        if (typeof value !== 'string') return { isValid: false, message: 'URLは文字列で入力してください' };
-        try {
-          new URL(value);
-          return { isValid: true };
-        } catch {
-          return { isValid: false, message: '有効なURLを入力してください' };
-        }
-      }
-      case "regularHours": {
-        const hours = value as GoogleLocationBusinessHours;
-        if (!hours.periods || !Array.isArray(hours.periods)) {
-          return { isValid: false, message: '営業時間の形式が不正です' };
-        }
-        return { isValid: true };
-      }
-      case "storefrontAddress": {
-        const address = value as GoogleLocationAddress;
-        if (!address.addressLines || !address.locality || !address.regionCode) {
-          return { isValid: false, message: '住所の必須項目が入力されていません' };
-        }
-        return { isValid: true };
-      }
-      case "openInfo.openingDate": {
-        const openingDate = (value as { openInfo: { openingDate: GoogleLocationDate } }).openInfo?.openingDate;
-        if (!openingDate || !openingDate.year || !openingDate.month || !openingDate.day) {
-          return { isValid: false, message: '開業日の形式が不正です' };
-        }
-        return { isValid: true };
-      }
-      default:
-        return { isValid: true };
     }
   }
 
@@ -196,10 +135,14 @@ export class ProfileUpdateService {
         };
       }
       case "openInfo.openingDate": {
-        const openingDateValue = value as { openInfo: { openingDate: GoogleLocationDate } };
+        const date = value as Date;
         return {
           openInfo: {
-            openingDate: openingDateValue.openInfo.openingDate
+            openingDate: {
+              year: date.getFullYear(),
+              month: date.getMonth() + 1,
+              day: date.getDate()
+            }
           }
         };
       }
