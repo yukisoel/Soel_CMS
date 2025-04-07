@@ -135,7 +135,7 @@ const areaSelectorProps: Region[] = [
     }
 ];
 
-export const useSelectStoreSingle = ({ googleService, onNextClick, onBackClick }: Props) => {
+export const useSelectStoreSingle = ({ onNextClick, onBackClick }: Props) => {
     const [selectedBranch, setSelectedBranch] = useState<Branch | null>(null);
 
     const onChangeSelectedBranch = (branch: Branch) => {

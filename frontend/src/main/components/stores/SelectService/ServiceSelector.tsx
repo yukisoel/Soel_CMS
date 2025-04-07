@@ -1,9 +1,7 @@
-import { useState } from "react";
 import styles from "@/main/components/stores/SelectService/ServiceSelector.module.scss";
 import Wrapper from "@/main/common/Wrapper"
 import Typography from "@/main/common/Typography"
 import Checkbox from "@/main/common/Checkbox";
-import ButtonCheckbox from "@/main/common/ButtonCheckbox";
 import classNames from "classnames";
 import RadioButton from "@/main/common/RadioButton";
 import { SelectServiceForm } from "./useSelectService";

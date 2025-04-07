@@ -34,6 +34,12 @@ class GoogleController(val googleService: GoogleService) {
         return googleService.getAccount(googleClient.accessToken.tokenValue, accountId)
     }
 
+    @Operation(summary = "Google:カテゴリ一覧の取得", description = "Google:カテゴリ一覧の取得を行います", tags = ["Google:GETメソッド"])
+    @GetMapping("/categories")
+    fun getCategories(@RegisteredOAuth2AuthorizedClient("google") googleClient: OAuth2AuthorizedClient): ResponseEntity<List<GoogleLocationCategory>>? {
+        return googleService.getCategories(googleClient.accessToken.tokenValue)
+    }
+
     @Operation(summary = "Google:店舗一覧の取得", description = "Google:店舗一覧の取得を行います", tags = ["Google:GETメソッド"])
     @GetMapping("/locations")
     fun getLocations(@RegisteredOAuth2AuthorizedClient("google") googleClient: OAuth2AuthorizedClient, @RequestParam("accountId") accountId: String): ResponseEntity<List<GoogleLocation>>? {
@@ -53,6 +59,15 @@ class GoogleController(val googleService: GoogleService) {
         @RequestParam("locationId") locationId: String
     ): ResponseEntity<GoogleLocationProfileModel>? {
         return googleService.getLocationProfile(googleClient.accessToken.tokenValue, locationId)
+    }
+
+    @Operation(summary = "Google:店舗の属性情報を全て取得", description = "Google:店舗の属性情報を全て取得します", tags = ["Google:GETメソッド"])
+    @GetMapping("/location/attributes")
+    fun getLocationAttributes(
+        @RegisteredOAuth2AuthorizedClient("google") googleClient: OAuth2AuthorizedClient,
+        @RequestParam("locationId") locationId: String
+    ): ResponseEntity<GoogleLocationAttributesModel>? {
+        return googleService.getLocationAttributes(googleClient.accessToken.tokenValue, locationId)
     }
 
     @Operation(summary = "Google:店舗の写真を全て取得", description = "Google:店舗の写真を全て取得します", tags = ["Google:GETメソッド"])
@@ -246,6 +261,48 @@ class GoogleController(val googleService: GoogleService) {
             throw IllegalArgumentException("text is required")
         }
         return googleService.updateLocationQuestion(googleClient.accessToken.tokenValue, locationId, questionId, question.text)
+    }
+
+    @Operation(
+        summary = "Google:店舗の属性の更新",
+        description = """
+              Google:店舗の属性を更新します。
+              Request:
+                  Params: attributeMaskに更新する属性のカンマ区切りのリストを渡してください。
+                  例: attributes/url_twitter,attributes/url_tiktok
+                  Body: nameを除くattributesのJsonを渡してください。attributeMaskに含んでいない属性は無視されます。
+                  例 : {
+                      "attributes": [
+                        {
+                          "uriValues": [
+                            {
+                              "uri": "https://x.com/elonmuskkkkkk"
+                            }
+                          ], 
+                          "valueType": "URL", 
+                          "name": "attributes/url_twitter"
+                        }, 
+                        {
+                          "uriValues": [
+                            {
+                              "uri": "https://www.tiktok.com/@takafumi_horiekkkkk"
+                            }
+                          ], 
+                          "valueType": "URL", 
+                          "name": "attributes/url_tiktok"
+                        }
+                      ]
+                    }
+        """, tags = ["Google:PATCHメソッド"]
+    )
+    @PatchMapping("/location/attributes")
+    fun updateLocationAttributes(
+        @RegisteredOAuth2AuthorizedClient("google") googleClient: OAuth2AuthorizedClient,
+        @RequestParam("locationId") locationId: String,
+        @RequestParam("attributeMask") attributeMask: String,
+        @RequestBody attributes: GoogleLocationAttributesModel
+    ): ResponseEntity<GoogleLocationAttributesModel>? {
+        return googleService.updateLocationAttributes(googleClient.accessToken.tokenValue, locationId, attributeMask, attributes)
     }
 
     @Operation(

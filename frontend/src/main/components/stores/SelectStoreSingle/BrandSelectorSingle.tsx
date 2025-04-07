@@ -43,7 +43,7 @@ type BrandWithBranchesProps = Store & {
     onBranchChange: (branch: Branch) => void;
 };
 
-function BrandWithBranches({ name, branches, storeIndex, selectedBranch, onBranchChange }: BrandWithBranchesProps) {
+function BrandWithBranches({ name, branches, selectedBranch, onBranchChange }: BrandWithBranchesProps) {
     const [isOpen, setIsOpen] = useState<boolean>(false);
 
     return (

@@ -1,6 +1,21 @@
 start:
 	source .env && ./gradlew bootRun
 
+kt2openApiDocs:
+	@if lsof -ti :8080 > /dev/null; then \
+		echo "Port 8080 is already in use. Please stop the process using this port."; \
+		./gradlew generateOpenApiDocs; \
+	else \
+		echo "Starting bootRun..."; \
+		source .env && nohup ./gradlew bootRun > bootrun.log 2>&1 & \
+		PID=$$!; \
+		echo "Waiting for app to start..."; \
+		sleep 10; \
+		./gradlew generateOpenApiDocs; \
+		echo "Killing bootRun (PID $$PID)"; \
+		kill $$PID; \
+	fi
+
 build-local:
 	source .env && ./gradlew build
 

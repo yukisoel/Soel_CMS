@@ -1,5 +1,4 @@
 import styles from "@/main/components/stores/SchedulePostList/SchedulePostList.module.scss";
-import { GoogleService } from "@/main/service/GoogleService";
 import Wrapper from "@/main/common/Wrapper";
 import Typography from "@/main/common/Typography";
 import SearchBox from "@/main/common/SearchBox";
@@ -7,10 +6,6 @@ import Separator from "@/main/common/Separator";
 import Button from "@/main/common/Button";
 import PostDetailModal, { Post } from "../SchedulePostList/PostDetailModal/PostDetailModal";
 import { useState } from "react";
-
-type Props = {
-    googleService: GoogleService;
-};
 
 const posts: Post[] = [
     {
@@ -35,7 +30,7 @@ const posts: Post[] = [
     }
 ];
 
-export default function HistoryPostList({ googleService }: Props) {
+export default function HistoryPostList() {
     const [selectedPost, setSelectedPost] = useState<Post | null>(null);
 
     const handleOpenModal = (post: Post) => {

@@ -1,4 +1,4 @@
-import React, { forwardRef } from 'react';
+import { forwardRef } from 'react';
 import styles from '@/main/common/Typography.module.scss';
 import classNames from 'classnames';
 

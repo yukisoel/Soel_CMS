@@ -20,6 +20,7 @@ import SchedulePost from "./components/stores/SchedulePost/SchedulePost.tsx";
 import BlukPhoto from "./components/stores/BulkPhoto/BulkPhoto.tsx";
 import BulkSpecialOpeningHours from "./components/stores/BulkSpecialOpeningHours/BulkSpecialOpeningHours.tsx";
 import SchedulePostList from "./components/stores/SchedulePostList/SchedulePostList.tsx";
+import ReviewPage from "./components/stores/Review/ReviewPage.tsx";
 import HistoryPostList from "./components/stores/HistorypostList/HistoryPostList.tsx";
 import SelectStoreSingleRender from "./components/stores/SelectStoreSingle/SelectStoreSingleRender.tsx";
 import EditProfileLayoutV2 from "./components/editPage/v2/EditProfile/EditProfileLayoutV2.tsx";
@@ -83,15 +84,17 @@ function App() {
           <Route path={'bulk/schedule-post'}
             element={<SchedulePost googleService={googleService} />} />
           <Route path={'bulk/schedule-post-list'}
-            element={<SchedulePostList googleService={googleService} />} />
+            element={<SchedulePostList />} />
           <Route path={'bulk/history-post-list'}
-            element={<HistoryPostList googleService={googleService} />} />
+            element={<HistoryPostList />} />
           <Route path={'bulk/photo'}
             element={<BlukPhoto googleService={googleService} />} />
           <Route path={'bulk/special'}
             element={<BulkSpecialOpeningHours googleService={googleService} />} />
           <Route path={'store'}
             element={<SelectStoreSingleRender googleService={googleService} />} />
+          <Route path={'review'}
+            element={<ReviewPage />} />
       </Route>
     </Routes>
   )
