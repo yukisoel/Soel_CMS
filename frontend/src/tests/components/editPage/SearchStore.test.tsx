@@ -7,7 +7,7 @@ import {
   GoogleAccountsContextProvider
 } from "@/main/contexts/GoogleAccountsContext.tsx";
 import SpyGoogleService from "@/tests/doubles/services/SpyGoogleService.ts";
-import {GoogleAccount} from "@/main/model/GoogleAccount.ts";
+import {GoogleAccount} from "@/types/apiModel.ts";
 
 // const TestComponent = () => {
 //   const accountListContext = useContext(GoogleAccountsContext)

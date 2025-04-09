@@ -5,9 +5,9 @@ import {useNavigate} from "react-router-dom";
 import {PankuzuItemListContext} from "@/main/contexts/PankuzuItemListContext.tsx";
 import {ServiceName} from "@/main/model/ServiceName.ts";
 import {GoogleService} from "@/main/service/GoogleService.ts";
-import {GoogleAccount, GoogleLocation} from "@/main/model/GoogleAccount.ts";
 import {GoogleAccountsContext} from "@/main/contexts/GoogleAccountsContext.tsx";
 import {GoogleSelectedLocationContext} from "@/main/contexts/GoogleSelectedLocationContext.tsx";
+import {GoogleAccount, GoogleLocation} from "@/types/apiModel.ts";
 
 type Props = {
   googleService: GoogleService

@@ -1,5 +1,4 @@
 import {AxiosResponse} from "axios";
-import {GoogleAccount, GoogleLocation} from "@/main/model/GoogleAccount.ts";
 import {axiosApiClient} from "@/main/client/axiosClient.ts";
 import {
   GoogleLocationFoodMenusModel,
@@ -7,6 +6,7 @@ import {
   GoogleLocationPhotoModel,
   GoogleLocationProfileModel
 } from "@/main/model/LocationModel.ts";
+import {GoogleAccount, GoogleLocation} from "@/types/apiModel.ts";
 
 export interface GoogleRepository {
   getAccounts(): Promise<GoogleAccount[]>
