@@ -423,7 +423,7 @@ export interface components {
             name?: string;
             profilePhotoUrl?: string;
             /** @enum {string} */
-            type?: "AUTHOR_TYPE_UNSPECIFIED" | "REGULAR_USER" | "LOCAL_GUIDE" | "MERCHANT";
+            type?: GoogleLocationAuthorType;
         };
         GoogleLocationQuestion: {
             name?: string;
@@ -438,7 +438,8 @@ export interface components {
             topAnswers?: components["schemas"]["GoogleLocationAnswer"][];
         };
         GoogleLocationAssociation: {
-            category?: string;
+            /** @enum {string} */
+            category?: GoogleLocationAssociationCategory;
         };
         GoogleLocationCallToAction: {
             actionType?: string;
@@ -626,7 +627,7 @@ export interface components {
         GoogleLocationAttribute: {
             name?: string;
             /** @enum {string} */
-            valueType?: "ATTRIBUTE_VALUE_TYPE_UNSPECIFIED" | "URL" | "BOOL" | "ENUM" | "REPEATED_ENUM";
+            valueType?: GoogleLocationAttributeValueType;
             uriValues?: components["schemas"]["GoogleLocationAttributeUriValue"][];
         };
         GoogleLocationAttributeUriValue: {
@@ -1215,4 +1216,32 @@ export interface operations {
             };
         };
     };
+}
+export enum GoogleLocationAuthorType {
+    AUTHOR_TYPE_UNSPECIFIED = "AUTHOR_TYPE_UNSPECIFIED",
+    REGULAR_USER = "REGULAR_USER",
+    LOCAL_GUIDE = "LOCAL_GUIDE",
+    MERCHANT = "MERCHANT"
+}
+export enum GoogleLocationAssociationCategory {
+    COVER = "COVER",
+    PROFILE = "PROFILE",
+    LOGO = "LOGO",
+    EXTERIOR = "EXTERIOR",
+    INTERIOR = "INTERIOR",
+    PRODUCT = "PRODUCT",
+    AT_WORK = "AT_WORK",
+    FOOD_AND_DRINK = "FOOD_AND_DRINK",
+    MENU = "MENU",
+    ROOMS = "ROOMS",
+    TEAMS = "TEAMS",
+    ADDITIONAL = "ADDITIONAL",
+    CATEGORY_UNSPECIFIED = "CATEGORY_UNSPECIFIED"
+}
+export enum GoogleLocationAttributeValueType {
+    ATTRIBUTE_VALUE_TYPE_UNSPECIFIED = "ATTRIBUTE_VALUE_TYPE_UNSPECIFIED",
+    URL = "URL",
+    BOOL = "BOOL",
+    ENUM = "ENUM",
+    REPEATED_ENUM = "REPEATED_ENUM"
 }

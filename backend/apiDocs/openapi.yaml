@@ -995,7 +995,22 @@
         "type": "object",
         "properties": {
           "category": {
-            "type": "string"
+            "type": "string",
+            "enum": [
+              "COVER",
+              "PROFILE",
+              "LOGO",
+              "EXTERIOR",
+              "INTERIOR",
+              "PRODUCT",
+              "AT_WORK",
+              "FOOD_AND_DRINK",
+              "MENU",
+              "ROOMS",
+              "TEAMS",
+              "ADDITIONAL",
+              "CATEGORY_UNSPECIFIED"
+            ]
           }
         }
       },

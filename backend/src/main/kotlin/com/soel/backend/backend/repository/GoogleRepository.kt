@@ -363,7 +363,7 @@ class GoogleRepositoryImpl(val restTemplate: RestTemplate) : GoogleRepository {
 
         val mediaRequest = GoogleLocationPhotoModel(
             mediaFormat = "PHOTO",
-            locationAssociation = GoogleLocationAssociation(category = "ADDITIONAL"),
+            locationAssociation = GoogleLocationAssociation(category = GoogleLocationAssociationCategory.ADDITIONAL),
             sourceUrl = sourceUrl
         )
 
@@ -390,7 +390,7 @@ class GoogleRepositoryImpl(val restTemplate: RestTemplate) : GoogleRepository {
             mediaList.add(
                 GoogleLocationPhotoModel(
                     mediaFormat = "PHOTO",
-                    locationAssociation = GoogleLocationAssociation(category = "ADDITIONAL"),
+                    locationAssociation = GoogleLocationAssociation(category = GoogleLocationAssociationCategory.ADDITIONAL),
                     sourceUrl = sourceUrl
                 )
             )

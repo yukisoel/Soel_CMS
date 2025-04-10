@@ -163,7 +163,7 @@ data class GoogleLocationPhotoDataRef(
 )
 
 data class GoogleLocationAssociation(
-    val category: String? = null,
+    val category: GoogleLocationAssociationCategory? = null,
 )
 
 data class GoogleLocationLocalPostModel(
@@ -343,6 +343,22 @@ enum class GoogleLocationAuthorType {
     REGULAR_USER,
     LOCAL_GUIDE,
     MERCHANT,
+}
+
+enum class GoogleLocationAssociationCategory {
+    COVER,
+    PROFILE,
+    LOGO,
+    EXTERIOR,
+    INTERIOR,
+    PRODUCT,
+    AT_WORK,
+    FOOD_AND_DRINK,
+    MENU,
+    ROOMS,
+    TEAMS,
+    ADDITIONAL,
+    CATEGORY_UNSPECIFIED,
 }
 
 //backend用
