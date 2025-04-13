@@ -23,6 +23,7 @@ import ReviewPage from "./components/stores/Review/ReviewPage.tsx";
 import HistoryPostList from "./components/stores/HistorypostList/HistoryPostList.tsx";
 import SelectStoreSingleRender from "./components/stores/SelectStoreSingle/SelectStoreSingleRender.tsx";
 import EditProfileLayoutV2 from "./components/editPage/v2/EditProfile/EditProfileLayoutV2.tsx";
+import EditPhotoLayoutV2 from "./components/editPage/v2/EditPhoto/EditPhotoLayoutV2.tsx";
 
 const googleRepository = new GoogleRepositoryImpl()
 const googleService = new GoogleServiceImpl({googleRepository})
@@ -54,6 +55,8 @@ function App() {
         <Route path={"v2/gbp"}>
           <Route path={"accounts/:accountId/location/:locationId/profile"}
                   element={<EditProfileLayoutV2 googleService={googleService}/>}/>
+          <Route path={"accounts/:accountId/location/:locationId/photo"}
+                  element={<EditPhotoLayoutV2 googleService={googleService}/>}/>
         </Route>
         <Route path={'gbp'} element={<EditGBPLayout/>}>
           <Route path={"accounts/:accountId/location/:locationId"}

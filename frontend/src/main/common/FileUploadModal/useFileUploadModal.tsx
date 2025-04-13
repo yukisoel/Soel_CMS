@@ -1,11 +1,22 @@
 import { useState } from "react";
 import FileUploadModal from './FileUploadModal';
+import { GoogleService } from "@/main/service/GoogleService";
 
 type Props = {
-    size?: 'regular' | 'large'
+    size?: 'regular' | 'large';
+    googleService: GoogleService;
+    accountId?: string;
+    locationId?: string;
+    onUploadSuccess?: () => void;
 }
 
-export default function useFileUploadModal({size = 'regular'}: Props) {
+export default function useFileUploadModal({
+    size = 'regular',
+    googleService,
+    accountId,
+    locationId,
+    onUploadSuccess
+}: Props) {
     const [isOpen, setIsOpen] = useState<boolean>(false);
     const [uploadedPhotoFileList, setUploadedPhotoFileList] = useState<FileList | null>(null);
 
@@ -15,6 +26,18 @@ export default function useFileUploadModal({size = 'regular'}: Props) {
         setUploadedPhotoFileList(null);
     };
 
+    const handleUpload = async () => {
+        if (accountId && locationId && uploadedPhotoFileList && uploadedPhotoFileList.length > 0) {
+            try {
+                await googleService.postLocationPhoto(accountId, locationId, uploadedPhotoFileList);
+                onUploadSuccess?.();
+                closeModal();
+            } catch (error) {
+                console.error("写真のアップロードに失敗しました:", error);
+            }
+        }
+    };
+
     const render = () => (
         <FileUploadModal
             isOpen={isOpen}
@@ -22,6 +45,7 @@ export default function useFileUploadModal({size = 'regular'}: Props) {
             size={size}
             uploadedPhotoFileList={uploadedPhotoFileList}
             setUploadedPhotoFileList={setUploadedPhotoFileList}
+            onUpload={handleUpload}
         />
     );
 
