@@ -2,10 +2,9 @@ import styles from "./EditPhotoLayoutV2.module.scss";
 import Wrapper from "@/main/common/Wrapper";
 import Typography from "@/main/common/Typography";
 import Button from "@/main/common/Button";
-import SearchBox from "@/main/common/SearchBox";
 import FileIcon from "@/main/assets/FileIcon.svg";
 import Separator from "@/main/common/Separator";
-import { useState, ChangeEvent, useEffect } from "react";
+import { useState, useEffect } from "react";
 import Ellipsis from "@/main/assets/Ellipsis.svg";
 import classNames from "classnames";
 import useFileUploadModal from "@/main/common/FileUploadModal/useFileUploadModal";
@@ -13,6 +12,7 @@ import { useParams } from "react-router-dom";
 import { GoogleService } from "@/main/service/GoogleService";
 import { GoogleLocationPhotoModel } from "@/main/model/LocationModel";
 import { LocationAssociationName } from "@/main/model/LocationAssociationName";
+import PhotoPullDownMenu from "@/main/components/editPage/PhotoPullDownMenu";
 
 type Props = {
     googleService: GoogleService;
@@ -21,7 +21,7 @@ type Props = {
 export default function EditPhotoLayoutV2({ googleService }: Props) {
     const { accountId, locationId } = useParams();
     const [selectedPhotoIndices, setSelectedPhotoIndices] = useState<number[]>([]);
-    const [searchQuery, setSearchQuery] = useState("");
+    const [selectedCategory, setSelectedCategory] = useState<string>('');
     const [photoList, setPhotoList] = useState<GoogleLocationPhotoModel[]>([]);
 
     const fetchPhotos = async () => {
@@ -54,12 +54,9 @@ export default function EditPhotoLayoutV2({ googleService }: Props) {
         }
     };
 
-    const handleSearchChange = (event: ChangeEvent<HTMLInputElement>) => {
-        setSearchQuery(event.target.value);
-    };
-
     const filteredPhotos = photoList.filter(photo =>
-        photo.locationAssociation?.category?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false
+        selectedCategory === '' ||
+        photo.locationAssociation?.category === selectedCategory
     );
 
     return (
@@ -68,7 +65,11 @@ export default function EditPhotoLayoutV2({ googleService }: Props) {
                 <Typography content="写真一覧" color="primary" size="medium" />
                 <Wrapper justify="justify-between" align="align-center">
                     <Wrapper gap="4rem" align="align-center">
-                        <SearchBox placeholder="カテゴリで検索" width="42.7rem" onChange={handleSearchChange} />
+                        <PhotoPullDownMenu
+                            selectedContent={selectedCategory}
+                            setSelectedContent={setSelectedCategory}
+                            options={Object.values(LocationAssociationName)}
+                        />
                         <Wrapper gap="2rem">
                             <Button bgColor="primary" padding="0.7rem 1.8rem" className={styles.button} onClick={openModal}>
                                 <img src={FileIcon} alt="ファイル" />
