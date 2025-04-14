@@ -1,9 +1,8 @@
 package com.soel.backend.backend.usecase
 
-import com.soel.backend.backend.model.GoogleLocationCategory
-import com.soel.backend.backend.model.GoogleLocationDate
-import com.soel.backend.backend.model.GoogleLocationProfileModel
+import com.soel.backend.backend.model.*
 import com.soel.backend.backend.service.GoogleService
+import com.soel.backend.backend.utils.google.AttributesBuilder
 import com.soel.backend.backend.utils.google.ProfileBuilder
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
@@ -40,6 +39,12 @@ interface GoogleUseCase {
         locationId: String,
         websiteUri: String
     ): ResponseEntity<GoogleLocationProfileModel>?
+
+    fun updateLocationAttributeSnsLink(
+        accessToken: String,
+        locationId: String,
+        snsLinkRequest: GoogleLocationAttributeSnsLinkRequest
+    ): ResponseEntity<GoogleLocationAttributesModel>?
 }
 
 @Service
@@ -120,5 +125,12 @@ class GoogleUseCaseImpl(val googleService: GoogleService) : GoogleUseCase {
         val updateMask = "websiteUri"
         val locationProfile = ProfileBuilder.builder().websiteUri(websiteUri).build()
         return googleService.updateLocationProfile(accessToken, locationId, updateMask, locationProfile)
+    }
+
+    override fun updateLocationAttributeSnsLink(accessToken: String, locationId: String, snsLinkRequest: GoogleLocationAttributeSnsLinkRequest): ResponseEntity<GoogleLocationAttributesModel>? {
+        val attributeMask = snsLinkRequest.snsType.attributeName
+        val attributes = AttributesBuilder.builder().snsLink(attributeMask, snsLinkRequest.snsUrl).build()
+        println(attributes)
+        return googleService.updateLocationAttributes(accessToken, locationId, attributeMask, attributes)
     }
 }

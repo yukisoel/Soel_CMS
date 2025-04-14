@@ -430,6 +430,25 @@ class GoogleController(val googleService: GoogleService, val googleUseCase: Goog
     }
 
     @Operation(
+        summary = "Google:店舗のSNSリンクの更新",
+        description = """
+              Google:店舗のSNSリンクを更新します。
+              Request Bodyとして snsTypeとsnsUrlのStringにしてください。
+              例 : {"snsType": "TWITTER", "snsUrl": "https://x.com/elonmusk"}
+              snsTypeはenumで以下から選択してください。(全部大文字で指定してください)
+                TWITTER, TIKTOK, INSTAGRAM, YOUTUBE, INSTAGRAM, FACEBOOK, LINKEDIN, PINTEREST
+        """, tags = ["Google:PATCHメソッド"]
+    )
+    @PatchMapping("/location/attributes/sns_link")
+    fun updateLocationAttributeSnsLink(
+        @RegisteredOAuth2AuthorizedClient("google") googleClient: OAuth2AuthorizedClient,
+        @RequestParam("locationId") locationId: String,
+        @RequestBody snsLinkRequest: GoogleLocationAttributeSnsLinkRequest
+    ): ResponseEntity<GoogleLocationAttributesModel>? {
+        return googleUseCase.updateLocationAttributeSnsLink(googleClient.accessToken.tokenValue, locationId, snsLinkRequest)
+    }
+
+    @Operation(
         summary = "Google:店舗の質問の削除",
         description = """
               Google:店舗の質問を削除します。

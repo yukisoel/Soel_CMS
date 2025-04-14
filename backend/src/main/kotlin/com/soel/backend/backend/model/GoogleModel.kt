@@ -40,6 +40,11 @@ data class GoogleLocationAttributesModel(
     val attributes: List<GoogleLocationAttribute>? = null,
 )
 
+data class GoogleLocationAttributeSnsLinkRequest(
+    val snsType: GoogleAttributeSnsType,
+    val snsUrl: String
+)
+
 data class GoogleLocationAttribute(
     val name: String? = null,
     val valueType: GoogleLocationAttributeValueType? = null,
