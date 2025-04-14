@@ -65,6 +65,7 @@ data class GoogleLocationProfileModel(
 
 data class GoogleLocationPhoneNumbers(
     val primaryPhone: String? = null,
+    val additionalPhones: List<String>? = null,
 )
 
 data class GoogleLocationCategories(

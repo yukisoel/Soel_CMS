@@ -144,6 +144,175 @@ export interface paths {
         patch: operations["updateLocationProfile"];
         trace?: never;
     };
+    "/api/google/location/profile/website_uri": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Google:店舗のプロフィールの更新:ウェブサイトURL
+         * @description
+         *                   Google:店舗のウェブサイトURLを更新します。
+         *                   Request Bodyとして websiteUriのStringにしてください。
+         *                   例 : https://example.com
+         *
+         */
+        patch: operations["updateLocationProfileWebsiteUri"];
+        trace?: never;
+    };
+    "/api/google/location/profile/title": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Google:店舗のプロフィールの更新:ビジネス名
+         * @description Google:店舗のビジネス名を更新します
+         */
+        patch: operations["updateLocationProfileTitle"];
+        trace?: never;
+    };
+    "/api/google/location/profile/phone_number": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Google:店舗のプロフィールの更新:電話番号
+         * @description
+         *                   Google:店舗の電話番号を更新します。
+         *                   Request Bodyとして phoneNumberのStringにしてください。
+         *                   数字に変換した時に10桁である必要があります。
+         *                   ハイフンとスペースは無視されます。
+         *                   例1 : 09012345678
+         *                   例2 : 9012345678
+         *                   例3 : 090-1234-5678
+         *                   例4 : 090 1234 5678
+         *
+         */
+        patch: operations["updateLocationProfilePhoneNumber"];
+        trace?: never;
+    };
+    "/api/google/location/profile/opening_date": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Google:店舗のプロフィールの更新:オープン日
+         * @description
+         *                   Google:店舗のオープン日を更新します。
+         *                   Request Bodyとして dateのみ入ったJsonにしてください。
+         *                   例 : {"year": 2023, "month": 10, "day": 1}
+         *
+         */
+        patch: operations["updateLocationProfileOpeningDate"];
+        trace?: never;
+    };
+    "/api/google/location/profile/description": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Google:店舗のプロフィールの更新:説明
+         * @description
+         *                   Google:店舗の説明を更新します。
+         *                   Request Bodyとして descriptionのStringにしてください。
+         *                   例 : これは店舗です。
+         *
+         */
+        patch: operations["updateLocationProfileDescription"];
+        trace?: never;
+    };
+    "/api/google/location/profile/additional_categories": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Google:店舗のプロフィールの更新:追加カテゴリ
+         * @description
+         *                   Google:店舗の追加カテゴリを更新します。
+         *                   Request Bodyとして nameのみ入った配列Jsonにしてください。
+         *                   例 :
+         *                   [
+         *                     {"name": "カテゴリ名"},
+         *                     {"name": "カテゴリ名"}
+         *                   ]
+         *
+         */
+        patch: operations["updateLocationProfileAdditionalCategories"];
+        trace?: never;
+    };
+    "/api/google/location/prifle/primary_category": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Google:店舗のプロフィールの更新:メインカテゴリ
+         * @description Google:店舗のメインカテゴリを更新します
+         */
+        patch: operations["updateLocationProfilePrimaryCategory"];
+        trace?: never;
+    };
     "/api/google/location/food_menus": {
         parameters: {
             query?: never;
@@ -521,6 +690,7 @@ export interface components {
         };
         GoogleLocationPhoneNumbers: {
             primaryPhone?: string;
+            additionalPhones?: string[];
         };
         GoogleLocationPlaceInfo: {
             placeName?: string;
@@ -910,6 +1080,188 @@ export interface operations {
         requestBody: {
             content: {
                 "application/json": components["schemas"]["GoogleLocationProfileModel"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["GoogleLocationProfileModel"];
+                };
+            };
+        };
+    };
+    updateLocationProfileWebsiteUri: {
+        parameters: {
+            query: {
+                locationId: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": string;
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["GoogleLocationProfileModel"];
+                };
+            };
+        };
+    };
+    updateLocationProfileTitle: {
+        parameters: {
+            query: {
+                locationId: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": string;
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["GoogleLocationProfileModel"];
+                };
+            };
+        };
+    };
+    updateLocationProfilePhoneNumber: {
+        parameters: {
+            query: {
+                locationId: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": string;
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["GoogleLocationProfileModel"];
+                };
+            };
+        };
+    };
+    updateLocationProfileOpeningDate: {
+        parameters: {
+            query: {
+                locationId: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["GoogleLocationDate"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["GoogleLocationProfileModel"];
+                };
+            };
+        };
+    };
+    updateLocationProfileDescription: {
+        parameters: {
+            query: {
+                locationId: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": string;
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["GoogleLocationProfileModel"];
+                };
+            };
+        };
+    };
+    updateLocationProfileAdditionalCategories: {
+        parameters: {
+            query: {
+                locationId: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["GoogleLocationCategory"][];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["GoogleLocationProfileModel"];
+                };
+            };
+        };
+    };
+    updateLocationProfilePrimaryCategory: {
+        parameters: {
+            query: {
+                locationId: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["GoogleLocationCategory"];
             };
         };
         responses: {

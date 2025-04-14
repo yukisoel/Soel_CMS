@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
+import org.springframework.web.client.HttpClientErrorException
 import org.springframework.web.multipart.MultipartFile
 import org.springframework.web.server.ResponseStatusException
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody
@@ -115,7 +116,6 @@ class GoogleServicImpl(val googleRepository: GoogleRepository, val menuLogReposi
                 }
                 nextPageToken = googleCategoriesResponse?.nextPageToken
                 googleCategoriesMutableList.addAll(googleCategories!!.toMutableList())
-                println(nextPageToken)
             } while (nextPageToken != null)
             return ResponseEntity.ok(googleCategoriesMutableList)
         } catch (e: Exception) {
@@ -140,7 +140,6 @@ class GoogleServicImpl(val googleRepository: GoogleRepository, val menuLogReposi
                 }
                 nextPageToken = googleLocationsResponse?.nextPageToken
                 googleLocationsMutableList.addAll(googleLocations!!.toMutableList())
-                println(nextPageToken)
             } while (nextPageToken != null)
             return ResponseEntity.ok(googleLocationsMutableList)
         } catch (e: Exception) {
@@ -171,8 +170,7 @@ class GoogleServicImpl(val googleRepository: GoogleRepository, val menuLogReposi
     override fun getLocationProfile(accessToken: String, locationId: String): ResponseEntity<GoogleLocationProfileModel>? {
         try {
             val googleLocationProfile = googleRepository.getLocationProfile(accessToken, locationId)
-            println("googleLocationProfile")
-            println(googleLocationProfile)
+            logger.info("googleLocationProfile: $googleLocationProfile")
             return ResponseEntity.ok(
                 GoogleLocationProfileModel(
                     googleLocationProfile!!.name?.removePrefix("locations/"),
@@ -495,9 +493,18 @@ class GoogleServicImpl(val googleRepository: GoogleRepository, val menuLogReposi
             )
         } catch (e: Exception) {
             logger.error("Error updating location profile", e)
-            return ResponseEntity
-                .badRequest()
-                .body(null)
+            return when (e) {
+                is HttpClientErrorException.NotFound -> {
+                    ResponseEntity
+                        .status(444)
+                        .body(null)
+                }
+                else -> {
+                    ResponseEntity
+                        .badRequest()
+                        .body(null)
+                }
+            }
         }
     }
 
