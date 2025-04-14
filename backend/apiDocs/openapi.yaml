@@ -926,6 +926,48 @@
         }
       }
     },
+    "/api/google/location/attributes/sns_link": {
+      "patch": {
+        "tags": [
+          "Google:PATCHメソッド"
+        ],
+        "summary": "Google:店舗のSNSリンクの更新",
+        "description": "\n              Google:店舗のSNSリンクを更新します。\n              Request Bodyとして snsTypeとsnsUrlのStringにしてください。\n              例 : {\"snsType\": \"TWITTER\", \"snsUrl\": \"https://x.com/elonmusk\"}\n              snsTypeはenumで以下から選択してください。(全部大文字で指定してください)\n                TWITTER, TIKTOK, INSTAGRAM, YOUTUBE, INSTAGRAM, FACEBOOK, LINKEDIN, PINTEREST\n        ",
+        "operationId": "updateLocationAttributeSnsLink",
+        "parameters": [
+          {
+            "name": "locationId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GoogleLocationAttributeSnsLinkRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/GoogleLocationAttributesModel"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/google/me": {
       "get": {
         "tags": [
@@ -1907,6 +1949,30 @@
             "items": {
               "$ref": "#/components/schemas/GoogleLocationAttribute"
             }
+          }
+        }
+      },
+      "GoogleLocationAttributeSnsLinkRequest": {
+        "required": [
+          "snsType",
+          "snsUrl"
+        ],
+        "type": "object",
+        "properties": {
+          "snsType": {
+            "type": "string",
+            "enum": [
+              "TWITTER",
+              "TIKTOK",
+              "YOUTUBE",
+              "INSTAGRAM",
+              "FACEBOOK",
+              "LINKEDIN",
+              "PINTEREST"
+            ]
+          },
+          "snsUrl": {
+            "type": "string"
           }
         }
       },

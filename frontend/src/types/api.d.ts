@@ -389,6 +389,32 @@ export interface paths {
         patch: operations["updateLocationAttributes"];
         trace?: never;
     };
+    "/api/google/location/attributes/sns_link": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Google:店舗のSNSリンクの更新
+         * @description
+         *                   Google:店舗のSNSリンクを更新します。
+         *                   Request Bodyとして snsTypeとsnsUrlのStringにしてください。
+         *                   例 : {"snsType": "TWITTER", "snsUrl": "https://x.com/elonmusk"}
+         *                   snsTypeはenumで以下から選択してください。(全部大文字で指定してください)
+         *                     TWITTER, TIKTOK, INSTAGRAM, YOUTUBE, INSTAGRAM, FACEBOOK, LINKEDIN, PINTEREST
+         *
+         */
+        patch: operations["updateLocationAttributeSnsLink"];
+        trace?: never;
+    };
     "/api/google/me": {
         parameters: {
             query?: never;
@@ -806,6 +832,11 @@ export interface components {
         GoogleLocationAttributesModel: {
             name?: string;
             attributes?: components["schemas"]["GoogleLocationAttribute"][];
+        };
+        GoogleLocationAttributeSnsLinkRequest: {
+            /** @enum {string} */
+            snsType: GoogleLocationAttributeSnsLinkRequestSnsType;
+            snsUrl: string;
         };
         GoogleMe: {
             names: components["schemas"]["GoogleName"][];
@@ -1375,6 +1406,32 @@ export interface operations {
             };
         };
     };
+    updateLocationAttributeSnsLink: {
+        parameters: {
+            query: {
+                locationId: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["GoogleLocationAttributeSnsLinkRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["GoogleLocationAttributesModel"];
+                };
+            };
+        };
+    };
     getMe: {
         parameters: {
             query?: never;
@@ -1596,4 +1653,13 @@ export enum GoogleLocationAttributeValueType {
     BOOL = "BOOL",
     ENUM = "ENUM",
     REPEATED_ENUM = "REPEATED_ENUM"
+}
+export enum GoogleLocationAttributeSnsLinkRequestSnsType {
+    TWITTER = "TWITTER",
+    TIKTOK = "TIKTOK",
+    YOUTUBE = "YOUTUBE",
+    INSTAGRAM = "INSTAGRAM",
+    FACEBOOK = "FACEBOOK",
+    LINKEDIN = "LINKEDIN",
+    PINTEREST = "PINTEREST"
 }
