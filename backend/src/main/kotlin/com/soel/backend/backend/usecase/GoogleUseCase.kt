@@ -39,6 +39,11 @@ interface GoogleUseCase {
         locationId: String,
         websiteUri: String
     ): ResponseEntity<GoogleLocationProfileModel>?
+    fun updateLocationProfileServiceArea(
+        accessToken: String,
+        locationId: String,
+        placeIds: List<String>,
+    ): ResponseEntity<GoogleLocationProfileModel>?
 
     fun updateLocationAttributeSnsLink(
         accessToken: String,
@@ -124,6 +129,12 @@ class GoogleUseCaseImpl(val googleService: GoogleService) : GoogleUseCase {
     override fun updateLocationProfileWebsiteUri(accessToken: String, locationId: String, websiteUri: String): ResponseEntity<GoogleLocationProfileModel>? {
         val updateMask = "websiteUri"
         val locationProfile = ProfileBuilder.builder().websiteUri(websiteUri).build()
+        return googleService.updateLocationProfile(accessToken, locationId, updateMask, locationProfile)
+    }
+
+    override fun updateLocationProfileServiceArea(accessToken: String, locationId: String, placeIds: List<String>): ResponseEntity<GoogleLocationProfileModel>? {
+        val updateMask = "serviceArea"
+        val locationProfile = ProfileBuilder.builder().serviceArea(placeIds).build()
         return googleService.updateLocationProfile(accessToken, locationId, updateMask, locationProfile)
     }
 

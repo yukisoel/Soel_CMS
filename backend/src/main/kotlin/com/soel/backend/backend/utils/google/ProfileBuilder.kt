@@ -9,6 +9,7 @@ class ProfileBuilder{
     private var openInfo: GoogleLocationOpenInfo? = null
     private var phoneNumbers: GoogleLocationPhoneNumbers? = null
     private var websiteUri: String? = null
+    private var serviceArea: GoogleLocationServiceArea? = null
 
     fun title(title: String) = apply {
         this.title = title
@@ -44,6 +45,18 @@ class ProfileBuilder{
         this.websiteUri = websiteUri
     }
 
+    fun serviceArea(placeIds: List<String>) = apply {
+        this.serviceArea = GoogleLocationServiceArea(
+            places = GoogleLocationPlaceInfos(
+                placeInfos = placeIds.map { placeId ->
+                    GoogleLocationPlaceInfo(
+                        placeId = placeId
+                    )
+                }
+            )
+        )
+    }
+
     fun build(): GoogleLocationProfileModel {
         return GoogleLocationProfileModel(
             title = title,
@@ -51,7 +64,8 @@ class ProfileBuilder{
             profile = profile,
             openInfo = openInfo,
             phoneNumbers = phoneNumbers,
-            websiteUri = websiteUri
+            websiteUri = websiteUri,
+            serviceArea = serviceArea
         )
     }
 

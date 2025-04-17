@@ -354,6 +354,23 @@ class GoogleController(val googleService: GoogleService, val googleUseCase: Goog
         return googleUseCase.updateLocationProfileWebsiteUri(googleClient.accessToken.tokenValue, locationId, websiteUri)
     }
 
+    @Operation(
+        summary = "Google:店舗のプロフィールの更新:サービスエリア",
+        description = """
+              Google:店舗のサービスエリアを更新します。
+              Request Bodyとして placeIdsのString配列にしてください。
+              例 : ["ChIJLx1v3J2XGGAR5g4q0G7f8lE", "ChIJLx1v3J2XGGAR5g4q0G7f8lE"]
+        """, tags = ["Google:PATCHメソッド"]
+    )
+    @PatchMapping("/location/service_area")
+    fun updateLocationServiceArea(
+        @RegisteredOAuth2AuthorizedClient("google") googleClient: OAuth2AuthorizedClient,
+        @RequestParam("locationId") locationId: String,
+        @RequestBody placeIds: List<String>
+    ): ResponseEntity<GoogleLocationProfileModel>? {
+        return googleUseCase.updateLocationProfileServiceArea(googleClient.accessToken.tokenValue, locationId, placeIds)
+    }
+
     @Operation(summary = "Google:店舗のメニューの更新", description = "Google:店舗のメニューを更新します", tags = ["Google:PATCHメソッド"])
     @PatchMapping("/location/food_menus")
     fun updateLocationFoodMenus(
