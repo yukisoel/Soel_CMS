@@ -19,25 +19,35 @@ type EditSectionModalProps = {
   isOpen: boolean;
   onClose: () => void;
   title: string;
+  onSubmit: (data: FormData) => Promise<void>;
+  initialValues?: {
+    title: string;
+  };
 };
 
 export const EditSectionModal: React.FC<EditSectionModalProps> = ({
   isOpen,
   onClose,
   title,
+  onSubmit,
+  initialValues,
 }) => {
   const {
     register,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm<FormData>({
     resolver: zodResolver(schema),
   });
 
-  const onSubmit = (data: FormData) => {
-    console.log(data);
-    onClose();
-  };
+  React.useEffect(() => {
+    if (isOpen) {
+      reset(initialValues || {
+        title: '',
+      });
+    }
+  }, [isOpen, reset, initialValues]);
 
   const contentRender = () => (
     <form onSubmit={handleSubmit(onSubmit)}>

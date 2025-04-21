@@ -12,9 +12,9 @@ import useFileUpload from '@/main/common/FileUpload/useFileUpload';
 import LayoutLabeledFormItem from '@/main/common/LayoutLabeledFormItem';
 
 const schema = z.object({
-  title: z.string().min(1, 'タイトルは必須です'),
+  title: z.string().min(1, 'メニュー名は必須です'),
   price: z.string().min(1, '価格は必須です'),
-  description: z.string().min(1, '説明は必須です'),
+  description: z.string(),
 });
 
 type FormData = z.infer<typeof schema>;
@@ -23,67 +23,78 @@ type EditMenuModalProps = {
   isOpen: boolean;
   onClose: () => void;
   title: string;
+  onSubmit: (data: FormData) => Promise<void>;
+  initialValues?: {
+    title: string;
+    price: string;
+    description: string;
+  };
 };
 
 export const EditMenuModal: React.FC<EditMenuModalProps> = ({
   isOpen,
   onClose,
   title,
+  onSubmit,
+  initialValues,
 }) => {
   const {
     register,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm<FormData>({
     resolver: zodResolver(schema),
+    defaultValues: initialValues,
   });
 
-  const { render: renderFileUpload, uploadedPhotoFileList } = useFileUpload({ size: 'regular' });
+  React.useEffect(() => {
+    if (isOpen) {
+      reset(initialValues || {
+        title: '',
+        price: '',
+        description: '',
+      });
+    }
+  }, [isOpen, initialValues, reset]);
 
-  const onSubmit = (data: FormData) => {
-    console.log(data, uploadedPhotoFileList);
-    onClose();
-  };
+  const { render: renderFileUpload, uploadedPhotoFileList } = useFileUpload({ size: 'regular' });
 
   const contentRender = () => (
     <form onSubmit={handleSubmit(onSubmit)}>
       <Wrapper direction="col" gap="2rem">
-        <Wrapper direction="col" gap="2rem">
-            <LayoutLabeledFormItem label="アイテム名">
-                <Input
-                {...register('title')}
-                placeholder="アイテム名を入力"
-                padding="0.7rem 1.5rem"
-                width="100%"
-                />
-                {errors.title && (
-                <Typography content={errors.title.message || ''} size="xsmall" color="error" />
-                )}
-            </LayoutLabeledFormItem>
-            <LayoutLabeledFormItem label="価格設定">
-                <Input
-                {...register('price')}
-                placeholder="アイテムの価格（円）を入力"
-                type="number"
-                padding="0.7rem 1.5rem"
-                width="100%"
-                />
-                {errors.price && (
-                <Typography content={errors.price.message || ''} size="xsmall" color="error" />
-                )}
-            </LayoutLabeledFormItem>
-        </Wrapper>
+        <LayoutLabeledFormItem label="メニュー名">
+          <Input
+            {...register('title')}
+            placeholder="メニュー名を入力"
+            padding="0.7rem 1.5rem"
+            width="100%"
+          />
+          {errors.title && (
+            <Typography content={errors.title.message || ''} size="xsmall" color="error" />
+          )}
+        </LayoutLabeledFormItem>
+        <LayoutLabeledFormItem label="価格">
+          <Input
+            {...register('price')}
+            placeholder="価格を入力"
+            padding="0.7rem 1.5rem"
+            width="100%"
+          />
+          {errors.price && (
+            <Typography content={errors.price.message || ''} size="xsmall" color="error" />
+          )}
+        </LayoutLabeledFormItem>
         <LayoutLabeledFormItem label="写真を追加">
           {renderFileUpload()}
         </LayoutLabeledFormItem>
-        <LayoutLabeledFormItem label="アイテムの説明">
+        <LayoutLabeledFormItem label="説明">
           <Textarea
             {...register('description')}
             placeholder="説明を入力"
+            padding="0.7rem 1.5rem"
+            width="100%"
           />
-          {errors.description && (
-            <Typography content={errors.description.message || ''} size="xsmall" color="error" />
-          )}
         </LayoutLabeledFormItem>
         <Wrapper justify="justify-end" gap="1rem">
           <Button bgColor="secondary" onClick={onClose}>

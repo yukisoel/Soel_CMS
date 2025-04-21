@@ -59,7 +59,7 @@ function App() {
           <Route path={"accounts/:accountId/location/:locationId/photo"}
                   element={<EditPhotoLayoutV2 googleService={googleService}/>}/>
           <Route path={"accounts/:accountId/location/:locationId/menu"}
-                  element={<EditMenuLayoutV2 />}/>
+                  element={<EditMenuLayoutV2 googleService={googleService}/>}/>
         </Route>
         <Route path={'gbp'} element={<EditGBPLayout/>}>
           <Route path={"accounts/:accountId/location/:locationId"}

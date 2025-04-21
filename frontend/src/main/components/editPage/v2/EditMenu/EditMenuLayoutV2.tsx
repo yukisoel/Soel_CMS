@@ -9,81 +9,214 @@ import AddIcon from '@/main/assets/AddIcon.svg';
 import { EditMenuModal } from './modals/EditMenuModal';
 import { EditSectionModal } from './modals/EditSectionModal';
 import { useModal } from '@/main/common/Modal/useModal';
+import { GoogleService } from '@/main/service/GoogleService';
+import { GoogleLocationFoodMenuSection, GoogleLocationFoodMenusModel, GoogleLocationFoodMenuItem } from '@/main/model/LocationModel';
+import { useParams } from 'react-router-dom';
+import { useMenuFood } from '@/main/hooks/EditMenu/useFoodMenu';
 
-type MenuItem = {
-  id: string;
-  title: string;
-  description: string;
-  imageUrl?: string;
+type Props = {
+  googleService: GoogleService;
 };
 
-type Section = {
-  id: string;
-  title: string;
-  items: MenuItem[];
-};
-
-export const EditMenuLayoutV2: React.FC = () => {
-  const { isOpen: isMenuModalOpen, openModal: openMenuModal, closeModal: closeMenuModal } = useModal();
-  const { isOpen: isSectionModalOpen, openModal: openSectionModal, closeModal: closeSectionModal } = useModal();
+export const EditMenuLayoutV2: React.FC<Props> = ({ googleService }) => {
+  const { isOpen: isMenuModalOpen, openModal: openMenuModal, closeModal: closeMenuModalBase } = useModal();
+  const { isOpen: isSectionModalOpen, openModal: openSectionModal, closeModal: closeSectionModalBase } = useModal();
   const [selectedSection, setSelectedSection] = React.useState<string | null>(null);
   const [selectedMenuItem, setSelectedMenuItem] = React.useState<string | null>(null);
-
-  // モックデータ
-  const sections: Section[] = [
-    {
-      id: '1',
-      title: 'セクション1',
-      items: [
-        {
-          id: '1-1',
-          title: '料理の名前が入ります。料理の名前が入ります。',
-          description: '料理の説明が入ります。料理の説明が入ります。料理の説明が入ります。',
-          imageUrl: '/mock/image1.jpg'
-        },
-        {
-          id: '1-2',
-          title: '料理の名前が入ります。料理の名前が入ります。',
-          description: '料理の説明が入ります。料理の説明が入ります。料理の説明が入ります。'
-        }
-      ]
-    },
-    {
-      id: '2',
-      title: 'セクション2',
-      items: [
-        {
-          id: '2-1',
-          title: '料理の名前が入ります。料理の名前が入ります。',
-          description: '料理の説明が入ります。料理の説明が入ります。料理の説明が入ります。',
-          imageUrl: '/mock/image2.jpg'
-        }
-      ]
-    }
-  ];
+  const { accountId, locationId } = useParams();
+  const { foodMenu, updateFoodMenus } = useMenuFood(googleService, accountId ?? '', locationId ?? '');
+  const [menuInitialValues, setMenuInitialValues] = React.useState<{
+    title: string;
+    price: string;
+    description: string;
+  } | undefined>(undefined);
+  const [sectionInitialValues, setSectionInitialValues] = React.useState<{
+    title: string;
+  } | undefined>(undefined);
 
   const handleSearch = (query: string) => {
     console.log('Search:', query);
   };
 
   const handleAddSection = () => {
+    setSelectedSection(null);
+    setSectionInitialValues(undefined);
     openSectionModal();
   };
 
   const handleEditSection = (sectionId: string) => {
     setSelectedSection(sectionId);
+    const section = foodMenu?.menus[0].sections[parseInt(sectionId)];
+    if (section) {
+      setSectionInitialValues({
+        title: section.labels[0]?.displayName || '',
+      });
+    }
     openSectionModal();
   };
 
   const handleAddMenuItem = (sectionId: string) => {
-    console.log('Add menu item to section:', sectionId);
+    setSelectedSection(sectionId);
+    setSelectedMenuItem(null);
+    setMenuInitialValues(undefined);
+    openMenuModal();
   };
 
   const handleEditMenuItem = (sectionId: string, menuItemId: string) => {
     setSelectedSection(sectionId);
     setSelectedMenuItem(menuItemId);
+    const section = foodMenu?.menus[0].sections[parseInt(sectionId)];
+    const menuItem = section?.items[parseInt(menuItemId)];
+    if (menuItem) {
+      setMenuInitialValues({
+        title: menuItem.labels[0]?.displayName || '',
+        price: menuItem.attributes.price?.units || '',
+        description: menuItem.labels[0]?.description || '',
+      });
+    }
     openMenuModal();
   };
+
+  const handleSaveSection = async (data: { title: string }) => {
+    try {
+      if (!foodMenu) return;
+
+      const defaultMenuItem: GoogleLocationFoodMenuItem = {
+        labels: [{
+          displayName: 'メニュー項目',
+          description: null,
+          languageCode: null
+        }],
+        attributes: {
+          price: {
+            units: '0',
+            currencyCode: 'JPY',
+            nanos: null
+          },
+          spiciness: null,
+          allergen: null,
+          dietaryRestriction: null,
+          nutritionFacts: null,
+          ingredients: null,
+          servesNumPeople: null,
+          preparationMethods: null,
+          portionSize: null,
+          mediaKeys: null
+        },
+        options: null
+      };
+
+      const newSection: GoogleLocationFoodMenuSection = {
+        labels: [{
+          displayName: data.title,
+          description: null,
+          languageCode: null
+        }],
+        items: [defaultMenuItem]
+      };
+
+      const updatedSections = selectedSection
+        ? foodMenu.menus[0].sections.map((section, index) =>
+            index.toString() === selectedSection
+              ? {
+                  ...section,
+                  labels: [{
+                    displayName: data.title,
+                    description: null,
+                    languageCode: null
+                  }]
+                }
+              : section
+          )
+        : [...foodMenu.menus[0].sections, newSection];
+
+      const updatedFoodMenu: GoogleLocationFoodMenusModel = {
+        ...foodMenu,
+        menus: [{
+          ...foodMenu.menus[0],
+          sections: updatedSections
+        }]
+      };
+
+      await updateFoodMenus(updatedFoodMenu);
+      closeSectionModal();
+    } catch (error) {
+      console.error('Failed to save section:', error);
+    }
+  };
+
+  const handleSaveMenuItem = async (data: { title: string; price: string; description: string; image?: FileList }) => {
+    try {
+      if (!foodMenu) return;
+
+      const sectionIndex = foodMenu.menus[0].sections.findIndex((_, index) => index.toString() === selectedSection);
+      if (sectionIndex === -1) return;
+
+      const newMenuItem: GoogleLocationFoodMenuItem = {
+        labels: [{
+          displayName: data.title,
+          description: data.description,
+          languageCode: null
+        }],
+        attributes: {
+          price: {
+            units: data.price,
+            currencyCode: 'JPY',
+            nanos: null
+          },
+          spiciness: null,
+          allergen: null,
+          dietaryRestriction: null,
+          nutritionFacts: null,
+          ingredients: null,
+          servesNumPeople: null,
+          preparationMethods: null,
+          portionSize: null,
+          mediaKeys: null
+        },
+        options: null
+      };
+
+      const updatedSections = foodMenu.menus[0].sections.map((section, index) => {
+        if (index === sectionIndex) {
+          const updatedItems = selectedMenuItem
+            ? section.items.map((item, itemIndex) =>
+                itemIndex.toString() === selectedMenuItem ? newMenuItem : item
+              )
+            : [...section.items, newMenuItem];
+          return { ...section, items: updatedItems };
+        }
+        return section;
+      });
+
+      const updatedFoodMenu: GoogleLocationFoodMenusModel = {
+        ...foodMenu,
+        menus: [{
+          ...foodMenu.menus[0],
+          sections: updatedSections
+        }]
+      };
+
+      await updateFoodMenus(updatedFoodMenu);
+      closeMenuModal();
+    } catch (error) {
+      console.error('Failed to save menu item:', error);
+    }
+  };
+
+  const closeMenuModal = () => {
+    setSelectedMenuItem(null);
+    setMenuInitialValues(undefined);
+    closeMenuModalBase();
+  };
+
+  const closeSectionModal = () => {
+    setSelectedSection(null);
+    setSectionInitialValues(undefined);
+    closeSectionModalBase();
+  };
+
+  if (!foodMenu) return null;
 
   return (
     <Wrapper direction="col" padding="5rem" gap="4rem">
@@ -108,17 +241,17 @@ export const EditMenuLayoutV2: React.FC = () => {
         <Separator borderWidth="2px" />
       </Wrapper>
 
-      {sections.map((section) => (
-        <React.Fragment key={section.id}>
+      {foodMenu.menus[0].sections.map((section, index) => (
+        <React.Fragment key={index}>
           <Wrapper direction="col" gap="2rem">
             <Wrapper justify="justify-between">
-              <Typography content={section.title} size="medium" color="primary" />
+              <Typography content={section.labels[0]?.displayName || ''} size="medium" color="primary" />
               <Wrapper gap="8px">
                 <Button
                   bgColor="primary"
                   padding="0 1rem"
                   className={styles.button}
-                  onClick={() => handleEditSection(section.id)}
+                  onClick={() => handleEditSection(index.toString())}
                 >
                   <Typography content="編集" size="xsmall" color="primary" />
                 </Button>
@@ -126,7 +259,7 @@ export const EditMenuLayoutV2: React.FC = () => {
                   bgColor="primary"
                   padding="0 1rem"
                   className={styles.button}
-                  onClick={() => handleAddMenuItem(section.id)}
+                  onClick={() => handleAddMenuItem(index.toString())}
                 >
                   <Typography content="追加" size="xsmall" color="primary" />
                 </Button>
@@ -134,38 +267,36 @@ export const EditMenuLayoutV2: React.FC = () => {
             </Wrapper>
             <Separator />
 
-            {section.items.map((item) => (
-              <React.Fragment key={item.id}>
+            {section.items.map((item, itemIndex) => (
+              <React.Fragment key={itemIndex}>
                 <Wrapper gap="16px" padding="16px 0" align="align-start" className={styles.menuItem}>
                   <Wrapper direction="col" className={styles.menuItemContent}>
                     <Typography
-                      content={item.title}
+                      content={item.labels[0]?.displayName || ''}
                       size="xsmall"
                       color="primary"
                     />
                     <Typography
-                      content={item.description}
+                      content={item.attributes.price?.units ? `${item.attributes.price.units}円` : ''}
                       size="xsmall"
                       color="secondary"
                     />
+                    {item.labels[0]?.description && (
+                      <Typography
+                        content={item.labels[0].description}
+                        size="xsmall"
+                        color="secondary"
+                      />
+                    )}
                   </Wrapper>
                   <Wrapper align="align-center" gap="2rem">
-                    {item.imageUrl ? (
-                        <img
-                        src={item.imageUrl}
-                        alt={item.title}
-                        className={styles.menuItemImage}
-                        />
-                    ) : (
-                        <Wrapper className={styles.menuItemImage} />
-                    )}
                     <Button
-                        bgColor="primary"
-                        padding="0 1rem"
-                        className={styles.button}
-                        onClick={() => handleEditMenuItem(section.id, item.id)}
+                      bgColor="primary"
+                      padding="0 1rem"
+                      className={styles.button}
+                      onClick={() => handleEditMenuItem(index.toString(), itemIndex.toString())}
                     >
-                        <Typography content="編集" size="xsmall" color="primary" />
+                      <Typography content="編集" size="xsmall" color="primary" />
                     </Button>
                   </Wrapper>
                 </Wrapper>
@@ -178,12 +309,16 @@ export const EditMenuLayoutV2: React.FC = () => {
       <EditMenuModal
         isOpen={isMenuModalOpen}
         onClose={closeMenuModal}
-        title={selectedMenuItem ? 'メニュー項目の編集' : 'セクションの編集'}
+        title={selectedMenuItem ? 'メニュー項目の編集' : 'メニュー項目の追加'}
+        onSubmit={handleSaveMenuItem}
+        initialValues={menuInitialValues}
       />
       <EditSectionModal
         isOpen={isSectionModalOpen}
         onClose={closeSectionModal}
         title={selectedSection ? 'セクションの編集' : 'セクションの追加'}
+        onSubmit={handleSaveSection}
+        initialValues={sectionInitialValues}
       />
     </Wrapper>
   );
