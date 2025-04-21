@@ -6,6 +6,9 @@ import Typography from '@/main/common/Typography';
 import Separator from '@/main/common/Separator';
 import styles from './EditMenuLayoutV2.module.scss';
 import AddIcon from '@/main/assets/AddIcon.svg';
+import { EditMenuModal } from './modals/EditMenuModal';
+import { EditSectionModal } from './modals/EditSectionModal';
+import { useModal } from '@/main/common/Modal/useModal';
 
 type MenuItem = {
   id: string;
@@ -21,6 +24,11 @@ type Section = {
 };
 
 export const EditMenuLayoutV2: React.FC = () => {
+  const { isOpen: isMenuModalOpen, openModal: openMenuModal, closeModal: closeMenuModal } = useModal();
+  const { isOpen: isSectionModalOpen, openModal: openSectionModal, closeModal: closeSectionModal } = useModal();
+  const [selectedSection, setSelectedSection] = React.useState<string | null>(null);
+  const [selectedMenuItem, setSelectedMenuItem] = React.useState<string | null>(null);
+
   // モックデータ
   const sections: Section[] = [
     {
@@ -59,11 +67,12 @@ export const EditMenuLayoutV2: React.FC = () => {
   };
 
   const handleAddSection = () => {
-    console.log('Add section');
+    openSectionModal();
   };
 
   const handleEditSection = (sectionId: string) => {
-    console.log('Edit section:', sectionId);
+    setSelectedSection(sectionId);
+    openSectionModal();
   };
 
   const handleAddMenuItem = (sectionId: string) => {
@@ -71,7 +80,9 @@ export const EditMenuLayoutV2: React.FC = () => {
   };
 
   const handleEditMenuItem = (sectionId: string, menuItemId: string) => {
-    console.log('Edit menu item:', menuItemId, 'in section:', sectionId);
+    setSelectedSection(sectionId);
+    setSelectedMenuItem(menuItemId);
+    openMenuModal();
   };
 
   return (
@@ -164,6 +175,16 @@ export const EditMenuLayoutV2: React.FC = () => {
           </Wrapper>
         </React.Fragment>
       ))}
+      <EditMenuModal
+        isOpen={isMenuModalOpen}
+        onClose={closeMenuModal}
+        title={selectedMenuItem ? 'メニュー項目の編集' : 'セクションの編集'}
+      />
+      <EditSectionModal
+        isOpen={isSectionModalOpen}
+        onClose={closeSectionModal}
+        title={selectedSection ? 'セクションの編集' : 'セクションの追加'}
+      />
     </Wrapper>
   );
 };
