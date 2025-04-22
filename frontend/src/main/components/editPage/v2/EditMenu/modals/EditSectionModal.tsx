@@ -20,6 +20,7 @@ type EditSectionModalProps = {
   onClose: () => void;
   title: string;
   onSubmit: (data: FormData) => Promise<void>;
+  onDelete?: () => Promise<void>;
   initialValues?: {
     title: string;
   };
@@ -30,6 +31,7 @@ export const EditSectionModal: React.FC<EditSectionModalProps> = ({
   onClose,
   title,
   onSubmit,
+  onDelete,
   initialValues,
 }) => {
   const {
@@ -63,13 +65,24 @@ export const EditSectionModal: React.FC<EditSectionModalProps> = ({
             <Typography content={errors.title.message || ''} size="xsmall" color="error" />
           )}
         </LayoutLabeledFormItem>
-        <Wrapper justify="justify-end" gap="1rem">
-          <Button bgColor="secondary" onClick={onClose}>
-            <Typography content="戻る" size="normal" color="primary" />
-          </Button>
-          <Button bgColor="primary" type="submit">
-            <Typography content="追加する" size="normal" color="primary" />
-          </Button>
+        <Wrapper justify="justify-between" gap="1rem">
+          {onDelete ? (
+            <Wrapper></Wrapper>
+            // 一旦削除はWIP
+            // <Button bgColor="secondary" onClick={onDelete}>
+            //   <Typography content="削除" size="normal" color="error" />
+            // </Button>
+          ) : (
+            <Wrapper></Wrapper>
+          )}
+          <Wrapper gap="1rem">
+            <Button bgColor="secondary" onClick={onClose}>
+                <Typography content="戻る" size="normal" color="primary" />
+            </Button>
+            <Button bgColor="primary" type="submit">
+                <Typography content="追加する" size="normal" color="primary" />
+            </Button>
+          </Wrapper>
         </Wrapper>
       </Wrapper>
     </form>

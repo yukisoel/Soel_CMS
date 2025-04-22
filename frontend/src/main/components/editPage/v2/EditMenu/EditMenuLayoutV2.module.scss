@@ -26,6 +26,7 @@
 
 .menuItemContent {
   flex: 1;
+  min-width: 0;
 }
 
 .menuItemImage {
@@ -33,4 +34,28 @@
   height: 80px;
   background-color: #D9D9D9;
   border-radius: 5px;
+}
+
+.ellipsis {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sectionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+
+.sectionTitle {
+  flex: 1;
+  min-width: 0;
+}
+
+.sectionButtons {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
 }

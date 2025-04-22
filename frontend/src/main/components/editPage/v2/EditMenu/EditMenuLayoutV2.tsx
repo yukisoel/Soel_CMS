@@ -18,11 +18,22 @@ type Props = {
   googleService: GoogleService;
 };
 
+type FilteredMenuItem = Omit<GoogleLocationFoodMenuItem, 'items'> & {
+  originalSectionIndex: number;
+  originalItemIndex: number;
+};
+
+type FilteredSection = Omit<GoogleLocationFoodMenuSection, 'items'> & {
+  originalIndex: number;
+  items: FilteredMenuItem[];
+};
+
 export const EditMenuLayoutV2: React.FC<Props> = ({ googleService }) => {
   const { isOpen: isMenuModalOpen, openModal: openMenuModal, closeModal: closeMenuModalBase } = useModal();
   const { isOpen: isSectionModalOpen, openModal: openSectionModal, closeModal: closeSectionModalBase } = useModal();
   const [selectedSection, setSelectedSection] = React.useState<string | null>(null);
   const [selectedMenuItem, setSelectedMenuItem] = React.useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = React.useState('');
   const { accountId, locationId } = useParams();
   const { foodMenu, updateFoodMenus } = useMenuFood(googleService, accountId ?? '', locationId ?? '');
   const [menuInitialValues, setMenuInitialValues] = React.useState<{
@@ -35,8 +46,48 @@ export const EditMenuLayoutV2: React.FC<Props> = ({ googleService }) => {
   } | undefined>(undefined);
 
   const handleSearch = (query: string) => {
-    console.log('Search:', query);
+    setSearchQuery(query.toLowerCase());
   };
+
+  const filteredSections: FilteredSection[] = React.useMemo(() => {
+    if (!foodMenu) return [];
+    if (!searchQuery) return foodMenu.menus[0].sections.map((section, index) => ({
+      ...section,
+      originalIndex: index,
+      items: section.items.map((item, itemIndex) => ({
+        ...item,
+        originalSectionIndex: index,
+        originalItemIndex: itemIndex
+      } as FilteredMenuItem))
+    }));
+
+    return foodMenu.menus[0].sections.map((section, originalIndex) => {
+      const sectionName = section.labels[0]?.displayName?.toLowerCase() || '';
+      const matchingItems = section.items.map((item, originalItemIndex) => {
+        const filteredItem: FilteredMenuItem = {
+          ...item,
+          originalSectionIndex: originalIndex,
+          originalItemIndex
+        };
+        return filteredItem;
+      }).filter(item => {
+        const itemName = item.labels[0]?.displayName?.toLowerCase() || '';
+        const itemDescription = item.labels[0]?.description?.toLowerCase() || '';
+        return itemName.includes(searchQuery) || itemDescription.includes(searchQuery);
+      });
+
+      // セクション名が一致するか、セクション内に一致するアイテムがある場合のみ表示
+      if (sectionName.includes(searchQuery) || matchingItems.length > 0) {
+        const filteredSection: FilteredSection = {
+          ...section,
+          items: matchingItems,
+          originalIndex
+        };
+        return filteredSection;
+      }
+      return null;
+    }).filter((section): section is FilteredSection => section !== null);
+  }, [foodMenu, searchQuery]);
 
   const handleAddSection = () => {
     setSelectedSection(null);
@@ -204,6 +255,60 @@ export const EditMenuLayoutV2: React.FC<Props> = ({ googleService }) => {
     }
   };
 
+  const handleDeleteMenuItem = async (sectionId: string, menuItemId: string) => {
+    try {
+      if (!foodMenu) return;
+
+      const sectionIndex = parseInt(sectionId);
+      const menuItemIndex = parseInt(menuItemId);
+
+      const updatedSections = foodMenu.menus[0].sections.map((section, index) => {
+        if (index === sectionIndex) {
+          return {
+            ...section,
+            items: section.items.filter((_, itemIndex) => itemIndex !== menuItemIndex)
+          };
+        }
+        return section;
+      });
+
+      const updatedFoodMenu: GoogleLocationFoodMenusModel = {
+        ...foodMenu,
+        menus: [{
+          ...foodMenu.menus[0],
+          sections: updatedSections
+        }]
+      };
+
+      await updateFoodMenus(updatedFoodMenu);
+      closeMenuModal();
+    } catch (error) {
+      console.error('Failed to delete menu item:', error);
+    }
+  };
+
+  const handleDeleteSection = async (sectionId: string) => {
+    try {
+      if (!foodMenu) return;
+
+      const sectionIndex = parseInt(sectionId);
+      const updatedSections = foodMenu.menus[0].sections.filter((_, index) => index !== sectionIndex);
+
+      const updatedFoodMenu: GoogleLocationFoodMenusModel = {
+        ...foodMenu,
+        menus: [{
+          ...foodMenu.menus[0],
+          sections: updatedSections
+        }]
+      };
+
+      await updateFoodMenus(updatedFoodMenu);
+      closeSectionModal();
+    } catch (error) {
+      console.error('Failed to delete section:', error);
+    }
+  };
+
   const closeMenuModal = () => {
     setSelectedMenuItem(null);
     setMenuInitialValues(undefined);
@@ -241,17 +346,19 @@ export const EditMenuLayoutV2: React.FC<Props> = ({ googleService }) => {
         <Separator borderWidth="2px" />
       </Wrapper>
 
-      {foodMenu.menus[0].sections.map((section, index) => (
+      {filteredSections.map((section, index) => (
         <React.Fragment key={index}>
           <Wrapper direction="col" gap="2rem">
-            <Wrapper justify="justify-between">
-              <Typography content={section.labels[0]?.displayName || ''} size="medium" color="primary" />
-              <Wrapper gap="8px">
+            <Wrapper className={styles.sectionHeader}>
+              <Wrapper className={styles.sectionTitle}>
+                <Typography content={section.labels[0]?.displayName || ''} size="medium" color="primary" className={styles.ellipsis} />
+              </Wrapper>
+              <Wrapper className={styles.sectionButtons}>
                 <Button
                   bgColor="primary"
                   padding="0 1rem"
                   className={styles.button}
-                  onClick={() => handleEditSection(index.toString())}
+                  onClick={() => handleEditSection(section.originalIndex.toString())}
                 >
                   <Typography content="編集" size="xsmall" color="primary" />
                 </Button>
@@ -259,7 +366,7 @@ export const EditMenuLayoutV2: React.FC<Props> = ({ googleService }) => {
                   bgColor="primary"
                   padding="0 1rem"
                   className={styles.button}
-                  onClick={() => handleAddMenuItem(index.toString())}
+                  onClick={() => handleAddMenuItem(section.originalIndex.toString())}
                 >
                   <Typography content="追加" size="xsmall" color="primary" />
                 </Button>
@@ -275,17 +382,20 @@ export const EditMenuLayoutV2: React.FC<Props> = ({ googleService }) => {
                       content={item.labels[0]?.displayName || ''}
                       size="xsmall"
                       color="primary"
+                      className={styles.ellipsis}
                     />
                     <Typography
                       content={item.attributes.price?.units ? `${item.attributes.price.units}円` : ''}
                       size="xsmall"
                       color="secondary"
+                      className={styles.ellipsis}
                     />
                     {item.labels[0]?.description && (
                       <Typography
                         content={item.labels[0].description}
                         size="xsmall"
                         color="secondary"
+                        className={styles.ellipsis}
                       />
                     )}
                   </Wrapper>
@@ -294,7 +404,7 @@ export const EditMenuLayoutV2: React.FC<Props> = ({ googleService }) => {
                       bgColor="primary"
                       padding="0 1rem"
                       className={styles.button}
-                      onClick={() => handleEditMenuItem(index.toString(), itemIndex.toString())}
+                      onClick={() => handleEditMenuItem(item.originalSectionIndex.toString(), item.originalItemIndex.toString())}
                     >
                       <Typography content="編集" size="xsmall" color="primary" />
                     </Button>
@@ -311,6 +421,7 @@ export const EditMenuLayoutV2: React.FC<Props> = ({ googleService }) => {
         onClose={closeMenuModal}
         title={selectedMenuItem ? 'メニュー項目の編集' : 'メニュー項目の追加'}
         onSubmit={handleSaveMenuItem}
+        onDelete={selectedMenuItem && selectedSection ? () => handleDeleteMenuItem(selectedSection, selectedMenuItem) : undefined}
         initialValues={menuInitialValues}
       />
       <EditSectionModal
@@ -318,6 +429,7 @@ export const EditMenuLayoutV2: React.FC<Props> = ({ googleService }) => {
         onClose={closeSectionModal}
         title={selectedSection ? 'セクションの編集' : 'セクションの追加'}
         onSubmit={handleSaveSection}
+        onDelete={selectedSection ? () => handleDeleteSection(selectedSection) : undefined}
         initialValues={sectionInitialValues}
       />
     </Wrapper>
