@@ -60,7 +60,7 @@ export const EditMenuModal: React.FC<EditMenuModalProps> = ({
     }
   }, [isOpen, initialValues, reset]);
 
-  const { render: renderFileUpload, uploadedPhotoFileList } = useFileUpload({ size: 'regular' });
+  const { render: renderFileUpload } = useFileUpload({ size: 'regular' });
 
   const contentRender = () => (
     <form onSubmit={handleSubmit(onSubmit)}>
