@@ -378,26 +378,20 @@ export const EditMenuLayoutV2: React.FC<Props> = ({ googleService }) => {
               <React.Fragment key={itemIndex}>
                 <Wrapper gap="16px" padding="16px 0" align="align-start" className={styles.menuItem}>
                   <Wrapper direction="col" className={styles.menuItemContent}>
-                    <Typography
-                      content={item.labels[0]?.displayName || ''}
-                      size="xsmall"
-                      color="primary"
-                      className={styles.ellipsis}
-                    />
-                    <Typography
-                      content={item.attributes.price?.units ? `${item.attributes.price.units}円` : ''}
-                      size="xsmall"
-                      color="secondary"
-                      className={styles.ellipsis}
-                    />
-                    {item.labels[0]?.description && (
+                    <Wrapper gap="8px" align="align-center" justify='justify-between'>
                       <Typography
-                        content={item.labels[0].description}
+                        content={item.labels[0]?.displayName || ''}
+                        size="xsmall"
+                        color="primary"
+                        className={styles.menuItemName}
+                      />
+                      <Typography
+                        content={item.attributes.price?.units ? `${item.attributes.price.units}円` : ''}
                         size="xsmall"
                         color="secondary"
-                        className={styles.ellipsis}
+                        className={styles.menuItemPrice}
                       />
-                    )}
+                    </Wrapper>
                   </Wrapper>
                   <Wrapper align="align-center" gap="2rem">
                     <Button
