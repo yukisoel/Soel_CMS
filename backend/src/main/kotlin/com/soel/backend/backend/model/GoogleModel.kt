@@ -2,6 +2,7 @@ package com.soel.backend.backend.model
 
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonValue
+import com.fasterxml.jackson.databind.JsonNode
 
 //Google Business Profile APIのレスポンスモデル
 data class GoogleMe(
@@ -40,7 +41,17 @@ data class GoogleLocation (
 
 data class GoogleLocationAttributesModel(
     val name: String? = null,
-    val attributes: List<GoogleLocationAttribute>? = null,
+    val attributes: List<GoogleLocationAttribute?>? = null,
+)
+
+data class GoogleLocationAttributeService(
+    val type: BoolAttributeServiceType,
+    val value: Boolean? = null
+)
+
+data class GoogleLocationAttributeServiceOption(
+    val type: BoolAttributeServiceOptionType,
+    val value: Boolean? = null,
 )
 
 data class GoogleLocationAttributeSnsLinkRequest(
@@ -52,6 +63,7 @@ data class GoogleLocationAttribute(
     val name: String? = null,
     val valueType: GoogleLocationAttributeValueType? = null,
     val uriValues: List<GoogleLocationAttributeUriValue>? = null,
+    val values: List<JsonNode>? = null,
 )
 
 data class GoogleLocationAttributeUriValue(
@@ -473,7 +485,7 @@ enum class BusinessHoursType(
     /** 機械向けコード（"LUNCH", "DINNER"） */
     val code: String,
     /** 表示用ラベル（"ランチ", "ディナー"） */
-    val label: String
+    @get:JsonValue val label: String
 ){
     REGULAR("REGULAR", "通常営業"),
     ACCESS("ACCESS", "入店可能時間"),
@@ -500,11 +512,71 @@ enum class BusinessHoursType(
         @JsonCreator
         fun fromValue(value: String): BusinessHoursType =
             entries.firstOrNull {
-                it.code.equals(value, ignoreCase = true) ||
-                        it.label == value
+                it.code.equals(value, ignoreCase = true) || it.label == value
             } ?: throw IllegalArgumentException("Unknown BusinessHoursType: $value")
     }
 }
+
+enum class BoolAttributeServiceType(
+    val attributeName: String,
+    @get:JsonValue val value: String
+) {
+    SERVICE_ALCOHOL("attributes/serves_alcohol", "アルコール飲料あり"),
+    SERVES_ORGANIC("attributes/serves_organic", "オーガニック料理あり"),
+    SERVES_COCKTAILS("attributes/serves_cocktails", "カクテルあり"),
+    SERVES_COFFEE("attributes/serves_coffee", "コーヒーあり"),
+    HAS_SALAD_BAR("attributes/has_salad_bar", "サラダバーあり"),
+    SERVES_HAPPY_HOUR_DRINKS("attributes/serves_happy_hour_drinks", "ドリンクのハッピーアワーあり"),
+    SERVES_LIQUOR("attributes/serves_liquor", "ハードリカーあり"),
+    SERVES_HALAL_FOOD("attributes/serves_halal_food", "ハラルメニューあり"),
+    SERVES_VEGAN("attributes/serves_vegan", "ビーガンメニューあり"),
+    SERVES_BEER("attributes/serves_beer", "ビールあり"),
+    SERVES_VEGETARIAN("attributes/serves_vegetarian", "ベジタリアンメニューあり"),
+    SERVES_WINE("attributes/serves_wine", "ワインあり"),
+    HAS_PRIVATE_DINING_ROOM("attributes/has_private_dining_room", "個室あり"),
+    SERVES_SMALL_PLATES("attributes/serves_small_plates", "小皿料理を提供するお店"),
+    SERVES_HAPPY_HOUR_FOOD("attributes/serves_happy_hour_food", "食べ物のハッピーアワーあり"),
+    HAS_ALL_YOU_CAN_EAT_ALWAYS("attributes/has_all_you_can_eat_always", "食べ放題あり"),
+    SERVES_LATE_NIGHT_FOOD("attributes/serves_late_night_food", "深夜の食事可"),
+    HAS_BRAILLE_MENU("attributes/has_braille_menu", "点字メニューあり");
+
+    companion object {
+        @JvmStatic
+        @JsonCreator
+        fun fromValue(value: String): BoolAttributeServiceType =
+            entries.firstOrNull {
+                it.name.equals(value, ignoreCase = true) ||
+                        it.attributeName == value ||
+                        it.value == value
+            } ?: throw IllegalArgumentException("Unknown BoolAttributeServiceType: $value")
+    }
+}
+
+enum class BoolAttributeServiceOptionType(
+    val attributeName: String,
+    @get:JsonValue val value: String
+) {
+    HAS_SEATING_OUTDOORS("attributes/has_seating_outdoors", "テラス席あり"),
+    HAS_CURBSIDE_PICKUP("attributes/has_curbside_pickup", "店先受取可"),
+    HAS_NO_CONTACT_DELIVERY("attributes/has_no_contact_delivery", "非接触宅配可"),
+    HAS_DELIVERY("attributes/has_delivery", "宅配可"),
+    HAS_DRIVE_THROUGH("attributes/has_drive_through", "ドライブスルーあり"),
+    HAS_ONSITE_SERVICES("attributes/has_onsite_services", "実店舗の営業あり"),
+    HAS_TAKEOUT("attributes/has_takeout", "テイクアウト可"),
+    SERVES_DINE_IN("attributes/serves_dine_in", "イートイン利用可");
+
+    companion object {
+        @JvmStatic
+        @JsonCreator
+        fun fromValue(value: String): BoolAttributeServiceOptionType =
+            entries.firstOrNull {
+                it.name.equals(value, ignoreCase = true) ||
+                        it.attributeName == value ||
+                        it.value == value
+            } ?: throw IllegalArgumentException("Unknown BoolAttributeServiceOptionType: $value")
+    }
+}
+
 
 
 //backend用

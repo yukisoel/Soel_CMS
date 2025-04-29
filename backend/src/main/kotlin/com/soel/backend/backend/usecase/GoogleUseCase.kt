@@ -1,5 +1,7 @@
 package com.soel.backend.backend.usecase
 
+import com.fasterxml.jackson.databind.JsonNode
+import com.fasterxml.jackson.databind.node.BooleanNode
 import com.soel.backend.backend.model.*
 import com.soel.backend.backend.service.GoogleService
 import com.soel.backend.backend.utils.google.AttributesBuilder
@@ -65,6 +67,24 @@ interface GoogleUseCase {
         accessToken: String,
         locationId: String,
         menuLink: String
+    ): ResponseEntity<GoogleLocationAttributesModel>?
+
+    fun updateLocationBusinessOwnerInfo(
+        accessToken: String,
+        locationId: String,
+        isOwnedByWomen: Boolean?
+    ): ResponseEntity<GoogleLocationAttributesModel>?
+
+    fun updateLocationServices(
+        accessToken: String,
+       locationId: String,
+       services: List<GoogleLocationAttributeService>
+    ): ResponseEntity<GoogleLocationAttributesModel>?
+
+    fun updateLocationServiceOptions(
+        accessToken: String,
+        locationId: String,
+        serviceOptions: List<GoogleLocationAttributeServiceOption>
     ): ResponseEntity<GoogleLocationAttributesModel>?
 }
 
@@ -210,7 +230,65 @@ class GoogleUseCaseImpl(val googleService: GoogleService) : GoogleUseCase {
     override fun updateLocationAttributeMenuLink(accessToken: String, locationId: String, menuLink: String): ResponseEntity<GoogleLocationAttributesModel>? {
         val attributeMask = "attributes/url_menu"
         val attributes = AttributesBuilder.builder().menuLink(attributeMask, menuLink).build()
-        println(attributes)
         return googleService.updateLocationAttributes(accessToken, locationId, attributeMask, attributes)
+    }
+
+    override fun updateLocationBusinessOwnerInfo(accessToken: String, locationId: String, isOwnedByWomen: Boolean?): ResponseEntity<GoogleLocationAttributesModel>? {
+        val attributeMask = "attributes/is_owned_by_women"
+        val attributes = AttributesBuilder.builder()
+            .apply {
+            isOwnedByWomen?.let { boolAttribute(attributeMask, it) }
+            }
+            .build()
+
+        return googleService.updateLocationAttributes(accessToken, locationId, attributeMask, attributes)
+    }
+
+    override fun updateLocationServices(accessToken: String, locationId: String, services: List<GoogleLocationAttributeService>): ResponseEntity<GoogleLocationAttributesModel>? {
+        val attributeMask = services.joinToString(separator = ",") { it.type.attributeName }
+
+        val attributes = GoogleLocationAttributesModel(
+            attributes = services
+                .map { service ->
+                    service.value?.let { value ->
+                        GoogleLocationAttribute(
+                            name = service.type.attributeName,
+                            valueType = GoogleLocationAttributeValueType.BOOL,
+                            values = listOf(BooleanNode.valueOf(value))
+                        )
+                    }
+                }
+        )
+
+        return googleService.updateLocationAttributes(
+            accessToken = accessToken,
+            locationId = locationId,
+            attributeMask = attributeMask,
+            attributes = attributes
+        )
+    }
+
+    override fun updateLocationServiceOptions(accessToken: String, locationId: String, serviceOptions: List<GoogleLocationAttributeServiceOption>): ResponseEntity<GoogleLocationAttributesModel>? {
+        val attributeMask = serviceOptions.joinToString(separator = ",") { it.type.attributeName }
+
+        val attributes = GoogleLocationAttributesModel(
+            attributes = serviceOptions
+                .map { serviceOption ->
+                    serviceOption.value?.let { value ->
+                        GoogleLocationAttribute(
+                            name = serviceOption.type.attributeName,
+                            valueType = GoogleLocationAttributeValueType.BOOL,
+                            values = listOf(BooleanNode.valueOf(value))
+                        )
+                    }
+                }
+        )
+
+        return googleService.updateLocationAttributes(
+            accessToken = accessToken,
+            locationId = locationId,
+            attributeMask = attributeMask,
+            attributes = attributes
+        )
     }
 }
