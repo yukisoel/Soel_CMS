@@ -44,11 +44,22 @@ interface GoogleUseCase {
         locationId: String,
         placeIds: List<String>,
     ): ResponseEntity<GoogleLocationProfileModel>?
+    fun updateLocationStoreFrontAddress(
+        accessToken: String,
+        locationId: String,
+        storeFrontAddressRequest: GoogleLocationStoreFrontAddressRequest
+    ): ResponseEntity<GoogleLocationProfileModel>?
 
     fun updateLocationAttributeSnsLink(
         accessToken: String,
         locationId: String,
         snsLinkRequest: GoogleLocationAttributeSnsLinkRequest
+    ): ResponseEntity<GoogleLocationAttributesModel>?
+
+    fun updateLocationAttributeMenuLink(
+        accessToken: String,
+        locationId: String,
+        menuLink: String
     ): ResponseEntity<GoogleLocationAttributesModel>?
 }
 
@@ -138,9 +149,31 @@ class GoogleUseCaseImpl(val googleService: GoogleService) : GoogleUseCase {
         return googleService.updateLocationProfile(accessToken, locationId, updateMask, locationProfile)
     }
 
+    override fun updateLocationStoreFrontAddress(
+        accessToken: String,
+        locationId: String,
+        storeFrontAddressRequest: GoogleLocationStoreFrontAddressRequest
+    ): ResponseEntity<GoogleLocationProfileModel>? {
+        val updateMask = "storefrontAddress"
+        val updateStoreFrontAddress = GoogleLocationPostalAddress(
+            postalCode = storeFrontAddressRequest.postalCode,
+            administrativeArea = storeFrontAddressRequest.administrativeArea.japaneseName,
+            addressLines = storeFrontAddressRequest.addressLines,
+            regionCode = "JP",
+        )
+        val locationProfile = ProfileBuilder.builder().storeFrontAddress(updateStoreFrontAddress).build()
+        return googleService.updateLocationProfile(accessToken, locationId, updateMask, locationProfile)
+    }
+
     override fun updateLocationAttributeSnsLink(accessToken: String, locationId: String, snsLinkRequest: GoogleLocationAttributeSnsLinkRequest): ResponseEntity<GoogleLocationAttributesModel>? {
         val attributeMask = snsLinkRequest.snsType.attributeName
         val attributes = AttributesBuilder.builder().snsLink(attributeMask, snsLinkRequest.snsUrl).build()
+        return googleService.updateLocationAttributes(accessToken, locationId, attributeMask, attributes)
+    }
+
+    override fun updateLocationAttributeMenuLink(accessToken: String, locationId: String, menuLink: String): ResponseEntity<GoogleLocationAttributesModel>? {
+        val attributeMask = "attributes/url_menu"
+        val attributes = AttributesBuilder.builder().menuLink(attributeMask, menuLink).build()
         println(attributes)
         return googleService.updateLocationAttributes(accessToken, locationId, attributeMask, attributes)
     }

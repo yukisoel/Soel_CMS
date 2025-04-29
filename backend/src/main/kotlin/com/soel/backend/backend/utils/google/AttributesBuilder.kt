@@ -22,6 +22,20 @@ class AttributesBuilder{
         )
     }
 
+    fun menuLink(attributeName: String, menuUrl: String) = apply {
+        this.attributes = listOf(
+            GoogleLocationAttribute(
+                name = attributeName,
+                valueType = GoogleLocationAttributeValueType.URL,
+                uriValues = listOf(
+                    GoogleLocationAttributeUriValue(
+                        uri = menuUrl
+                    )
+                ),
+            )
+        )
+    }
+
     fun build(): GoogleLocationAttributesModel {
         return GoogleLocationAttributesModel(
             attributes = attributes

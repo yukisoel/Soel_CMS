@@ -362,13 +362,37 @@ class GoogleController(val googleService: GoogleService, val googleUseCase: Goog
               例 : ["ChIJLx1v3J2XGGAR5g4q0G7f8lE", "ChIJLx1v3J2XGGAR5g4q0G7f8lE"]
         """, tags = ["Google:PATCHメソッド"]
     )
-    @PatchMapping("/location/service_area")
+    @PatchMapping("/location/profile/service_area")
     fun updateLocationServiceArea(
         @RegisteredOAuth2AuthorizedClient("google") googleClient: OAuth2AuthorizedClient,
         @RequestParam("locationId") locationId: String,
         @RequestBody placeIds: List<String>
     ): ResponseEntity<GoogleLocationProfileModel>? {
         return googleUseCase.updateLocationProfileServiceArea(googleClient.accessToken.tokenValue, locationId, placeIds)
+    }
+
+    @Operation(
+        summary = "Google:店舗のプロフィールの更新:店舗の住所",
+        description = """
+              Google:店舗のの住所を更新します。
+              Request Bodyとして GoogleLocationStoreFrontAddressRequestのJsonにしてください。
+              例 : {
+                      "postalCode": "1234567",
+                      "administrativeArea": "東京都",
+                      "addressLines": [
+                      "渋谷区1-50",
+                      "戸島ビル303"
+                      ]
+                    }
+        """, tags = ["Google:PATCHメソッド"]
+    )
+    @PatchMapping("/location/profile/store_front_address")
+    fun updateLocationStoreFrontAddress(
+        @RegisteredOAuth2AuthorizedClient("google") googleClient: OAuth2AuthorizedClient,
+        @RequestParam("locationId") locationId: String,
+        @RequestBody storeFrontAddressRequest: GoogleLocationStoreFrontAddressRequest
+    ): ResponseEntity<GoogleLocationProfileModel>? {
+        return googleUseCase.updateLocationStoreFrontAddress(googleClient.accessToken.tokenValue, locationId, storeFrontAddressRequest)
     }
 
     @Operation(summary = "Google:店舗のメニューの更新", description = "Google:店舗のメニューを更新します", tags = ["Google:PATCHメソッド"])
@@ -463,6 +487,23 @@ class GoogleController(val googleService: GoogleService, val googleUseCase: Goog
         @RequestBody snsLinkRequest: GoogleLocationAttributeSnsLinkRequest
     ): ResponseEntity<GoogleLocationAttributesModel>? {
         return googleUseCase.updateLocationAttributeSnsLink(googleClient.accessToken.tokenValue, locationId, snsLinkRequest)
+    }
+
+    @Operation(
+        summary = "Google:店舗のメニューリンクの更新",
+        description = """
+              Google:店舗のメニューリンクを更新します。
+              Request Bodyとして menuLinkのStringにしてください。
+              例 : https://example.com/
+        """, tags = ["Google:PATCHメソッド"]
+    )
+    @PatchMapping("/location/attributes/menu_link")
+    fun updateLocationAttributeMenuLink(
+        @RegisteredOAuth2AuthorizedClient("google") googleClient: OAuth2AuthorizedClient,
+        @RequestParam("locationId") locationId: String,
+        @RequestBody menuLink: String,
+    ): ResponseEntity<GoogleLocationAttributesModel>? {
+        return googleUseCase.updateLocationAttributeMenuLink(googleClient.accessToken.tokenValue, locationId, menuLink)
     }
 
     @Operation(
