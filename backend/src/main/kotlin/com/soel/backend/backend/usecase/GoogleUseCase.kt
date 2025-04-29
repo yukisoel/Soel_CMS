@@ -49,6 +49,11 @@ interface GoogleUseCase {
         locationId: String,
         storeFrontAddressRequest: GoogleLocationStoreFrontAddressRequest
     ): ResponseEntity<GoogleLocationProfileModel>?
+    fun updateLocationBusinessHours(
+        accessToken: String,
+        locationId: String,
+        businessHoursRequest: GoogleLocationBusinessHoursRequest
+    ): ResponseEntity<GoogleLocationProfileModel>?
 
     fun updateLocationAttributeSnsLink(
         accessToken: String,
@@ -80,24 +85,24 @@ class GoogleUseCaseImpl(val googleService: GoogleService) : GoogleUseCase {
         locationId: String,
         primaryCategory: GoogleLocationCategory,
     ): ResponseEntity<GoogleLocationProfileModel>? {
-        val resentProfileResponse = googleService.getLocationProfile(accessToken, locationId)
-        val resentProfile = resentProfileResponse?.body ?: return null
-        if (resentProfile.categories?.additionalCategories == null) {
+        val currentProfileResponse = googleService.getLocationProfile(accessToken, locationId)
+        val currentProfile = currentProfileResponse?.body ?: return null
+        if (currentProfile.categories?.additionalCategories == null) {
             return ResponseEntity(null, null, 500)
         }
         val updateMask = "categories"
-        val locationProfile = ProfileBuilder.builder().categories(primaryCategory, resentProfile.categories.additionalCategories).build()
+        val locationProfile = ProfileBuilder.builder().categories(primaryCategory, currentProfile.categories.additionalCategories).build()
         return googleService.updateLocationProfile(accessToken, locationId, updateMask, locationProfile)
     }
 
     override fun updateLocationProfileAdditionalCategories(accessToken: String, locationId: String, additionalCategories: List<GoogleLocationCategory>): ResponseEntity<GoogleLocationProfileModel>? {
-        val resentProfileResponse = googleService.getLocationProfile(accessToken, locationId)
-        val resentProfile = resentProfileResponse?.body ?: return null
-        if (resentProfile.categories?.primaryCategory == null) {
+        val currentProfileResponse = googleService.getLocationProfile(accessToken, locationId)
+        val currentProfile = currentProfileResponse?.body ?: return null
+        if (currentProfile.categories?.primaryCategory == null) {
             return ResponseEntity(null, null, 500)
         }
         val updateMask = "categories"
-        val locationProfile = ProfileBuilder.builder().categories(resentProfile.categories.primaryCategory, additionalCategories).build()
+        val locationProfile = ProfileBuilder.builder().categories(currentProfile.categories.primaryCategory, additionalCategories).build()
         return googleService.updateLocationProfile(accessToken, locationId, updateMask, locationProfile)
     }
 
@@ -126,14 +131,14 @@ class GoogleUseCaseImpl(val googleService: GoogleService) : GoogleUseCase {
         locationId: String,
         phoneNumber: String
     ): ResponseEntity<GoogleLocationProfileModel>? {
-        val resentProflieResponse = googleService.getLocationProfile(accessToken, locationId)
-        val resentProfile = resentProflieResponse?.body ?: return null
+        val currentProfileResponse = googleService.getLocationProfile(accessToken, locationId)
+        val currentProfile = currentProfileResponse?.body ?: return null
         val phoneNumberInt = phoneNumber.filter { it.isDigit() }.toLong()
         if (phoneNumberInt.toString().length != 10) {
             return ResponseEntity.status(441).body(null)
         }
         val updateMask = "phoneNumbers"
-        val locationProfile = ProfileBuilder.builder().phoneNumbers(phoneNumber, resentProfile.phoneNumbers?.additionalPhones).build()
+        val locationProfile = ProfileBuilder.builder().phoneNumbers(phoneNumber, currentProfile.phoneNumbers?.additionalPhones).build()
         return googleService.updateLocationProfile(accessToken, locationId, updateMask, locationProfile)
     }
 
@@ -163,6 +168,37 @@ class GoogleUseCaseImpl(val googleService: GoogleService) : GoogleUseCase {
         )
         val locationProfile = ProfileBuilder.builder().storeFrontAddress(updateStoreFrontAddress).build()
         return googleService.updateLocationProfile(accessToken, locationId, updateMask, locationProfile)
+    }
+
+    override fun updateLocationBusinessHours(accessToken: String, locationId: String, businessHoursRequest: GoogleLocationBusinessHoursRequest): ResponseEntity<GoogleLocationProfileModel>? {
+        if(businessHoursRequest.hoursTypeId.code == BusinessHoursType.REGULAR.code) {
+            val updateMask = "regularHours"
+            val locationProfile = ProfileBuilder.builder().regularHours(businessHoursRequest.periods).build()
+            return googleService.updateLocationProfile(accessToken, locationId, updateMask, locationProfile)
+        } else{
+            val currentProfileResponse = googleService.getLocationProfile(accessToken, locationId)
+            val currentProfile = currentProfileResponse?.body ?: return null
+
+            val existingMoreHoursList: List<GoogleLocationMoreHours> =
+                currentProfile.moreHours ?: emptyList()
+            val newMoreHours = GoogleLocationMoreHours(
+                hoursTypeId = businessHoursRequest.hoursTypeId.code,
+                periods = businessHoursRequest.periods
+            )
+
+            val mergedMoreHoursList = existingMoreHoursList.toMutableList().apply {
+                val idx = existingMoreHoursList.indexOfFirst { it.hoursTypeId == newMoreHours.hoursTypeId }
+                if (idx != -1) {
+                    this[idx] = newMoreHours
+                } else {
+                    this.add(newMoreHours)
+                }
+            }
+
+            val updateMask = "moreHours"
+            val locationProfile = ProfileBuilder.builder().moreHours(mergedMoreHoursList).build()
+            return googleService.updateLocationProfile(accessToken, locationId, updateMask, locationProfile)
+        }
     }
 
     override fun updateLocationAttributeSnsLink(accessToken: String, locationId: String, snsLinkRequest: GoogleLocationAttributeSnsLinkRequest): ResponseEntity<GoogleLocationAttributesModel>? {

@@ -173,16 +173,17 @@ class GoogleServicImpl(val googleRepository: GoogleRepository, val menuLogReposi
             logger.info("googleLocationProfile: $googleLocationProfile")
             return ResponseEntity.ok(
                 GoogleLocationProfileModel(
-                    googleLocationProfile!!.name?.removePrefix("locations/"),
-                    googleLocationProfile.title,
-                    googleLocationProfile.phoneNumbers,
-                    googleLocationProfile.categories,
-                    googleLocationProfile.storefrontAddress,
-                    googleLocationProfile.websiteUri,
-//                    googleLocationProfile.regularHours,
-                    googleLocationProfile.profile,
-                    googleLocationProfile.openInfo,
-                    googleLocationProfile.serviceArea,
+                    name = googleLocationProfile!!.name?.removePrefix("locations/"),
+                    title = googleLocationProfile.title,
+                    phoneNumbers = googleLocationProfile.phoneNumbers,
+                    categories = googleLocationProfile.categories,
+                    storefrontAddress = googleLocationProfile.storefrontAddress,
+                    websiteUri = googleLocationProfile.websiteUri,
+                    regularHours = googleLocationProfile.regularHours,
+                    moreHours = googleLocationProfile.moreHours,
+                    profile = googleLocationProfile.profile,
+                    openInfo = googleLocationProfile.openInfo,
+                    serviceArea = googleLocationProfile.serviceArea,
                 )
             )
         } catch (e: Exception) {
@@ -480,15 +481,16 @@ class GoogleServicImpl(val googleRepository: GoogleRepository, val menuLogReposi
                 googleRepository.updateLocationProfile(accessToken, locationId, updateMask, locationProfile)
             return ResponseEntity.ok(
                 GoogleLocationProfileModel(
-                    googleLocationProfile!!.name?.removePrefix("locations/"),
-                    googleLocationProfile.title,
-                    googleLocationProfile.phoneNumbers,
-                    googleLocationProfile.categories,
-                    googleLocationProfile.storefrontAddress,
-                    googleLocationProfile.websiteUri,
-//                    googleLocationProfile.regularHours,
-                    googleLocationProfile.profile,
-                    googleLocationProfile.openInfo,
+                    name = googleLocationProfile!!.name?.removePrefix("locations/"),
+                    title = googleLocationProfile.title,
+                    phoneNumbers = googleLocationProfile.phoneNumbers,
+                    categories = googleLocationProfile.categories,
+                    storefrontAddress = googleLocationProfile.storefrontAddress,
+                    websiteUri = googleLocationProfile.websiteUri,
+                    regularHours = googleLocationProfile.regularHours,
+                    moreHours = googleLocationProfile.moreHours,
+                    profile = googleLocationProfile.profile,
+                    openInfo = googleLocationProfile.openInfo,
                 )
             )
         } catch (e: Exception) {

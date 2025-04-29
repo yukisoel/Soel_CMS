@@ -180,7 +180,7 @@ class GoogleRepositoryImpl(val restTemplate: RestTemplate) : GoogleRepository {
         val uri = UriComponentsBuilder.fromHttpUrl(requestUrl)
             .queryParam(
                 "readMask",
-                "name,title,phoneNumbers,categories,storefrontAddress,websiteUri,regularHours,profile,openInfo,serviceArea"
+                "name,title,phoneNumbers,categories,storefrontAddress,websiteUri,regularHours,moreHours,profile,openInfo,serviceArea"
             )
             .build()
             .toUri()

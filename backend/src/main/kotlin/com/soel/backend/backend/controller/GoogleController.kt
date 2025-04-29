@@ -395,6 +395,15 @@ class GoogleController(val googleService: GoogleService, val googleUseCase: Goog
         return googleUseCase.updateLocationStoreFrontAddress(googleClient.accessToken.tokenValue, locationId, storeFrontAddressRequest)
     }
 
+    @PatchMapping("/location/profile/business_hours")
+    fun updateLocationBusinessHours(
+        @RegisteredOAuth2AuthorizedClient("google") googleClient: OAuth2AuthorizedClient,
+        @RequestParam("locationId") locationId: String,
+        @RequestBody businessHoursRequest: GoogleLocationBusinessHoursRequest
+    ): ResponseEntity<GoogleLocationProfileModel>? {
+        return googleUseCase.updateLocationBusinessHours(googleClient.accessToken.tokenValue, locationId, businessHoursRequest)
+    }
+
     @Operation(summary = "Google:店舗のメニューの更新", description = "Google:店舗のメニューを更新します", tags = ["Google:PATCHメソッド"])
     @PatchMapping("/location/food_menus")
     fun updateLocationFoodMenus(

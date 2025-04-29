@@ -11,6 +11,8 @@ class ProfileBuilder{
     private var websiteUri: String? = null
     private var serviceArea: GoogleLocationServiceArea? = null
     private var storeFrontAddress: GoogleLocationPostalAddress? = null
+    private var regularHours: GoogleLocationBusinessHours? = null
+    private var moreHours: List<GoogleLocationMoreHours>? = null
 
     fun title(title: String) = apply {
         this.title = title
@@ -62,6 +64,16 @@ class ProfileBuilder{
         this.storeFrontAddress = storeFrontAddress
     }
 
+    fun regularHours(periods: List<GoogleLocationTimePeriod>) = apply {
+        this.regularHours = GoogleLocationBusinessHours(
+            periods = periods
+        )
+    }
+
+    fun moreHours(moreHoursList: List<GoogleLocationMoreHours>) = apply {
+        this.moreHours = moreHoursList
+    }
+
     fun build(): GoogleLocationProfileModel {
         return GoogleLocationProfileModel(
             title = title,
@@ -71,7 +83,9 @@ class ProfileBuilder{
             phoneNumbers = phoneNumbers,
             websiteUri = websiteUri,
             serviceArea = serviceArea,
-            storefrontAddress = storeFrontAddress
+            storefrontAddress = storeFrontAddress,
+            regularHours = regularHours,
+            moreHours = moreHours,
         )
     }
 

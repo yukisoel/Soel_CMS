@@ -65,7 +65,8 @@ data class GoogleLocationProfileModel(
     val categories: GoogleLocationCategories? = null,
     val storefrontAddress: GoogleLocationPostalAddress? = null,
     val websiteUri: String? = null,
-//    val regularHours: GoogleLocationVusinessHours,
+    val regularHours: GoogleLocationBusinessHours? = null,
+    val moreHours: List<GoogleLocationMoreHours>? = null,
     val profile: GoogleLocationProfile? = null,
     val openInfo: GoogleLocationOpenInfo? = null,
     val serviceArea: GoogleLocationServiceArea? = null,
@@ -99,14 +100,14 @@ data class GoogleLocationStoreFrontAddressRequest(
     val addressLines: List<String>,
 )
 
-data class GoogleLocationVusinessHours(
+data class GoogleLocationBusinessHours(
     val periods: List<GoogleLocationTimePeriod>,
 )
 
 data class GoogleLocationTimePeriod(
-    val openDay: String,
+    val openDay: DayOfWeek,
     val openTime: GoogleLocationTimeOfDay,
-    val closeDay: String,
+    val closeDay: DayOfWeek,
     val closeTime: GoogleLocationTimeOfDay,
 )
 
@@ -115,6 +116,16 @@ data class GoogleLocationTimeOfDay(
     val minutes: Int? = null,
     val seconds: Int? = null,
     val nanos: Int? = null,
+)
+
+data class GoogleLocationMoreHours(
+    val hoursTypeId: String? = null,
+    val periods: List<GoogleLocationTimePeriod>? = null,
+)
+
+data class GoogleLocationBusinessHoursRequest(
+    val hoursTypeId: BusinessHoursType,
+    val periods: List<GoogleLocationTimePeriod>
 )
 
 data class GoogleLocationProfile(
@@ -361,6 +372,17 @@ enum class GoogleLocationAuthorType {
     MERCHANT,
 }
 
+enum class DayOfWeek {
+    DAY_OF_WEEK_UNSPECIFIED,
+    MONDAY,
+    TUESDAY,
+    WEDNESDAY,
+    THURSDAY,
+    FRIDAY,
+    SATURDAY,
+    SUNDAY,
+}
+
 enum class GoogleLocationAssociationCategory {
     COVER,
     PROFILE,
@@ -444,6 +466,43 @@ enum class Prefecture(
             entries.firstOrNull {
                 it.japaneseName == value || it.name.equals(value, ignoreCase = true)
             } ?: throw IllegalArgumentException("Unknown Prefecture: $value")
+    }
+}
+
+enum class BusinessHoursType(
+    /** 機械向けコード（"LUNCH", "DINNER"） */
+    val code: String,
+    /** 表示用ラベル（"ランチ", "ディナー"） */
+    val label: String
+){
+    REGULAR("REGULAR", "通常営業"),
+    ACCESS("ACCESS", "入店可能時間"),
+    KITCHEN("KITCHEN", "注文可能時間"),
+    DRIVE_THROUGH("DRIVE_THROUGH", "ドライブスルー"),
+    DELIVERY("DELIVERY", "宅配"),
+    TAKEOUT("TAKEOUT", "テイクアウト"),
+    BREAKFAST("BREAKFAST", "朝食"),
+    LUNCH("LUNCH", "ランチ"),
+    DINNER("DINNER", "ディナー"),
+    BRUNCH("BRUNCH", "ブランチ"),
+    HAPPY_HOURS("HAPPY_HOURS", "ハッピーアワー"),
+    SENIOR_HOURS("SENIOR_HOURS", "高齢者限定時間帯"),
+    ONLINE_SERVICE_HOURS("ONLINE_SERVICE_HOURS", "オンラインサービスの提供時間");
+
+    companion object {
+        /**
+         * デシリアライズ時に呼ばれるファクトリ。
+         * リクエスト JSON の値（大文字小文字区別なく "LUNCH"/"DINNER"、
+         * あるいは日本語ラベル "ランチ"/"ディナー"）を受け取って
+         * 対応する enum に変換します。
+         */
+        @JvmStatic
+        @JsonCreator
+        fun fromValue(value: String): BusinessHoursType =
+            entries.firstOrNull {
+                it.code.equals(value, ignoreCase = true) ||
+                        it.label == value
+            } ?: throw IllegalArgumentException("Unknown BusinessHoursType: $value")
     }
 }
 
