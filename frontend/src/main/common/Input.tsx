@@ -23,7 +23,7 @@ interface Props extends React.InputHTMLAttributes<HTMLInputElement>, ValidationP
 
 const Input = React.forwardRef<HTMLInputElement, Props>(({
     width,
-    padding,
+    padding = "10px 20px",
     fwMedium = false,
     className,
     onClear,

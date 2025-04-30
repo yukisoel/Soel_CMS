@@ -25,6 +25,7 @@ import SelectStoreSingleRender from "./components/stores/SelectStoreSingle/Selec
 import EditProfileLayoutV2 from "./components/editPage/v2/EditProfile/EditProfileLayoutV2.tsx";
 import EditPhotoLayoutV2 from "./components/editPage/v2/EditPhoto/EditPhotoLayoutV2.tsx";
 import { EditMenuLayoutV2 } from "./components/editPage/v2/EditMenu/EditMenuLayoutV2.tsx";
+import { EditLatestInformationV2 } from "./components/editPage/v2/EditLatestInformation/EditLatestInformationV2.tsx";
 
 const googleRepository = new GoogleRepositoryImpl()
 const googleService = new GoogleServiceImpl({googleRepository})
@@ -60,6 +61,8 @@ function App() {
                   element={<EditPhotoLayoutV2 googleService={googleService}/>}/>
           <Route path={"accounts/:accountId/location/:locationId/menu"}
                   element={<EditMenuLayoutV2 googleService={googleService}/>}/>
+          <Route path={"accounts/:accountId/location/:locationId/latest_information"}
+                  element={<EditLatestInformationV2 googleService={googleService}/>}/>
         </Route>
         <Route path={'gbp'} element={<EditGBPLayout/>}>
           <Route path={"accounts/:accountId/location/:locationId"}
