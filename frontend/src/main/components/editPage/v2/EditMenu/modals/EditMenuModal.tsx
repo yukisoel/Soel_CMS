@@ -12,9 +12,12 @@ import useFileUpload from '@/main/common/FileUpload/useFileUpload';
 import LayoutLabeledFormItem from '@/main/common/LayoutLabeledFormItem';
 
 const schema = z.object({
-  title: z.string().min(1, 'メニュー名は必須です'),
+  title: z.string()
+    .min(1, 'メニュー名は必須です')
+    .max(140, 'メニュー名は140文字以内で入力してください'),
   price: z.string().min(1, '価格は必須です'),
-  description: z.string(),
+  description: z.string()
+    .max(1000, '説明は1000文字以内で入力してください'),
 });
 
 type FormData = z.infer<typeof schema>;
@@ -45,10 +48,14 @@ export const EditMenuModal: React.FC<EditMenuModalProps> = ({
     handleSubmit,
     formState: { errors },
     reset,
+    watch
   } = useForm<FormData>({
     resolver: zodResolver(schema),
     defaultValues: initialValues,
   });
+
+  const titleValue = watch('title') || '';
+  const descriptionValue = watch('description') || '';
 
   React.useEffect(() => {
     if (isOpen) {
@@ -65,7 +72,13 @@ export const EditMenuModal: React.FC<EditMenuModalProps> = ({
   const contentRender = () => (
     <form onSubmit={handleSubmit(onSubmit)}>
       <Wrapper direction="col" gap="2rem">
-        <LayoutLabeledFormItem label="メニュー名">
+        <LayoutLabeledFormItem
+          label="メニュー名"
+          counter={{
+            current: titleValue.length,
+            max: 140
+          }}
+        >
           <Input
             {...register('title')}
             placeholder="メニュー名を入力"
@@ -90,7 +103,13 @@ export const EditMenuModal: React.FC<EditMenuModalProps> = ({
         <LayoutLabeledFormItem label="写真を追加">
           {renderFileUpload()}
         </LayoutLabeledFormItem>
-        <LayoutLabeledFormItem label="説明">
+        <LayoutLabeledFormItem
+          label="説明"
+          counter={{
+            current: descriptionValue.length,
+            max: 1000
+          }}
+        >
           <Textarea
             {...register('description')}
             placeholder="説明を入力"
@@ -101,11 +120,9 @@ export const EditMenuModal: React.FC<EditMenuModalProps> = ({
         </LayoutLabeledFormItem>
         <Wrapper justify="justify-between" gap="1rem">
           {onDelete ? (
-            <Wrapper></Wrapper>
-            // 一旦削除はWIP
-            // <Button bgColor="secondary" onClick={onDelete}>
-            //   <Typography content="削除" size="normal" color="error" />
-            // </Button>
+            <Button bgColor="secondary" onClick={onDelete}>
+              <Typography content="削除" size="normal" color="error" />
+            </Button>
           ) : (
             <Wrapper></Wrapper>
           )}
