@@ -1,11 +1,11 @@
 import {GoogleRepository} from "@/main/repositories/GoogleRepository.ts";
-import {GoogleAccount, GoogleLocation} from "@/main/model/GoogleAccount.ts";
 import {
     GoogleLocationFoodMenusModel,
   GoogleLocationLocalPostModel,
   GoogleLocationPhotoModel,
   GoogleLocationProfileModel
 } from "@/main/model/LocationModel";
+import {GoogleAccount, GoogleLocation} from "@/types/apiModel.ts";
 
 export default class SpyGoogleRepository implements GoogleRepository {
     getLocationFoodMenus(_accountId: string, _locationId: string): Promise<GoogleLocationFoodMenusModel> {

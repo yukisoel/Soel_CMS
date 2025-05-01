@@ -1,5 +1,8 @@
 package com.soel.backend.backend.model
 
+import com.fasterxml.jackson.annotation.JsonCreator
+import com.fasterxml.jackson.annotation.JsonValue
+
 //Google Business Profile APIのレスポンスモデル
 data class GoogleMe(
     val names: List<GoogleName>,
@@ -40,6 +43,11 @@ data class GoogleLocationAttributesModel(
     val attributes: List<GoogleLocationAttribute>? = null,
 )
 
+data class GoogleLocationAttributeSnsLinkRequest(
+    val snsType: GoogleAttributeSnsType,
+    val snsUrl: String
+)
+
 data class GoogleLocationAttribute(
     val name: String? = null,
     val valueType: GoogleLocationAttributeValueType? = null,
@@ -55,9 +63,10 @@ data class GoogleLocationProfileModel(
     val title: String? = null,
     val phoneNumbers: GoogleLocationPhoneNumbers? = null,
     val categories: GoogleLocationCategories? = null,
-//    val storefrontAddress: GoogleLocationPostalAddress,
+    val storefrontAddress: GoogleLocationPostalAddress? = null,
     val websiteUri: String? = null,
-//    val regularHours: GoogleLocationVusinessHours,
+    val regularHours: GoogleLocationBusinessHours? = null,
+    val moreHours: List<GoogleLocationMoreHours>? = null,
     val profile: GoogleLocationProfile? = null,
     val openInfo: GoogleLocationOpenInfo? = null,
     val serviceArea: GoogleLocationServiceArea? = null,
@@ -65,6 +74,7 @@ data class GoogleLocationProfileModel(
 
 data class GoogleLocationPhoneNumbers(
     val primaryPhone: String? = null,
+    val additionalPhones: List<String>? = null,
 )
 
 data class GoogleLocationCategories(
@@ -79,18 +89,25 @@ data class GoogleLocationCategory(
 
 data class GoogleLocationPostalAddress(
     val postalCode: String? = null,
+    val regionCode: String? = null,
     val administrativeArea: String? = null,
     val addressLines: List<String>? = null,
 )
 
-data class GoogleLocationVusinessHours(
+data class GoogleLocationStoreFrontAddressRequest(
+    val postalCode: String,
+    val administrativeArea: Prefecture,
+    val addressLines: List<String>,
+)
+
+data class GoogleLocationBusinessHours(
     val periods: List<GoogleLocationTimePeriod>,
 )
 
 data class GoogleLocationTimePeriod(
-    val openDay: String,
+    val openDay: DayOfWeek,
     val openTime: GoogleLocationTimeOfDay,
-    val closeDay: String,
+    val closeDay: DayOfWeek,
     val closeTime: GoogleLocationTimeOfDay,
 )
 
@@ -99,6 +116,16 @@ data class GoogleLocationTimeOfDay(
     val minutes: Int? = null,
     val seconds: Int? = null,
     val nanos: Int? = null,
+)
+
+data class GoogleLocationMoreHours(
+    val hoursTypeId: String? = null,
+    val periods: List<GoogleLocationTimePeriod>? = null,
+)
+
+data class GoogleLocationBusinessHoursRequest(
+    val hoursTypeId: BusinessHoursType,
+    val periods: List<GoogleLocationTimePeriod>
 )
 
 data class GoogleLocationProfile(
@@ -163,7 +190,7 @@ data class GoogleLocationPhotoDataRef(
 )
 
 data class GoogleLocationAssociation(
-    val category: String? = null,
+    val category: GoogleLocationAssociationCategory? = null,
 )
 
 data class GoogleLocationLocalPostModel(
@@ -344,6 +371,141 @@ enum class GoogleLocationAuthorType {
     LOCAL_GUIDE,
     MERCHANT,
 }
+
+enum class DayOfWeek {
+    DAY_OF_WEEK_UNSPECIFIED,
+    MONDAY,
+    TUESDAY,
+    WEDNESDAY,
+    THURSDAY,
+    FRIDAY,
+    SATURDAY,
+    SUNDAY,
+}
+
+enum class GoogleLocationAssociationCategory {
+    COVER,
+    PROFILE,
+    LOGO,
+    EXTERIOR,
+    INTERIOR,
+    PRODUCT,
+    AT_WORK,
+    FOOD_AND_DRINK,
+    MENU,
+    ROOMS,
+    TEAMS,
+    ADDITIONAL,
+    CATEGORY_UNSPECIFIED,
+}
+
+enum class Prefecture(
+    /** このプロパティの値（日本語名）をシリアライズ／デシリアライズの文字列に使う */
+    @get:JsonValue val japaneseName: String
+) {
+
+
+    HOKKAIDO("北海道"),
+    AOMORI("青森県"),
+    IWATE("岩手県"),
+    MIYAGI("宮城県"),
+    AKITA("秋田県"),
+    YAMAGATA("山形県"),
+    FUKUSHIMA("福島県"),
+    IBARAKI("茨城県"),
+    TOCHIGI("栃木県"),
+    GUNMA("群馬県"),
+    SAITAMA("埼玉県"),
+    CHIBA("千葉県"),
+    TOKYO("東京都"),
+    KANAGAWA("神奈川県"),
+    NIIGATA("新潟県"),
+    TOYAMA("富山県"),
+    ISHIKAWA("石川県"),
+    FUKUI("福井県"),
+    YAMANASHI("山梨県"),
+    NAGANO("長野県"),
+    GIFU("岐阜県"),
+    SHIZUOKA("静岡県"),
+    AICHI("愛知県"),
+    MIE("三重県"),
+    SHIGA("滋賀県"),
+    KYOTO("京都府"),
+    OSAKA("大阪府"),
+    HYOGO("兵庫県"),
+    NARA("奈良県"),
+    WAKAYAMA("和歌山県"),
+    TOTTORI("鳥取県"),
+    SHIMANE("島根県"),
+    OKAYAMA("岡山県"),
+    HIROSHIMA("広島県"),
+    YAMAGUCHI("山口県"),
+    TOKUSHIMA("徳島県"),
+    KAGAWA("香川県"),
+    EHIME("愛媛県"),
+    KOCHI("高知県"),
+    FUKUOKA("福岡県"),
+    SAGA("佐賀県"),
+    NAGASAKI("長崎県"),
+    KUMAMOTO("熊本県"),
+    OITA("大分県"),
+    MIYAZAKI("宮崎県"),
+    KAGOSHIMA("鹿児島県"),
+    OKINAWA("沖縄県");
+
+    override fun toString(): String = japaneseName
+
+    companion object {
+        /**
+         * JSON の文字列 → Prefecture 変換用ファクトリ。
+         * "愛知県" や "AICHI" のどちらでもマッチするようにしています。
+         */
+        @JvmStatic
+        @JsonCreator
+        fun fromValue(value: String): Prefecture =
+            entries.firstOrNull {
+                it.japaneseName == value || it.name.equals(value, ignoreCase = true)
+            } ?: throw IllegalArgumentException("Unknown Prefecture: $value")
+    }
+}
+
+enum class BusinessHoursType(
+    /** 機械向けコード（"LUNCH", "DINNER"） */
+    val code: String,
+    /** 表示用ラベル（"ランチ", "ディナー"） */
+    val label: String
+){
+    REGULAR("REGULAR", "通常営業"),
+    ACCESS("ACCESS", "入店可能時間"),
+    KITCHEN("KITCHEN", "注文可能時間"),
+    DRIVE_THROUGH("DRIVE_THROUGH", "ドライブスルー"),
+    DELIVERY("DELIVERY", "宅配"),
+    TAKEOUT("TAKEOUT", "テイクアウト"),
+    BREAKFAST("BREAKFAST", "朝食"),
+    LUNCH("LUNCH", "ランチ"),
+    DINNER("DINNER", "ディナー"),
+    BRUNCH("BRUNCH", "ブランチ"),
+    HAPPY_HOURS("HAPPY_HOURS", "ハッピーアワー"),
+    SENIOR_HOURS("SENIOR_HOURS", "高齢者限定時間帯"),
+    ONLINE_SERVICE_HOURS("ONLINE_SERVICE_HOURS", "オンラインサービスの提供時間");
+
+    companion object {
+        /**
+         * デシリアライズ時に呼ばれるファクトリ。
+         * リクエスト JSON の値（大文字小文字区別なく "LUNCH"/"DINNER"、
+         * あるいは日本語ラベル "ランチ"/"ディナー"）を受け取って
+         * 対応する enum に変換します。
+         */
+        @JvmStatic
+        @JsonCreator
+        fun fromValue(value: String): BusinessHoursType =
+            entries.firstOrNull {
+                it.code.equals(value, ignoreCase = true) ||
+                        it.label == value
+            } ?: throw IllegalArgumentException("Unknown BusinessHoursType: $value")
+    }
+}
+
 
 //backend用
 enum class GoogleAttributeSnsType(

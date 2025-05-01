@@ -2,6 +2,7 @@ package com.soel.backend.backend.controller
 
 import com.soel.backend.backend.model.*
 import com.soel.backend.backend.service.GoogleService
+import com.soel.backend.backend.usecase.GoogleUseCase
 import io.swagger.v3.oas.annotations.Operation
 import org.springframework.http.ResponseEntity
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient
@@ -12,13 +13,11 @@ import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBo
 
 @RestController
 @RequestMapping("/api/google")
-class GoogleController(val googleService: GoogleService) {
+class GoogleController(val googleService: GoogleService, val googleUseCase: GoogleUseCase) {
 
     @Operation(summary = "Google:ログインユーザー情報の取得", description = "Google:ログインユーザー情報の取得を行います", tags = ["Google:GETメソッド"])
     @GetMapping("/me")
     fun getMe(@RegisteredOAuth2AuthorizedClient("google") googleClient: OAuth2AuthorizedClient): GoogleMe? {
-        println("getMe called")
-        println(googleClient.accessToken.tokenValue)
         return googleService.getMe(googleClient.accessToken.tokenValue)
     }
 
@@ -77,8 +76,6 @@ class GoogleController(val googleService: GoogleService) {
         @RequestParam("accountId") accountId: String,
         @RequestParam("locationId") locationId: String
     ): ResponseEntity<List<GoogleLocationPhotoModel>>? {
-        println("accountId: $accountId, locationId: $locationId")
-        println(googleClient.accessToken.tokenValue)
         return googleService.getLocationPhotos(googleClient.accessToken.tokenValue, accountId, locationId)
     }
 
@@ -89,8 +86,6 @@ class GoogleController(val googleService: GoogleService) {
         @RequestParam("accountId") accountId: String,
         @RequestParam("locationId") locationId: String
     ): ResponseEntity<List<GoogleLocationLocalPostModel>>? {
-        println("accountId: $accountId, locationId: $locationId")
-        println(googleClient.accessToken.tokenValue)
         return googleService.getLocationLocalPosts(googleClient.accessToken.tokenValue, accountId, locationId)
     }
 
@@ -101,8 +96,6 @@ class GoogleController(val googleService: GoogleService) {
         @RequestParam("accountId") accountId: String,
         @RequestParam("locationId") locationId: String
     ): ResponseEntity<GoogleLocationFoodMenusModel>? {
-        println("accountId: $accountId, locationId: $locationId")
-        println(googleClient.accessToken.tokenValue)
         return googleService.getLocationFoodMenus(googleClient.accessToken.tokenValue, accountId, locationId)
     }
 
@@ -119,8 +112,6 @@ class GoogleController(val googleService: GoogleService) {
         @RegisteredOAuth2AuthorizedClient("google") googleClient: OAuth2AuthorizedClient,
         @RequestParam("locationId") locationId: String
     ): ResponseEntity<List<GoogleLocationQuestion>>? {
-        println("called getLocationQuestions. locationId: $locationId")
-        println(googleClient.accessToken.tokenValue)
         return googleService.getLocationQuestions(googleClient.accessToken.tokenValue, locationId)
     }
 
@@ -138,11 +129,8 @@ class GoogleController(val googleService: GoogleService) {
         @RequestParam("locationId") locationId: String,
         @RequestParam("questionId") questionId: String
     ): ResponseEntity<List<GoogleLocationAnswer>>? {
-        println("called getLocationAnswers.")
-        println(googleClient.accessToken.tokenValue)
         return googleService.getLocationAnswers(googleClient.accessToken.tokenValue, locationId, questionId)
     }
-
 
     @Operation(summary = "Google:Google API専用", description = "GoogleAPIに写真をアップロードするときに使用されます", tags = ["Google:特殊API"])
     @GetMapping("/location/photo/{filename}")
@@ -158,7 +146,6 @@ class GoogleController(val googleService: GoogleService) {
         @RequestParam("locationId") locationId: String,
         @RequestParam("files") files: List<MultipartFile>
     ) {
-        println("files: $files")
         return googleService.postLocationPhotos(googleClient.accessToken.tokenValue, accountId, locationId, files)
     }
 
@@ -228,6 +215,193 @@ class GoogleController(val googleService: GoogleService) {
         @RequestBody locationProfile: GoogleLocationProfileModel
     ): ResponseEntity<GoogleLocationProfileModel>? {
         return googleService.updateLocationProfile(googleClient.accessToken.tokenValue, locationId, updateMask, locationProfile)
+    }
+
+    @Operation(summary = "Google:店舗のプロフィールの更新:ビジネス名", description = "Google:店舗のビジネス名を更新します", tags = ["Google:PATCHメソッド"])
+    @PatchMapping("/location/profile/title")
+    fun updateLocationProfileTitle(
+        @RegisteredOAuth2AuthorizedClient("google") googleClient: OAuth2AuthorizedClient,
+        @RequestParam("locationId") locationId: String,
+        @RequestBody title: String,
+    ): ResponseEntity<GoogleLocationProfileModel>? {
+        if (title.isBlank()) {
+            return ResponseEntity.status(440).body(null)
+        }
+        return googleUseCase.updateProfileTitle(googleClient.accessToken.tokenValue, locationId, title)
+    }
+
+    @Operation(summary = "Google:店舗のプロフィールの更新:メインカテゴリ", description = "Google:店舗のメインカテゴリを更新します", tags = ["Google:PATCHメソッド"])
+    @PatchMapping("/location/prifle/primary_category")
+    fun updateLocationProfilePrimaryCategory(
+        @RegisteredOAuth2AuthorizedClient("google") googleClient: OAuth2AuthorizedClient,
+        @RequestParam("locationId") locationId: String,
+        @RequestBody category: GoogleLocationCategory
+    ): ResponseEntity<GoogleLocationProfileModel>? {
+        if (category.name.isNullOrBlank()) {
+            return ResponseEntity.status(440).body(null)
+        }
+        return googleUseCase.updateLocationProfilePrimaryCategory(googleClient.accessToken.tokenValue, locationId, category)
+    }
+
+    @Operation(
+        summary = "Google:店舗のプロフィールの更新:追加カテゴリ",
+        description = """
+              Google:店舗の追加カテゴリを更新します。
+              Request Bodyとして nameのみ入った配列Jsonにしてください。
+              例 : 
+              [
+                {"name": "カテゴリ名"},
+                {"name": "カテゴリ名"}
+              ]
+        """, tags = ["Google:PATCHメソッド"]
+    )
+    @PatchMapping("/location/profile/additional_categories")
+    fun updateLocationProfileAdditionalCategories(
+        @RegisteredOAuth2AuthorizedClient("google") googleClient: OAuth2AuthorizedClient,
+        @RequestParam("locationId") locationId: String,
+        @RequestBody categoryList: List<GoogleLocationCategory>
+    ): ResponseEntity<GoogleLocationProfileModel>? {
+        categoryList.forEach { category ->
+            if (category.name.isNullOrBlank()) {
+                return ResponseEntity.status(440).body(null)
+            }
+        }
+        return googleUseCase.updateLocationProfileAdditionalCategories(googleClient.accessToken.tokenValue, locationId, categoryList)
+    }
+
+    @Operation(
+        summary = "Google:店舗のプロフィールの更新:説明",
+        description = """
+              Google:店舗の説明を更新します。
+              Request Bodyとして descriptionのStringにしてください。
+              例 : これは店舗です。
+        """, tags = ["Google:PATCHメソッド"]
+    )
+    @PatchMapping("/location/profile/description")
+    fun updateLocationProfileDescription(
+        @RegisteredOAuth2AuthorizedClient("google") googleClient: OAuth2AuthorizedClient,
+        @RequestParam("locationId") locationId: String,
+        @RequestBody description: String
+    ): ResponseEntity<GoogleLocationProfileModel>? {
+        if (description.isBlank()) {
+            return ResponseEntity.status(440).body(null)
+        }
+        return googleUseCase.updateLocationProfileDescription(googleClient.accessToken.tokenValue, locationId, description)
+    }
+
+    @Operation(
+        summary = "Google:店舗のプロフィールの更新:オープン日",
+        description = """
+              Google:店舗のオープン日を更新します。
+              Request Bodyとして dateのみ入ったJsonにしてください。
+              例 : {"year": 2023, "month": 10, "day": 1}
+        """, tags = ["Google:PATCHメソッド"]
+    )
+    @PatchMapping("/location/profile/opening_date")
+    fun updateLocationProfileOpeningDate(
+        @RegisteredOAuth2AuthorizedClient("google") googleClient: OAuth2AuthorizedClient,
+        @RequestParam("locationId") locationId: String,
+        @RequestBody openingDate: GoogleLocationDate
+    ): ResponseEntity<GoogleLocationProfileModel>? {
+        if (openingDate.year == null || openingDate.month == null || openingDate.day == null) {
+            return ResponseEntity.status(440).body(null)
+        }
+        return googleUseCase.updateLocationProfileOpeningDate(googleClient.accessToken.tokenValue, locationId, openingDate)
+    }
+
+    @Operation(
+        summary = "Google:店舗のプロフィールの更新:電話番号",
+        description = """
+              Google:店舗の電話番号を更新します。
+              Request Bodyとして phoneNumberのStringにしてください。
+              数字に変換した時に10桁である必要があります。
+              ハイフンとスペースは無視されます。
+              例1 : 09012345678
+              例2 : 9012345678
+              例3 : 090-1234-5678
+              例4 : 090 1234 5678
+        """, tags = ["Google:PATCHメソッド"]
+    )
+    @PatchMapping("/location/profile/phone_number")
+    fun updateLocationProfilePhoneNumber(
+        @RegisteredOAuth2AuthorizedClient("google") googleClient: OAuth2AuthorizedClient,
+        @RequestParam("locationId") locationId: String,
+        @RequestBody phoneNumber: String
+    ): ResponseEntity<GoogleLocationProfileModel>? {
+        if (phoneNumber.isBlank()) {
+            return ResponseEntity.status(440).body(null)
+        }
+        return googleUseCase.updateLocationProfilePhoneNumber(googleClient.accessToken.tokenValue, locationId, phoneNumber)
+    }
+
+    @Operation(
+        summary = "Google:店舗のプロフィールの更新:ウェブサイトURL",
+        description = """
+              Google:店舗のウェブサイトURLを更新します。
+              Request Bodyとして websiteUriのStringにしてください。
+              例 : https://example.com
+        """, tags = ["Google:PATCHメソッド"]
+    )
+    @PatchMapping("/location/profile/website_uri")
+    fun updateLocationProfileWebsiteUri(
+        @RegisteredOAuth2AuthorizedClient("google") googleClient: OAuth2AuthorizedClient,
+        @RequestParam("locationId") locationId: String,
+        @RequestBody websiteUri: String
+    ): ResponseEntity<GoogleLocationProfileModel>? {
+        if (websiteUri.isBlank()) {
+            return ResponseEntity.status(440).body(null)
+        }
+        return googleUseCase.updateLocationProfileWebsiteUri(googleClient.accessToken.tokenValue, locationId, websiteUri)
+    }
+
+    @Operation(
+        summary = "Google:店舗のプロフィールの更新:サービスエリア",
+        description = """
+              Google:店舗のサービスエリアを更新します。
+              Request Bodyとして placeIdsのString配列にしてください。
+              例 : ["ChIJLx1v3J2XGGAR5g4q0G7f8lE", "ChIJLx1v3J2XGGAR5g4q0G7f8lE"]
+        """, tags = ["Google:PATCHメソッド"]
+    )
+    @PatchMapping("/location/profile/service_area")
+    fun updateLocationServiceArea(
+        @RegisteredOAuth2AuthorizedClient("google") googleClient: OAuth2AuthorizedClient,
+        @RequestParam("locationId") locationId: String,
+        @RequestBody placeIds: List<String>
+    ): ResponseEntity<GoogleLocationProfileModel>? {
+        return googleUseCase.updateLocationProfileServiceArea(googleClient.accessToken.tokenValue, locationId, placeIds)
+    }
+
+    @Operation(
+        summary = "Google:店舗のプロフィールの更新:店舗の住所",
+        description = """
+              Google:店舗のの住所を更新します。
+              Request Bodyとして GoogleLocationStoreFrontAddressRequestのJsonにしてください。
+              例 : {
+                      "postalCode": "1234567",
+                      "administrativeArea": "東京都",
+                      "addressLines": [
+                      "渋谷区1-50",
+                      "戸島ビル303"
+                      ]
+                    }
+        """, tags = ["Google:PATCHメソッド"]
+    )
+    @PatchMapping("/location/profile/store_front_address")
+    fun updateLocationStoreFrontAddress(
+        @RegisteredOAuth2AuthorizedClient("google") googleClient: OAuth2AuthorizedClient,
+        @RequestParam("locationId") locationId: String,
+        @RequestBody storeFrontAddressRequest: GoogleLocationStoreFrontAddressRequest
+    ): ResponseEntity<GoogleLocationProfileModel>? {
+        return googleUseCase.updateLocationStoreFrontAddress(googleClient.accessToken.tokenValue, locationId, storeFrontAddressRequest)
+    }
+
+    @PatchMapping("/location/profile/business_hours")
+    fun updateLocationBusinessHours(
+        @RegisteredOAuth2AuthorizedClient("google") googleClient: OAuth2AuthorizedClient,
+        @RequestParam("locationId") locationId: String,
+        @RequestBody businessHoursRequest: GoogleLocationBusinessHoursRequest
+    ): ResponseEntity<GoogleLocationProfileModel>? {
+        return googleUseCase.updateLocationBusinessHours(googleClient.accessToken.tokenValue, locationId, businessHoursRequest)
     }
 
     @Operation(summary = "Google:店舗のメニューの更新", description = "Google:店舗のメニューを更新します", tags = ["Google:PATCHメソッド"])
@@ -303,6 +477,42 @@ class GoogleController(val googleService: GoogleService) {
         @RequestBody attributes: GoogleLocationAttributesModel
     ): ResponseEntity<GoogleLocationAttributesModel>? {
         return googleService.updateLocationAttributes(googleClient.accessToken.tokenValue, locationId, attributeMask, attributes)
+    }
+
+    @Operation(
+        summary = "Google:店舗のSNSリンクの更新",
+        description = """
+              Google:店舗のSNSリンクを更新します。
+              Request Bodyとして snsTypeとsnsUrlのStringにしてください。
+              例 : {"snsType": "TWITTER", "snsUrl": "https://x.com/elonmusk"}
+              snsTypeはenumで以下から選択してください。(全部大文字で指定してください)
+                TWITTER, TIKTOK, INSTAGRAM, YOUTUBE, INSTAGRAM, FACEBOOK, LINKEDIN, PINTEREST
+        """, tags = ["Google:PATCHメソッド"]
+    )
+    @PatchMapping("/location/attributes/sns_link")
+    fun updateLocationAttributeSnsLink(
+        @RegisteredOAuth2AuthorizedClient("google") googleClient: OAuth2AuthorizedClient,
+        @RequestParam("locationId") locationId: String,
+        @RequestBody snsLinkRequest: GoogleLocationAttributeSnsLinkRequest
+    ): ResponseEntity<GoogleLocationAttributesModel>? {
+        return googleUseCase.updateLocationAttributeSnsLink(googleClient.accessToken.tokenValue, locationId, snsLinkRequest)
+    }
+
+    @Operation(
+        summary = "Google:店舗のメニューリンクの更新",
+        description = """
+              Google:店舗のメニューリンクを更新します。
+              Request Bodyとして menuLinkのStringにしてください。
+              例 : https://example.com/
+        """, tags = ["Google:PATCHメソッド"]
+    )
+    @PatchMapping("/location/attributes/menu_link")
+    fun updateLocationAttributeMenuLink(
+        @RegisteredOAuth2AuthorizedClient("google") googleClient: OAuth2AuthorizedClient,
+        @RequestParam("locationId") locationId: String,
+        @RequestBody menuLink: String,
+    ): ResponseEntity<GoogleLocationAttributesModel>? {
+        return googleUseCase.updateLocationAttributeMenuLink(googleClient.accessToken.tokenValue, locationId, menuLink)
     }
 
     @Operation(

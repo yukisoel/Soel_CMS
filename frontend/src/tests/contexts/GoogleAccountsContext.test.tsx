@@ -4,7 +4,7 @@ import {render, waitFor, screen} from "@testing-library/react";
 import MockAdapter from "axios-mock-adapter";
 import axios from "axios";
 import SpyGoogleService from "@/tests/doubles/services/SpyGoogleService.ts";
-import {GoogleAccount} from "@/main/model/GoogleAccount.ts";
+import {GoogleAccount} from "@/types/apiModel.ts";
 
 const TestComponent = () => {
   return (
