@@ -1,5 +1,4 @@
 import {Route, Routes} from "react-router-dom";
-import EditPage from "./pages/EditPage.tsx";
 import EditGBPLayout from "@/main/components/editPage/EditGBPLayout.tsx";
 import SearchStore from "@/main/components/editPage/SearchStore.tsx";
 import {GoogleAccountsContextProvider} from "@/main/contexts/GoogleAccountsContext.tsx";
@@ -23,6 +22,7 @@ import SchedulePostList from "./components/stores/SchedulePostList/SchedulePostL
 import ReviewPage from "./components/stores/Review/ReviewPage.tsx";
 import HistoryPostList from "./components/stores/HistorypostList/HistoryPostList.tsx";
 import SelectStoreSingleRender from "./components/stores/SelectStoreSingle/SelectStoreSingleRender.tsx";
+import EditProfileLayoutV2 from "./components/editPage/v2/EditProfile/EditProfileLayoutV2.tsx";
 
 const googleRepository = new GoogleRepositoryImpl()
 const googleService = new GoogleServiceImpl({googleRepository})
@@ -43,15 +43,17 @@ function App() {
                <GoogleAccountsContextProvider>
                  <GoogleSelectedLocationContextProvider>
                    <PankuzuListContextProvider>
-                     <EditPage
-                       email={'dummyEmail.sample.jp'}
-                     />
+                     <EditPageAdvanced />
                    </PankuzuListContextProvider>
                  </GoogleSelectedLocationContextProvider>
                </GoogleAccountsContextProvider>
              }
       >
         <Route path={''} element={<SearchStore googleService={googleService}/>}>
+        </Route>
+        <Route path={"v2/gbp"}>
+          <Route path={"accounts/:accountId/location/:locationId/profile"}
+                  element={<EditProfileLayoutV2 googleService={googleService}/>}/>
         </Route>
         <Route path={'gbp'} element={<EditGBPLayout/>}>
           <Route path={"accounts/:accountId/location/:locationId"}
