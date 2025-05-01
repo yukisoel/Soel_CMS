@@ -1,5 +1,5 @@
 import {createContext, useState} from "react";
-import {GoogleAccount} from "@/main/model/GoogleAccount.ts";
+import {GoogleAccount} from "@/types/apiModel.ts";
 
 interface GoogleAccountsContextState {
   selectedAccount: GoogleAccount | null

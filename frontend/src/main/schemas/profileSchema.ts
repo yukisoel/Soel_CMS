@@ -23,6 +23,8 @@ export const profileSchema = z.object({
             if (!date) return true;
             return date <= new Date();
         }, '開業日は今日以前の日付を指定してください'),
+    categories: z.array(z.string())
+        .optional(),
 
     // 連絡先タブ
     phoneNumbers: z.object({

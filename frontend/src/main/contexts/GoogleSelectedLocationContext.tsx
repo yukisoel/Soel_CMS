@@ -1,5 +1,5 @@
-import {GoogleLocation} from "@/main/model/GoogleAccount.ts";
 import {createContext, useState} from "react";
+import {GoogleLocation} from "@/types/apiModel.ts";
 
 interface GoogleSelectedLocationContextState {
   googleSelectedLocation: GoogleLocation

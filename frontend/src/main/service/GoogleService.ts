@@ -1,11 +1,11 @@
 import {GoogleRepository} from "@/main/repositories/GoogleRepository.ts";
-import {GoogleAccount, GoogleLocation} from "@/main/model/GoogleAccount.ts";
 import {
   GoogleLocationFoodMenusModel,
   GoogleLocationLocalPostModel,
   GoogleLocationPhotoModel,
   GoogleLocationProfileModel
 } from "@/main/model/LocationModel.ts";
+import {GoogleAccount, GoogleLocation} from "@/types/apiModel.ts";
 
 export interface GoogleService {
   getAccounts(): Promise<GoogleAccount[]>
