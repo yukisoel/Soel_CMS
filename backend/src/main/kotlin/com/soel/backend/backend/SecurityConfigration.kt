@@ -25,7 +25,6 @@ class SecurityConfig {
 
     @Bean
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
-        println("Redirect URL: $redirectUrl")
         http
             .oauth2Login {
                 it.successHandler{_, response, _ ->

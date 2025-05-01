@@ -2,19 +2,28 @@ start:
 	source .env && ./gradlew bootRun
 
 kt2openApiDocs:
-	@if lsof -ti :8080 > /dev/null; then \
-		echo "Port 8080 is already in use. Please stop the process using this port."; \
-		./gradlew generateOpenApiDocs; \
-	else \
-		echo "Starting bootRun..."; \
-		source .env && nohup ./gradlew bootRun > bootrun.log 2>&1 & \
-		PID=$$!; \
-		echo "Waiting for app to start..."; \
-		sleep 10; \
-		./gradlew generateOpenApiDocs; \
-		echo "Killing bootRun (PID $$PID)"; \
-		kill $$PID; \
+	@echo "🔄 Starting OpenAPI Docs Generation..."
+
+	@if [ -f apiDocs/openapi.yaml ]; then \
+		echo "🧹 Deleting existing openapi.yaml..."; \
+		rm apiDocs/openapi.yaml; \
 	fi
+
+	@PORT_IN_USE=$$(lsof -ti :8080); \
+	if [ -n "$$PORT_IN_USE" ]; then \
+		echo "⚠️  Port 8080 is already in use (PID: $$PORT_IN_USE)"; \
+	else \
+		echo "🚀 Starting bootRun..."; \
+		source .env && nohup ./gradlew bootRun > bootrun.log 2>&1 & \
+		sleep 10; \
+	fi; \
+
+	echo "📄 Generating OpenAPI docs..."; \
+	./gradlew generateOpenApiDocs; \
+
+	echo "🛑 Stopping process on port 8080..."; \
+	PID=$$(lsof -ti tcp:8080); \
+	if [ -n "$$PID" ]; then kill $$PID && echo "✅ Killed process $$PID"; fi
 
 build-local:
 	source .env && ./gradlew build

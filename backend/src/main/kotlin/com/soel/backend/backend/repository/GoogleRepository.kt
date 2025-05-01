@@ -180,7 +180,7 @@ class GoogleRepositoryImpl(val restTemplate: RestTemplate) : GoogleRepository {
         val uri = UriComponentsBuilder.fromHttpUrl(requestUrl)
             .queryParam(
                 "readMask",
-                "name,title,phoneNumbers,categories,storefrontAddress,websiteUri,regularHours,profile,openInfo,serviceArea"
+                "name,title,phoneNumbers,categories,storefrontAddress,websiteUri,regularHours,moreHours,profile,openInfo,serviceArea"
             )
             .build()
             .toUri()
@@ -363,7 +363,7 @@ class GoogleRepositoryImpl(val restTemplate: RestTemplate) : GoogleRepository {
 
         val mediaRequest = GoogleLocationPhotoModel(
             mediaFormat = "PHOTO",
-            locationAssociation = GoogleLocationAssociation(category = "ADDITIONAL"),
+            locationAssociation = GoogleLocationAssociation(category = GoogleLocationAssociationCategory.ADDITIONAL),
             sourceUrl = sourceUrl
         )
 
@@ -390,7 +390,7 @@ class GoogleRepositoryImpl(val restTemplate: RestTemplate) : GoogleRepository {
             mediaList.add(
                 GoogleLocationPhotoModel(
                     mediaFormat = "PHOTO",
-                    locationAssociation = GoogleLocationAssociation(category = "ADDITIONAL"),
+                    locationAssociation = GoogleLocationAssociation(category = GoogleLocationAssociationCategory.ADDITIONAL),
                     sourceUrl = sourceUrl
                 )
             )
@@ -413,13 +413,11 @@ class GoogleRepositoryImpl(val restTemplate: RestTemplate) : GoogleRepository {
 
         val entity = HttpEntity(request, headers)
 
-        val result = restTemplate.postForObject(
+        restTemplate.postForObject(
             uri,
             entity,
             GoogleLocationLocalPostModel::class.java
         )
-
-        println(result)
     }
 
     override fun postLocationQuestion(accessToken: String, locationId: String, text: String) {
@@ -441,13 +439,11 @@ class GoogleRepositoryImpl(val restTemplate: RestTemplate) : GoogleRepository {
 
         val entity = HttpEntity(request, headers)
 
-        val result = restTemplate.postForObject(
+        restTemplate.postForObject(
             uri,
             entity,
             GoogleLocationQuestion::class.java
         )
-
-        println(result)
     }
 
     override fun postLocationAnswer(accessToken: String, locationId: String, questionId: String, text: String) {
@@ -471,13 +467,11 @@ class GoogleRepositoryImpl(val restTemplate: RestTemplate) : GoogleRepository {
 
         val entity = HttpEntity(request, headers)
 
-        val result = restTemplate.postForObject(
+        restTemplate.postForObject(
             uri,
             entity,
             GoogleLocationAnswer::class.java
         )
-
-        println(result)
     }
 
     override fun updateLocationProfile(accessToken: String, locationId: String, updateMask: String, locationProfile: GoogleLocationProfileModel): GoogleLocationProfileModel? {

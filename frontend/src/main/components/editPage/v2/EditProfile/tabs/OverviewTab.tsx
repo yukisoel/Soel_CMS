@@ -3,6 +3,7 @@ import Typography from "@/main/common/Typography";
 import Button from "@/main/common/Button";
 import styles from "../EditProfileLayoutV2.module.scss";
 import EditBusinessInfoModal from "../modals/EditBusinessInfoModal";
+import EditBusinessCategoriesModal from "../modals/EditBusinessCategoriesModal";
 import { useState } from "react";
 import { UseFormRegister, FieldErrors } from "react-hook-form";
 import { ProfileFormData } from "@/main/schemas/profileSchema";
@@ -15,6 +16,7 @@ type Props = {
         businessName: string;
         description?: string;
         openingDate?: Date;
+        categories?: string[];
     };
     setValueAndValidate: (name: keyof ProfileFormData, value: SetValueType) => Promise<boolean>;
     isUpdating: boolean;
@@ -22,6 +24,7 @@ type Props = {
         businessName?: string;
         description?: string;
         openingDate?: string;
+        categories?: string;
     };
 };
 
@@ -40,12 +43,20 @@ export default function OverviewTab({
     validationErrors
 }: Props) {
     const [editModalType, setEditModalType] = useState<EditModalType>(null);
+    const [isCategoriesModalOpen, setIsCategoriesModalOpen] = useState(false);
+    const [businessCategories, setBusinessCategories] = useState<string[]>(values.categories || []);
 
     const handleSave = async (value: string | Date) => {
         if (!editModalType) return false;
         const fieldName = FIELD_MAP[editModalType];
 
         const isValid = await setValueAndValidate(fieldName, value);
+        return isValid;
+    };
+
+    const handleSaveCategories = async (categories: string[]) => {
+        setBusinessCategories(categories);
+        const isValid = await setValueAndValidate('categories', categories);
         return isValid;
     };
 
@@ -71,6 +82,35 @@ export default function OverviewTab({
                         padding="0.5rem 1.8rem"
                         onClick={() => setEditModalType('businessName')}
                         disabled={isUpdating}
+                    >
+                        <Typography
+                            content="編集"
+                            color="primary"
+                            size="normal"
+                        />
+                    </Button>
+                </Wrapper>
+            </Wrapper>
+
+            {/* ビジネスカテゴリセクション */}
+            <Wrapper direction="col" gap="1rem">
+                <Typography
+                    content="ビジネスカテゴリ"
+                    color="primary"
+                    size="normal"
+                />
+                <Wrapper className={styles.field_row}>
+                    <Wrapper className={styles.field_container}>
+                        <Typography
+                            content={businessCategories.length > 0 ? businessCategories.join(', ') : 'カテゴリが設定されていません'}
+                            color="secondary"
+                            size="normal"
+                        />
+                    </Wrapper>
+                    <Button
+                        bgColor="primary"
+                        padding="0.5rem 1.8rem"
+                        onClick={() => setIsCategoriesModalOpen(true)}
                     >
                         <Typography
                             content="編集"
@@ -160,6 +200,14 @@ export default function OverviewTab({
                     }
                 />
             )}
+
+            {/* カテゴリ編集モーダル */}
+            <EditBusinessCategoriesModal
+                isOpen={isCategoriesModalOpen}
+                onClose={() => setIsCategoriesModalOpen(false)}
+                categories={businessCategories}
+                onSave={handleSaveCategories}
+            />
         </Wrapper>
     );
 }

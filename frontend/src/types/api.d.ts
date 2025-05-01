@@ -144,6 +144,175 @@ export interface paths {
         patch: operations["updateLocationProfile"];
         trace?: never;
     };
+    "/api/google/location/profile/website_uri": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Google:店舗のプロフィールの更新:ウェブサイトURL
+         * @description
+         *                   Google:店舗のウェブサイトURLを更新します。
+         *                   Request Bodyとして websiteUriのStringにしてください。
+         *                   例 : https://example.com
+         *
+         */
+        patch: operations["updateLocationProfileWebsiteUri"];
+        trace?: never;
+    };
+    "/api/google/location/profile/title": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Google:店舗のプロフィールの更新:ビジネス名
+         * @description Google:店舗のビジネス名を更新します
+         */
+        patch: operations["updateLocationProfileTitle"];
+        trace?: never;
+    };
+    "/api/google/location/profile/phone_number": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Google:店舗のプロフィールの更新:電話番号
+         * @description
+         *                   Google:店舗の電話番号を更新します。
+         *                   Request Bodyとして phoneNumberのStringにしてください。
+         *                   数字に変換した時に10桁である必要があります。
+         *                   ハイフンとスペースは無視されます。
+         *                   例1 : 09012345678
+         *                   例2 : 9012345678
+         *                   例3 : 090-1234-5678
+         *                   例4 : 090 1234 5678
+         *
+         */
+        patch: operations["updateLocationProfilePhoneNumber"];
+        trace?: never;
+    };
+    "/api/google/location/profile/opening_date": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Google:店舗のプロフィールの更新:オープン日
+         * @description
+         *                   Google:店舗のオープン日を更新します。
+         *                   Request Bodyとして dateのみ入ったJsonにしてください。
+         *                   例 : {"year": 2023, "month": 10, "day": 1}
+         *
+         */
+        patch: operations["updateLocationProfileOpeningDate"];
+        trace?: never;
+    };
+    "/api/google/location/profile/description": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Google:店舗のプロフィールの更新:説明
+         * @description
+         *                   Google:店舗の説明を更新します。
+         *                   Request Bodyとして descriptionのStringにしてください。
+         *                   例 : これは店舗です。
+         *
+         */
+        patch: operations["updateLocationProfileDescription"];
+        trace?: never;
+    };
+    "/api/google/location/profile/additional_categories": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Google:店舗のプロフィールの更新:追加カテゴリ
+         * @description
+         *                   Google:店舗の追加カテゴリを更新します。
+         *                   Request Bodyとして nameのみ入った配列Jsonにしてください。
+         *                   例 :
+         *                   [
+         *                     {"name": "カテゴリ名"},
+         *                     {"name": "カテゴリ名"}
+         *                   ]
+         *
+         */
+        patch: operations["updateLocationProfileAdditionalCategories"];
+        trace?: never;
+    };
+    "/api/google/location/prifle/primary_category": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Google:店舗のプロフィールの更新:メインカテゴリ
+         * @description Google:店舗のメインカテゴリを更新します
+         */
+        patch: operations["updateLocationProfilePrimaryCategory"];
+        trace?: never;
+    };
     "/api/google/location/food_menus": {
         parameters: {
             query?: never;
@@ -218,6 +387,32 @@ export interface paths {
          *
          */
         patch: operations["updateLocationAttributes"];
+        trace?: never;
+    };
+    "/api/google/location/attributes/sns_link": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Google:店舗のSNSリンクの更新
+         * @description
+         *                   Google:店舗のSNSリンクを更新します。
+         *                   Request Bodyとして snsTypeとsnsUrlのStringにしてください。
+         *                   例 : {"snsType": "TWITTER", "snsUrl": "https://x.com/elonmusk"}
+         *                   snsTypeはenumで以下から選択してください。(全部大文字で指定してください)
+         *                     TWITTER, TIKTOK, INSTAGRAM, YOUTUBE, INSTAGRAM, FACEBOOK, LINKEDIN, PINTEREST
+         *
+         */
+        patch: operations["updateLocationAttributeSnsLink"];
         trace?: never;
     };
     "/api/google/me": {
@@ -423,7 +618,7 @@ export interface components {
             name?: string;
             profilePhotoUrl?: string;
             /** @enum {string} */
-            type?: "AUTHOR_TYPE_UNSPECIFIED" | "REGULAR_USER" | "LOCAL_GUIDE" | "MERCHANT";
+            type?: GoogleLocationAuthorType;
         };
         GoogleLocationQuestion: {
             name?: string;
@@ -438,7 +633,8 @@ export interface components {
             topAnswers?: components["schemas"]["GoogleLocationAnswer"][];
         };
         GoogleLocationAssociation: {
-            category?: string;
+            /** @enum {string} */
+            category?: GoogleLocationAssociationCategory;
         };
         GoogleLocationCallToAction: {
             actionType?: string;
@@ -520,6 +716,7 @@ export interface components {
         };
         GoogleLocationPhoneNumbers: {
             primaryPhone?: string;
+            additionalPhones?: string[];
         };
         GoogleLocationPlaceInfo: {
             placeName?: string;
@@ -626,7 +823,7 @@ export interface components {
         GoogleLocationAttribute: {
             name?: string;
             /** @enum {string} */
-            valueType?: "ATTRIBUTE_VALUE_TYPE_UNSPECIFIED" | "URL" | "BOOL" | "ENUM" | "REPEATED_ENUM";
+            valueType?: GoogleLocationAttributeValueType;
             uriValues?: components["schemas"]["GoogleLocationAttributeUriValue"][];
         };
         GoogleLocationAttributeUriValue: {
@@ -635,6 +832,11 @@ export interface components {
         GoogleLocationAttributesModel: {
             name?: string;
             attributes?: components["schemas"]["GoogleLocationAttribute"][];
+        };
+        GoogleLocationAttributeSnsLinkRequest: {
+            /** @enum {string} */
+            snsType: GoogleLocationAttributeSnsLinkRequestSnsType;
+            snsUrl: string;
         };
         GoogleMe: {
             names: components["schemas"]["GoogleName"][];
@@ -923,6 +1125,188 @@ export interface operations {
             };
         };
     };
+    updateLocationProfileWebsiteUri: {
+        parameters: {
+            query: {
+                locationId: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": string;
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["GoogleLocationProfileModel"];
+                };
+            };
+        };
+    };
+    updateLocationProfileTitle: {
+        parameters: {
+            query: {
+                locationId: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": string;
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["GoogleLocationProfileModel"];
+                };
+            };
+        };
+    };
+    updateLocationProfilePhoneNumber: {
+        parameters: {
+            query: {
+                locationId: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": string;
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["GoogleLocationProfileModel"];
+                };
+            };
+        };
+    };
+    updateLocationProfileOpeningDate: {
+        parameters: {
+            query: {
+                locationId: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["GoogleLocationDate"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["GoogleLocationProfileModel"];
+                };
+            };
+        };
+    };
+    updateLocationProfileDescription: {
+        parameters: {
+            query: {
+                locationId: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": string;
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["GoogleLocationProfileModel"];
+                };
+            };
+        };
+    };
+    updateLocationProfileAdditionalCategories: {
+        parameters: {
+            query: {
+                locationId: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["GoogleLocationCategory"][];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["GoogleLocationProfileModel"];
+                };
+            };
+        };
+    };
+    updateLocationProfilePrimaryCategory: {
+        parameters: {
+            query: {
+                locationId: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["GoogleLocationCategory"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["GoogleLocationProfileModel"];
+                };
+            };
+        };
+    };
     getLocationFoodMenus: {
         parameters: {
             query: {
@@ -1008,6 +1392,32 @@ export interface operations {
         requestBody: {
             content: {
                 "application/json": components["schemas"]["GoogleLocationAttributesModel"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["GoogleLocationAttributesModel"];
+                };
+            };
+        };
+    };
+    updateLocationAttributeSnsLink: {
+        parameters: {
+            query: {
+                locationId: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["GoogleLocationAttributeSnsLinkRequest"];
             };
         };
         responses: {
@@ -1215,4 +1625,41 @@ export interface operations {
             };
         };
     };
+}
+export enum GoogleLocationAuthorType {
+    AUTHOR_TYPE_UNSPECIFIED = "AUTHOR_TYPE_UNSPECIFIED",
+    REGULAR_USER = "REGULAR_USER",
+    LOCAL_GUIDE = "LOCAL_GUIDE",
+    MERCHANT = "MERCHANT"
+}
+export enum GoogleLocationAssociationCategory {
+    COVER = "COVER",
+    PROFILE = "PROFILE",
+    LOGO = "LOGO",
+    EXTERIOR = "EXTERIOR",
+    INTERIOR = "INTERIOR",
+    PRODUCT = "PRODUCT",
+    AT_WORK = "AT_WORK",
+    FOOD_AND_DRINK = "FOOD_AND_DRINK",
+    MENU = "MENU",
+    ROOMS = "ROOMS",
+    TEAMS = "TEAMS",
+    ADDITIONAL = "ADDITIONAL",
+    CATEGORY_UNSPECIFIED = "CATEGORY_UNSPECIFIED"
+}
+export enum GoogleLocationAttributeValueType {
+    ATTRIBUTE_VALUE_TYPE_UNSPECIFIED = "ATTRIBUTE_VALUE_TYPE_UNSPECIFIED",
+    URL = "URL",
+    BOOL = "BOOL",
+    ENUM = "ENUM",
+    REPEATED_ENUM = "REPEATED_ENUM"
+}
+export enum GoogleLocationAttributeSnsLinkRequestSnsType {
+    TWITTER = "TWITTER",
+    TIKTOK = "TIKTOK",
+    YOUTUBE = "YOUTUBE",
+    INSTAGRAM = "INSTAGRAM",
+    FACEBOOK = "FACEBOOK",
+    LINKEDIN = "LINKEDIN",
+    PINTEREST = "PINTEREST"
 }

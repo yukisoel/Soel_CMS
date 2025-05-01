@@ -461,6 +461,303 @@
         }
       }
     },
+    "/api/google/location/profile/website_uri": {
+      "patch": {
+        "tags": [
+          "Google:PATCHメソッド"
+        ],
+        "summary": "Google:店舗のプロフィールの更新:ウェブサイトURL",
+        "description": "\n              Google:店舗のウェブサイトURLを更新します。\n              Request Bodyとして websiteUriのStringにしてください。\n              例 : https://example.com\n        ",
+        "operationId": "updateLocationProfileWebsiteUri",
+        "parameters": [
+          {
+            "name": "locationId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "string"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/GoogleLocationProfileModel"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/google/location/profile/title": {
+      "patch": {
+        "tags": [
+          "Google:PATCHメソッド"
+        ],
+        "summary": "Google:店舗のプロフィールの更新:ビジネス名",
+        "description": "Google:店舗のビジネス名を更新します",
+        "operationId": "updateLocationProfileTitle",
+        "parameters": [
+          {
+            "name": "locationId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "string"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/GoogleLocationProfileModel"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/google/location/profile/phone_number": {
+      "patch": {
+        "tags": [
+          "Google:PATCHメソッド"
+        ],
+        "summary": "Google:店舗のプロフィールの更新:電話番号",
+        "description": "\n              Google:店舗の電話番号を更新します。\n              Request Bodyとして phoneNumberのStringにしてください。\n              数字に変換した時に10桁である必要があります。\n              ハイフンとスペースは無視されます。\n              例1 : 09012345678\n              例2 : 9012345678\n              例3 : 090-1234-5678\n              例4 : 090 1234 5678\n        ",
+        "operationId": "updateLocationProfilePhoneNumber",
+        "parameters": [
+          {
+            "name": "locationId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "string"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/GoogleLocationProfileModel"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/google/location/profile/opening_date": {
+      "patch": {
+        "tags": [
+          "Google:PATCHメソッド"
+        ],
+        "summary": "Google:店舗のプロフィールの更新:オープン日",
+        "description": "\n              Google:店舗のオープン日を更新します。\n              Request Bodyとして dateのみ入ったJsonにしてください。\n              例 : {\"year\": 2023, \"month\": 10, \"day\": 1}\n        ",
+        "operationId": "updateLocationProfileOpeningDate",
+        "parameters": [
+          {
+            "name": "locationId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GoogleLocationDate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/GoogleLocationProfileModel"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/google/location/profile/description": {
+      "patch": {
+        "tags": [
+          "Google:PATCHメソッド"
+        ],
+        "summary": "Google:店舗のプロフィールの更新:説明",
+        "description": "\n              Google:店舗の説明を更新します。\n              Request Bodyとして descriptionのStringにしてください。\n              例 : これは店舗です。\n        ",
+        "operationId": "updateLocationProfileDescription",
+        "parameters": [
+          {
+            "name": "locationId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "string"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/GoogleLocationProfileModel"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/google/location/profile/additional_categories": {
+      "patch": {
+        "tags": [
+          "Google:PATCHメソッド"
+        ],
+        "summary": "Google:店舗のプロフィールの更新:追加カテゴリ",
+        "description": "\n              Google:店舗の追加カテゴリを更新します。\n              Request Bodyとして nameのみ入った配列Jsonにしてください。\n              例 : \n              [\n                {\"name\": \"カテゴリ名\"},\n                {\"name\": \"カテゴリ名\"}\n              ]\n        ",
+        "operationId": "updateLocationProfileAdditionalCategories",
+        "parameters": [
+          {
+            "name": "locationId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/GoogleLocationCategory"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/GoogleLocationProfileModel"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/google/location/prifle/primary_category": {
+      "patch": {
+        "tags": [
+          "Google:PATCHメソッド"
+        ],
+        "summary": "Google:店舗のプロフィールの更新:メインカテゴリ",
+        "description": "Google:店舗のメインカテゴリを更新します",
+        "operationId": "updateLocationProfilePrimaryCategory",
+        "parameters": [
+          {
+            "name": "locationId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GoogleLocationCategory"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/GoogleLocationProfileModel"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/google/location/food_menus": {
       "get": {
         "tags": [
@@ -610,6 +907,48 @@
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/GoogleLocationAttributesModel"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/GoogleLocationAttributesModel"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/google/location/attributes/sns_link": {
+      "patch": {
+        "tags": [
+          "Google:PATCHメソッド"
+        ],
+        "summary": "Google:店舗のSNSリンクの更新",
+        "description": "\n              Google:店舗のSNSリンクを更新します。\n              Request Bodyとして snsTypeとsnsUrlのStringにしてください。\n              例 : {\"snsType\": \"TWITTER\", \"snsUrl\": \"https://x.com/elonmusk\"}\n              snsTypeはenumで以下から選択してください。(全部大文字で指定してください)\n                TWITTER, TIKTOK, INSTAGRAM, YOUTUBE, INSTAGRAM, FACEBOOK, LINKEDIN, PINTEREST\n        ",
+        "operationId": "updateLocationAttributeSnsLink",
+        "parameters": [
+          {
+            "name": "locationId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GoogleLocationAttributeSnsLinkRequest"
               }
             }
           },
@@ -995,7 +1334,22 @@
         "type": "object",
         "properties": {
           "category": {
-            "type": "string"
+            "type": "string",
+            "enum": [
+              "COVER",
+              "PROFILE",
+              "LOGO",
+              "EXTERIOR",
+              "INTERIOR",
+              "PRODUCT",
+              "AT_WORK",
+              "FOOD_AND_DRINK",
+              "MENU",
+              "ROOMS",
+              "TEAMS",
+              "ADDITIONAL",
+              "CATEGORY_UNSPECIFIED"
+            ]
           }
         }
       },
@@ -1218,6 +1572,12 @@
         "properties": {
           "primaryPhone": {
             "type": "string"
+          },
+          "additionalPhones": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
           }
         }
       },
@@ -1589,6 +1949,30 @@
             "items": {
               "$ref": "#/components/schemas/GoogleLocationAttribute"
             }
+          }
+        }
+      },
+      "GoogleLocationAttributeSnsLinkRequest": {
+        "required": [
+          "snsType",
+          "snsUrl"
+        ],
+        "type": "object",
+        "properties": {
+          "snsType": {
+            "type": "string",
+            "enum": [
+              "TWITTER",
+              "TIKTOK",
+              "YOUTUBE",
+              "INSTAGRAM",
+              "FACEBOOK",
+              "LINKEDIN",
+              "PINTEREST"
+            ]
+          },
+          "snsUrl": {
+            "type": "string"
           }
         }
       },
