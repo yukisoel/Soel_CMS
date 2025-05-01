@@ -6,9 +6,10 @@ import Button from '../Button';
 type Props = {
     setUploadedPhotoFileList: (fileList: FileList) => void
     size: 'regular' | 'large'
+    onReset?: () => void
 }
 
-export default function FileUpload({setUploadedPhotoFileList, size}: Props) {
+export default function FileUpload({setUploadedPhotoFileList, size, onReset}: Props) {
     const [uploadedPhotoUrlList, setUploadedPhotoUrlList] = useState<string[]>([])
     const [showAddPhotoListPage, setShowAddPhotoListPage] = useState<boolean>(false)
     const fileUploadInputRef = useRef<HTMLInputElement>(null)
@@ -52,6 +53,7 @@ export default function FileUpload({setUploadedPhotoFileList, size}: Props) {
         if (fileUploadInputRef.current) {
             fileUploadInputRef.current.value = ''
         }
+        onReset?.();
     }
 
     return (
