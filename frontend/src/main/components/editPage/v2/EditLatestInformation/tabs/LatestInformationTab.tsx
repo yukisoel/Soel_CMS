@@ -33,7 +33,7 @@ export const LatestInformationTab: React.FC = () => {
     },
   });
 
-  const buttonOptions = ['予約', '電話', 'ウェブサイト', 'メニュー'];
+  const buttonOptions = ['なし', '予約', 'オンライン注文', '購入', '詳細', '登録', '今すぐ電話'];
   const { render: renderFileUpload } = useFileUpload({ size: 'regular' });
 
   const onSubmit = async (data: FormData) => {

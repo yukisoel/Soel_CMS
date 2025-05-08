@@ -16,9 +16,9 @@ import styles from '../EditLatestInformation.module.scss';
 const schema = z.object({
   eventTitle: z.string().min(1, 'イベントのタイトルは必須です'),
   startDate: z.date().nullable(),
-  startTime: z.string().nullable(),
+  startTime: z.date().nullable(),
   endDate: z.date().nullable(),
-  endTime: z.string().nullable(),
+  endTime: z.date().nullable(),
   eventDetail: z.string(),
   buttonTitle: z.string(),
   selectedButton: z.string(),
@@ -40,7 +40,7 @@ export const EventTab: React.FC = () => {
     },
   });
 
-  const buttonOptions = ['予約', '電話', 'ウェブサイト', 'メニュー'];
+  const buttonOptions = ['なし', '予約', 'オンライン注文', '購入', '詳細', '登録', '今すぐ電話'];
   const { render: renderFileUpload } = useFileUpload({ size: 'regular' });
 
   const onSubmit = async (data: FormData) => {
