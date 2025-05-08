@@ -12,11 +12,11 @@ import useFileUpload from '@/main/common/FileUpload/useFileUpload';
 import LayoutLabeledFormItem from '@/main/common/LayoutLabeledFormItem';
 
 const schema = z.object({
-  name: z.string().min(1, 'アイテム名は必須です'),
+  name: z.string().min(1, 'アイテム名は必須です').max(58, 'アイテム名は58文字以内で入力してください'),
   price: z.string().min(1, '価格は必須です'),
   category: z.string().min(1, 'カテゴリは必須です'),
-  description: z.string().optional(),
-  productUrl: z.string().optional(),
+  description: z.string().max(1000, '説明は1000文字以内で入力してください').optional(),
+  productUrl: z.string().max(1500, '商品URLは1500文字以内で入力してください').optional(),
 });
 
 type FormData = z.infer<typeof schema>;
@@ -50,6 +50,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({
     handleSubmit,
     formState: { errors },
     reset,
+    watch,
   } = useForm<FormData>({
     resolver: zodResolver(schema),
     defaultValues: initialValues,
@@ -68,14 +69,23 @@ export const ProductModal: React.FC<ProductModalProps> = ({
   }, [isOpen, reset, initialValues]);
 
   const { render: renderFileUpload } = useFileUpload({
-    size: 'regular',
-    defaultImageUrl: initialValues?.imageUrl
+    size: 'regular'
   });
+
+  const nameValue = watch('name') || '';
+  const descriptionValue = watch('description') || '';
+  const productUrlValue = watch('productUrl') || '';
 
   const contentRender = () => (
     <form onSubmit={handleSubmit(onSubmit)}>
       <Wrapper direction="col" gap="2rem">
-        <LayoutLabeledFormItem label="アイテム名">
+        <LayoutLabeledFormItem
+          label="アイテム名"
+          counter={{
+            current: nameValue.length,
+            max: 58
+          }}
+        >
           <Input
             {...register('name')}
             placeholder="アイテム名を入力"
@@ -115,7 +125,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({
           )}
         </LayoutLabeledFormItem>
 
-        <LayoutLabeledFormItem label="アイテムの説明">
+        <LayoutLabeledFormItem label="アイテムの説明" counter={{ current: descriptionValue.length, max: 1000 }}>
           <Textarea
             {...register('description')}
             placeholder="説明を入力"
@@ -123,15 +133,21 @@ export const ProductModal: React.FC<ProductModalProps> = ({
             padding="0.7rem 1.5rem"
             width="100%"
           />
+          {errors.description && (
+            <Typography content={errors.description.message || ''} size="xsmall" color="error" />
+          )}
         </LayoutLabeledFormItem>
 
-        <LayoutLabeledFormItem label="商品URL">
+        <LayoutLabeledFormItem label="商品URL" counter={{ current: productUrlValue.length, max: 1500 }}>
           <Input
             {...register('productUrl')}
             placeholder="商品URLを入力"
             padding="0.7rem 1.5rem"
             width="100%"
           />
+          {errors.productUrl && (
+            <Typography content={errors.productUrl.message || ''} size="xsmall" color="error" />
+          )}
         </LayoutLabeledFormItem>
 
         <Wrapper justify={mode === 'edit' ? 'justify-between' : 'justify-end'} gap="1rem">
