@@ -12,6 +12,7 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import styles from '../EditLatestInformation.module.scss';
+import LayoutLabeledFormItem from '@/main/common/LayoutLabeledFormItem';
 
 const schema = z.object({
   eventTitle: z.string().min(1, 'イベントのタイトルは必須です'),
@@ -19,7 +20,7 @@ const schema = z.object({
   startTime: z.date().nullable(),
   endDate: z.date().nullable(),
   endTime: z.date().nullable(),
-  eventDetail: z.string(),
+  eventDetail: z.string().max(1500, 'イベントの詳細は1500文字以内で入力してください'),
   buttonTitle: z.string(),
   selectedButton: z.string(),
 });
@@ -47,6 +48,8 @@ export const EventTab: React.FC = () => {
     console.log(data);
     // TODO: API呼び出しなどの処理を実装
   };
+
+  const eventDetailValue = watch('eventDetail') || '';
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -143,13 +146,13 @@ export const EventTab: React.FC = () => {
           )}
         </Wrapper>
 
-        <Wrapper direction="col" gap="16px">
-          <Typography
-            content="イベントの詳細"
-            size="normal"
-            color="black"
-            className={styles.sectionTitle}
-          />
+        <LayoutLabeledFormItem
+          label="イベントの詳細"
+          counter={{
+            current: eventDetailValue.length,
+            max: 1500
+          }}
+        >
           <Textarea
             {...register('eventDetail')}
             placeholder="イベントの詳細を入力"
@@ -158,7 +161,7 @@ export const EventTab: React.FC = () => {
           {errors.eventDetail && (
             <Typography content={errors.eventDetail.message || ''} size="xsmall" color="error" />
           )}
-        </Wrapper>
+        </LayoutLabeledFormItem>
 
         <Wrapper direction="col" gap="16px">
           <Typography

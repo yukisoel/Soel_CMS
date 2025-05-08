@@ -10,9 +10,10 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import styles from '../EditLatestInformation.module.scss';
+import LayoutLabeledFormItem from '@/main/common/LayoutLabeledFormItem';
 
 const schema = z.object({
-  description: z.string(),
+  description: z.string().max(1500, '説明は1500文字以内で入力してください'),
   buttonTitle: z.string(),
   selectedButton: z.string(),
 });
@@ -41,6 +42,8 @@ export const LatestInformationTab: React.FC = () => {
     // TODO: API呼び出しなどの処理を実装
   };
 
+  const descriptionValue = watch('description') || '';
+
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <Wrapper direction="col" gap="32px" padding="24px">
@@ -55,20 +58,22 @@ export const LatestInformationTab: React.FC = () => {
         </Wrapper>
 
         <Wrapper direction="col" gap="16px">
-          <Typography
-            content="説明を追加"
-            size="normal"
-            color="black"
-            className={styles.sectionTitle}
-          />
-          <Textarea
-            {...register('description')}
-            placeholder="説明を入力"
-            className={styles.textarea}
-          />
-          {errors.description && (
-            <Typography content={errors.description.message || ''} size="xsmall" color="error" />
-          )}
+          <LayoutLabeledFormItem
+            label="説明を追加"
+            counter={{
+              current: descriptionValue.length,
+              max: 1500
+            }}
+          >
+            <Textarea
+              {...register('description')}
+              placeholder="説明を入力"
+              className={styles.textarea}
+            />
+            {errors.description && (
+              <Typography content={errors.description.message || ''} size="xsmall" color="error" />
+            )}
+          </LayoutLabeledFormItem>
         </Wrapper>
 
         <Wrapper direction="col" gap="16px">
