@@ -71,6 +71,7 @@ export default function FileUpload({setUploadedPhotoFileList, size, onReset}: Pr
                         hidden
                         ref={fileUploadInputRef}
                         onChange={onInputChange}
+                        accept="image/jpg,image/jpeg,image/png"
                     />
                     <div className={styles[`file_upload_text_${size}`]}>
                         <p>写真をドラッグ&ドロップ</p>
