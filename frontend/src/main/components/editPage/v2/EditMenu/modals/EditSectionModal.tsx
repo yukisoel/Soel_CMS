@@ -10,7 +10,9 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import LayoutLabeledFormItem from '@/main/common/LayoutLabeledFormItem';
 
 const schema = z.object({
-  title: z.string().min(1, 'セクション名は必須です'),
+  title: z.string()
+    .min(1, 'セクション名は必須です')
+    .max(140, 'セクション名は140文字以内で入力してください'),
 });
 
 type FormData = z.infer<typeof schema>;
@@ -39,9 +41,12 @@ export const EditSectionModal: React.FC<EditSectionModalProps> = ({
     handleSubmit,
     formState: { errors },
     reset,
+    watch
   } = useForm<FormData>({
     resolver: zodResolver(schema),
   });
+
+  const titleValue = watch('title') || '';
 
   React.useEffect(() => {
     if (isOpen) {
@@ -54,7 +59,13 @@ export const EditSectionModal: React.FC<EditSectionModalProps> = ({
   const contentRender = () => (
     <form onSubmit={handleSubmit(onSubmit)}>
       <Wrapper direction="col" gap="2rem">
-        <LayoutLabeledFormItem label="セクション名">
+        <LayoutLabeledFormItem
+          label="セクション名"
+          counter={{
+            current: titleValue.length,
+            max: 140
+          }}
+        >
           <Input
             {...register('title')}
             placeholder="セクション名を入力"
@@ -67,20 +78,18 @@ export const EditSectionModal: React.FC<EditSectionModalProps> = ({
         </LayoutLabeledFormItem>
         <Wrapper justify="justify-between" gap="1rem">
           {onDelete ? (
-            <Wrapper></Wrapper>
-            // 一旦削除はWIP
-            // <Button bgColor="secondary" onClick={onDelete}>
-            //   <Typography content="削除" size="normal" color="error" />
-            // </Button>
+            <Button bgColor="secondary" onClick={onDelete}>
+              <Typography content="削除" size="normal" color="error" />
+            </Button>
           ) : (
             <Wrapper></Wrapper>
           )}
           <Wrapper gap="1rem">
             <Button bgColor="secondary" onClick={onClose}>
-                <Typography content="戻る" size="normal" color="primary" />
+              <Typography content="戻る" size="normal" color="primary" />
             </Button>
             <Button bgColor="primary" type="submit">
-                <Typography content="追加する" size="normal" color="primary" />
+              <Typography content="追加する" size="normal" color="primary" />
             </Button>
           </Wrapper>
         </Wrapper>
