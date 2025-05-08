@@ -9,17 +9,25 @@ type Props = {
     onClose: () => void;
     size: 'regular' | 'large';
     uploadedPhotoFileList: FileList | null;
-    setUploadedPhotoFileList: (fileList: FileList) => void;
+    setUploadedPhotoFileList: (fileList: FileList | null) => void;
     onUpload: () => void;
 };
 
 export default function FileUploadModal({ isOpen, onClose, size, uploadedPhotoFileList, setUploadedPhotoFileList, onUpload }: Props) {
     if (!isOpen) return null;
 
+    const handleReset = () => {
+        setUploadedPhotoFileList(null);
+    };
+
     return (
         <Modal headerContent="写真をアップロード" isOpen={isOpen} onClose={onClose} contentRender={() => (
             <>
-                <FileUpload setUploadedPhotoFileList={setUploadedPhotoFileList} size={size} />
+                <FileUpload
+                    setUploadedPhotoFileList={setUploadedPhotoFileList}
+                    size={size}
+                    onReset={handleReset}
+                />
                 {uploadedPhotoFileList && (
                     <>
                         <div className={styles.uploaded_files}>
