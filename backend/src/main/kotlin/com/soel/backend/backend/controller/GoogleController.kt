@@ -4,12 +4,15 @@ import com.soel.backend.backend.model.*
 import com.soel.backend.backend.service.GoogleService
 import com.soel.backend.backend.usecase.GoogleUseCase
 import io.swagger.v3.oas.annotations.Operation
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient
 import org.springframework.security.oauth2.client.annotation.RegisteredOAuth2AuthorizedClient
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody
+import java.io.IOException
+import javax.imageio.ImageIO
 
 @RestController
 @RequestMapping("/api/google")
@@ -145,8 +148,45 @@ class GoogleController(val googleService: GoogleService, val googleUseCase: Goog
         @RequestParam("accountId") accountId: String,
         @RequestParam("locationId") locationId: String,
         @RequestParam("files") files: List<MultipartFile>
-    ) {
-        return googleService.postLocationPhotos(googleClient.accessToken.tokenValue, accountId, locationId, files)
+    ): ResponseEntity<Any>  {
+        files.forEach { file ->
+            val name = file.originalFilename ?: "unknown"
+            // 1) 画像ファイルか
+            val contentType = file.contentType
+            if (contentType == null || !contentType.startsWith("image/")) {
+                return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body("ファイル '$name' は画像形式ではありません。")
+            }
+
+            // 2) サイズが 10KB 超か
+            if (file.size <= 10 * 1024) {
+                return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body("ファイル '$name' のサイズが10KB未満です（${file.size} バイト）")
+            }
+
+            // 3) 画像の縦横サイズを取得して 250px 超か
+            val image = try {
+                ImageIO.read(file.inputStream)
+            } catch (e: IOException) {
+                return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body("ファイル '$name' の読み込みに失敗しました")
+            }
+            if (image == null) {
+                return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body("ファイル '$name' は有効な画像ではありません。")
+            }
+            if (image.width <= 250 || image.height <= 250) {
+                return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body("ファイル '$name' の画像サイズが小さすぎます（${image.width}x${image.height}px） <(250px x 250px)")
+            }
+        }
+        googleService.postLocationPhotos(googleClient.accessToken.tokenValue, accountId, locationId, files)
+        return ResponseEntity.ok().build()
     }
 
     @Operation(summary = "Google:最新情報を追加", description = "Google:店舗の最新情報を追加します", tags = ["Google:POSTメソッド"])

@@ -57,7 +57,7 @@ interface GoogleService {
 }
 
 @Service
-class GoogleServicImpl(val googleRepository: GoogleRepository, val menuLogRepository: MenuLogRepository, val objectMapper: ObjectMapper) : GoogleService {
+class GoogleServiceImpl(val googleRepository: GoogleRepository, val menuLogRepository: MenuLogRepository, val objectMapper: ObjectMapper) : GoogleService {
     private val logger: Logger = LoggerFactory.getLogger(SecurityConfig::class.java)
 
     override fun getMe(accessToken: String): GoogleMe? {
@@ -407,7 +407,6 @@ class GoogleServicImpl(val googleRepository: GoogleRepository, val menuLogReposi
     }
 
     override fun postLocationPhotos(accessToken: String, accountId: String, locationId: String, files: List<MultipartFile>) {
-        println("postLocationPhotos")
         if (files.isEmpty()) {
             return
         }
@@ -422,7 +421,6 @@ class GoogleServicImpl(val googleRepository: GoogleRepository, val menuLogReposi
                 val fileName = "${UUID.randomUUID()}.$fileExtension"
 
                 val targetLocation = Paths.get(uploadDir).resolve(fileName)
-                println("fileName = $fileName")
                 Files.copy(file.inputStream, targetLocation)
                 val response = googleRepository.postLocationPhoto(accessToken, accountId, locationId, fileName)
             }
