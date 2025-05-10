@@ -29,6 +29,8 @@ import { EditLatestInformationV2 } from "./components/editPage/v2/EditLatestInfo
 import EditProductV2 from "./components/editPage/v2/EditProduct/EditProductV2.tsx";
 import EditReservationV2 from "./components/editPage/v2/EditReservation/EditReservationV2.tsx";
 import SearchStoreV2 from "./components/editPage/SearchStoreV2.tsx";
+import EditQaLayout from "./components/editPage/EditQaLayout/EditQaLayout.tsx";
+
 const googleRepository = new GoogleRepositoryImpl()
 const googleService = new GoogleServiceImpl({googleRepository})
 
@@ -70,6 +72,8 @@ function App() {
                   element={<EditProductV2 googleService={googleService}/>}/>
           <Route path={"accounts/:accountId/location/:locationId/reservation"}
                   element={<EditReservationV2 onTryButtonClick={() => console.log('Try button clicked')} />}/>
+          <Route path={"accounts/:accountId/location/:locationId/qa"}
+                  element={<EditQaLayout googleService={googleService}/>}/>
         </Route>
       </Route>
       <Route path={'/basic'}
