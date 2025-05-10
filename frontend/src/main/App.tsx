@@ -54,10 +54,10 @@ function App() {
                </GoogleAccountsContextProvider>
              }
       >
-        <Route path={''} element={<SearchStore googleService={googleService}/>}>
-        </Route>
-        <Route path={'v2'} element={<SearchStoreV2 googleService={googleService}/>}></Route>
-        <Route path={"v2/gbp"}>
+        <Route path={''} element={<SearchStoreV2 googleService={googleService}/>}></Route>
+        <Route path={"gbp"}>
+          <Route path={"accounts/:accountId/location/:locationId"}
+                 element={<EditGBPDashboard googleService={googleService}/>}/>
           <Route path={"accounts/:accountId/location/:locationId/profile"}
                   element={<EditProfileLayoutV2 googleService={googleService}/>}/>
           <Route path={"accounts/:accountId/location/:locationId/photo"}
@@ -70,22 +70,6 @@ function App() {
                   element={<EditProductV2 googleService={googleService}/>}/>
           <Route path={"accounts/:accountId/location/:locationId/reservation"}
                   element={<EditReservationV2 onTryButtonClick={() => console.log('Try button clicked')} />}/>
-        </Route>
-        <Route path={'gbp'} element={<EditGBPLayout/>}>
-          <Route path={"accounts/:accountId/location/:locationId"}
-                 element={<EditGBPDashboard googleService={googleService}/>}/>
-          <Route path={"accounts/:accountId/location/:locationId/profile"}
-                 element={<EditProfileLayout googleService={googleService}/>}/>
-          <Route path={"accounts/:accountId/location/:locationId/photo"}
-                 element={<EditPhotoLayout googleService={googleService}/>}/>
-          <Route path={"accounts/:accountId/location/:locationId/local_post"}
-                  element={<EditLocalPostLayout googleService={googleService}/>}/>
-          <Route path={"accounts/:accountId/location/:locationId/menu"}
-                  element={<EditMenuLayout googleService={googleService}/>}/>
-          <Route path={"accounts/:accountId/location/:locationId/reservation"}
-                  element={<EditReservationLayout googleService={googleService}/>}/>
-          <Route path={"accounts/:accountId/location/:locationId/product"}
-                  element={<EditProductLayout />}/>
         </Route>
       </Route>
       <Route path={'/basic'}

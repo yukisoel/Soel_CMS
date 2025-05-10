@@ -56,6 +56,12 @@ export default function SearchStoreV2({ googleService }: Props) {
     }
   }, [selectedLocationTitle]);
 
+  const handleNextClick = () => {
+    if (selectedService === ServiceName.GBP && selectedAccount && googleSelectedLocation) {
+      navigate(`/edit/gbp/accounts/${selectedAccount.name}/location/${googleSelectedLocation.name}`);
+    }
+  };
+
   return (
     <Wrapper direction="col" align="align-center" justify="justify-center" className={styles.root}>
       <Wrapper direction="col" gap="32px" padding="40px 32px 32px 32px" className={styles.card}>
@@ -89,11 +95,7 @@ export default function SearchStoreV2({ googleService }: Props) {
               <Button
                 bgColor="primary"
                 padding="3px 24px"
-                onClick={() => {
-                  if (selectedService === ServiceName.GBP && selectedAccount && googleSelectedLocation) {
-                    navigate(`/edit/gbp/accounts/${selectedAccount.name}/location/${googleSelectedLocation.name}`);
-                  }
-                }}
+                onClick={handleNextClick}
               >
                 <Typography content="次へ" size="normal" color="primary" />
               </Button>
