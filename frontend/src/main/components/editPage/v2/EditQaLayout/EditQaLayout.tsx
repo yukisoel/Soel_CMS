@@ -1,4 +1,4 @@
-import styles from '@/main/components/editPage/EditQaLayout/EditQaLayout.module.scss';
+import styles from '@/main/components/editPage/v2/EditQaLayout/EditQaLayout.module.scss';
 import Wrapper from '@/main/common/Wrapper';
 import Typography from '@/main/common/Typography';
 import Button from '@/main/common/Button';

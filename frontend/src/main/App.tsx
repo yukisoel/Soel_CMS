@@ -29,7 +29,7 @@ import { EditLatestInformationV2 } from "./components/editPage/v2/EditLatestInfo
 import EditProductV2 from "./components/editPage/v2/EditProduct/EditProductV2.tsx";
 import EditReservationV2 from "./components/editPage/v2/EditReservation/EditReservationV2.tsx";
 import SearchStoreV2 from "./components/editPage/SearchStoreV2.tsx";
-import EditQaLayout from "./components/editPage/EditQaLayout/EditQaLayout.tsx";
+import EditQaLayout from "./components/editPage/v2/EditQaLayout/EditQaLayout.tsx";
 
 const googleRepository = new GoogleRepositoryImpl()
 const googleService = new GoogleServiceImpl({googleRepository})
