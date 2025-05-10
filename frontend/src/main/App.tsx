@@ -28,7 +28,7 @@ import { EditMenuLayoutV2 } from "./components/editPage/v2/EditMenu/EditMenuLayo
 import { EditLatestInformationV2 } from "./components/editPage/v2/EditLatestInformation/EditLatestInformationV2.tsx";
 import EditProductV2 from "./components/editPage/v2/EditProduct/EditProductV2.tsx";
 import EditReservationV2 from "./components/editPage/v2/EditReservation/EditReservationV2.tsx";
-
+import SearchStoreV2 from "./components/editPage/SearchStoreV2.tsx";
 const googleRepository = new GoogleRepositoryImpl()
 const googleService = new GoogleServiceImpl({googleRepository})
 
@@ -56,6 +56,7 @@ function App() {
       >
         <Route path={''} element={<SearchStore googleService={googleService}/>}>
         </Route>
+        <Route path={'v2'} element={<SearchStoreV2 googleService={googleService}/>}></Route>
         <Route path={"v2/gbp"}>
           <Route path={"accounts/:accountId/location/:locationId/profile"}
                   element={<EditProfileLayoutV2 googleService={googleService}/>}/>
