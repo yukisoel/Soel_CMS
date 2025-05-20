@@ -1,0 +1,51 @@
+name: Manual Deploy to ECS via CodeDeploy
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Git tag to deploy (e.g. dev-v1.2.3 or prd-v1.2.3)'
+        required: true
+
+env:
+  AWS_REGION: ap-northeast-1
+  PROJECT: cmssoel
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Determine environment from tag name
+        id: parse_tag
+        run: |
+          TAG=${{ github.event.inputs.tag }}
+          echo "🔖 入力されたタグ: $TAG"
+
+          if [[ "$TAG" == prd-* ]]; then
+            ENV=prd
+          elif [[ "$TAG" == dev-* ]]; then
+            ENV=dev
+          else
+            echo "❌ タグは 'dev-' または 'prd-' で始めてください"
+            exit 1
+          fi
+
+          echo "ENV=$ENV" >> $GITHUB_OUTPUT
+          echo "TAG=$TAG" >> $GITHUB_OUTPUT
+
+      - name: Run Blue/Green Deploy
+        run: |
+          cd infra
+          chmod +x ./scripts/deploy-app.sh
+          ./scripts/deploy-app.sh "${{ steps.parse_tag.outputs.ENV }}" "${{ steps.parse_tag.outputs.TAG }}"
