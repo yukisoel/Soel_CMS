@@ -4,6 +4,26 @@
  */
 
 export interface paths {
+    "/api/google/places/autocomplete": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Google Places API: 場所Idと場所名の候補リストを取得
+         * @description Google Places APIを使用して、場所Idと場所名の候補リストを取得します。
+         */
+        post: operations["postPlacesAutoComplete"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/google/location/question": {
         parameters: {
             query?: never;
@@ -188,6 +208,61 @@ export interface paths {
         patch: operations["updateLocationProfileTitle"];
         trace?: never;
     };
+    "/api/google/location/profile/store_front_address": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Google:店舗のプロフィールの更新:店舗の住所
+         * @description
+         *                   Google:店舗のの住所を更新します。
+         *                   Request Bodyとして GoogleLocationStoreFrontAddressRequestのJsonにしてください。
+         *                   例 : {
+         *                           "postalCode": "1234567",
+         *                           "administrativeArea": "東京都",
+         *                           "addressLines": [
+         *                           "渋谷区1-50",
+         *                           "戸島ビル303"
+         *                           ]
+         *                         }
+         *
+         */
+        patch: operations["updateLocationStoreFrontAddress"];
+        trace?: never;
+    };
+    "/api/google/location/profile/service_area": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Google:店舗のプロフィールの更新:サービスエリア
+         * @description
+         *                   Google:店舗のサービスエリアを更新します。
+         *                   Request Bodyとして placeIdsのString配列にしてください。
+         *                   例 : ["ChIJLx1v3J2XGGAR5g4q0G7f8lE", "ChIJLx1v3J2XGGAR5g4q0G7f8lE"]
+         *
+         */
+        patch: operations["updateLocationServiceArea"];
+        trace?: never;
+    };
     "/api/google/location/profile/phone_number": {
         parameters: {
             query?: never;
@@ -263,6 +338,57 @@ export interface paths {
          *
          */
         patch: operations["updateLocationProfileDescription"];
+        trace?: never;
+    };
+    "/api/google/location/profile/business_hours": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Google:店舗のプロフィールの更新:営業時間
+         * @description
+         *                   Google:店舗の営業時間を更新します。
+         *                   Request Bodyとして GoogleLocationBusinessHoursRequestのJsonにしてください。
+         *                   通常営業時間を変更したいときはhoursTypeIdを通常営業またはREGULARにしてください。
+         *                   例 : {
+         *                           "hoursTypeId": "REGULAR",
+         *                           "periods": [
+         *                             {
+         *                               "openDay": "MONDAY",
+         *                               "openTime": {
+         *                                 "hours": 10,
+         *                                 "minutes": 0
+         *                               },
+         *                               "closeDay": "MONDAY",
+         *                               "closeTime": {
+         *                                 "hours": 20,
+         *                                 "minutes": 0
+         *                               },
+         *                               "openDay": "TUESDAY",
+         *                               "openTime": {
+         *                                 "hours": 10,
+         *                                 "minutes": 0
+         *                               },
+         *                               "closeDay": "TUESDAY",
+         *                               "closeTime": {
+         *                                 "hours": 20,
+         *                                 "minutes": 0
+         *                               },
+         *                             }
+         *                           ]
+         *                         }
+         *
+         */
+        patch: operations["updateLocationBusinessHours"];
         trace?: never;
     };
     "/api/google/location/profile/additional_categories": {
@@ -413,6 +539,131 @@ export interface paths {
          *
          */
         patch: operations["updateLocationAttributeSnsLink"];
+        trace?: never;
+    };
+    "/api/google/location/attributes/services": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Google:店舗のサービスの更新
+         * @description
+         *                   Google:店舗のサービスを更新します。
+         *                   Request BodyはGoogleLocationAttributeServiceの配列のJsonにしてください。
+         *                   typeはenumです。パターンとして以下の入力が可能です。
+         *                   例: SERVICE_ALCOHOL, sevice_alcohol, attributes/serves_alcohol, アルコール飲料あり
+         *                   valueはbooleanです。
+         *                   valueがnullの場合はサービスを削除します。
+         *                   例 :
+         *                   [
+         *                     {
+         *                       "type": "アルコール飲料あり",
+         *                       "value": true
+         *                     },
+         *                     {
+         *                       "type": "SERVES_ORGANIC",
+         *                       // valueがnullの場合はSERVES_ORGANICが削除されます。
+         *                     }
+         *                   ]
+         *
+         */
+        patch: operations["updateLocationServices"];
+        trace?: never;
+    };
+    "/api/google/location/attributes/serviceOptions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Google:店舗のサービスオプションの更新
+         * @description
+         *                   Google:店舗のサービスオプションを更新します。
+         *                   Request BodyはGoogleLocationAttributeServiceOptionの配列のJsonにしてください。
+         *                   typeはenumです。パターンとして以下の入力が可能です。
+         *                   例: HAS_SEATING_OUTDOORS, has_seating_outdoors, attributes/has_seating_outdoors, テラス席あり
+         *                   valueはbooleanです。
+         *                   valueがnullの場合はサービスを削除します。
+         *                   例 :
+         *                   [
+         *                     {
+         *                       "type": "テラス席あり",
+         *                       "value": true
+         *                     },
+         *                     {
+         *                       "type": "HAS_CURBSIDE_PICKUP",
+         *                       // valueがnullの場合はSERVES_ORGANICが削除されます。
+         *                     }
+         *                   ]
+         *
+         */
+        patch: operations["updateLocationServiceOptions"];
+        trace?: never;
+    };
+    "/api/google/location/attributes/menu_link": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Google:店舗のメニューリンクの更新
+         * @description
+         *                   Google:店舗のメニューリンクを更新します。
+         *                   Request Bodyとして menuLinkのStringにしてください。
+         *                   例 : https://example.com/
+         *
+         */
+        patch: operations["updateLocationAttributeMenuLink"];
+        trace?: never;
+    };
+    "/api/google/location/attributes/business_owner_info": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Google:店舗のビジネスオーナー情報の更新
+         * @description
+         *                   Google:店舗のビジネスオーナー情報を更新します。
+         *                   Request BodyはBooleanにしてください。
+         *                   Bodyがnullの場合はビジネスオーナー情報を削除します。
+         *                   例 : true
+         *
+         */
+        patch: operations["updateLocationBusinessOwnerInfo"];
         trace?: never;
     };
     "/api/google/me": {
@@ -605,6 +856,16 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        GooglePlacesAutoCompleteRequest: {
+            input: string;
+        };
+        GooglePlacesAutoCompletePlaceSet: {
+            placeId?: string;
+            text?: string;
+        };
+        GooglePlacesAutoCompleteResponse: {
+            placeSetList?: components["schemas"]["GooglePlacesAutoCompletePlaceSet"][];
+        };
         GoogleLocationAnswer: {
             name?: string;
             text?: string;
@@ -701,6 +962,9 @@ export interface components {
             /** Format: int32 */
             nanos?: number;
         };
+        GoogleLocationBusinessHours: {
+            periods: components["schemas"]["GoogleLocationTimePeriod"][];
+        };
         GoogleLocationCategories: {
             primaryCategory?: components["schemas"]["GoogleLocationCategory"];
             additionalCategories?: components["schemas"]["GoogleLocationCategory"][];
@@ -708,6 +972,10 @@ export interface components {
         GoogleLocationCategory: {
             name?: string;
             displayName?: string;
+        };
+        GoogleLocationMoreHours: {
+            hoursTypeId?: string;
+            periods?: components["schemas"]["GoogleLocationTimePeriod"][];
         };
         GoogleLocationOpenInfo: {
             status?: string;
@@ -725,6 +993,12 @@ export interface components {
         GoogleLocationPlaceInfos: {
             placeInfos?: components["schemas"]["GoogleLocationPlaceInfo"][];
         };
+        GoogleLocationPostalAddress: {
+            postalCode?: string;
+            regionCode?: string;
+            administrativeArea?: string;
+            addressLines?: string[];
+        };
         GoogleLocationProfile: {
             description?: string;
         };
@@ -733,7 +1007,10 @@ export interface components {
             title?: string;
             phoneNumbers?: components["schemas"]["GoogleLocationPhoneNumbers"];
             categories?: components["schemas"]["GoogleLocationCategories"];
+            storefrontAddress?: components["schemas"]["GoogleLocationPostalAddress"];
             websiteUri?: string;
+            regularHours?: components["schemas"]["GoogleLocationBusinessHours"];
+            moreHours?: components["schemas"]["GoogleLocationMoreHours"][];
             profile?: components["schemas"]["GoogleLocationProfile"];
             openInfo?: components["schemas"]["GoogleLocationOpenInfo"];
             serviceArea?: components["schemas"]["GoogleLocationServiceArea"];
@@ -742,6 +1019,25 @@ export interface components {
             businessType?: string;
             regionCode?: string;
             places?: components["schemas"]["GoogleLocationPlaceInfos"];
+        };
+        GoogleLocationTimePeriod: {
+            /** @enum {string} */
+            openDay: GoogleLocationTimePeriodOpenDay;
+            openTime: components["schemas"]["GoogleLocationTimeOfDay"];
+            /** @enum {string} */
+            closeDay: GoogleLocationTimePeriodCloseDay;
+            closeTime: components["schemas"]["GoogleLocationTimeOfDay"];
+        };
+        GoogleLocationStoreFrontAddressRequest: {
+            postalCode: string;
+            /** @enum {string} */
+            administrativeArea: GoogleLocationStoreFrontAddressRequestAdministrativeArea;
+            addressLines: string[];
+        };
+        GoogleLocationBusinessHoursRequest: {
+            /** @enum {string} */
+            hoursTypeId: GoogleLocationBusinessHoursRequestHoursTypeId;
+            periods: components["schemas"]["GoogleLocationTimePeriod"][];
         };
         GoogleLocationCaloriesFact: {
             /** Format: int32 */
@@ -825,6 +1121,7 @@ export interface components {
             /** @enum {string} */
             valueType?: GoogleLocationAttributeValueType;
             uriValues?: components["schemas"]["GoogleLocationAttributeUriValue"][];
+            values?: components["schemas"]["JsonNode"][];
         };
         GoogleLocationAttributeUriValue: {
             uri?: string;
@@ -833,10 +1130,21 @@ export interface components {
             name?: string;
             attributes?: components["schemas"]["GoogleLocationAttribute"][];
         };
+        JsonNode: Record<string, never>;
         GoogleLocationAttributeSnsLinkRequest: {
             /** @enum {string} */
             snsType: GoogleLocationAttributeSnsLinkRequestSnsType;
             snsUrl: string;
+        };
+        GoogleLocationAttributeService: {
+            /** @enum {string} */
+            type: GoogleLocationAttributeServiceType;
+            value?: boolean;
+        };
+        GoogleLocationAttributeServiceOption: {
+            /** @enum {string} */
+            type: GoogleLocationAttributeServiceOptionType;
+            value?: boolean;
         };
         GoogleMe: {
             names: components["schemas"]["GoogleName"][];
@@ -864,6 +1172,30 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    postPlacesAutoComplete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["GooglePlacesAutoCompleteRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["GooglePlacesAutoCompleteResponse"];
+                };
+            };
+        };
+    };
     postLocationQuestion: {
         parameters: {
             query: {
@@ -977,7 +1309,9 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "*/*": Record<string, never>;
+                };
             };
         };
     };
@@ -1177,6 +1511,58 @@ export interface operations {
             };
         };
     };
+    updateLocationStoreFrontAddress: {
+        parameters: {
+            query: {
+                locationId: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["GoogleLocationStoreFrontAddressRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["GoogleLocationProfileModel"];
+                };
+            };
+        };
+    };
+    updateLocationServiceArea: {
+        parameters: {
+            query: {
+                locationId: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": string[];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["GoogleLocationProfileModel"];
+                };
+            };
+        };
+    };
     updateLocationProfilePhoneNumber: {
         parameters: {
             query: {
@@ -1241,6 +1627,32 @@ export interface operations {
         requestBody: {
             content: {
                 "application/json": string;
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["GoogleLocationProfileModel"];
+                };
+            };
+        };
+    };
+    updateLocationBusinessHours: {
+        parameters: {
+            query: {
+                locationId: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["GoogleLocationBusinessHoursRequest"];
             };
         };
         responses: {
@@ -1418,6 +1830,110 @@ export interface operations {
         requestBody: {
             content: {
                 "application/json": components["schemas"]["GoogleLocationAttributeSnsLinkRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["GoogleLocationAttributesModel"];
+                };
+            };
+        };
+    };
+    updateLocationServices: {
+        parameters: {
+            query: {
+                locationId: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["GoogleLocationAttributeService"][];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["GoogleLocationAttributesModel"];
+                };
+            };
+        };
+    };
+    updateLocationServiceOptions: {
+        parameters: {
+            query: {
+                locationId: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["GoogleLocationAttributeServiceOption"][];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["GoogleLocationAttributesModel"];
+                };
+            };
+        };
+    };
+    updateLocationAttributeMenuLink: {
+        parameters: {
+            query: {
+                locationId: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": string;
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["GoogleLocationAttributesModel"];
+                };
+            };
+        };
+    };
+    updateLocationBusinessOwnerInfo: {
+        parameters: {
+            query: {
+                locationId: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": boolean;
             };
         };
         responses: {
@@ -1647,6 +2163,90 @@ export enum GoogleLocationAssociationCategory {
     ADDITIONAL = "ADDITIONAL",
     CATEGORY_UNSPECIFIED = "CATEGORY_UNSPECIFIED"
 }
+export enum GoogleLocationTimePeriodOpenDay {
+    DAY_OF_WEEK_UNSPECIFIED = "DAY_OF_WEEK_UNSPECIFIED",
+    MONDAY = "MONDAY",
+    TUESDAY = "TUESDAY",
+    WEDNESDAY = "WEDNESDAY",
+    THURSDAY = "THURSDAY",
+    FRIDAY = "FRIDAY",
+    SATURDAY = "SATURDAY",
+    SUNDAY = "SUNDAY"
+}
+export enum GoogleLocationTimePeriodCloseDay {
+    DAY_OF_WEEK_UNSPECIFIED = "DAY_OF_WEEK_UNSPECIFIED",
+    MONDAY = "MONDAY",
+    TUESDAY = "TUESDAY",
+    WEDNESDAY = "WEDNESDAY",
+    THURSDAY = "THURSDAY",
+    FRIDAY = "FRIDAY",
+    SATURDAY = "SATURDAY",
+    SUNDAY = "SUNDAY"
+}
+export enum GoogleLocationStoreFrontAddressRequestAdministrativeArea {
+    "北海道" = "\u5317\u6D77\u9053",
+    "青森県" = "\u9752\u68EE\u770C",
+    "岩手県" = "\u5CA9\u624B\u770C",
+    "宮城県" = "\u5BAE\u57CE\u770C",
+    "秋田県" = "\u79CB\u7530\u770C",
+    "山形県" = "\u5C71\u5F62\u770C",
+    "福島県" = "\u798F\u5CF6\u770C",
+    "茨城県" = "\u8328\u57CE\u770C",
+    "栃木県" = "\u6803\u6728\u770C",
+    "群馬県" = "\u7FA4\u99AC\u770C",
+    "埼玉県" = "\u57FC\u7389\u770C",
+    "千葉県" = "\u5343\u8449\u770C",
+    "東京都" = "\u6771\u4EAC\u90FD",
+    "神奈川県" = "\u795E\u5948\u5DDD\u770C",
+    "新潟県" = "\u65B0\u6F5F\u770C",
+    "富山県" = "\u5BCC\u5C71\u770C",
+    "石川県" = "\u77F3\u5DDD\u770C",
+    "福井県" = "\u798F\u4E95\u770C",
+    "山梨県" = "\u5C71\u68A8\u770C",
+    "長野県" = "\u9577\u91CE\u770C",
+    "岐阜県" = "\u5C90\u961C\u770C",
+    "静岡県" = "\u9759\u5CA1\u770C",
+    "愛知県" = "\u611B\u77E5\u770C",
+    "三重県" = "\u4E09\u91CD\u770C",
+    "滋賀県" = "\u6ECB\u8CC0\u770C",
+    "京都府" = "\u4EAC\u90FD\u5E9C",
+    "大阪府" = "\u5927\u962A\u5E9C",
+    "兵庫県" = "\u5175\u5EAB\u770C",
+    "奈良県" = "\u5948\u826F\u770C",
+    "和歌山県" = "\u548C\u6B4C\u5C71\u770C",
+    "鳥取県" = "\u9CE5\u53D6\u770C",
+    "島根県" = "\u5CF6\u6839\u770C",
+    "岡山県" = "\u5CA1\u5C71\u770C",
+    "広島県" = "\u5E83\u5CF6\u770C",
+    "山口県" = "\u5C71\u53E3\u770C",
+    "徳島県" = "\u5FB3\u5CF6\u770C",
+    "香川県" = "\u9999\u5DDD\u770C",
+    "愛媛県" = "\u611B\u5A9B\u770C",
+    "高知県" = "\u9AD8\u77E5\u770C",
+    "福岡県" = "\u798F\u5CA1\u770C",
+    "佐賀県" = "\u4F50\u8CC0\u770C",
+    "長崎県" = "\u9577\u5D0E\u770C",
+    "熊本県" = "\u718A\u672C\u770C",
+    "大分県" = "\u5927\u5206\u770C",
+    "宮崎県" = "\u5BAE\u5D0E\u770C",
+    "鹿児島県" = "\u9E7F\u5150\u5CF6\u770C",
+    "沖縄県" = "\u6C96\u7E04\u770C"
+}
+export enum GoogleLocationBusinessHoursRequestHoursTypeId {
+    "通常営業" = "\u901A\u5E38\u55B6\u696D",
+    "入店可能時間" = "\u5165\u5E97\u53EF\u80FD\u6642\u9593",
+    "注文可能時間" = "\u6CE8\u6587\u53EF\u80FD\u6642\u9593",
+    "ドライブスルー" = "\u30C9\u30E9\u30A4\u30D6\u30B9\u30EB\u30FC",
+    "宅配" = "\u5B85\u914D",
+    "テイクアウト" = "\u30C6\u30A4\u30AF\u30A2\u30A6\u30C8",
+    "朝食" = "\u671D\u98DF",
+    "ランチ" = "\u30E9\u30F3\u30C1",
+    "ディナー" = "\u30C7\u30A3\u30CA\u30FC",
+    "ブランチ" = "\u30D6\u30E9\u30F3\u30C1",
+    "ハッピーアワー" = "\u30CF\u30C3\u30D4\u30FC\u30A2\u30EF\u30FC",
+    "高齢者限定時間帯" = "\u9AD8\u9F62\u8005\u9650\u5B9A\u6642\u9593\u5E2F",
+    "オンラインサービスの提供時間" = "\u30AA\u30F3\u30E9\u30A4\u30F3\u30B5\u30FC\u30D3\u30B9\u306E\u63D0\u4F9B\u6642\u9593"
+}
 export enum GoogleLocationAttributeValueType {
     ATTRIBUTE_VALUE_TYPE_UNSPECIFIED = "ATTRIBUTE_VALUE_TYPE_UNSPECIFIED",
     URL = "URL",
@@ -1662,4 +2262,34 @@ export enum GoogleLocationAttributeSnsLinkRequestSnsType {
     FACEBOOK = "FACEBOOK",
     LINKEDIN = "LINKEDIN",
     PINTEREST = "PINTEREST"
+}
+export enum GoogleLocationAttributeServiceType {
+    "アルコール飲料あり" = "\u30A2\u30EB\u30B3\u30FC\u30EB\u98F2\u6599\u3042\u308A",
+    "オーガニック料理あり" = "\u30AA\u30FC\u30AC\u30CB\u30C3\u30AF\u6599\u7406\u3042\u308A",
+    "カクテルあり" = "\u30AB\u30AF\u30C6\u30EB\u3042\u308A",
+    "コーヒーあり" = "\u30B3\u30FC\u30D2\u30FC\u3042\u308A",
+    "サラダバーあり" = "\u30B5\u30E9\u30C0\u30D0\u30FC\u3042\u308A",
+    "ドリンクのハッピーアワーあり" = "\u30C9\u30EA\u30F3\u30AF\u306E\u30CF\u30C3\u30D4\u30FC\u30A2\u30EF\u30FC\u3042\u308A",
+    "ハードリカーあり" = "\u30CF\u30FC\u30C9\u30EA\u30AB\u30FC\u3042\u308A",
+    "ハラルメニューあり" = "\u30CF\u30E9\u30EB\u30E1\u30CB\u30E5\u30FC\u3042\u308A",
+    "ビーガンメニューあり" = "\u30D3\u30FC\u30AC\u30F3\u30E1\u30CB\u30E5\u30FC\u3042\u308A",
+    "ビールあり" = "\u30D3\u30FC\u30EB\u3042\u308A",
+    "ベジタリアンメニューあり" = "\u30D9\u30B8\u30BF\u30EA\u30A2\u30F3\u30E1\u30CB\u30E5\u30FC\u3042\u308A",
+    "ワインあり" = "\u30EF\u30A4\u30F3\u3042\u308A",
+    "個室あり" = "\u500B\u5BA4\u3042\u308A",
+    "小皿料理を提供するお店" = "\u5C0F\u76BF\u6599\u7406\u3092\u63D0\u4F9B\u3059\u308B\u304A\u5E97",
+    "食べ物のハッピーアワーあり" = "\u98DF\u3079\u7269\u306E\u30CF\u30C3\u30D4\u30FC\u30A2\u30EF\u30FC\u3042\u308A",
+    "食べ放題あり" = "\u98DF\u3079\u653E\u984C\u3042\u308A",
+    "深夜の食事可" = "\u6DF1\u591C\u306E\u98DF\u4E8B\u53EF",
+    "点字メニューあり" = "\u70B9\u5B57\u30E1\u30CB\u30E5\u30FC\u3042\u308A"
+}
+export enum GoogleLocationAttributeServiceOptionType {
+    "テラス席あり" = "\u30C6\u30E9\u30B9\u5E2D\u3042\u308A",
+    "店先受取可" = "\u5E97\u5148\u53D7\u53D6\u53EF",
+    "非接触宅配可" = "\u975E\u63A5\u89E6\u5B85\u914D\u53EF",
+    "宅配可" = "\u5B85\u914D\u53EF",
+    "ドライブスルーあり" = "\u30C9\u30E9\u30A4\u30D6\u30B9\u30EB\u30FC\u3042\u308A",
+    "実店舗の営業あり" = "\u5B9F\u5E97\u8217\u306E\u55B6\u696D\u3042\u308A",
+    "テイクアウト可" = "\u30C6\u30A4\u30AF\u30A2\u30A6\u30C8\u53EF",
+    "イートイン利用可" = "\u30A4\u30FC\u30C8\u30A4\u30F3\u5229\u7528\u53EF"
 }

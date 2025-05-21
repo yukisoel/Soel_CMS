@@ -4,9 +4,9 @@ import {
   GoogleLocationFoodMenusModel,
   GoogleLocationLocalPostModel,
   GoogleLocationPhotoModel,
-  GoogleLocationProfileModel
+  // GoogleLocationProfileModel
 } from "@/main/model/LocationModel.ts";
-import {GoogleAccount, GoogleLocation} from "@/types/apiModel.ts";
+import {GoogleAccount, GoogleLocation, GoogleLocationProfileModel, GoogleLocationDate, GoogleLocationCategory} from "@/types/apiModel.ts";
 
 export interface GoogleRepository {
   getAccounts(): Promise<GoogleAccount[]>
@@ -23,10 +23,22 @@ export interface GoogleRepository {
 
   getLocationFoodMenus(accountId: string,locationId: string): Promise<GoogleLocationFoodMenusModel>
 
+  getCategories(): Promise<GoogleLocationCategory[]>
+
   postLocationPhoto(accountId: string, locationId: string, photos: FileList): Promise<void>
   postLocationLocalPost(accountId: string, locationId: string, localPost: GoogleLocationLocalPostModel, photos: FileList): Promise<void>
 
   updateLocationProfile(locationId: string, updateMask: string, locationProfile: GoogleLocationProfileModel): Promise<GoogleLocationProfileModel>
+
+  updateLocationProfileTitle(locationId: string, title: string): Promise<GoogleLocationProfileModel>
+
+  updateLocationProfileDescription(locationId: string, description: string): Promise<GoogleLocationProfileModel>
+
+  updateLocationProfilePrimaryCategories(locationId: string, category: GoogleLocationCategory): Promise<GoogleLocationProfileModel>
+
+  updateLocationProfileAdditionalCategories(locationId: string, categories: GoogleLocationCategory[]): Promise<GoogleLocationProfileModel>
+
+  updateLocationProfileOpeningDate(locationId: string, openingDate: GoogleLocationDate): Promise<GoogleLocationProfileModel>
 
   updateLocationFoodMenus(accountId: string, locationId: string, foodMenus: GoogleLocationFoodMenusModel): Promise<void>
 }
@@ -156,6 +168,16 @@ export class GoogleRepositoryImpl implements GoogleRepository {
     }
   }
 
+  async getCategories(): Promise<GoogleLocationCategory[]> {
+    try {
+      const response: AxiosResponse<GoogleLocationCategory[]> = await axiosApiClient.get('google/categories')
+      return response.data
+    } catch (error) {
+      console.error(error)
+      throw new Error("google get categories failed")
+    }
+  }
+
   async postLocationPhoto(accountId: string, locationId: string, photos: FileList): Promise<void> {
     try {
       const formData = new FormData()
@@ -228,6 +250,96 @@ export class GoogleRepositoryImpl implements GoogleRepository {
     } catch (error) {
       console.error(error)
       throw new Error("google update location profile failed")
+    }
+  }
+
+  async updateLocationProfileTitle(locationId: string, title: string): Promise<GoogleLocationProfileModel> {
+    try {
+      const response: AxiosResponse<GoogleLocationProfileModel> = await axiosApiClient.patch(
+        'google/location/profile/title',
+        {title},
+        {
+          params: {
+            locationId: locationId,
+          },
+        }
+      )
+      return response.data
+    } catch (error) {
+      console.error(error)
+      throw new Error("google update location profile title failed")
+    }
+  }
+
+  async updateLocationProfileDescription(locationId: string, description: string): Promise<GoogleLocationProfileModel> {
+    try {
+      const response: AxiosResponse<GoogleLocationProfileModel> = await axiosApiClient.patch(
+        'google/location/profile/description',
+        {description},
+        {
+          params: {
+            locationId: locationId,
+          },
+        }
+      )
+      return response.data
+    } catch (error) {
+      console.error(error)
+      throw new Error("google update location profile description failed")
+    }
+  }
+
+  async updateLocationProfilePrimaryCategories(locationId: string, category: GoogleLocationCategory): Promise<GoogleLocationProfileModel> {
+    try {
+      const response: AxiosResponse<GoogleLocationProfileModel> = await axiosApiClient.patch(
+        'google/location/profile/primary_category',
+        {category},
+        {
+          params: {
+            locationId: locationId,
+          },
+        }
+      )
+      return response.data
+    } catch (error) {
+      console.error(error)
+      throw new Error("google update location profile categories failed")
+    }
+  }
+
+  async updateLocationProfileAdditionalCategories(locationId: string, categories: GoogleLocationCategory[]): Promise<GoogleLocationProfileModel> {
+    try {
+      const response: AxiosResponse<GoogleLocationProfileModel> = await axiosApiClient.patch(
+        'google/location/profile/additional_categories',
+        {categories},
+        {
+          params: {
+            locationId: locationId,
+          },
+        }
+      )
+      return response.data
+    } catch (error) {
+      console.error(error)
+      throw new Error("google update location profile categories failed")
+    }
+  }
+
+  async updateLocationProfileOpeningDate(locationId: string, openingDate: GoogleLocationDate): Promise<GoogleLocationProfileModel> {
+    try {
+      const response: AxiosResponse<GoogleLocationProfileModel> = await axiosApiClient.patch(
+        'google/location/profile/opening_date',
+        {openingDate},
+        {
+          params: {
+            locationId: locationId,
+          },
+        }
+      )
+      return response.data
+    } catch (error) {
+      console.error(error)
+      throw new Error("google update location profile opening date failed")
     }
   }
 
