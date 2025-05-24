@@ -32,15 +32,28 @@ spring:
 #            client-secret: ${FACEBOOK_CLIENT_SECRET}
 #            scope: ${FACEBOOK_SCOPE}
 #            redirect-uri: "{baseUrl}/login/oauth2/code/facebook"
+          cognito:
+            provider: cognito
+            client-id: ${COGNITO_CLIENT_ID}
+            client-secret: ${COGNITO_CLIENT_SECRET}
+            scope: openid,profile,email
+#            redirect-uri: "{baseUrl}/login/oauth2/code/cognito"
           google:
             client-id: ${GOOGLE_CLIENT_ID}
             client-secret: ${GOOGLE_CLIENT_SECRET}
-            scope: openid,profile,https://www.googleapis.com/auth/business.manage,https://www.googleapis.com/auth/cloud-platform
+            scope: ${GOOGLE_SCOPE}
+        #            scope: openid,profile,https://www.googleapis.com/auth/business.manage,https://www.googleapis.com/auth/cloud-platform
 #            redirect-uri: "{baseUrl}/login/oauth2/code/google"
-#        provider:
+        provider:
+            cognito:
+              issuer-uri: https://cognito-idp.${AWS_REGION}.amazonaws.com/${COGNITO_USER_POOL_ID}
+
+
 #          facebook:
 #            authorization-uri: https://www.facebook.com/v20.0/dialog/oauth
 #            token-uri: https://graph.facebook.com/v20.0/oauth/access_token
+#            user-info-uri: https://graph.facebook.com/me?fields=id,name,email,picture
+
 
 
 logging:
