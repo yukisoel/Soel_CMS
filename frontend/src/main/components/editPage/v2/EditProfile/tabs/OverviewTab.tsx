@@ -27,28 +27,33 @@ export default function OverviewTab({
     const handleTitleSave = async (data: {title: string}) => {
         await googleService.updateLocationProfileTitle(locationId ?? '', data.title);
         await fetchProfile();
+        closeTitleModalBase();
     };
     const { isOpen: isDescriptionModalOpen, openModal: openDescriptionModal, closeModal: closeDescriptionModalBase } = useModal();
     const handleDescriptionSave = async (data: {description: string}) => {
         await googleService.updateLocationProfileDescription(locationId ?? '', data.description);
         await fetchProfile();
+        closeDescriptionModalBase();
     };
     const { isOpen: isPrimaryCategoriesModalOpen, openModal: openPrimaryCategoriesModal, closeModal: closePrimaryCategoriesModalBase } = useModal();
     const handlePrimaryCategoriesSave = async (categories: GoogleLocationCategory[]) => {
         const primaryCategory = categories[0];
         await googleService.updateLocationProfilePrimaryCategories(locationId ?? '', primaryCategory);
         await fetchProfile();
+        closePrimaryCategoriesModalBase();
     };
     const { isOpen: isAdditionalCategoriesModalOpen, openModal: openAdditionalCategoriesModal, closeModal: closeAdditionalCategoriesModalBase } = useModal();
     const handleAdditionalCategoriesSave = async (categories: GoogleLocationCategory[]) => {
         await googleService.updateLocationProfileAdditionalCategories(locationId ?? '', categories);
         await fetchProfile();
+        closeAdditionalCategoriesModalBase();
     };
     const { isOpen: isOpeningDateModalOpen, openModal: openOpeningDateModal, closeModal: closeOpeningDateModalBase } = useModal();
     const handleOpeningDateSave = async (data: {openingDate: Date | null}) => {
         if (!data.openingDate) return;
         await googleService.updateLocationProfileOpeningDate(locationId ?? '', {year: data.openingDate.getFullYear(), month: data.openingDate.getMonth() + 1, day: data.openingDate.getDate()});
         await fetchProfile();
+        closeOpeningDateModalBase();
     };
 
     const openingDate = useMemo(() => {

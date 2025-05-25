@@ -2,7 +2,7 @@ import styles from "./EditProfileLayoutV2.module.scss";
 import Wrapper from "@/main/common/Wrapper";
 import Typography from "@/main/common/Typography";
 import { useAdvancedTabs } from "@/main/common/AdvancedTabs/useAdvancedTabs";
-import { useCallback, useState } from "react";
+import { useCallback, useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { profileSchema, type ProfileFormData } from "@/main/schemas/profileSchema";
@@ -14,7 +14,7 @@ import OtherSectionTab from "./tabs/OtherSectionTab";
 import { GoogleServiceImpl } from "@/main/service/GoogleService";
 import { DayOfWeek, BusinessType } from "@/main/model/LocationModel";
 import { useParams } from "react-router-dom";
-import {GoogleLocationProfileModel} from "@/types/apiModel.ts";
+import {GoogleLocationProfileModel, GoogleLocationAttributesModel} from "@/types/apiModel.ts";
 
 type Props = {
     googleService: GoogleServiceImpl;
@@ -32,6 +32,13 @@ export default function EditProfileLayoutV2({
         const profile = await googleService.getLocationProfile(locationId);
         setProfile(profile);
     }, [googleService, locationId]);
+    const [attributes, setAttributes] = useState<GoogleLocationAttributesModel | null>(null);
+    const fetchAttributes = useCallback(async () => {
+        if (!locationId) return;
+        const attributes = await googleService.getLocationAttributes(locationId);
+        setAttributes(attributes);
+    }, [googleService, locationId]);
+
     const [isSubmitting] = useState(false);
     const { selectedTab, tabsRender } = useAdvancedTabs([
         { tabKey: 'overview', content: '概要' },
@@ -40,6 +47,11 @@ export default function EditProfileLayoutV2({
         { tabKey: 'hours', content: '営業時間' },
         { tabKey: 'other', content: 'その他' },
     ]);
+
+    useEffect(() => {
+        fetchProfile();
+        fetchAttributes();
+    }, []);
 
     const {
         register,
@@ -177,94 +189,85 @@ export default function EditProfileLayoutV2({
             case 'contact':
                 return (
                     <ContactTab
-                        register={register}
-                        errors={errors}
-                        values={{
-                            phoneNumber: formValues.phoneNumbers?.primaryPhone || '',
-                            website: formValues.websiteUri || '',
-                            menuLink: formValues.menuUri || ''
-                        }}
-                        setValueAndValidate={setValueAndValidate}
-                        isUpdating={isSubmitting}
-                        validationErrors={{
-                            phoneNumber: errors.phoneNumbers?.primaryPhone?.message,
-                            website: errors.websiteUri?.message,
-                            menuLink: errors.menuUri?.message
-                        }}
+                        profile={profile ?? null}
+                        attributes={attributes ?? null}
+                        fetchProfile={fetchProfile}
+                        fetchAttributes={fetchAttributes}
+                        googleService={googleService}
                     />
                 );
-            case 'location':
-                return (
-                    <LocationTab
-                        register={register}
-                        errors={errors}
-                        values={{
-                            address: formValues.storefrontAddress ?
-                                `${formValues.storefrontAddress.addressLines.join(' ')} ${formValues.storefrontAddress.locality} ${formValues.storefrontAddress.administrativeArea} ${formValues.storefrontAddress.postalCode}` : '',
-                            serviceArea: {
-                                businessType: formValues.serviceArea?.businessType as BusinessType || 'CUSTOMER_AT_BUSINESS',
-                                places: formValues.serviceArea?.places
-                            }
-                        }}
-                        setValueAndValidate={setValueAndValidate}
-                        isUpdating={isSubmitting}
-                        validationErrors={{
-                            address: errors.storefrontAddress?.message,
-                            serviceArea: errors.serviceArea?.message
-                        }}
-                    />
-                );
-            case 'hours':
-                return (
-                    <HoursTab
-                        register={register}
-                        errors={errors}
-                        values={{
-                            regularHours: {
-                                periods: formValues.regularHours?.periods.map(period => ({
-                                    openDay: period.openDay as DayOfWeek,
-                                    closeDay: period.closeDay as DayOfWeek,
-                                    openTime: period.openTime,
-                                    closeTime: period.closeTime
-                                })) || []
-                            },
-                            specialHours: formValues.specialHours ? {
-                                periods: formValues.specialHours.periods.map(period => ({
-                                    openDay: period.openDay as DayOfWeek,
-                                    closeDay: period.closeDay as DayOfWeek,
-                                    openTime: period.openTime,
-                                    closeTime: period.closeTime
-                                }))
-                            } : undefined
-                        }}
-                        setValueAndValidate={setValueAndValidate}
-                        isUpdating={isSubmitting}
-                        onAddOtherHours={() => {}}
-                        validationErrors={{
-                            regularHours: errors.regularHours?.message,
-                            specialHours: errors.specialHours?.message
-                        }}
-                    />
-                );
-            case 'other':
-                return (
-                    <OtherSectionTab
-                        register={register}
-                        errors={errors}
-                        values={{
-                            businessOwnerInfo: formValues.businessOwnerInfo || '',
-                            serviceOptionInfo: formValues.serviceOptionInfo || '',
-                            services: formValues.services || []
-                        }}
-                        setValueAndValidate={setValueAndValidate}
-                        isUpdating={isSubmitting}
-                        validationErrors={{
-                            businessOwnerInfo: errors.businessOwnerInfo?.message,
-                            serviceOptionInfo: errors.serviceOptionInfo?.message,
-                            services: errors.services?.message
-                        }}
-                    />
-                );
+            // case 'location':
+            //     return (
+            //         <LocationTab
+            //             register={register}
+            //             errors={errors}
+            //             values={{
+            //                 address: formValues.storefrontAddress ?
+            //                     `${formValues.storefrontAddress.addressLines.join(' ')} ${formValues.storefrontAddress.locality} ${formValues.storefrontAddress.administrativeArea} ${formValues.storefrontAddress.postalCode}` : '',
+            //                 serviceArea: {
+            //                     businessType: formValues.serviceArea?.businessType as BusinessType || 'CUSTOMER_AT_BUSINESS',
+            //                     places: formValues.serviceArea?.places
+            //                 }
+            //             }}
+            //             setValueAndValidate={setValueAndValidate}
+            //             isUpdating={isSubmitting}
+            //             validationErrors={{
+            //                 address: errors.storefrontAddress?.message,
+            //                 serviceArea: errors.serviceArea?.message
+            //             }}
+            //         />
+            //     );
+            // case 'hours':
+            //     return (
+            //         <HoursTab
+            //             register={register}
+            //             errors={errors}
+            //             values={{
+            //                 regularHours: {
+            //                     periods: formValues.regularHours?.periods.map(period => ({
+            //                         openDay: period.openDay as DayOfWeek,
+            //                         closeDay: period.closeDay as DayOfWeek,
+            //                         openTime: period.openTime,
+            //                         closeTime: period.closeTime
+            //                     })) || []
+            //                 },
+            //                 specialHours: formValues.specialHours ? {
+            //                     periods: formValues.specialHours.periods.map(period => ({
+            //                         openDay: period.openDay as DayOfWeek,
+            //                         closeDay: period.closeDay as DayOfWeek,
+            //                         openTime: period.openTime,
+            //                         closeTime: period.closeTime
+            //                     }))
+            //                 } : undefined
+            //             }}
+            //             setValueAndValidate={setValueAndValidate}
+            //             isUpdating={isSubmitting}
+            //             onAddOtherHours={() => {}}
+            //             validationErrors={{
+            //                 regularHours: errors.regularHours?.message,
+            //                 specialHours: errors.specialHours?.message
+            //             }}
+            //         />
+            //     );
+            // case 'other':
+            //     return (
+            //         <OtherSectionTab
+            //             register={register}
+            //             errors={errors}
+            //             values={{
+            //                 businessOwnerInfo: formValues.businessOwnerInfo || '',
+            //                 serviceOptionInfo: formValues.serviceOptionInfo || '',
+            //                 services: formValues.services || []
+            //             }}
+            //             setValueAndValidate={setValueAndValidate}
+            //             isUpdating={isSubmitting}
+            //             validationErrors={{
+            //                 businessOwnerInfo: errors.businessOwnerInfo?.message,
+            //                 serviceOptionInfo: errors.serviceOptionInfo?.message,
+            //                 services: errors.services?.message
+            //             }}
+            //         />
+            //     );
             default:
                 return null;
         }

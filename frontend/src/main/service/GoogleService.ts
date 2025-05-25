@@ -5,7 +5,7 @@ import {
   GoogleLocationPhotoModel,
   // GoogleLocationProfileModel
 } from "@/main/model/LocationModel.ts";
-import {GoogleAccount, GoogleLocation, GoogleLocationCategory, GoogleLocationDate} from "@/types/apiModel.ts";
+import {GoogleAccount, GoogleLocation, GoogleLocationCategory, GoogleLocationDate, GoogleLocationAttributeSnsLinkRequest, GoogleLocationAttributesModel} from "@/types/apiModel.ts";
 import {GoogleLocationProfileModel} from "@/types/apiModel.ts";
 export interface GoogleService {
   getAccounts(): Promise<GoogleAccount[]>
@@ -15,6 +15,7 @@ export interface GoogleService {
   getLocationProfile(locationId:string): Promise<GoogleLocationProfileModel>
   getLocationPhotos(accountId:string, locationId:string): Promise<GoogleLocationPhotoModel[]>
   getLocationFoodMenus(accountId: string,locationId: string): Promise<GoogleLocationFoodMenusModel>
+  getLocationAttributes(locationId: string): Promise<GoogleLocationAttributesModel>
   getCategories(): Promise<GoogleLocationCategory[]>
   postLocationPhoto(accountId:string, locationId:string, photos:FileList): Promise<void>
   postLocationLocalPost(accountId:string, locationId:string, localPost:GoogleLocationLocalPostModel, photos:FileList): Promise<void>
@@ -24,6 +25,10 @@ export interface GoogleService {
   updateLocationProfilePrimaryCategories(locationId:string, category: GoogleLocationCategory): Promise<GoogleLocationProfileModel>
   updateLocationProfileAdditionalCategories(locationId:string, categories: GoogleLocationCategory[]): Promise<GoogleLocationProfileModel>
   updateLocationProfileOpeningDate(locationId:string, openingDate: GoogleLocationDate): Promise<GoogleLocationProfileModel>
+  updateLocationProfilePhoneNumber(locationId:string, phoneNumber: string): Promise<GoogleLocationProfileModel>
+  updateLocationProfileWebsiteUri(locationId:string, websiteUri: string): Promise<GoogleLocationProfileModel>
+  updateLocationAttributeMenuLink(locationId: string, menuLink: string): Promise<GoogleLocationProfileModel>
+  updateLocationAttributeSnsLink(locationId: string, snsLink: GoogleLocationAttributeSnsLinkRequest): Promise<GoogleLocationProfileModel>
   updateLocationFoodMenus(accountId: string, locationId: string, foodMenus: GoogleLocationFoodMenusModel): Promise<void>
 }
 
@@ -66,6 +71,10 @@ export class GoogleServiceImpl implements GoogleService {
     return this.googleRepository.getLocationFoodMenus(accountId, locationId)
   }
 
+  async getLocationAttributes(locationId: string): Promise<GoogleLocationAttributesModel> {
+    return this.googleRepository.getLocationAttributes(locationId)
+  }
+
   async getCategories(): Promise<GoogleLocationCategory[]> {
     return this.googleRepository.getCategories()
   }
@@ -104,5 +113,21 @@ export class GoogleServiceImpl implements GoogleService {
 
   async updateLocationProfileOpeningDate(locationId:string, openingDate: GoogleLocationDate): Promise<GoogleLocationProfileModel> {
     return this.googleRepository.updateLocationProfileOpeningDate(locationId, openingDate)
+  }
+
+  async updateLocationProfilePhoneNumber(locationId:string, phoneNumber: string): Promise<GoogleLocationProfileModel> {
+    return this.googleRepository.updateLocationProfilePhoneNumber(locationId, phoneNumber)
+  }
+
+  async updateLocationProfileWebsiteUri(locationId:string, websiteUri: string): Promise<GoogleLocationProfileModel> {
+    return this.googleRepository.updateLocationProfileWebsiteUri(locationId, websiteUri)
+  }
+
+  async updateLocationAttributeMenuLink(locationId: string, menuLink: string): Promise<GoogleLocationProfileModel> {
+    return this.googleRepository.updateLocationAttributeMenuLink(locationId, menuLink)
+  }
+
+  async updateLocationAttributeSnsLink(locationId: string, snsLink: GoogleLocationAttributeSnsLinkRequest): Promise<GoogleLocationProfileModel> {
+    return this.googleRepository.updateLocationAttributeSnsLink(locationId, snsLink)
   }
 }

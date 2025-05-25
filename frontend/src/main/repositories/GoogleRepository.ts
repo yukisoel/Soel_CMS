@@ -6,7 +6,7 @@ import {
   GoogleLocationPhotoModel,
   // GoogleLocationProfileModel
 } from "@/main/model/LocationModel.ts";
-import {GoogleAccount, GoogleLocation, GoogleLocationProfileModel, GoogleLocationDate, GoogleLocationCategory} from "@/types/apiModel.ts";
+import {GoogleAccount, GoogleLocation, GoogleLocationProfileModel, GoogleLocationDate, GoogleLocationCategory, GoogleLocationAttributeSnsLinkRequest, GoogleLocationAttributesModel} from "@/types/apiModel.ts";
 
 export interface GoogleRepository {
   getAccounts(): Promise<GoogleAccount[]>
@@ -22,6 +22,8 @@ export interface GoogleRepository {
   getLocationPhotos(accountId: string, locationId: string): Promise<LocationPhotoListResponse>
 
   getLocationFoodMenus(accountId: string,locationId: string): Promise<GoogleLocationFoodMenusModel>
+
+  getLocationAttributes(locationId: string): Promise<GoogleLocationAttributesModel>
 
   getCategories(): Promise<GoogleLocationCategory[]>
 
@@ -39,6 +41,14 @@ export interface GoogleRepository {
   updateLocationProfileAdditionalCategories(locationId: string, categories: GoogleLocationCategory[]): Promise<GoogleLocationProfileModel>
 
   updateLocationProfileOpeningDate(locationId: string, openingDate: GoogleLocationDate): Promise<GoogleLocationProfileModel>
+
+  updateLocationProfilePhoneNumber(locationId: string, phoneNumbers: string): Promise<GoogleLocationProfileModel>
+
+  updateLocationProfileWebsiteUri(locationId: string, websiteUri: string): Promise<GoogleLocationProfileModel>
+
+  updateLocationAttributeMenuLink(locationId: string, menuLink: string): Promise<GoogleLocationProfileModel>
+
+  updateLocationAttributeSnsLink(locationId: string, snsLink: GoogleLocationAttributeSnsLinkRequest): Promise<GoogleLocationProfileModel>
 
   updateLocationFoodMenus(accountId: string, locationId: string, foodMenus: GoogleLocationFoodMenusModel): Promise<void>
 }
@@ -165,6 +175,20 @@ export class GoogleRepositoryImpl implements GoogleRepository {
     } catch (error) {
       console.error(error)
       throw new Error("google get location food menus failed")
+    }
+  }
+
+  async getLocationAttributes(locationId: string): Promise<GoogleLocationAttributesModel> {
+    try {
+      const response: AxiosResponse<GoogleLocationAttributesModel> = await axiosApiClient.get('google/location/attributes', {
+        params: {
+          locationId: locationId
+        },
+      })
+      return response.data
+    } catch (error) {
+      console.error(error)
+      throw new Error("google get location attributes failed")
     }
   }
 
@@ -342,6 +366,79 @@ export class GoogleRepositoryImpl implements GoogleRepository {
       throw new Error("google update location profile opening date failed")
     }
   }
+
+  async updateLocationProfilePhoneNumber(locationId: string, phoneNumber: string): Promise<GoogleLocationProfileModel> {
+    try {
+      const response: AxiosResponse<GoogleLocationProfileModel> = await axiosApiClient.patch(
+        'google/location/profile/phone_number',
+        {phoneNumber},
+        {
+          params: {
+            locationId: locationId,
+          },
+        }
+      )
+      return response.data
+    } catch (error) {
+      console.error(error)
+      throw new Error("google update location profile phone number failed")
+    }
+  }
+
+  async updateLocationProfileWebsiteUri(locationId: string, websiteUri: string): Promise<GoogleLocationProfileModel> {
+    try {
+      const response: AxiosResponse<GoogleLocationProfileModel> = await axiosApiClient.patch(
+        'google/location/profile/website_uri',
+        {websiteUri},
+        {
+          params: {
+            locationId: locationId,
+          },
+        }
+      )
+      return response.data
+    } catch (error) {
+      console.error(error)
+      throw new Error("google update location profile website failed")
+    }
+  }
+
+  async updateLocationAttributeMenuLink(locationId: string, menuLink: string): Promise<GoogleLocationProfileModel> {
+    try {
+      const response: AxiosResponse<GoogleLocationProfileModel> = await axiosApiClient.patch(
+        'google/location/attributes/menu_link',
+        {menuLink},
+        {
+          params: {
+            locationId: locationId,
+          },
+        }
+      )
+      return response.data
+    } catch (error) {
+      console.error(error)
+      throw new Error("google update location profile menu link failed")
+    }
+  }
+
+  async updateLocationAttributeSnsLink(locationId: string, snsLink: GoogleLocationAttributeSnsLinkRequest): Promise<GoogleLocationProfileModel> {
+    try {
+      const response: AxiosResponse<GoogleLocationProfileModel> = await axiosApiClient.patch(
+        'google/location/attributes/sns_link',
+        {snsLink},
+        {
+          params: {
+            locationId: locationId,
+          },
+        }
+      )
+      return response.data
+    } catch (error) {
+      console.error(error)
+      throw new Error("google update location profile sns link failed")
+    }
+  }
+
 
   async updateLocationFoodMenus(accountId: string, locationId: string, foodMenus: GoogleLocationFoodMenusModel): Promise<void> {
     try {

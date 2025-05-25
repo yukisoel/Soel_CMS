@@ -39,7 +39,11 @@ export type GoogleLocationFoodMenuItem = components['schemas']['GoogleLocationFo
 export type GoogleLocationFoodMenuItemAttributes = components['schemas']['GoogleLocationFoodMenuItemAttributes']
 export type GoogleLocationFoodMenuItemOption = components['schemas']['GoogleLocationFoodMenuItemOption']
 export type GoogleLocationMoney = components['schemas']['GoogleLocationMoney']
-
+export type GoogleLocationAttributeSnsLinkRequest = components['schemas']['GoogleLocationAttributeSnsLinkRequest']
+export type GoogleLocationAttributesModel = components['schemas']['GoogleLocationAttributesModel']
+export type GoogleLocationAttribute = components['schemas']['GoogleLocationAttribute']
+export type GoogleLocationAttributeUriValue = components['schemas']['GoogleLocationAttributeUriValue']
+export type JsonNode = components['schemas']['JsonNode']
 // export type GoogleLocationBusinessHours = paths['/api/google/location/profile']['get']['responses']['200']['content']['*/*']['regularHours']
 // export type GoogleLocationTimePeriod = paths['/api/google/location/profile']['get']['responses']['200']['content']['*/*']['regularHours']['periods'][0]
 // export type GoogleLocationTimeOfDay = paths['/api/google/location/profile']['get']['responses']['200']['content']['*/*']['regularHours']['periods'][0]['openTime']
