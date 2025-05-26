@@ -3,9 +3,8 @@ import {
   GoogleLocationFoodMenusModel,
   GoogleLocationLocalPostModel,
   GoogleLocationPhotoModel,
-  // GoogleLocationProfileModel
 } from "@/main/model/LocationModel.ts";
-import {GoogleAccount, GoogleLocation, GoogleLocationCategory, GoogleLocationDate, GoogleLocationAttributeSnsLinkRequest, GoogleLocationAttributesModel} from "@/types/apiModel.ts";
+import {GoogleAccount, GoogleLocation, GoogleLocationCategory, GoogleLocationDate, GoogleLocationAttributeSnsLinkRequest, GoogleLocationAttributesModel, GoogleLocationStoreFrontAddressRequest, GoogleLocationBusinessHoursRequest} from "@/types/apiModel.ts";
 import {GoogleLocationProfileModel} from "@/types/apiModel.ts";
 export interface GoogleService {
   getAccounts(): Promise<GoogleAccount[]>
@@ -30,6 +29,9 @@ export interface GoogleService {
   updateLocationAttributeMenuLink(locationId: string, menuLink: string): Promise<GoogleLocationProfileModel>
   updateLocationAttributeSnsLink(locationId: string, snsLink: GoogleLocationAttributeSnsLinkRequest): Promise<GoogleLocationProfileModel>
   updateLocationFoodMenus(accountId: string, locationId: string, foodMenus: GoogleLocationFoodMenusModel): Promise<void>
+  updateLocationProfileStorefrontAddress(locationId: string, storefrontAddress: GoogleLocationStoreFrontAddressRequest): Promise<GoogleLocationProfileModel>
+  updateLocationProfileServiceArea(locationId: string, serviceArea: string[]): Promise<GoogleLocationProfileModel>
+  updateLocationProfileBusinessHours(locationId: string, businessHours: GoogleLocationBusinessHoursRequest): Promise<GoogleLocationProfileModel>
 }
 
 type Props = {
@@ -129,5 +131,17 @@ export class GoogleServiceImpl implements GoogleService {
 
   async updateLocationAttributeSnsLink(locationId: string, snsLink: GoogleLocationAttributeSnsLinkRequest): Promise<GoogleLocationProfileModel> {
     return this.googleRepository.updateLocationAttributeSnsLink(locationId, snsLink)
+  }
+
+  async updateLocationProfileStorefrontAddress(locationId: string, storefrontAddress: GoogleLocationStoreFrontAddressRequest): Promise<GoogleLocationProfileModel> {
+    return this.googleRepository.updateLocationProfileStorefrontAddress(locationId, storefrontAddress)
+  }
+
+  async updateLocationProfileServiceArea(locationId: string, serviceArea: string[]): Promise<GoogleLocationProfileModel> {
+    return this.googleRepository.updateLocationProfileServiceArea(locationId, serviceArea)
+  }
+
+  async updateLocationProfileBusinessHours(locationId: string, businessHours: GoogleLocationBusinessHoursRequest): Promise<GoogleLocationProfileModel> {
+    return this.googleRepository.updateLocationProfileBusinessHours(locationId, businessHours)
   }
 }

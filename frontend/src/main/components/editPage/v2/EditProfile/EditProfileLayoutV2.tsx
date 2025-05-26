@@ -196,27 +196,14 @@ export default function EditProfileLayoutV2({
                         googleService={googleService}
                     />
                 );
-            // case 'location':
-            //     return (
-            //         <LocationTab
-            //             register={register}
-            //             errors={errors}
-            //             values={{
-            //                 address: formValues.storefrontAddress ?
-            //                     `${formValues.storefrontAddress.addressLines.join(' ')} ${formValues.storefrontAddress.locality} ${formValues.storefrontAddress.administrativeArea} ${formValues.storefrontAddress.postalCode}` : '',
-            //                 serviceArea: {
-            //                     businessType: formValues.serviceArea?.businessType as BusinessType || 'CUSTOMER_AT_BUSINESS',
-            //                     places: formValues.serviceArea?.places
-            //                 }
-            //             }}
-            //             setValueAndValidate={setValueAndValidate}
-            //             isUpdating={isSubmitting}
-            //             validationErrors={{
-            //                 address: errors.storefrontAddress?.message,
-            //                 serviceArea: errors.serviceArea?.message
-            //             }}
-            //         />
-            //     );
+            case 'location':
+                return (
+                    <LocationTab
+                        profile={profile ?? null}
+                        fetchProfile={fetchProfile}
+                        googleService={googleService}
+                    />
+                );
             // case 'hours':
             //     return (
             //         <HoursTab

@@ -4,9 +4,8 @@ import {
   GoogleLocationFoodMenusModel,
   GoogleLocationLocalPostModel,
   GoogleLocationPhotoModel,
-  // GoogleLocationProfileModel
 } from "@/main/model/LocationModel.ts";
-import {GoogleAccount, GoogleLocation, GoogleLocationProfileModel, GoogleLocationDate, GoogleLocationCategory, GoogleLocationAttributeSnsLinkRequest, GoogleLocationAttributesModel} from "@/types/apiModel.ts";
+import {GoogleAccount, GoogleLocation, GoogleLocationProfileModel, GoogleLocationDate, GoogleLocationCategory, GoogleLocationAttributeSnsLinkRequest, GoogleLocationAttributesModel, GoogleLocationStoreFrontAddressRequest, GoogleLocationBusinessHoursRequest} from "@/types/apiModel.ts";
 
 export interface GoogleRepository {
   getAccounts(): Promise<GoogleAccount[]>
@@ -51,6 +50,12 @@ export interface GoogleRepository {
   updateLocationAttributeSnsLink(locationId: string, snsLink: GoogleLocationAttributeSnsLinkRequest): Promise<GoogleLocationProfileModel>
 
   updateLocationFoodMenus(accountId: string, locationId: string, foodMenus: GoogleLocationFoodMenusModel): Promise<void>
+
+  updateLocationProfileStorefrontAddress(locationId: string, storefrontAddress: GoogleLocationStoreFrontAddressRequest): Promise<GoogleLocationProfileModel>
+
+  updateLocationProfileServiceArea(locationId: string, serviceArea: string[]): Promise<GoogleLocationProfileModel>
+
+  updateLocationProfileBusinessHours(locationId: string, businessHours: GoogleLocationBusinessHoursRequest): Promise<GoogleLocationProfileModel>
 }
 
 type AccountListResponse = GoogleAccount[]
@@ -458,6 +463,60 @@ export class GoogleRepositoryImpl implements GoogleRepository {
         return response.data
     } catch (error) {
       throw new Error("google update location food menus failed")
+    }
+  }
+
+  async updateLocationProfileStorefrontAddress(locationId: string, storefrontAddress: GoogleLocationStoreFrontAddressRequest): Promise<GoogleLocationProfileModel> {
+    try {
+      const response: AxiosResponse<GoogleLocationProfileModel> = await axiosApiClient.patch(
+        'google/location/profile/store_front_address',
+        storefrontAddress,
+        {
+          params: {
+            locationId: locationId,
+          },
+        }
+      )
+      return response.data
+    } catch (error) {
+      console.error(error)
+      throw new Error("google update location profile storefront address failed")
+    }
+  }
+
+  async updateLocationProfileServiceArea(locationId: string, serviceArea: string[]): Promise<GoogleLocationProfileModel> {
+    try {
+      const response: AxiosResponse<GoogleLocationProfileModel> = await axiosApiClient.patch(
+        'google/location/profile/service_area',
+        {serviceArea},
+        {
+          params: {
+            locationId: locationId,
+          },
+        }
+      )
+      return response.data
+    } catch (error) {
+      console.error(error)
+      throw new Error("google update location profile service area failed")
+    }
+  }
+
+  async updateLocationProfileBusinessHours(locationId: string, businessHours: GoogleLocationBusinessHoursRequest): Promise<GoogleLocationProfileModel> {
+    try {
+      const response: AxiosResponse<GoogleLocationProfileModel> = await axiosApiClient.patch(
+        'google/location/profile/business_hours',
+        businessHours,
+        {
+          params: {
+            locationId: locationId,
+          },
+        }
+      )
+      return response.data
+    } catch (error) {
+      console.error(error)
+      throw new Error("google update location profile business hours failed")
     }
   }
 }
