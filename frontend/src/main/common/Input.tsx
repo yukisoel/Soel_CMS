@@ -1,3 +1,4 @@
+import React from 'react';
 import styles from '@/main/common/Input.module.scss'
 import classNames from "classnames"
 import CloseButton from './CloseButton'
@@ -13,23 +14,29 @@ interface Props extends React.InputHTMLAttributes<HTMLInputElement>, ValidationP
     width?: string;
     fwMedium?: boolean;
     className?: string;
-    ref?: React.Ref<HTMLInputElement>;
     onClear?: () => void;
+    placeholder?: string;
+    value?: string;
+    type?: string;
+    name?: string;
 }
 
-export default function Input({
+const Input = React.forwardRef<HTMLInputElement, Props>(({
     width,
-    padding,
+    padding = "10px 20px",
     fwMedium = false,
     className,
-    ref,
     onClear,
     maxLength,
     required,
     customPattern,
     onValidation,
+    placeholder,
+    value,
+    type = 'text',
+    name,
     ...props
-}: Props) {
+}, forwardedRef) => {
     const [error, setError] = useState<string>('');
 
     const validate = (value: string) => {
@@ -60,6 +67,7 @@ export default function Input({
     return (
         <div className={styles.inputWrapper} style={{ width }}>
             <input
+                ref={forwardedRef}
                 className={classNames(
                     className,
                     styles.input,
@@ -67,9 +75,12 @@ export default function Input({
                     error ? styles.error : ''
                 )}
                 style={{ padding, width }}
-                ref={ref}
-                {...props}
+                placeholder={placeholder}
+                value={value}
                 onChange={handleChange}
+                type={type}
+                name={name}
+                {...props}
                 maxLength={maxLength}
                 required={required}
             />
@@ -83,4 +94,8 @@ export default function Input({
             )}
         </div>
     )
-}
+})
+
+Input.displayName = 'Input';
+
+export default Input;

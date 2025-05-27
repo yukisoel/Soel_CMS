@@ -17,8 +17,9 @@ const SidebarItems = [
         title: '基本情報',
         icon: StoreMangeIcon,
         items: [
-            {title: '各店基本情報変更', link: '/stores/select'},
-            {title: '基本情報一括変更', link: '/basic/bulk/schedule-post'}
+            {title: '各店基本情報変更', link: '/basic/store'},
+            {title: '写真一括変更', link: '/basic/bulk/photo'},
+            {title: '特別営業時間一括変更', link: '/basic/bulk/special'}
         ],
         flipIcon: true
     },
@@ -26,9 +27,9 @@ const SidebarItems = [
         title: '投稿',
         icon: EditorIcon,
         items: [
-            {title: '一括投稿', link: '/edit/post/bulk'},
-            {title: '投稿予約一覧', link: '/edit/reservation'},
-            {title: '過去投稿一覧', link: '/edit/past'}
+            {title: '一括投稿', link: '/basic/bulk/schedule-post'},
+            {title: '投稿予約一覧', link: '/basic/bulk/schedule-post-list'},
+            {title: '過去投稿一覧', link: '/basic/bulk/history-post-list'}
         ],
         flipIcon: true
     },
@@ -36,8 +37,8 @@ const SidebarItems = [
         title: '口コミ管理',
         icon: ReviewIcon,
         items: [
-            {title: '口コミ一覧', link: '/edit/review'},
-            {title: '口コミ分析', link: '/edit/analysis'}
+            {title: '口コミ一覧', link: '/basic/review'},
+            {title: '口コミ分析', link: '#'}
         ],
         flipIcon: true
     },
@@ -56,7 +57,7 @@ export default function AdvancedSidebarMenu() {
           <img src={SoelLogoIcon} alt="soel_logo" />
         </Wrapper>
         <div className={styles.separator} />
-        <a href="#">
+        <a href="/edit">
           <Wrapper gap="1.7rem" padding="2.1rem 0 2.1rem 4.4rem">
               <img src={HomeIcon} alt="home_icon" />
               <Typography content="ホーム" size="medium" color="primary" />

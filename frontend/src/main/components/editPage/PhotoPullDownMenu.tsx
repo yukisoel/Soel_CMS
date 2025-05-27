@@ -8,13 +8,15 @@ export type Props = {
   selectedContent: string
   setSelectedContent: (content: string) => void
   options: string[]
+  width?: string
 }
 
 export default function PhotoPullDownMenu({
   placeholder,
   selectedContent,
   setSelectedContent,
-  options
+  options,
+  width = '430px'
 }: Props) {
   const effectivePlaceholder = placeholder ? placeholder : '入力して検索'
 
@@ -39,7 +41,14 @@ export default function PhotoPullDownMenu({
   )
 
   return (
-    <div data-testid={'pull_down_menu'} className={styles.pull_down_menu_container}>
+    <div
+      data-testid={'pull_down_menu'}
+      className={[
+        styles.pull_down_menu_container,
+        isOpen ? styles.opened : ''
+      ].filter(Boolean).join(' ')}
+      style={{ width }}
+    >
       <div
         className={styles.arrow}
         onClick={toggleIsOpen}
@@ -74,7 +83,13 @@ export default function PhotoPullDownMenu({
           {filteredOptions.map((value, index) => (
             <div
               key={index}
-              className={`${styles.pull_down_menu_content} ${styles.pull_down_menu_option} ${styles.pull_down_menu_border}`}
+              className={
+                [
+                  styles.pull_down_menu_content,
+                  styles.pull_down_menu_option,
+                  index !== filteredOptions.length - 1 ? styles.pull_down_menu_border : undefined
+                ].filter(Boolean).join(' ')
+              }
               onClick={() => {
                 toggleIsOpen()
                 setSelectedContent(value)

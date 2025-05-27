@@ -23,6 +23,10 @@
     flex-direction: column;
     gap: 3rem;
     margin-left: 32.9rem;
+
+    /* 高さ制限とスクロール */
+    max-height: 80vh;
+    overflow-y: auto;
 }
 
 .modal_header {

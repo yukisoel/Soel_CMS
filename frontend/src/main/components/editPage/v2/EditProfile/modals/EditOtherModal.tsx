@@ -47,7 +47,6 @@ export default function EditOtherModal({
           <Textarea
             value={value}
             onChange={(e) => setValue(e.target.value)}
-            rows={10}
             width="100%"
             padding="1rem"
           />
