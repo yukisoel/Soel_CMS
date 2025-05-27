@@ -14,7 +14,7 @@ type Props = {
 export default function LayoutLabeledFormItem({label, children, className, counter}: Props) {
   return (
     <Wrapper direction="col" gap="1rem" className={className}>
-      <Typography content={label} size="normal" color="primary" />
+          <Typography content={label} size="normal" color="primary" />
       <Wrapper direction="col" gap="0.5rem">
         {children}
         {counter && (

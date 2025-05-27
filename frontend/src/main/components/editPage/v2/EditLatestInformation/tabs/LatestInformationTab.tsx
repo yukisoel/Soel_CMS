@@ -65,14 +65,14 @@ export const LatestInformationTab: React.FC = () => {
               max: 1500
             }}
           >
-            <Textarea
-              {...register('description')}
-              placeholder="説明を入力"
-              className={styles.textarea}
-            />
-            {errors.description && (
-              <Typography content={errors.description.message || ''} size="xsmall" color="error" />
-            )}
+          <Textarea
+            {...register('description')}
+            placeholder="説明を入力"
+            className={styles.textarea}
+          />
+          {errors.description && (
+            <Typography content={errors.description.message || ''} size="xsmall" color="error" />
+          )}
           </LayoutLabeledFormItem>
         </Wrapper>
 

@@ -207,20 +207,20 @@ export default function EditProductV2({ googleService }: Props) {
               </Wrapper>
             </Wrapper>
             <Wrapper direction="col" gap="4px">
-              <Typography
-                content={product.name}
-                color="black"
-                size="normal"
-                weight="normal"
-                className={styles.product_name}
-              />
-              <Typography
-                content={`¥${product.price.toLocaleString()}`}
-                color="gray"
-                size="normal"
-                weight="normal"
-                className={styles.product_price}
-              />
+            <Typography
+              content={product.name}
+              color="black"
+              size="normal"
+              weight="normal"
+              className={styles.product_name}
+            />
+            <Typography
+              content={`¥${product.price.toLocaleString()}`}
+              color="gray"
+              size="normal"
+              weight="normal"
+              className={styles.product_price}
+            />
             </Wrapper>
           </Wrapper>
         ))}
