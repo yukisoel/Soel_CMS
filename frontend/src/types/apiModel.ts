@@ -45,6 +45,7 @@ export type GoogleLocationAttribute = components['schemas']['GoogleLocationAttri
 export type GoogleLocationAttributeUriValue = components['schemas']['GoogleLocationAttributeUriValue']
 export type GoogleLocationStoreFrontAddressRequest = components['schemas']['GoogleLocationStoreFrontAddressRequest']
 export type GoogleLocationBusinessHoursRequest = components['schemas']['GoogleLocationBusinessHoursRequest']
+export type GoogleLocationTimePeriod = components['schemas']['GoogleLocationTimePeriod']
 export type JsonNode = components['schemas']['JsonNode']
 // export type GoogleLocationBusinessHours = paths['/api/google/location/profile']['get']['responses']['200']['content']['*/*']['regularHours']
 // export type GoogleLocationTimePeriod = paths['/api/google/location/profile']['get']['responses']['200']['content']['*/*']['regularHours']['periods'][0]

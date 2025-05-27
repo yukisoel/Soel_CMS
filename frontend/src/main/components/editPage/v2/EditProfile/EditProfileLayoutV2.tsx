@@ -204,38 +204,14 @@ export default function EditProfileLayoutV2({
                         googleService={googleService}
                     />
                 );
-            // case 'hours':
-            //     return (
-            //         <HoursTab
-            //             register={register}
-            //             errors={errors}
-            //             values={{
-            //                 regularHours: {
-            //                     periods: formValues.regularHours?.periods.map(period => ({
-            //                         openDay: period.openDay as DayOfWeek,
-            //                         closeDay: period.closeDay as DayOfWeek,
-            //                         openTime: period.openTime,
-            //                         closeTime: period.closeTime
-            //                     })) || []
-            //                 },
-            //                 specialHours: formValues.specialHours ? {
-            //                     periods: formValues.specialHours.periods.map(period => ({
-            //                         openDay: period.openDay as DayOfWeek,
-            //                         closeDay: period.closeDay as DayOfWeek,
-            //                         openTime: period.openTime,
-            //                         closeTime: period.closeTime
-            //                     }))
-            //                 } : undefined
-            //             }}
-            //             setValueAndValidate={setValueAndValidate}
-            //             isUpdating={isSubmitting}
-            //             onAddOtherHours={() => {}}
-            //             validationErrors={{
-            //                 regularHours: errors.regularHours?.message,
-            //                 specialHours: errors.specialHours?.message
-            //             }}
-            //         />
-            //     );
+            case 'hours':
+                return (
+                    <HoursTab
+                        profile={profile ?? null}
+                        googleService={googleService}
+                        fetchProfile={fetchProfile}
+                    />
+                );
             // case 'other':
             //     return (
             //         <OtherSectionTab
