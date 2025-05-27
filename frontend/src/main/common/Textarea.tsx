@@ -1,37 +1,40 @@
-import React, { useState } from 'react';
-import styles from '@/main/common/Textarea.module.scss';
+import React from 'react';
+import styles from './Textarea.module.scss';
 import classNames from 'classnames';
 
-interface ValidationProps {
-    maxLength?: number;
-    required?: boolean;
-    onValidation?: (isValid: boolean, message?: string) => void;
-}
-
-interface Props extends React.TextareaHTMLAttributes<HTMLTextAreaElement>, ValidationProps {
+type Props = {
     padding?: string;
     width?: string;
     height?: string;
-    fwMedium?: boolean;
+    placeholder?: string;
+    value?: string;
+    onChange?: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
+    name?: string;
     className?: string;
     readOnly?: boolean;
-    ref?: React.Ref<HTMLTextAreaElement>;
-}
+    maxLength?: number;
+    required?: boolean;
+    customPattern?: RegExp;
+    onValidation?: (isValid: boolean, message?: string) => void;
+};
 
-const Textarea: React.FC<Props> = ({
+const Textarea = React.forwardRef<HTMLTextAreaElement, Props>(({
+    padding,
     width,
     height,
-    padding,
-    fwMedium = false,
+    placeholder,
+    value,
+    onChange,
+    name,
     className,
-    readOnly = false,
-    ref,
+    readOnly,
     maxLength,
     required,
+    customPattern,
     onValidation,
     ...props
-}) => {
-    const [error, setError] = useState<string>('');
+}, forwardedRef) => {
+    const [error, setError] = React.useState<string>('');
 
     const validate = (value: string) => {
         if (required && !value) {
@@ -44,35 +47,44 @@ const Textarea: React.FC<Props> = ({
             onValidation?.(false, `${maxLength}文字以内で入力してください`);
             return;
         }
+        if (customPattern && !customPattern.test(value)) {
+            setError('入力形式が正しくありません');
+            onValidation?.(false, '入力形式が正しくありません');
+            return;
+        }
         setError('');
         onValidation?.(true);
     };
 
     const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         validate(e.target.value);
-        props.onChange?.(e);
+        onChange?.(e);
     };
 
     return (
-        <div className={styles.textarea_wrapper} style={{width: width, height: height}}>
+        <div className={styles.textarea_wrapper} style={{width, height}}>
             <textarea
+                ref={forwardedRef}
                 className={classNames(
                     className,
                     styles.textarea,
-                    fwMedium ? styles['fw_medium'] : '',
                     error ? styles.error : ''
                 )}
-                style={{ padding: padding, width: width, height: height }}
-                ref={ref}
-                readOnly={readOnly}
-                {...props}
+                style={{ padding, width, height }}
+                placeholder={placeholder}
+                value={value}
                 onChange={handleChange}
+                name={name}
+                readOnly={readOnly}
                 maxLength={maxLength}
                 required={required}
+                {...props}
             />
             {error && <div className={styles.errorMessage}>{error}</div>}
         </div>
     );
-};
+});
+
+Textarea.displayName = 'Textarea';
 
 export default Textarea;

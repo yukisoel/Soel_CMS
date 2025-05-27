@@ -11,7 +11,7 @@ import Ellipsis from "@/main/assets/Ellipsis.svg";
 import FolderIcon from "@/main/assets/FolderIcon.svg";
 import classNames from "classnames";
 import useFileUploadModal from "@/main/common/FileUploadModal/useFileUploadModal";
-
+import { GoogleService } from "@/main/service/GoogleService";
 type Props = {
     onNextClick: () => void;
     onBackClick: () => void;
@@ -51,7 +51,7 @@ const folders = ['2021年', '2020年'];
 
 export default function SelectPhoto({ onNextClick, onBackClick, selectedPhotoIndices, handlePhotoClick }:Props) {
     const [folderHierarchy] = useState<string[]>(['南青山店', '外観写真']);
-    const { openModal, render } = useFileUploadModal({});
+    const { openModal, render } = useFileUploadModal({ googleService: {} as GoogleService, accountId: '', locationId: '' });
 
     return (
         <Wrapper direction="col" padding="5rem 4.3rem 5.9rem 5rem" className={styles.content_container}>
