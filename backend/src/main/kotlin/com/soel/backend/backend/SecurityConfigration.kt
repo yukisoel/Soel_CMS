@@ -5,9 +5,14 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.http.HttpStatus
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.web.SecurityFilterChain
+import org.springframework.security.web.authentication.HttpStatusEntryPoint
+import org.springframework.security.web.authentication.logout.SimpleUrlLogoutSuccessHandler
+import org.springframework.security.web.savedrequest.HttpSessionRequestCache
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher
 import org.springframework.web.cors.CorsConfiguration
 import org.springframework.web.cors.CorsConfigurationSource
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource
@@ -25,6 +30,9 @@ class SecurityConfig {
 
     @Bean
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
+        // リクエストキャッシュを生成
+        val requestCache = HttpSessionRequestCache()
+
         http
             .oauth2Login {
                 it.successHandler{_, response, _ ->
@@ -35,11 +43,23 @@ class SecurityConfig {
                     response.sendRedirect("/error")
                 }
             }
+            .exceptionHandling { exceptions ->
+                exceptions
+                    // /api/** で例外発生時に 401 Unauthorizedを返す
+                    .defaultAuthenticationEntryPointFor(
+                        HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED),
+                        AntPathRequestMatcher("/api/**")
+                    )
+            }
             .logout {
-                it.logoutUrl("/api/logout")
-                it.logoutSuccessHandler{_, response, _ ->
-                    response.status = 200
-                }
+                it.logoutRequestMatcher(
+                    AntPathRequestMatcher("/logout", "GET")
+                )
+                .logoutSuccessHandler(
+                    SimpleUrlLogoutSuccessHandler().apply {
+                        setDefaultTargetUrl("/login")
+                    }
+                )
                 it.deleteCookies("JSESSIONID")
             }
             .authorizeHttpRequests {

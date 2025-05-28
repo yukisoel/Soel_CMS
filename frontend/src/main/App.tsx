@@ -32,7 +32,7 @@ function App() {
     .then(_res => {
     })
     .catch(_ => {
-      window.location.href = '/oauth2/authorization/google'
+      window.location.href = '/login'
     })
 
   return (
