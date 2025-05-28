@@ -121,6 +121,13 @@ export default function HoursTab({
         openHoursModal();
     };
 
+    // 追加可能な営業時間タイプを管理するstateを追加
+    const addableHoursTypes = useMemo(() => {
+        return Object.keys(hoursTypeMap).filter(hoursType => {
+            return !profile?.moreHours?.some(moreHour => moreHour.hoursTypeId === hoursType) && hoursType !== "REGULAR";
+        });
+    }, [profile]);
+
     return (
         <Wrapper direction="col" gap="3rem" className={styles.main_content}>
             {/* 通常営業時間 */}
@@ -141,7 +148,7 @@ export default function HoursTab({
                     <Button
                         bgColor="primary"
                         padding="0.5rem 1.8rem"
-                        onClick={() => handleEditClick('REGULAR', profile?.regularHours?.periods ?? [])}
+                        onClick={() => handleEditClick(hoursTypeMap.REGULAR, profile?.regularHours?.periods ?? [])}
                     >
                         <Typography
                             content="編集"
@@ -186,43 +193,34 @@ export default function HoursTab({
             })}
 
             {/* その他の営業時間を追加 */}
-            {/* <Wrapper direction="col" gap="1rem">
+            <Wrapper direction="col" gap="1rem">
                 <Typography
                     content="その他の営業時間を追加"
                     color="primary"
                     size="normal"
                 />
                 <Wrapper gap="2rem" align="align-start" className={styles.add_hours_buttons}>
-                    <Button
-                        bgColor="primary"
-                        padding="0.7rem 1rem"
-                        onClick={onAddOtherHours}
-                        className={styles.add_hours_button}
-                    >
-                        <Typography
-                            content="名前"
-                            color="primary"
-                            size="normal"
-                            weight="normal"
-                        />
-                        <img src={AddIcon} alt="add" />
-                    </Button>
-                    <Button
-                        bgColor="primary"
-                        padding="0.7rem 1rem"
-                        onClick={onAddOtherHours}
-                        className={styles.add_hours_button}
-                    >
-                        <Typography
-                            content="名前"
-                            color="primary"
-                            size="normal"
-                            weight="normal"
-                        />
-                        <img src={AddIcon} alt="add" />
-                    </Button>
+                    {addableHoursTypes.map((hoursType, index) => {
+                        return (
+                            <Button
+                                bgColor="primary"
+                                padding="0.7rem 1rem"
+                                onClick={() => handleEditClick(hoursTypeMap[hoursType as keyof typeof hoursTypeMap])}
+                                className={styles.add_hours_button}
+                                key={index}
+                            >
+                                <Typography
+                                    content={hoursTypeMap[hoursType as keyof typeof hoursTypeMap]}
+                                    color="primary"
+                                    size="normal"
+                                    weight="normal"
+                                />
+                                <img src={AddIcon} alt="add" />
+                            </Button>
+                        );
+                    })}
                 </Wrapper>
-            </Wrapper> */}
+            </Wrapper>
 
             {/* 編集モーダル */}
             <EditBusinessHoursModal
