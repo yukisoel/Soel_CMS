@@ -5,9 +5,6 @@ import AddIcon from "@/main/assets/AddIcon.svg";
 import styles from "../EditProfileLayoutV2.module.scss";
 import EditBusinessHoursModal from "../modals/EditBusinessHoursModal";
 import { useState } from "react";
-import { UseFormRegister, FieldErrors, Path } from "react-hook-form";
-import { ProfileFormData } from "@/main/schemas/profileSchema";
-import { BusinessHoursPeriod } from "@/main/model/LocationModel";
 import { GoogleLocationProfileModel } from "@/types/apiModel";
 import { GoogleService } from "@/main/service/GoogleService";
 import { useParams } from "react-router-dom";
@@ -15,13 +12,14 @@ import { useModal } from "@/main/common/Modal/useModal";
 import { useMemo } from "react";
 import { GoogleLocationTimePeriodOpenDay, GoogleLocationBusinessHoursRequestHoursTypeId } from "@/types/api.d.ts";
 import { GoogleLocationTimePeriod } from "@/types/apiModel";
+
 type Props = {
     profile: GoogleLocationProfileModel | null;
     googleService: GoogleService;
     fetchProfile: () => Promise<void>;
 };
 
-const dayMap: { [key: string]: string } = {
+export const dayMap: { [key: string]: string } = {
     MONDAY: '月',
     TUESDAY: '火',
     WEDNESDAY: '水',
@@ -29,6 +27,23 @@ const dayMap: { [key: string]: string } = {
     FRIDAY: '金',
     SATURDAY: '土',
     SUNDAY: '日'
+};
+
+// GoogleLocationBusinessHoursRequestHoursTypeIdの日本語表示用map
+const hoursTypeMap: { [key: string]: string } = {
+  REGULAR: '通常営業',
+  ACCESS: '入店可能時間',
+  KITCHEN: '注文可能時間',
+  DRIVE_THROUGH: 'ドライブスルー',
+  DELIVERY: '宅配',
+  TAKEOUT: 'テイクアウト',
+  BREAKFAST: '朝食',
+  LUNCH: 'ランチ',
+  DINNER: 'ディナー',
+  BRUNCH: 'ブランチ',
+  HAPPY_HOURS: 'ハッピーアワー',
+  SENIOR_HOURS: '高齢者限定時間帯',
+  ONLINE_SERVICE_HOURS: 'オンラインサービスの提供時間',
 };
 
 type TimeString = string;
@@ -70,6 +85,14 @@ export default function HoursTab({
 }: Props) {
     const { locationId } = useParams();
     const { isOpen: isHoursModalOpen, openModal: openHoursModal, closeModal: closeHoursModalBase } = useModal();
+    const handleBusinessHoursSave = async (periods: GoogleLocationTimePeriod[]) => {
+        await googleService.updateLocationProfileBusinessHours(locationId ?? '', {
+            hoursTypeId: editTarget?.hoursType as GoogleLocationBusinessHoursRequestHoursTypeId,
+            periods: periods
+        });
+        await fetchProfile();
+        closeHoursModalBase();
+    };
 
     // 通常営業
     const regularHours = useMemo(() => {
@@ -80,50 +103,23 @@ export default function HoursTab({
     const moreHours = useMemo(() => {
         return profile?.moreHours?.map(moreHour => {
             return {
-                hoursType: GoogleLocationBusinessHoursRequestHoursTypeId[
-                  moreHour?.hoursTypeId as keyof typeof GoogleLocationBusinessHoursRequestHoursTypeId
-                ],
+                hoursType: hoursTypeMap[moreHour?.hoursTypeId as keyof typeof hoursTypeMap],
                 periods: createPeriods(moreHour.periods ?? []),
             };
         });
     }, [profile]);
 
-    // // ランチ営業
-    // const lunchHours = useMemo(() => {
-    //     return profile.specialHours;
-    // }, [profile.specialHours]);
-    // const formatHours = (periods: BusinessHoursPeriod[]): string => {
-    //     const dayMap: { [key: string]: string } = {
-    //         MONDAY: '月',
-    //         TUESDAY: '火',
-    //         WEDNESDAY: '水',
-    //         FRIDAY: '金',
-    //         SATURDAY: '土',
-    //         SUNDAY: '日'
-    //     };
+    // 編集対象の営業時間タイプとperiodsを管理するstateを追加
+    const [editTarget, setEditTarget] = useState<{
+        hoursType: string;
+        periods: GoogleLocationTimePeriod[];
+    } | null>(null);
 
-    //     // 同じ営業時間のグループを作成
-    //     const timeGroups: { [key: string]: string[] } = {};
-    //     periods.forEach(period => {
-    //         const timeKey = `${period.openTime}-${period.closeTime}`;
-    //         if (!timeGroups[timeKey]) {
-    //             timeGroups[timeKey] = [];
-    //         }
-    //         timeGroups[timeKey].push(dayMap[period.openDay]);
-    //     });
-
-    //     // グループごとに文字列を生成
-    //     const formattedGroups = Object.entries(timeGroups).map(([time, days]) => {
-    //         const [openTime, closeTime] = time.split('-');
-    //         return days.map(day => `${day}（${openTime}-${closeTime}）`).join(',');
-    //     });
-
-    //     // 5日目までと残りの日を分割
-    //     const firstLine = formattedGroups.slice(0, 5).join(',');
-    //     const remainingLines = formattedGroups.slice(5);
-
-    //     return [firstLine, ...remainingLines].join('\n');
-    // };
+    // 編集ボタンのonClickで編集対象をセットする関数
+    const handleEditClick = (hoursType: string, periods: GoogleLocationTimePeriod[] = []) => {
+        setEditTarget({ hoursType, periods });
+        openHoursModal();
+    };
 
     return (
         <Wrapper direction="col" gap="3rem" className={styles.main_content}>
@@ -145,7 +141,7 @@ export default function HoursTab({
                     <Button
                         bgColor="primary"
                         padding="0.5rem 1.8rem"
-                        onClick={openHoursModal}
+                        onClick={() => handleEditClick('REGULAR', profile?.regularHours?.periods ?? [])}
                     >
                         <Typography
                             content="編集"
@@ -157,10 +153,9 @@ export default function HoursTab({
             </Wrapper>
 
             {/* ランチ営業時間 */}
-            {
-            moreHours?.map(moreHour => {
+            {moreHours?.map((moreHour, index) => {
                 return (
-                    <Wrapper direction="col" gap="1rem">
+                    <Wrapper direction="col" gap="1rem" key={index}>
                         <Typography
                             content={moreHour.hoursType}
                             color="primary"
@@ -177,7 +172,7 @@ export default function HoursTab({
                             <Button
                                 bgColor="primary"
                                 padding="0.5rem 1.8rem"
-                                onClick={openHoursModal}
+                                onClick={() => handleEditClick(moreHour.hoursType, profile?.moreHours?.[index]?.periods ?? [])}
                             >
                                 <Typography
                                     content="編集"
@@ -230,14 +225,13 @@ export default function HoursTab({
             </Wrapper> */}
 
             {/* 編集モーダル */}
-            {/* <EditBusinessHoursModal
+            <EditBusinessHoursModal
                 isOpen={isHoursModalOpen}
                 onClose={closeHoursModalBase}
-                title={'通常営業時間'}
-                periods={}
-                onSave={}
-                error={}
-            /> */}
+                hoursType={editTarget?.hoursType ?? ''}
+                periods={editTarget?.periods ?? []}
+                onSave={handleBusinessHoursSave}
+            />
 
         </Wrapper>
     );

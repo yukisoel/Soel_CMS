@@ -231,7 +231,7 @@ export default function OverviewTab({
                     description: profile?.profile?.description ?? '',
                 }}
             />
-            <EditBusinessCategoriesModal
+            {/* <EditBusinessCategoriesModal
                 isOpen={isPrimaryCategoriesModalOpen}
                 onClose={closePrimaryCategoriesModalBase}
                 onSave={handlePrimaryCategoriesSave}
@@ -244,7 +244,7 @@ export default function OverviewTab({
                 onSave={handleAdditionalCategoriesSave}
                 categories={profile?.categories?.additionalCategories ?? []}
                 googleService={googleService}
-            />
+            /> */}
             <EditOpeningDateModal
                 isOpen={isOpeningDateModalOpen}
                 onClose={closeOpeningDateModalBase}
