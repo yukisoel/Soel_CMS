@@ -32,7 +32,7 @@ function App() {
     .then(_res => {
     })
     .catch(_ => {
-      window.location.href = '/login'
+      window.location.href = '/oauth2/authorization/cognito'
     })
 
   return (

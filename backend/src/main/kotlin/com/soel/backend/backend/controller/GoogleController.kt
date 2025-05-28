@@ -1,27 +1,77 @@
 package com.soel.backend.backend.controller
 
+import com.soel.backend.backend.api.exception.UnauthorizedException
 import com.soel.backend.backend.model.*
 import com.soel.backend.backend.service.GoogleService
 import com.soel.backend.backend.usecase.GoogleUseCase
 import io.swagger.v3.oas.annotations.Operation
+import jakarta.servlet.http.HttpServletRequest
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.security.core.Authentication
+import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService
 import org.springframework.security.oauth2.client.annotation.RegisteredOAuth2AuthorizedClient
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository
+import org.springframework.security.oauth2.core.OAuth2AccessToken
+import org.springframework.security.oauth2.core.oidc.user.OidcUser
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody
 import java.io.IOException
+import java.time.Instant
 import javax.imageio.ImageIO
 
 @RestController
 @RequestMapping("/api/google")
-class GoogleController(val googleService: GoogleService, val googleUseCase: GoogleUseCase) {
+class GoogleController(val googleService: GoogleService, val googleUseCase: GoogleUseCase, val clientService: OAuth2AuthorizedClientService, val clientRegRepo: ClientRegistrationRepository) {
 
     @Operation(summary = "Google:ログインユーザー情報の取得", description = "Google:ログインユーザー情報の取得を行います", tags = ["Google:GETメソッド"])
     @GetMapping("/me")
-    fun getMe(@RegisteredOAuth2AuthorizedClient("google") googleClient: OAuth2AuthorizedClient): GoogleMe? {
-        return googleService.getMe(googleClient.accessToken.tokenValue)
+    fun getMe(
+        auth: Authentication,
+        @AuthenticationPrincipal oidcUser: OidcUser?,
+        request: HttpServletRequest
+        ): GoogleMe? {
+        val registrationId = "google"
+        val principalName  = auth.name
+        // 1) 直接 Google ログインのトークン優先
+        var googleClient = clientService.loadAuthorizedClient<OAuth2AuthorizedClient>(registrationId, principalName)
+        val directToken = googleClient?.accessToken?.tokenValue
+        // 2) 次に Cognito 経由で custom:ggle_access_token に入った元 Google トークン
+        val federatedToken = oidcUser
+            ?.getClaim("custom:ggle_access_token") as String?
+
+        if (googleClient == null && federatedToken != null) {
+            // ClientRegistration を取得
+            val clientReg = clientRegRepo.findByRegistrationId(registrationId)
+                ?: throw IllegalStateException("ClientRegistration $registrationId not found")
+
+            // OAuth2AccessToken を作成（※有効期限は適宜調整してください）
+            val accessToken = OAuth2AccessToken(
+                OAuth2AccessToken.TokenType.BEARER,
+                federatedToken,
+                Instant.now(),
+                Instant.now().plusSeconds(3600)
+            )
+
+            // AuthorizedClient を組み立て
+            googleClient = OAuth2AuthorizedClient(
+                clientReg,
+                principalName,
+                accessToken
+            )
+
+            // Service に保存することで、以降の loadAuthorizedClient で拾えるようにする
+            clientService.saveAuthorizedClient(googleClient, auth)
+        }
+
+        // 3) どちらもないならエラー
+        val token = directToken ?: federatedToken
+        ?: throw UnauthorizedException("Google のアクセストークンが取得できていません", request.requestURI)
+
+        return googleService.getMe(token)
     }
 
     @Operation(summary = "Google:アカウント一覧の取得", description = "Google:アカウント一覧の取得を行います", tags = ["Google:GETメソッド"])
