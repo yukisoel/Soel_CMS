@@ -34,7 +34,7 @@ cd infra
 ## インフラ作成スクリプトの実行
 ```bash
 cd infra
-./script/#-deploy-all.sh [dev|prd]
+./script/deploy-all.sh [dev|prd]
 ```
 
 ## インフラ削除手順
@@ -48,7 +48,7 @@ cd infra
 # アプリデプロイ手順
 ```bash
 cd infra
-./script/6-push-image.sh [dev|prd] [タグ名]
-./script/deploy-app.sh [dev|prd] [タグ名（上と同じもの）]
+./script/100-deploy-app.sh [dev|prd] [タグ名]
+# e.g. ./script/100-deploy-app.sh dev dev-v1.0.0
 ```
 

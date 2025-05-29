@@ -56,8 +56,8 @@ jobs:
         run: |
           docker buildx create --use
           cd infra
-          chmod +x ./scripts/6-push-image.sh
-          ./scripts/6-push-image.sh "${{ steps.parse_tag.outputs.ENV }}" "${{ steps.parse_tag.outputs.TAG }}"
+          chmod +x ./scripts/push-image.sh
+          ./scripts/push-image.sh "${{ steps.parse_tag.outputs.ENV }}" "${{ steps.parse_tag.outputs.TAG }}"
 
 
       - name: Run Blue/Green Deploy
