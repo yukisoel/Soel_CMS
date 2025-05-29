@@ -4,14 +4,16 @@
     width: 100%;
     border-bottom: 2px solid #DCDCDC;
     position: relative;
+    display: flex;
 }
 
 .tab_menu_content_wrapper {
     padding: 0 0 1.3rem;
     cursor: pointer;
+    position: relative;
 
-    &:last-child {
-        span {
+    &:not(:first-child) {
+        .tab_menu_content {
             border-left: 1.5px solid #DCDCDC;
         }
     }
@@ -19,13 +21,17 @@
 
 .tab_menu_content {
     padding: 0 3rem;
+    color: #282828;
+    font-size: 20px;
+    font-weight: 500;
+    font-family: 'Noto Sans CJK JP';
 }
 
 .tab_menu_content_selected {
     position: relative;
     &::after {
         content: '';
-        border-bottom: 4px solid vars.$background-color-primary;
+        border-bottom: 4px solid #FFC42C;
         width: calc(100% - 6rem);
         position: absolute;
         bottom: -3px;

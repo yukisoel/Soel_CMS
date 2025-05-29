@@ -1,9 +1,7 @@
 package com.soel.backend.backend.utils.google
 
-import com.soel.backend.backend.model.GoogleLocationAttribute
-import com.soel.backend.backend.model.GoogleLocationAttributeUriValue
-import com.soel.backend.backend.model.GoogleLocationAttributeValueType
-import com.soel.backend.backend.model.GoogleLocationAttributesModel
+import com.fasterxml.jackson.databind.node.BooleanNode
+import com.soel.backend.backend.model.*
 
 class AttributesBuilder{
     private var attributes: List<GoogleLocationAttribute>? = null
@@ -18,6 +16,30 @@ class AttributesBuilder{
                         uri = snsUrl
                     )
                 ),
+            )
+        )
+    }
+
+    fun menuLink(attributeName: String, menuUrl: String) = apply {
+        this.attributes = listOf(
+            GoogleLocationAttribute(
+                name = attributeName,
+                valueType = GoogleLocationAttributeValueType.URL,
+                uriValues = listOf(
+                    GoogleLocationAttributeUriValue(
+                        uri = menuUrl
+                    )
+                ),
+            )
+        )
+    }
+
+    fun boolAttribute(attributeName: String, value: Boolean) = apply {
+        this.attributes = listOf(
+            GoogleLocationAttribute(
+                name = attributeName,
+                valueType = GoogleLocationAttributeValueType.BOOL,
+                values = listOf(BooleanNode.valueOf(value))
             )
         )
     }

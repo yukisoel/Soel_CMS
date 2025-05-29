@@ -2,16 +2,24 @@ import styles from '@/main/common/FileUpload/FileUpload.module.scss';
 import { useRef, useState } from "react";
 import Typography from '../Typography';
 import Button from '../Button';
-
+import Wrapper from '../Wrapper';
 type Props = {
     setUploadedPhotoFileList: (fileList: FileList) => void
     size: 'regular' | 'large'
+    onReset?: () => void
 }
 
-export default function FileUpload({setUploadedPhotoFileList, size}: Props) {
+const ACCEPTED_TYPES = [
+  'image/jpg',
+  'image/jpeg',
+  'image/png',
+];
+
+export default function FileUpload({setUploadedPhotoFileList, size, onReset}: Props) {
     const [uploadedPhotoUrlList, setUploadedPhotoUrlList] = useState<string[]>([])
     const [showAddPhotoListPage, setShowAddPhotoListPage] = useState<boolean>(false)
     const fileUploadInputRef = useRef<HTMLInputElement>(null)
+    const [error, setError] = useState<string | null>(null);
 
     const onDivDragOver = (event: React.DragEvent<HTMLDivElement>) => {
         event.preventDefault()
@@ -22,12 +30,29 @@ export default function FileUpload({setUploadedPhotoFileList, size}: Props) {
         event.stopPropagation()
         if (event.dataTransfer.files.length > 0) {
             const files = event.dataTransfer.files
+            const invalid = Array.from(files).find(file => !ACCEPTED_TYPES.includes(file.type));
+            if (invalid) {
+              setError('jpg/jpeg/png形式の画像のみアップロードできます');
+              return;
+            } else {
+              setError(null);
+            }
             handleFileUpload(files)
         }
     }
 
     const onInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        if (event.target.files) handleFileUpload(event.target.files)
+        if (event.target.files) {
+            const files = event.target.files;
+            const invalid = Array.from(files).find(file => !ACCEPTED_TYPES.includes(file.type));
+            if (invalid) {
+              setError('jpg/jpeg/png形式の画像のみアップロードできます');
+              return;
+            } else {
+              setError(null);
+            }
+            handleFileUpload(event.target.files)
+        }
     }
 
     const handleFileUpload = (files: FileList) => {
@@ -52,6 +77,8 @@ export default function FileUpload({setUploadedPhotoFileList, size}: Props) {
         if (fileUploadInputRef.current) {
             fileUploadInputRef.current.value = ''
         }
+        setError(null);
+        onReset?.();
     }
 
     return (
@@ -69,6 +96,7 @@ export default function FileUpload({setUploadedPhotoFileList, size}: Props) {
                         hidden
                         ref={fileUploadInputRef}
                         onChange={onInputChange}
+                        accept="image/jpg,image/jpeg,image/png"
                     />
                     <div className={styles[`file_upload_text_${size}`]}>
                         <p>写真をドラッグ&ドロップ</p>
@@ -79,6 +107,11 @@ export default function FileUpload({setUploadedPhotoFileList, size}: Props) {
                         </button>
                     </div>
                 </div>
+                {error && (
+                    <Wrapper justify="justify-start"  style={{width: '100%'}}>
+                        <Typography content={error} size="xsmall" color="error" />
+                    </Wrapper>
+                )}
             </div>
         )}
         {showAddPhotoListPage && (

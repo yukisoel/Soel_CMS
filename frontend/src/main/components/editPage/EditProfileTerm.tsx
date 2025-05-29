@@ -152,7 +152,7 @@ function makeGoogleLocationProfileModel(name:string, value:string): GoogleLocati
     case "phoneNumbers.primaryPhone":
       return {phoneNumbers: {primaryPhone: value}}
     case "categories":
-      return {categories: {primaryCategory: {name: value}}}
+      return {categories: {primaryCategory: {displayName: value, categoryId: ""}}}
     case "websiteUri":
       return {websiteUri: value}
     case "regularHours":

@@ -1,0 +1,75 @@
+.container {
+  width: 1050px;
+  box-sizing: border-box;
+}
+
+.add_section_button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 42px;
+}
+
+.button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 30px;
+}
+
+.menuItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  width: 100%;
+}
+
+.menuItemContent {
+  flex: 1;
+  min-width: 0;
+}
+
+.menuItemImage {
+  width: 80px;
+  height: 80px;
+  background-color: #D9D9D9;
+  border-radius: 5px;
+}
+
+.menuItemName {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.menuItemPrice {
+  flex-shrink: 0;
+  margin-left: 8px;
+}
+
+.ellipsis {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sectionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+
+.sectionTitle {
+  flex: 1;
+  min-width: 0;
+}
+
+.sectionButtons {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}

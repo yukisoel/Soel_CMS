@@ -59,14 +59,14 @@ export default function EditGBPDashboard({googleService}: Props) {
         />
         <DashboardItem
           navigation={""}
-          text={"注文"}
+          text={"料理の注文"}
           src={EditOrderIcon}
           altText={"edit_order"}
         />
       </div>
       <div className={styles.dashboard_item_row}>
         <DashboardItem
-          navigation={"local_post"}
+          navigation={"latest_information"}
           text={"最新情報を追加"}
           src={EditInfoIcon}
           altText={"edit_info"}
@@ -84,7 +84,7 @@ export default function EditGBPDashboard({googleService}: Props) {
           altText={"edit_reserve"}
         />
         <DashboardItem
-          navigation={""}
+          navigation={"qa"}
           text={"Q&A"}
           src={EditQnAIcon}
           altText={"edit_faq"}

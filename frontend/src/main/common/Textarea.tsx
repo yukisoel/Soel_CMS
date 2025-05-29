@@ -1,33 +1,90 @@
 import React from 'react';
-import styles from '@/main/common/Textarea.module.scss';
+import styles from './Textarea.module.scss';
 import classNames from 'classnames';
 
-interface Props extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
+type Props = {
     padding?: string;
     width?: string;
     height?: string;
-    fwMedium?: boolean;
+    placeholder?: string;
+    value?: string;
+    onChange?: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
+    name?: string;
     className?: string;
     readOnly?: boolean;
-    ref?: React.Ref<HTMLTextAreaElement>;
-}
+    maxLength?: number;
+    required?: boolean;
+    customPattern?: RegExp;
+    onValidation?: (isValid: boolean, message?: string) => void;
+};
 
-const Textarea: React.FC<Props> = ({ width, height, padding, fwMedium = false, className, readOnly = false, ref, ...props }) => {
+const Textarea = React.forwardRef<HTMLTextAreaElement, Props>(({
+    padding,
+    width,
+    height,
+    placeholder,
+    value,
+    onChange,
+    name,
+    className,
+    readOnly,
+    maxLength,
+    required,
+    customPattern,
+    onValidation,
+    ...props
+}, forwardedRef) => {
+    const [error, setError] = React.useState<string>('');
+
+    const validate = (value: string) => {
+        if (required && !value) {
+            setError('この項目は必須です');
+            onValidation?.(false, 'この項目は必須です');
+            return;
+        }
+        if (maxLength && value.length > maxLength) {
+            setError(`${maxLength}文字以内で入力してください`);
+            onValidation?.(false, `${maxLength}文字以内で入力してください`);
+            return;
+        }
+        if (customPattern && !customPattern.test(value)) {
+            setError('入力形式が正しくありません');
+            onValidation?.(false, '入力形式が正しくありません');
+            return;
+        }
+        setError('');
+        onValidation?.(true);
+    };
+
+    const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+        validate(e.target.value);
+        onChange?.(e);
+    };
+
     return (
-        <div className={styles.textarea_wrapper} style={{width: width, height: height}}>
+        <div className={styles.textarea_wrapper} style={{width, height}}>
             <textarea
+                ref={forwardedRef}
                 className={classNames(
                     className,
                     styles.textarea,
-                    fwMedium ? styles['fw_medium'] : ''
+                    error ? styles.error : ''
                 )}
-                style={{ padding: padding, width: width, height: height }}
-                ref={ref}
+                style={{ padding, width, height }}
+                placeholder={placeholder}
+                value={value}
+                onChange={handleChange}
+                name={name}
                 readOnly={readOnly}
+                maxLength={maxLength}
+                required={required}
                 {...props}
             />
+            {error && <div className={styles.errorMessage}>{error}</div>}
         </div>
     );
-};
+});
+
+Textarea.displayName = 'Textarea';
 
 export default Textarea;

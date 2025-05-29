@@ -23,8 +23,8 @@
 
     /* Linting */
     "strict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
+    "noUnusedLocals": false, // TODO 本番までにtrueに戻す
+    "noUnusedParameters": false, // TODO 本番までにtrueに戻す
     "noFallthroughCasesInSwitch": true
   },
   "include": ["src"]

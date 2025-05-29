@@ -180,7 +180,7 @@ class GoogleRepositoryImpl(val restTemplate: RestTemplate) : GoogleRepository {
         val uri = UriComponentsBuilder.fromHttpUrl(requestUrl)
             .queryParam(
                 "readMask",
-                "name,title,phoneNumbers,categories,storefrontAddress,websiteUri,regularHours,profile,openInfo,serviceArea"
+                "name,title,phoneNumbers,categories,storefrontAddress,websiteUri,regularHours,moreHours,profile,openInfo,serviceArea"
             )
             .build()
             .toUri()
@@ -539,7 +539,6 @@ class GoogleRepositoryImpl(val restTemplate: RestTemplate) : GoogleRepository {
     }
 
     override fun updateLocationAttributes(accessToken: String, locationId: String, attributeMask: String, attributes: GoogleLocationAttributesModel): GoogleLocationAttributesModel? {
-        println("attributeMask: $attributeMask, attributes: $attributes")
         val requestUrl = "https://mybusinessbusinessinformation.googleapis.com/v1/locations/$locationId/attributes"
         val uri = UriComponentsBuilder.fromHttpUrl(requestUrl)
             .queryParam("attributeMask", attributeMask)

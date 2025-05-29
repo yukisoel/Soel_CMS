@@ -2,38 +2,35 @@
   position: relative;
   display: flex;
   flex-direction: column;
+  margin-top: 0.9rem;
   padding: 7px 20px 7px 10px;
-  box-sizing: border-box;
-  gap: 10px;
-
   background-color: #F0F0F0;
-
   border-radius: 1rem;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .pull_down_menu_content {
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  height: 28px;
   width: 100%;
-
+  box-sizing: border-box;
+  font-size: 2rem;
+  font-family: "Noto Sans CJK JP", sans-serif;
+  font-weight: 400;
+  color: #282828;
+  background: none;
+  border: none;
   &:hover {
     cursor: pointer;
   }
 }
 
-.pull_down_menu_border {
-  border-bottom: 1px solid #BEBEBE;
-}
-
 .pull_down_menu_placeholder {
   color: #A0A0A0;
-  font-family: "Noto Sans CJK JP", sans-serif;
   font-size: 2rem;
-  font-style: normal;
   font-weight: 400;
-  line-height: normal;
 }
 
 .pull_down_menu_input {
@@ -42,8 +39,11 @@
   font-style: normal;
   font-weight: 400;
   line-height: normal;
-  background-color: #EBEBEB;
-
+  background-color: #F0F0F0;
+  border: none;
+  outline: none;
+  width: 100%;
+  padding: 5px 10px;
   &:hover {
     cursor: text;
   }
@@ -54,18 +54,46 @@
   font-family: "Noto Sans CJK JP", sans-serif;
   font-size: 2rem;
   font-style: normal;
-  font-weight: 400;
+  font-weight: 500;
   line-height: normal;
+  padding: 5px 10px;
 }
 
 .arrow {
   position: absolute;
-  top: 16px;
-  right: 8px;
-  width: 11px;
-  height: 11px;
-
+  top: 50%;
+  right: 1.35rem;
+  width: 2rem;
+  height: 1.35rem;
+  transform: translateY(-50%);
   &:hover {
     cursor: pointer;
   }
+}
+
+.dropdown_options {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  background-color: #F0F0F0;
+  border-radius: 0 0 1rem 1rem;
+  z-index: 1000;
+  // box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.pull_down_menu_border {
+  border-bottom: 1px solid #BEBEBE;
+}
+
+.clear_option {
+  color: #A0A0A0;
+  font-size: 2rem;
+  font-weight: 400;
+  padding: 5px 10px;
+}
+
+.opened {
+  border-bottom-left-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
 }

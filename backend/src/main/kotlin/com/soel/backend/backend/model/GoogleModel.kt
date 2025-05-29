@@ -1,5 +1,9 @@
 package com.soel.backend.backend.model
 
+import com.fasterxml.jackson.annotation.JsonCreator
+import com.fasterxml.jackson.annotation.JsonValue
+import com.fasterxml.jackson.databind.JsonNode
+
 //Google Business Profile APIのレスポンスモデル
 data class GoogleMe(
     val names: List<GoogleName>,
@@ -37,7 +41,17 @@ data class GoogleLocation (
 
 data class GoogleLocationAttributesModel(
     val name: String? = null,
-    val attributes: List<GoogleLocationAttribute>? = null,
+    val attributes: List<GoogleLocationAttribute?>? = null,
+)
+
+data class GoogleLocationAttributeService(
+    val type: BoolAttributeServiceType,
+    val value: Boolean? = null
+)
+
+data class GoogleLocationAttributeServiceOption(
+    val type: BoolAttributeServiceOptionType,
+    val value: Boolean? = null,
 )
 
 data class GoogleLocationAttributeSnsLinkRequest(
@@ -49,6 +63,7 @@ data class GoogleLocationAttribute(
     val name: String? = null,
     val valueType: GoogleLocationAttributeValueType? = null,
     val uriValues: List<GoogleLocationAttributeUriValue>? = null,
+    val values: List<JsonNode>? = null,
 )
 
 data class GoogleLocationAttributeUriValue(
@@ -60,9 +75,10 @@ data class GoogleLocationProfileModel(
     val title: String? = null,
     val phoneNumbers: GoogleLocationPhoneNumbers? = null,
     val categories: GoogleLocationCategories? = null,
-//    val storefrontAddress: GoogleLocationPostalAddress,
+    val storefrontAddress: GoogleLocationPostalAddress? = null,
     val websiteUri: String? = null,
-//    val regularHours: GoogleLocationVusinessHours,
+    val regularHours: GoogleLocationBusinessHours? = null,
+    val moreHours: List<GoogleLocationMoreHours>? = null,
     val profile: GoogleLocationProfile? = null,
     val openInfo: GoogleLocationOpenInfo? = null,
     val serviceArea: GoogleLocationServiceArea? = null,
@@ -85,18 +101,25 @@ data class GoogleLocationCategory(
 
 data class GoogleLocationPostalAddress(
     val postalCode: String? = null,
+    val regionCode: String? = null,
     val administrativeArea: String? = null,
     val addressLines: List<String>? = null,
 )
 
-data class GoogleLocationVusinessHours(
+data class GoogleLocationStoreFrontAddressRequest(
+    val postalCode: String,
+    val administrativeArea: Prefecture,
+    val addressLines: List<String>,
+)
+
+data class GoogleLocationBusinessHours(
     val periods: List<GoogleLocationTimePeriod>,
 )
 
 data class GoogleLocationTimePeriod(
-    val openDay: String,
+    val openDay: DayOfWeek,
     val openTime: GoogleLocationTimeOfDay,
-    val closeDay: String,
+    val closeDay: DayOfWeek,
     val closeTime: GoogleLocationTimeOfDay,
 )
 
@@ -105,6 +128,16 @@ data class GoogleLocationTimeOfDay(
     val minutes: Int? = null,
     val seconds: Int? = null,
     val nanos: Int? = null,
+)
+
+data class GoogleLocationMoreHours(
+    val hoursTypeId: String? = null,
+    val periods: List<GoogleLocationTimePeriod>? = null,
+)
+
+data class GoogleLocationBusinessHoursRequest(
+    val hoursTypeId: BusinessHoursType,
+    val periods: List<GoogleLocationTimePeriod>
 )
 
 data class GoogleLocationProfile(
@@ -351,6 +384,17 @@ enum class GoogleLocationAuthorType {
     MERCHANT,
 }
 
+enum class DayOfWeek {
+    DAY_OF_WEEK_UNSPECIFIED,
+    MONDAY,
+    TUESDAY,
+    WEDNESDAY,
+    THURSDAY,
+    FRIDAY,
+    SATURDAY,
+    SUNDAY,
+}
+
 enum class GoogleLocationAssociationCategory {
     COVER,
     PROFILE,
@@ -366,6 +410,174 @@ enum class GoogleLocationAssociationCategory {
     ADDITIONAL,
     CATEGORY_UNSPECIFIED,
 }
+
+enum class Prefecture(
+    /** このプロパティの値（日本語名）をシリアライズ／デシリアライズの文字列に使う */
+    @get:JsonValue val japaneseName: String
+) {
+
+
+    HOKKAIDO("北海道"),
+    AOMORI("青森県"),
+    IWATE("岩手県"),
+    MIYAGI("宮城県"),
+    AKITA("秋田県"),
+    YAMAGATA("山形県"),
+    FUKUSHIMA("福島県"),
+    IBARAKI("茨城県"),
+    TOCHIGI("栃木県"),
+    GUNMA("群馬県"),
+    SAITAMA("埼玉県"),
+    CHIBA("千葉県"),
+    TOKYO("東京都"),
+    KANAGAWA("神奈川県"),
+    NIIGATA("新潟県"),
+    TOYAMA("富山県"),
+    ISHIKAWA("石川県"),
+    FUKUI("福井県"),
+    YAMANASHI("山梨県"),
+    NAGANO("長野県"),
+    GIFU("岐阜県"),
+    SHIZUOKA("静岡県"),
+    AICHI("愛知県"),
+    MIE("三重県"),
+    SHIGA("滋賀県"),
+    KYOTO("京都府"),
+    OSAKA("大阪府"),
+    HYOGO("兵庫県"),
+    NARA("奈良県"),
+    WAKAYAMA("和歌山県"),
+    TOTTORI("鳥取県"),
+    SHIMANE("島根県"),
+    OKAYAMA("岡山県"),
+    HIROSHIMA("広島県"),
+    YAMAGUCHI("山口県"),
+    TOKUSHIMA("徳島県"),
+    KAGAWA("香川県"),
+    EHIME("愛媛県"),
+    KOCHI("高知県"),
+    FUKUOKA("福岡県"),
+    SAGA("佐賀県"),
+    NAGASAKI("長崎県"),
+    KUMAMOTO("熊本県"),
+    OITA("大分県"),
+    MIYAZAKI("宮崎県"),
+    KAGOSHIMA("鹿児島県"),
+    OKINAWA("沖縄県");
+
+    override fun toString(): String = japaneseName
+
+    companion object {
+        /**
+         * JSON の文字列 → Prefecture 変換用ファクトリ。
+         * "愛知県" や "AICHI" のどちらでもマッチするようにしています。
+         */
+        @JvmStatic
+        @JsonCreator
+        fun fromValue(value: String): Prefecture =
+            entries.firstOrNull {
+                it.japaneseName == value || it.name.equals(value, ignoreCase = true)
+            } ?: throw IllegalArgumentException("Unknown Prefecture: $value")
+    }
+}
+
+enum class BusinessHoursType(
+    /** 機械向けコード（"LUNCH", "DINNER"） */
+    val code: String,
+    /** 表示用ラベル（"ランチ", "ディナー"） */
+    @get:JsonValue val label: String
+){
+    REGULAR("REGULAR", "通常営業"),
+    ACCESS("ACCESS", "入店可能時間"),
+    KITCHEN("KITCHEN", "注文可能時間"),
+    DRIVE_THROUGH("DRIVE_THROUGH", "ドライブスルー"),
+    DELIVERY("DELIVERY", "宅配"),
+    TAKEOUT("TAKEOUT", "テイクアウト"),
+    BREAKFAST("BREAKFAST", "朝食"),
+    LUNCH("LUNCH", "ランチ"),
+    DINNER("DINNER", "ディナー"),
+    BRUNCH("BRUNCH", "ブランチ"),
+    HAPPY_HOURS("HAPPY_HOURS", "ハッピーアワー"),
+    SENIOR_HOURS("SENIOR_HOURS", "高齢者限定時間帯"),
+    ONLINE_SERVICE_HOURS("ONLINE_SERVICE_HOURS", "オンラインサービスの提供時間");
+
+    companion object {
+        /**
+         * デシリアライズ時に呼ばれるファクトリ。
+         * リクエスト JSON の値（大文字小文字区別なく "LUNCH"/"DINNER"、
+         * あるいは日本語ラベル "ランチ"/"ディナー"）を受け取って
+         * 対応する enum に変換します。
+         */
+        @JvmStatic
+        @JsonCreator
+        fun fromValue(value: String): BusinessHoursType =
+            entries.firstOrNull {
+                it.code.equals(value, ignoreCase = true) || it.label == value
+            } ?: throw IllegalArgumentException("Unknown BusinessHoursType: $value")
+    }
+}
+
+enum class BoolAttributeServiceType(
+    val attributeName: String,
+    @get:JsonValue val value: String
+) {
+    SERVICE_ALCOHOL("attributes/serves_alcohol", "アルコール飲料あり"),
+    SERVES_ORGANIC("attributes/serves_organic", "オーガニック料理あり"),
+    SERVES_COCKTAILS("attributes/serves_cocktails", "カクテルあり"),
+    SERVES_COFFEE("attributes/serves_coffee", "コーヒーあり"),
+    HAS_SALAD_BAR("attributes/has_salad_bar", "サラダバーあり"),
+    SERVES_HAPPY_HOUR_DRINKS("attributes/serves_happy_hour_drinks", "ドリンクのハッピーアワーあり"),
+    SERVES_LIQUOR("attributes/serves_liquor", "ハードリカーあり"),
+    SERVES_HALAL_FOOD("attributes/serves_halal_food", "ハラルメニューあり"),
+    SERVES_VEGAN("attributes/serves_vegan", "ビーガンメニューあり"),
+    SERVES_BEER("attributes/serves_beer", "ビールあり"),
+    SERVES_VEGETARIAN("attributes/serves_vegetarian", "ベジタリアンメニューあり"),
+    SERVES_WINE("attributes/serves_wine", "ワインあり"),
+    HAS_PRIVATE_DINING_ROOM("attributes/has_private_dining_room", "個室あり"),
+    SERVES_SMALL_PLATES("attributes/serves_small_plates", "小皿料理を提供するお店"),
+    SERVES_HAPPY_HOUR_FOOD("attributes/serves_happy_hour_food", "食べ物のハッピーアワーあり"),
+    HAS_ALL_YOU_CAN_EAT_ALWAYS("attributes/has_all_you_can_eat_always", "食べ放題あり"),
+    SERVES_LATE_NIGHT_FOOD("attributes/serves_late_night_food", "深夜の食事可"),
+    HAS_BRAILLE_MENU("attributes/has_braille_menu", "点字メニューあり");
+
+    companion object {
+        @JvmStatic
+        @JsonCreator
+        fun fromValue(value: String): BoolAttributeServiceType =
+            entries.firstOrNull {
+                it.name.equals(value, ignoreCase = true) ||
+                        it.attributeName == value ||
+                        it.value == value
+            } ?: throw IllegalArgumentException("Unknown BoolAttributeServiceType: $value")
+    }
+}
+
+enum class BoolAttributeServiceOptionType(
+    val attributeName: String,
+    @get:JsonValue val value: String
+) {
+    HAS_SEATING_OUTDOORS("attributes/has_seating_outdoors", "テラス席あり"),
+    HAS_CURBSIDE_PICKUP("attributes/has_curbside_pickup", "店先受取可"),
+    HAS_NO_CONTACT_DELIVERY("attributes/has_no_contact_delivery", "非接触宅配可"),
+    HAS_DELIVERY("attributes/has_delivery", "宅配可"),
+    HAS_DRIVE_THROUGH("attributes/has_drive_through", "ドライブスルーあり"),
+    HAS_ONSITE_SERVICES("attributes/has_onsite_services", "実店舗の営業あり"),
+    HAS_TAKEOUT("attributes/has_takeout", "テイクアウト可"),
+    SERVES_DINE_IN("attributes/serves_dine_in", "イートイン利用可");
+
+    companion object {
+        @JvmStatic
+        @JsonCreator
+        fun fromValue(value: String): BoolAttributeServiceOptionType =
+            entries.firstOrNull {
+                it.name.equals(value, ignoreCase = true) ||
+                        it.attributeName == value ||
+                        it.value == value
+            } ?: throw IllegalArgumentException("Unknown BoolAttributeServiceOptionType: $value")
+    }
+}
+
+
 
 //backend用
 enum class GoogleAttributeSnsType(

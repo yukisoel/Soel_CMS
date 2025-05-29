@@ -1,0 +1,214 @@
+.container {
+    background-color: #FFFFFF;
+    min-height: 100vh;
+    box-sizing: border-box;
+}
+
+.header {
+    margin-bottom: 3rem;
+}
+
+.navigation {
+    margin: 2rem 0 4rem;
+    padding-bottom: 1rem;
+    border-bottom: 1.5px solid #DCDCDC;
+}
+
+.main_content {
+    padding: 0 3.6rem;
+    margin-top: 4rem;
+}
+
+.field_row {
+    display: flex;
+    align-items: flex-end;
+    gap: 1rem;
+
+    :global(.button) {
+        background-color: #FFC42C;
+        border-radius: 10px;
+        height: fit-content;
+    }
+}
+
+.field_container {
+    background-color: #E3E3E3;
+    box-sizing: border-box;
+    padding: 0.9rem 2rem;
+    border-radius: 6px;
+    flex: 1;
+    min-height: 4.2rem;
+    display: flex;
+    align-items: center;
+}
+
+.sns_container {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1.6rem 2rem;
+}
+
+.sns_item {
+    width: 100%;
+}
+
+.input_container {
+    background-color: #E3E3E3;
+    border-radius: 6px;
+    width: 100%;
+}
+
+.add_hours_buttons {
+    flex-wrap: wrap;
+}
+
+.add_hours_button {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+
+    img {
+        width: 16px;
+        height: 16px;
+    }
+}
+
+.textarea_field {
+    width: 100%;
+    min-height: 120px;
+    padding: 16px;
+    border: none;
+    background-color: #F0F0F0;
+    border-radius: 6px;
+    font-family: 'Noto Sans CJK JP';
+    font-size: 20px;
+    font-weight: 400;
+    color: #282828;
+    resize: vertical;
+
+    &::placeholder {
+        color: #8D8D8D;
+    }
+
+    &:focus {
+        outline: none;
+    }
+}
+
+.modal_input_container {
+    border-radius: 6px;
+    width: 100%;
+}
+
+.categories_container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    width: 100%;
+    border-radius: 6px;
+
+    :global(.scroll) {
+        padding: 0 !important;
+    }
+}
+
+.category_tag {
+    background-color: #FFC42C;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+
+    img {
+        width: 16px;
+        height: 16px;
+        cursor: pointer;
+    }
+}
+
+.scroll {
+    padding: 0;
+}
+
+.business_hours_input {
+    background-color: #F0F0F0;
+    border-radius: 10px;
+    padding: 0.5rem 1rem;
+    font-family: 'Noto Sans CJK JP';
+    font-size: 20px;
+    font-weight: 400;
+    color: #282828;
+    border: none;
+    width: 120px;
+    text-align: center;
+
+    &::placeholder {
+        color: #8D8D8D;
+    }
+
+    &:focus {
+        outline: none;
+    }
+}
+
+.business_hours_row {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    padding: 0.5rem 0;
+
+    :global(.button) {
+        background-color: #F0F0F0;
+        border-radius: 10px;
+        min-width: 120px;
+        text-align: center;
+    }
+}
+
+.service_row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    border-radius: 6px;
+    background-color: var(--color-gray-100);
+    width: 100%;
+
+    .service_buttons {
+        display: flex;
+        gap: 1rem;
+    }
+}
+
+.service_button {
+    min-width: 120px;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+
+    &.active {
+        background-color: var(--color-primary);
+    }
+
+    &:not(.active) {
+        background-color: var(--color-gray-200);
+    }
+}
+
+.service_item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    width: 100%;
+
+    .service_name {
+        min-width: 200px;
+    }
+
+    .radio_group {
+        display: flex;
+        gap: 3rem;
+        margin-right: 50rem;
+    }
+}

@@ -57,7 +57,7 @@ interface GoogleService {
 }
 
 @Service
-class GoogleServicImpl(val googleRepository: GoogleRepository, val menuLogRepository: MenuLogRepository, val objectMapper: ObjectMapper) : GoogleService {
+class GoogleServiceImpl(val googleRepository: GoogleRepository, val menuLogRepository: MenuLogRepository, val objectMapper: ObjectMapper) : GoogleService {
     private val logger: Logger = LoggerFactory.getLogger(SecurityConfig::class.java)
 
     override fun getMe(accessToken: String): GoogleMe? {
@@ -173,16 +173,17 @@ class GoogleServicImpl(val googleRepository: GoogleRepository, val menuLogReposi
             logger.info("googleLocationProfile: $googleLocationProfile")
             return ResponseEntity.ok(
                 GoogleLocationProfileModel(
-                    googleLocationProfile!!.name?.removePrefix("locations/"),
-                    googleLocationProfile.title,
-                    googleLocationProfile.phoneNumbers,
-                    googleLocationProfile.categories,
-//                    googleLocationProfile.storefrontAddress,
-                    googleLocationProfile.websiteUri,
-//                    googleLocationProfile.regularHours,
-                    googleLocationProfile.profile,
-                    googleLocationProfile.openInfo,
-                    googleLocationProfile.serviceArea,
+                    name = googleLocationProfile!!.name?.removePrefix("locations/"),
+                    title = googleLocationProfile.title,
+                    phoneNumbers = googleLocationProfile.phoneNumbers,
+                    categories = googleLocationProfile.categories,
+                    storefrontAddress = googleLocationProfile.storefrontAddress,
+                    websiteUri = googleLocationProfile.websiteUri,
+                    regularHours = googleLocationProfile.regularHours,
+                    moreHours = googleLocationProfile.moreHours,
+                    profile = googleLocationProfile.profile,
+                    openInfo = googleLocationProfile.openInfo,
+                    serviceArea = googleLocationProfile.serviceArea,
                 )
             )
         } catch (e: Exception) {
@@ -406,7 +407,6 @@ class GoogleServicImpl(val googleRepository: GoogleRepository, val menuLogReposi
     }
 
     override fun postLocationPhotos(accessToken: String, accountId: String, locationId: String, files: List<MultipartFile>) {
-        println("postLocationPhotos")
         if (files.isEmpty()) {
             return
         }
@@ -421,7 +421,6 @@ class GoogleServicImpl(val googleRepository: GoogleRepository, val menuLogReposi
                 val fileName = "${UUID.randomUUID()}.$fileExtension"
 
                 val targetLocation = Paths.get(uploadDir).resolve(fileName)
-                println("fileName = $fileName")
                 Files.copy(file.inputStream, targetLocation)
                 val response = googleRepository.postLocationPhoto(accessToken, accountId, locationId, fileName)
             }
@@ -480,15 +479,16 @@ class GoogleServicImpl(val googleRepository: GoogleRepository, val menuLogReposi
                 googleRepository.updateLocationProfile(accessToken, locationId, updateMask, locationProfile)
             return ResponseEntity.ok(
                 GoogleLocationProfileModel(
-                    googleLocationProfile!!.name?.removePrefix("locations/"),
-                    googleLocationProfile.title,
-                    googleLocationProfile.phoneNumbers,
-                    googleLocationProfile.categories,
-//                    googleLocationProfile.storefrontAddress,
-                    googleLocationProfile.websiteUri,
-//                    googleLocationProfile.regularHours,
-                    googleLocationProfile.profile,
-                    googleLocationProfile.openInfo,
+                    name = googleLocationProfile!!.name?.removePrefix("locations/"),
+                    title = googleLocationProfile.title,
+                    phoneNumbers = googleLocationProfile.phoneNumbers,
+                    categories = googleLocationProfile.categories,
+                    storefrontAddress = googleLocationProfile.storefrontAddress,
+                    websiteUri = googleLocationProfile.websiteUri,
+                    regularHours = googleLocationProfile.regularHours,
+                    moreHours = googleLocationProfile.moreHours,
+                    profile = googleLocationProfile.profile,
+                    openInfo = googleLocationProfile.openInfo,
                 )
             )
         } catch (e: Exception) {
