@@ -286,10 +286,13 @@ export class GoogleRepositoryImpl implements GoogleRepository {
     try {
       const response: AxiosResponse<GoogleLocationProfileModel> = await axiosApiClient.patch(
         'google/location/profile/title',
-        {title},
+        title,
         {
           params: {
             locationId: locationId,
+          },
+          headers: {
+            'Content-Type': 'text/plain',
           },
         }
       )
@@ -304,10 +307,13 @@ export class GoogleRepositoryImpl implements GoogleRepository {
     try {
       const response: AxiosResponse<GoogleLocationProfileModel> = await axiosApiClient.patch(
         'google/location/profile/description',
-        {description},
+        description,
         {
           params: {
             locationId: locationId,
+          },
+          headers: {
+            'Content-Type': 'text/plain',
           },
         }
       )
@@ -322,10 +328,14 @@ export class GoogleRepositoryImpl implements GoogleRepository {
     try {
       const response: AxiosResponse<GoogleLocationProfileModel> = await axiosApiClient.patch(
         'google/location/profile/primary_category',
-        {category},
+        category,
         {
           params: {
             locationId: locationId,
+          },
+          headers: {
+            'Accept': 'application/json; charset=utf-8',
+            'Content-Type': 'application/json',
           },
         }
       )
@@ -340,10 +350,14 @@ export class GoogleRepositoryImpl implements GoogleRepository {
     try {
       const response: AxiosResponse<GoogleLocationProfileModel> = await axiosApiClient.patch(
         'google/location/profile/additional_categories',
-        {categories},
+        categories,
         {
           params: {
             locationId: locationId,
+          },
+          headers: {
+            'Accept': 'application/json; charset=utf-8',
+            'Content-Type': 'application/json',
           },
         }
       )
@@ -358,10 +372,14 @@ export class GoogleRepositoryImpl implements GoogleRepository {
     try {
       const response: AxiosResponse<GoogleLocationProfileModel> = await axiosApiClient.patch(
         'google/location/profile/opening_date',
-        {openingDate},
+        openingDate,
         {
           params: {
             locationId: locationId,
+          },
+          headers: {
+            'Accept': 'application/json; charset=utf-8',
+            'Content-Type': 'application/json',
           },
         }
       )
@@ -381,6 +399,10 @@ export class GoogleRepositoryImpl implements GoogleRepository {
           params: {
             locationId: locationId,
           },
+          headers: {
+            'Accept': 'application/json; charset=utf-8',
+            'Content-Type': 'application/json',
+          },
         }
       )
       return response.data
@@ -394,10 +416,13 @@ export class GoogleRepositoryImpl implements GoogleRepository {
     try {
       const response: AxiosResponse<GoogleLocationProfileModel> = await axiosApiClient.patch(
         'google/location/profile/website_uri',
-        {websiteUri},
+        websiteUri,
         {
           params: {
             locationId: locationId,
+          },
+          headers: {
+            'Content-Type': 'text/plain',
           },
         }
       )
@@ -412,10 +437,13 @@ export class GoogleRepositoryImpl implements GoogleRepository {
     try {
       const response: AxiosResponse<GoogleLocationProfileModel> = await axiosApiClient.patch(
         'google/location/attributes/menu_link',
-        {menuLink},
+        menuLink,
         {
           params: {
             locationId: locationId,
+          },
+          headers: {
+            'Content-Type': 'text/plain',
           },
         }
       )
@@ -430,10 +458,14 @@ export class GoogleRepositoryImpl implements GoogleRepository {
     try {
       const response: AxiosResponse<GoogleLocationProfileModel> = await axiosApiClient.patch(
         'google/location/attributes/sns_link',
-        {snsLink},
+        snsLink,
         {
           params: {
             locationId: locationId,
+          },
+          headers: {
+            'Accept': 'application/json; charset=utf-8',
+            'Content-Type': 'application/json',
           },
         }
       )
@@ -475,6 +507,10 @@ export class GoogleRepositoryImpl implements GoogleRepository {
           params: {
             locationId: locationId,
           },
+          headers: {
+            'Accept': 'application/json; charset=utf-8',
+            'Content-Type': 'application/json',
+          },
         }
       )
       return response.data
@@ -488,10 +524,14 @@ export class GoogleRepositoryImpl implements GoogleRepository {
     try {
       const response: AxiosResponse<GoogleLocationProfileModel> = await axiosApiClient.patch(
         'google/location/profile/service_area',
-        {serviceArea},
+        serviceArea,
         {
           params: {
             locationId: locationId,
+          },
+          headers: {
+            'Accept': 'application/json; charset=utf-8',
+            'Content-Type': 'application/json',
           },
         }
       )
@@ -510,6 +550,10 @@ export class GoogleRepositoryImpl implements GoogleRepository {
         {
           params: {
             locationId: locationId,
+          },
+          headers: {
+            'Accept': 'application/json; charset=utf-8',
+            'Content-Type': 'application/json',
           },
         }
       )

@@ -263,6 +263,26 @@ export interface paths {
         patch: operations["updateLocationServiceArea"];
         trace?: never;
     };
+    "/api/google/location/profile/primary_category": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Google:店舗のプロフィールの更新:メインカテゴリ
+         * @description Google:店舗のメインカテゴリを更新します
+         */
+        patch: operations["updateLocationProfilePrimaryCategory"];
+        trace?: never;
+    };
     "/api/google/location/profile/phone_number": {
         parameters: {
             query?: never;
@@ -417,26 +437,6 @@ export interface paths {
          *
          */
         patch: operations["updateLocationProfileAdditionalCategories"];
-        trace?: never;
-    };
-    "/api/google/location/prifle/primary_category": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        /**
-         * Google:店舗のプロフィールの更新:メインカテゴリ
-         * @description Google:店舗のメインカテゴリを更新します
-         */
-        patch: operations["updateLocationProfilePrimaryCategory"];
         trace?: never;
     };
     "/api/google/location/food_menus": {
@@ -1563,6 +1563,32 @@ export interface operations {
             };
         };
     };
+    updateLocationProfilePrimaryCategory: {
+        parameters: {
+            query: {
+                locationId: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["GoogleLocationCategory"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["GoogleLocationProfileModel"];
+                };
+            };
+        };
+    };
     updateLocationProfilePhoneNumber: {
         parameters: {
             query: {
@@ -1679,32 +1705,6 @@ export interface operations {
         requestBody: {
             content: {
                 "application/json": components["schemas"]["GoogleLocationCategory"][];
-            };
-        };
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["GoogleLocationProfileModel"];
-                };
-            };
-        };
-    };
-    updateLocationProfilePrimaryCategory: {
-        parameters: {
-            query: {
-                locationId: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["GoogleLocationCategory"];
             };
         };
         responses: {

@@ -36,6 +36,10 @@ export default function EditBusinessCategoriesModal({
     })
   }, [googleService])
 
+  useEffect(() => {
+    setSelectedCategories(categories)
+  }, [categories])
+
   const handleAddCategory = (category: GoogleLocationCategory) => {
     if (!selectedCategories.includes(category)) {
       setSelectedCategories([...selectedCategories, category]);

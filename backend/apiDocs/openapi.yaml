@@ -11,6 +11,38 @@
     }
   ],
   "paths": {
+    "/api/google/places/autocomplete": {
+      "post": {
+        "tags": [
+          "Google Places: POSTメソッド"
+        ],
+        "summary": "Google Places API: 場所Idと場所名の候補リストを取得",
+        "description": "Google Places APIを使用して、場所Idと場所名の候補リストを取得します。",
+        "operationId": "postPlacesAutoComplete",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GooglePlacesAutoCompleteRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/GooglePlacesAutoCompleteResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/google/location/question": {
       "post": {
         "tags": [
@@ -206,7 +238,14 @@
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
           }
         }
       }
@@ -545,6 +584,135 @@
         }
       }
     },
+    "/api/google/location/profile/store_front_address": {
+      "patch": {
+        "tags": [
+          "Google:PATCHメソッド"
+        ],
+        "summary": "Google:店舗のプロフィールの更新:店舗の住所",
+        "description": "\n              Google:店舗のの住所を更新します。\n              Request Bodyとして GoogleLocationStoreFrontAddressRequestのJsonにしてください。\n              例 : {\n                      \"postalCode\": \"1234567\",\n                      \"administrativeArea\": \"東京都\",\n                      \"addressLines\": [\n                      \"渋谷区1-50\",\n                      \"戸島ビル303\"\n                      ]\n                    }\n        ",
+        "operationId": "updateLocationStoreFrontAddress",
+        "parameters": [
+          {
+            "name": "locationId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GoogleLocationStoreFrontAddressRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/GoogleLocationProfileModel"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/google/location/profile/service_area": {
+      "patch": {
+        "tags": [
+          "Google:PATCHメソッド"
+        ],
+        "summary": "Google:店舗のプロフィールの更新:サービスエリア",
+        "description": "\n              Google:店舗のサービスエリアを更新します。\n              Request Bodyとして placeIdsのString配列にしてください。\n              例 : [\"ChIJLx1v3J2XGGAR5g4q0G7f8lE\", \"ChIJLx1v3J2XGGAR5g4q0G7f8lE\"]\n        ",
+        "operationId": "updateLocationServiceArea",
+        "parameters": [
+          {
+            "name": "locationId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/GoogleLocationProfileModel"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/google/location/profile/primary_category": {
+      "patch": {
+        "tags": [
+          "Google:PATCHメソッド"
+        ],
+        "summary": "Google:店舗のプロフィールの更新:メインカテゴリ",
+        "description": "Google:店舗のメインカテゴリを更新します",
+        "operationId": "updateLocationProfilePrimaryCategory",
+        "parameters": [
+          {
+            "name": "locationId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GoogleLocationCategory"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/GoogleLocationProfileModel"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/google/location/profile/phone_number": {
       "patch": {
         "tags": [
@@ -671,14 +839,14 @@
         }
       }
     },
-    "/api/google/location/profile/additional_categories": {
+    "/api/google/location/profile/business_hours": {
       "patch": {
         "tags": [
           "Google:PATCHメソッド"
         ],
-        "summary": "Google:店舗のプロフィールの更新:追加カテゴリ",
-        "description": "\n              Google:店舗の追加カテゴリを更新します。\n              Request Bodyとして nameのみ入った配列Jsonにしてください。\n              例 : \n              [\n                {\"name\": \"カテゴリ名\"},\n                {\"name\": \"カテゴリ名\"}\n              ]\n        ",
-        "operationId": "updateLocationProfileAdditionalCategories",
+        "summary": "Google:店舗のプロフィールの更新:営業時間",
+        "description": "\n              Google:店舗の営業時間を更新します。\n              Request Bodyとして GoogleLocationBusinessHoursRequestのJsonにしてください。\n              通常営業時間を変更したいときはhoursTypeIdを通常営業またはREGULARにしてください。\n              例 : {\n                      \"hoursTypeId\": \"REGULAR\",\n                      \"periods\": [\n                        {\n                          \"openDay\": \"MONDAY\",\n                          \"openTime\": {\n                            \"hours\": 10,\n                            \"minutes\": 0\n                          },\n                          \"closeDay\": \"MONDAY\",\n                          \"closeTime\": {\n                            \"hours\": 20,\n                            \"minutes\": 0\n                          },\n                          \"openDay\": \"TUESDAY\",\n                          \"openTime\": {\n                            \"hours\": 10,\n                            \"minutes\": 0\n                          },\n                          \"closeDay\": \"TUESDAY\",\n                          \"closeTime\": {\n                            \"hours\": 20,\n                            \"minutes\": 0\n                          },\n                        }\n                      ]\n                    }\n        ",
+        "operationId": "updateLocationBusinessHours",
         "parameters": [
           {
             "name": "locationId",
@@ -693,10 +861,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "type": "array",
-                "items": {
-                  "$ref": "#/components/schemas/GoogleLocationCategory"
-                }
+                "$ref": "#/components/schemas/GoogleLocationBusinessHoursRequest"
               }
             }
           },
@@ -716,14 +881,14 @@
         }
       }
     },
-    "/api/google/location/prifle/primary_category": {
+    "/api/google/location/profile/additional_categories": {
       "patch": {
         "tags": [
           "Google:PATCHメソッド"
         ],
-        "summary": "Google:店舗のプロフィールの更新:メインカテゴリ",
-        "description": "Google:店舗のメインカテゴリを更新します",
-        "operationId": "updateLocationProfilePrimaryCategory",
+        "summary": "Google:店舗のプロフィールの更新:追加カテゴリ",
+        "description": "\n              Google:店舗の追加カテゴリを更新します。\n              Request Bodyとして nameのみ入った配列Jsonにしてください。\n              例 :\n              [\n                {\"name\": \"カテゴリ名\"},\n                {\"name\": \"カテゴリ名\"}\n              ]\n        ",
+        "operationId": "updateLocationProfileAdditionalCategories",
         "parameters": [
           {
             "name": "locationId",
@@ -738,7 +903,10 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/GoogleLocationCategory"
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/GoogleLocationCategory"
+                }
               }
             }
           },
@@ -882,7 +1050,7 @@
           "Google:PATCHメソッド"
         ],
         "summary": "Google:店舗の属性の更新",
-        "description": "\n              Google:店舗の属性を更新します。\n              Request:\n                  Params: attributeMaskに更新する属性のカンマ区切りのリストを渡してください。\n                  例: attributes/url_twitter,attributes/url_tiktok\n                  Body: nameを除くattributesのJsonを渡してください。attributeMaskに含んでいない属性は無視されます。\n                  例 : {\n                      \"attributes\": [\n                        {\n                          \"uriValues\": [\n                            {\n                              \"uri\": \"https://x.com/elonmuskkkkkk\"\n                            }\n                          ], \n                          \"valueType\": \"URL\", \n                          \"name\": \"attributes/url_twitter\"\n                        }, \n                        {\n                          \"uriValues\": [\n                            {\n                              \"uri\": \"https://www.tiktok.com/@takafumi_horiekkkkk\"\n                            }\n                          ], \n                          \"valueType\": \"URL\", \n                          \"name\": \"attributes/url_tiktok\"\n                        }\n                      ]\n                    }\n        ",
+        "description": "\n              Google:店舗の属性を更新します。\n              Request:\n                  Params: attributeMaskに更新する属性のカンマ区切りのリストを渡してください。\n                  例: attributes/url_twitter,attributes/url_tiktok\n                  Body: nameを除くattributesのJsonを渡してください。attributeMaskに含んでいない属性は無視されます。\n                  例 : {\n                      \"attributes\": [\n                        {\n                          \"uriValues\": [\n                            {\n                              \"uri\": \"https://x.com/elonmuskkkkkk\"\n                            }\n                          ],\n                          \"valueType\": \"URL\",\n                          \"name\": \"attributes/url_twitter\"\n                        },\n                        {\n                          \"uriValues\": [\n                            {\n                              \"uri\": \"https://www.tiktok.com/@takafumi_horiekkkkk\"\n                            }\n                          ],\n                          \"valueType\": \"URL\",\n                          \"name\": \"attributes/url_tiktok\"\n                        }\n                      ]\n                    }\n        ",
         "operationId": "updateLocationAttributes",
         "parameters": [
           {
@@ -953,6 +1121,179 @@
             }
           },
           "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/GoogleLocationAttributesModel"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/google/location/attributes/services": {
+      "patch": {
+        "tags": [
+          "Google:PATCHメソッド"
+        ],
+        "summary": "Google:店舗のサービスの更新",
+        "description": "\n              Google:店舗のサービスを更新します。\n              Request BodyはGoogleLocationAttributeServiceの配列のJsonにしてください。\n              typeはenumです。パターンとして以下の入力が可能です。\n              例: SERVICE_ALCOHOL, sevice_alcohol, attributes/serves_alcohol, アルコール飲料あり\n              valueはbooleanです。\n              valueがnullの場合はサービスを削除します。\n              例 :\n              [\n                {\n                  \"type\": \"アルコール飲料あり\",\n                  \"value\": true\n                },\n                {\n                  \"type\": \"SERVES_ORGANIC\",\n                  // valueがnullの場合はSERVES_ORGANICが削除されます。\n                }\n              ]\n        ",
+        "operationId": "updateLocationServices",
+        "parameters": [
+          {
+            "name": "locationId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/GoogleLocationAttributeService"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/GoogleLocationAttributesModel"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/google/location/attributes/serviceOptions": {
+      "patch": {
+        "tags": [
+          "Google:PATCHメソッド"
+        ],
+        "summary": "Google:店舗のサービスオプションの更新",
+        "description": "\n              Google:店舗のサービスオプションを更新します。\n              Request BodyはGoogleLocationAttributeServiceOptionの配列のJsonにしてください。\n              typeはenumです。パターンとして以下の入力が可能です。\n              例: HAS_SEATING_OUTDOORS, has_seating_outdoors, attributes/has_seating_outdoors, テラス席あり\n              valueはbooleanです。\n              valueがnullの場合はサービスを削除します。\n              例 :\n              [\n                {\n                  \"type\": \"テラス席あり\",\n                  \"value\": true\n                },\n                {\n                  \"type\": \"HAS_CURBSIDE_PICKUP\",\n                  // valueがnullの場合はSERVES_ORGANICが削除されます。\n                }\n              ]\n        ",
+        "operationId": "updateLocationServiceOptions",
+        "parameters": [
+          {
+            "name": "locationId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/GoogleLocationAttributeServiceOption"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/GoogleLocationAttributesModel"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/google/location/attributes/menu_link": {
+      "patch": {
+        "tags": [
+          "Google:PATCHメソッド"
+        ],
+        "summary": "Google:店舗のメニューリンクの更新",
+        "description": "\n              Google:店舗のメニューリンクを更新します。\n              Request Bodyとして menuLinkのStringにしてください。\n              例 : https://example.com/\n        ",
+        "operationId": "updateLocationAttributeMenuLink",
+        "parameters": [
+          {
+            "name": "locationId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "string"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/GoogleLocationAttributesModel"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/google/location/attributes/business_owner_info": {
+      "patch": {
+        "tags": [
+          "Google:PATCHメソッド"
+        ],
+        "summary": "Google:店舗のビジネスオーナー情報の更新",
+        "description": "\n              Google:店舗のビジネスオーナー情報を更新します。\n              Request BodyはBooleanにしてください。\n              Bodyがnullの場合はビジネスオーナー情報を削除します。\n              例 : true\n        ",
+        "operationId": "updateLocationBusinessOwnerInfo",
+        "parameters": [
+          {
+            "name": "locationId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "boolean"
+              }
+            }
+          }
         },
         "responses": {
           "200": {
@@ -1063,7 +1404,7 @@
           "Google:GETメソッド"
         ],
         "summary": "Google:店舗のQ\u0026Aを全て取得",
-        "description": "\n           Google:店舗のQ\u0026Aを全て取得します。\n           ビジネスプロフィールが無効だったり制限がかかっている場合はエラーが返ってきます。 \n        ",
+        "description": "\n           Google:店舗のQ\u0026Aを全て取得します。\n           ビジネスプロフィールが無効だったり制限がかかっている場合はエラーが返ってきます。\n        ",
         "operationId": "getLocationQuestions",
         "parameters": [
           {
@@ -1130,7 +1471,7 @@
           "Google:GETメソッド"
         ],
         "summary": "Google:店舗のQ\u0026Aの特定の質問に対する回答を全て取得",
-        "description": "\n           Google:店舗のQ\u0026Aの特定の質問に対する回答を全て取得します。\n           ビジネスプロフィールが無効だったり制限がかかっている場合はエラーが返ってきます。 \n        ",
+        "description": "\n           Google:店舗のQ\u0026Aの特定の質問に対する回答を全て取得します。\n           ビジネスプロフィールが無効だったり制限がかかっている場合はエラーが返ってきます。\n        ",
         "operationId": "getLocationAnswers",
         "parameters": [
           {
@@ -1252,6 +1593,39 @@
   },
   "components": {
     "schemas": {
+      "GooglePlacesAutoCompleteRequest": {
+        "required": [
+          "input"
+        ],
+        "type": "object",
+        "properties": {
+          "input": {
+            "type": "string"
+          }
+        }
+      },
+      "GooglePlacesAutoCompletePlaceSet": {
+        "type": "object",
+        "properties": {
+          "placeId": {
+            "type": "string"
+          },
+          "text": {
+            "type": "string"
+          }
+        }
+      },
+      "GooglePlacesAutoCompleteResponse": {
+        "type": "object",
+        "properties": {
+          "placeSetList": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GooglePlacesAutoCompletePlaceSet"
+            }
+          }
+        }
+      },
       "GoogleLocationAnswer": {
         "type": "object",
         "properties": {
@@ -1528,6 +1902,20 @@
           }
         }
       },
+      "GoogleLocationBusinessHours": {
+        "required": [
+          "periods"
+        ],
+        "type": "object",
+        "properties": {
+          "periods": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GoogleLocationTimePeriod"
+            }
+          }
+        }
+      },
       "GoogleLocationCategories": {
         "type": "object",
         "properties": {
@@ -1550,6 +1938,20 @@
           },
           "displayName": {
             "type": "string"
+          }
+        }
+      },
+      "GoogleLocationMoreHours": {
+        "type": "object",
+        "properties": {
+          "hoursTypeId": {
+            "type": "string"
+          },
+          "periods": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GoogleLocationTimePeriod"
+            }
           }
         }
       },
@@ -1603,6 +2005,26 @@
           }
         }
       },
+      "GoogleLocationPostalAddress": {
+        "type": "object",
+        "properties": {
+          "postalCode": {
+            "type": "string"
+          },
+          "regionCode": {
+            "type": "string"
+          },
+          "administrativeArea": {
+            "type": "string"
+          },
+          "addressLines": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
       "GoogleLocationProfile": {
         "type": "object",
         "properties": {
@@ -1626,8 +2048,20 @@
           "categories": {
             "$ref": "#/components/schemas/GoogleLocationCategories"
           },
+          "storefrontAddress": {
+            "$ref": "#/components/schemas/GoogleLocationPostalAddress"
+          },
           "websiteUri": {
             "type": "string"
+          },
+          "regularHours": {
+            "$ref": "#/components/schemas/GoogleLocationBusinessHours"
+          },
+          "moreHours": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GoogleLocationMoreHours"
+            }
           },
           "profile": {
             "$ref": "#/components/schemas/GoogleLocationProfile"
@@ -1651,6 +2085,153 @@
           },
           "places": {
             "$ref": "#/components/schemas/GoogleLocationPlaceInfos"
+          }
+        }
+      },
+      "GoogleLocationTimePeriod": {
+        "required": [
+          "closeDay",
+          "closeTime",
+          "openDay",
+          "openTime"
+        ],
+        "type": "object",
+        "properties": {
+          "openDay": {
+            "type": "string",
+            "enum": [
+              "DAY_OF_WEEK_UNSPECIFIED",
+              "MONDAY",
+              "TUESDAY",
+              "WEDNESDAY",
+              "THURSDAY",
+              "FRIDAY",
+              "SATURDAY",
+              "SUNDAY"
+            ]
+          },
+          "openTime": {
+            "$ref": "#/components/schemas/GoogleLocationTimeOfDay"
+          },
+          "closeDay": {
+            "type": "string",
+            "enum": [
+              "DAY_OF_WEEK_UNSPECIFIED",
+              "MONDAY",
+              "TUESDAY",
+              "WEDNESDAY",
+              "THURSDAY",
+              "FRIDAY",
+              "SATURDAY",
+              "SUNDAY"
+            ]
+          },
+          "closeTime": {
+            "$ref": "#/components/schemas/GoogleLocationTimeOfDay"
+          }
+        }
+      },
+      "GoogleLocationStoreFrontAddressRequest": {
+        "required": [
+          "addressLines",
+          "administrativeArea",
+          "postalCode"
+        ],
+        "type": "object",
+        "properties": {
+          "postalCode": {
+            "type": "string"
+          },
+          "administrativeArea": {
+            "type": "string",
+            "enum": [
+              "北海道",
+              "青森県",
+              "岩手県",
+              "宮城県",
+              "秋田県",
+              "山形県",
+              "福島県",
+              "茨城県",
+              "栃木県",
+              "群馬県",
+              "埼玉県",
+              "千葉県",
+              "東京都",
+              "神奈川県",
+              "新潟県",
+              "富山県",
+              "石川県",
+              "福井県",
+              "山梨県",
+              "長野県",
+              "岐阜県",
+              "静岡県",
+              "愛知県",
+              "三重県",
+              "滋賀県",
+              "京都府",
+              "大阪府",
+              "兵庫県",
+              "奈良県",
+              "和歌山県",
+              "鳥取県",
+              "島根県",
+              "岡山県",
+              "広島県",
+              "山口県",
+              "徳島県",
+              "香川県",
+              "愛媛県",
+              "高知県",
+              "福岡県",
+              "佐賀県",
+              "長崎県",
+              "熊本県",
+              "大分県",
+              "宮崎県",
+              "鹿児島県",
+              "沖縄県"
+            ]
+          },
+          "addressLines": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "GoogleLocationBusinessHoursRequest": {
+        "required": [
+          "hoursTypeId",
+          "periods"
+        ],
+        "type": "object",
+        "properties": {
+          "hoursTypeId": {
+            "type": "string",
+            "enum": [
+              "通常営業",
+              "入店可能時間",
+              "注文可能時間",
+              "ドライブスルー",
+              "宅配",
+              "テイクアウト",
+              "朝食",
+              "ランチ",
+              "ディナー",
+              "ブランチ",
+              "ハッピーアワー",
+              "高齢者限定時間帯",
+              "オンラインサービスの提供時間"
+            ]
+          },
+          "periods": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GoogleLocationTimePeriod"
+            }
           }
         }
       },
@@ -1927,6 +2508,12 @@
             "items": {
               "$ref": "#/components/schemas/GoogleLocationAttributeUriValue"
             }
+          },
+          "values": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/JsonNode"
+            }
           }
         }
       },
@@ -1952,6 +2539,9 @@
           }
         }
       },
+      "JsonNode": {
+        "type": "object"
+      },
       "GoogleLocationAttributeSnsLinkRequest": {
         "required": [
           "snsType",
@@ -1973,6 +2563,64 @@
           },
           "snsUrl": {
             "type": "string"
+          }
+        }
+      },
+      "GoogleLocationAttributeService": {
+        "required": [
+          "type"
+        ],
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "アルコール飲料あり",
+              "オーガニック料理あり",
+              "カクテルあり",
+              "コーヒーあり",
+              "サラダバーあり",
+              "ドリンクのハッピーアワーあり",
+              "ハードリカーあり",
+              "ハラルメニューあり",
+              "ビーガンメニューあり",
+              "ビールあり",
+              "ベジタリアンメニューあり",
+              "ワインあり",
+              "個室あり",
+              "小皿料理を提供するお店",
+              "食べ物のハッピーアワーあり",
+              "食べ放題あり",
+              "深夜の食事可",
+              "点字メニューあり"
+            ]
+          },
+          "value": {
+            "type": "boolean"
+          }
+        }
+      },
+      "GoogleLocationAttributeServiceOption": {
+        "required": [
+          "type"
+        ],
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "テラス席あり",
+              "店先受取可",
+              "非接触宅配可",
+              "宅配可",
+              "ドライブスルーあり",
+              "実店舗の営業あり",
+              "テイクアウト可",
+              "イートイン利用可"
+            ]
+          },
+          "value": {
+            "type": "boolean"
           }
         }
       },
