@@ -8,7 +8,7 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import LayoutLabeledFormItem from '@/main/common/LayoutLabeledFormItem';
-import type { GoogleLocationAttributeSnsLinkRequestSnsType } from '@/types/api.d.ts';
+import type { GoogleLocationAttributeSnsLinkRequestSnsType } from '@/types/api.ts';
 
 const schema = z.object({
   snsLink: z.string()

@@ -10,7 +10,7 @@ import { GoogleService } from "@/main/service/GoogleService";
 import { useParams } from "react-router-dom";
 import { useModal } from "@/main/common/Modal/useModal";
 import { useMemo } from "react";
-import { GoogleLocationTimePeriodOpenDay, GoogleLocationBusinessHoursRequestHoursTypeId } from "@/types/api.d.ts";
+import { GoogleLocationTimePeriodOpenDay, GoogleLocationBusinessHoursRequestHoursTypeId } from "@/types/api.ts";
 import { GoogleLocationTimePeriod } from "@/types/apiModel";
 
 type Props = {

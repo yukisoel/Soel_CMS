@@ -8,7 +8,7 @@ import { useModal } from "@/main/common/Modal/useModal";
 import { useParams } from "react-router-dom";
 import { useMemo } from 'react';
 import { EditStorefrontAddressModal } from '../modals/EditStorefrontAddresModal';
-import { GoogleLocationStoreFrontAddressRequestAdministrativeArea } from '@/types/api.d.ts';
+import { GoogleLocationStoreFrontAddressRequestAdministrativeArea } from '@/types/api.ts';
 type Props = {
     profile: GoogleLocationProfileModel | null;
     fetchProfile: () => Promise<void>;

@@ -6,7 +6,7 @@ import Button from '@/main/common/Button';
 import TimePicker from '@/main/common/TimePicker/TimePicker';
 import styles from '../EditProfileLayoutV2.module.scss';
 import { GoogleLocationTimePeriod } from '@/types/apiModel';
-import type { GoogleLocationTimePeriodOpenDay, GoogleLocationTimePeriodCloseDay } from '@/types/api.d.ts';
+import type { GoogleLocationTimePeriodOpenDay, GoogleLocationTimePeriodCloseDay } from '@/types/api.ts';
 import { dayMap } from '../tabs/HoursTab';
 
 type Props = {

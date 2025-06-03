@@ -8,7 +8,7 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import LayoutLabeledFormItem from '@/main/common/LayoutLabeledFormItem';
-import { GoogleLocationStoreFrontAddressRequestAdministrativeArea } from '@/types/api.d.ts';
+import { GoogleLocationStoreFrontAddressRequestAdministrativeArea } from '@/types/api.ts';
 import PhotoPullDownMenu from '@/main/components/editPage/PhotoPullDownMenu';
 
 const PREFECTURES = Object.keys(GoogleLocationStoreFrontAddressRequestAdministrativeArea) as Array<keyof typeof GoogleLocationStoreFrontAddressRequestAdministrativeArea>;
