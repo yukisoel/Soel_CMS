@@ -263,26 +263,6 @@ export interface paths {
         patch: operations["updateLocationServiceArea"];
         trace?: never;
     };
-    "/api/google/location/profile/primary_category": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        /**
-         * Google:店舗のプロフィールの更新:メインカテゴリ
-         * @description Google:店舗のメインカテゴリを更新します
-         */
-        patch: operations["updateLocationProfilePrimaryCategory"];
-        trace?: never;
-    };
     "/api/google/location/profile/phone_number": {
         parameters: {
             query?: never;
@@ -437,6 +417,26 @@ export interface paths {
          *
          */
         patch: operations["updateLocationProfileAdditionalCategories"];
+        trace?: never;
+    };
+    "/api/google/location/prifle/primary_category": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Google:店舗のプロフィールの更新:メインカテゴリ
+         * @description Google:店舗のメインカテゴリを更新します
+         */
+        patch: operations["updateLocationProfilePrimaryCategory"];
         trace?: never;
     };
     "/api/google/location/food_menus": {
@@ -1077,10 +1077,6 @@ export interface components {
         };
         GoogleLocationBusinessHoursRequest: {
             /** @enum {string} */
-            /**
-             * @description 営業時間種別
-             * @enum {string}
-             */
             hoursTypeId: GoogleLocationBusinessHoursRequestHoursTypeId;
             periods: components["schemas"]["GoogleLocationTimePeriod"][];
         };
@@ -1758,84 +1754,6 @@ export interface operations {
             };
         };
     };
-    updateLocationStoreFrontAddress: {
-        parameters: {
-            query: {
-                locationId: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["GoogleLocationStoreFrontAddressRequest"];
-            };
-        };
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["GoogleLocationProfileModel"];
-                };
-            };
-        };
-    };
-    updateLocationServiceArea: {
-        parameters: {
-            query: {
-                locationId: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": string[];
-            };
-        };
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["GoogleLocationProfileModel"];
-                };
-            };
-        };
-    };
-    updateLocationProfilePrimaryCategory: {
-        parameters: {
-            query: {
-                locationId: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["GoogleLocationCategory"];
-            };
-        };
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["GoogleLocationProfileModel"];
-                };
-            };
-        };
-    };
     updateLocationProfilePhoneNumber: {
         parameters: {
             query: {
@@ -1976,7 +1894,7 @@ export interface operations {
             };
         };
     };
-    updateLocationBusinessHours: {
+    updateLocationProfileAdditionalCategories: {
         parameters: {
             query: {
                 locationId: string;
@@ -1987,7 +1905,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["GoogleLocationBusinessHoursRequest"];
+                "application/json": components["schemas"]["GoogleLocationCategory"][];
             };
         };
         responses: {
@@ -2011,7 +1929,7 @@ export interface operations {
             };
         };
     };
-    updateLocationProfileAdditionalCategories: {
+    updateLocationProfilePrimaryCategory: {
         parameters: {
             query: {
                 locationId: string;
@@ -2022,7 +1940,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["GoogleLocationCategory"][];
+                "application/json": components["schemas"]["GoogleLocationCategory"];
             };
         };
         responses: {
@@ -2352,110 +2270,6 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["ErrorResponse"];
-                };
-            };
-        };
-    };
-    updateLocationServices: {
-        parameters: {
-            query: {
-                locationId: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["GoogleLocationAttributeService"][];
-            };
-        };
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["GoogleLocationAttributesModel"];
-                };
-            };
-        };
-    };
-    updateLocationServiceOptions: {
-        parameters: {
-            query: {
-                locationId: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["GoogleLocationAttributeServiceOption"][];
-            };
-        };
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["GoogleLocationAttributesModel"];
-                };
-            };
-        };
-    };
-    updateLocationAttributeMenuLink: {
-        parameters: {
-            query: {
-                locationId: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": string;
-            };
-        };
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["GoogleLocationAttributesModel"];
-                };
-            };
-        };
-    };
-    updateLocationBusinessOwnerInfo: {
-        parameters: {
-            query: {
-                locationId: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: {
-            content: {
-                "application/json": boolean;
-            };
-        };
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["GoogleLocationAttributesModel"];
                 };
             };
         };
@@ -2897,19 +2711,6 @@ export enum GoogleLocationBusinessHoursRequestHoursTypeId {
     "ハッピーアワー" = "\u30CF\u30C3\u30D4\u30FC\u30A2\u30EF\u30FC",
     "高齢者限定時間帯" = "\u9AD8\u9F62\u8005\u9650\u5B9A\u6642\u9593\u5E2F",
     "オンラインサービスの提供時間" = "\u30AA\u30F3\u30E9\u30A4\u30F3\u30B5\u30FC\u30D3\u30B9\u306E\u63D0\u4F9B\u6642\u9593"
-    REGULAR = "REGULAR",
-    ACCESS = "ACCESS",
-    KITCHEN = "KITCHEN",
-    DRIVE_THROUGH = "DRIVE_THROUGH",
-    DELIVERY = "DELIVERY",
-    TAKEOUT = "TAKEOUT",
-    BREAKFAST = "BREAKFAST",
-    LUNCH = "LUNCH",
-    DINNER = "DINNER",
-    BRUNCH = "BRUNCH",
-    HAPPY_HOURS = "HAPPY_HOURS",
-    SENIOR_HOURS = "SENIOR_HOURS",
-    ONLINE_SERVICE_HOURS = "ONLINE_SERVICE_HOURS"
 }
 export enum GoogleLocationAttributeValueType {
     ATTRIBUTE_VALUE_TYPE_UNSPECIFIED = "ATTRIBUTE_VALUE_TYPE_UNSPECIFIED",
