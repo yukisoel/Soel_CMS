@@ -24,9 +24,9 @@ export const EditLatestInformationV2: React.FC<Props> = ({ googleService }) => {
       case 'latest_information':
         return <LatestInformationTab googleService={googleService} />;
       case 'benefit':
-        return <BenefitTab />;
+        return <BenefitTab googleService={googleService} />;
       case 'event':
-        return <EventTab />;
+        return <EventTab googleService={googleService} />;
       default:
         return null;
     }
