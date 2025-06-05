@@ -5,7 +5,7 @@ import {
   GoogleLocationLocalPostModel,
   GoogleLocationPhotoModel,
 } from "@/main/model/LocationModel.ts";
-import {GoogleAccount, GoogleLocation, GoogleLocationProfileModel, GoogleLocationDate, GoogleLocationCategory, GoogleLocationAttributeSnsLinkRequest, GoogleLocationAttributesModel, GoogleLocationStoreFrontAddressRequest, GoogleLocationBusinessHoursRequest} from "@/types/apiModel.ts";
+import {GoogleAccount, GoogleLocation, GoogleLocationProfileModel, GoogleLocationDate, GoogleLocationCategory, GoogleLocationAttributeSnsLinkRequest, GoogleLocationAttributesModel, GoogleLocationStoreFrontAddressRequest, GoogleLocationBusinessHoursRequest, GooglePlacesAutoCompleteResponse} from "@/types/apiModel.ts";
 
 export interface GoogleRepository {
   getAccounts(): Promise<GoogleAccount[]>
@@ -56,6 +56,8 @@ export interface GoogleRepository {
   updateLocationProfileServiceArea(locationId: string, serviceArea: string[]): Promise<GoogleLocationProfileModel>
 
   updateLocationProfileBusinessHours(locationId: string, businessHours: GoogleLocationBusinessHoursRequest): Promise<GoogleLocationProfileModel>
+
+  postPlacesAutoComplete(input: string): Promise<GooglePlacesAutoCompleteResponse>
 }
 
 type AccountListResponse = GoogleAccount[]
@@ -561,6 +563,24 @@ export class GoogleRepositoryImpl implements GoogleRepository {
     } catch (error) {
       console.error(error)
       throw new Error("google update location profile business hours failed")
+    }
+  }
+
+  async postPlacesAutoComplete(input: string): Promise<GooglePlacesAutoCompleteResponse> {
+    try {
+      const response: AxiosResponse<GooglePlacesAutoCompleteResponse> = await axiosApiClient.post(
+        'google/places/autocomplete',
+        {input},
+        {
+          headers: {
+            'Accept': 'application/json; charset=utf-8',
+            'Content-Type': 'application/json',
+          },
+      })
+      return response.data
+    } catch (error) {
+      console.error(error)
+      throw new Error("google post places auto complete failed")
     }
   }
 }

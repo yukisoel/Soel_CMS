@@ -9,6 +9,7 @@ import { useParams } from "react-router-dom";
 import { useMemo } from 'react';
 import { EditStorefrontAddressModal } from '../modals/EditStorefrontAddresModal';
 import { GoogleLocationStoreFrontAddressRequestAdministrativeArea } from '@/types/api.ts';
+import { EditServiceAreaModal } from "../modals/EditServiceAreaModal";
 type Props = {
     profile: GoogleLocationProfileModel | null;
     fetchProfile: () => Promise<void>;
@@ -22,6 +23,7 @@ export default function LocationTab({
 }: Props) {
     const { locationId } = useParams();
     const { isOpen: isAddressModal, openModal: openAddressModal, closeModal: closeAddressModal } = useModal();
+    const { isOpen: isServiceAreaModal, openModal: openServiceAreaModal, closeModal: closeServiceAreaModal } = useModal();
     const handleAddressSave = async (data: { postalCode: string, prefecture: string, address: string }) => {
         await googleService.updateLocationProfileStorefrontAddress(locationId ?? '', {
             postalCode: data.postalCode,
@@ -32,7 +34,11 @@ export default function LocationTab({
         closeAddressModal();
     };
 
-
+    const handleServiceAreaSave = async (data: { serviceArea?: string, placeId?: string }) => {
+        await googleService.updateLocationProfileServiceArea(locationId ?? '', [data.placeId ?? '']);
+        await fetchProfile();
+        closeServiceAreaModal();
+    };
 
     const address = useMemo(() => {
         if (!profile) return '';
@@ -62,7 +68,6 @@ export default function LocationTab({
                         bgColor="primary"
                         padding="0.5rem 1.8rem"
                         onClick={openAddressModal}
-                        // disabled={isUpdating}
                     >
                         <Typography
                             content="編集"
@@ -91,8 +96,7 @@ export default function LocationTab({
                     <Button
                         bgColor="primary"
                         padding="0.5rem 1.8rem"
-                        // onClick={() => setEditModalType('serviceArea')}
-                        // disabled={isUpdating}
+                        onClick={openServiceAreaModal}
                     >
                         <Typography
                             content="編集"
@@ -104,21 +108,26 @@ export default function LocationTab({
             </Wrapper>
 
             {/* 編集モーダル */}
-            {
-                isAddressModal && (
-                    <EditStorefrontAddressModal
-                        isOpen={isAddressModal}
-                        onClose={closeAddressModal}
-                        onSubmit={handleAddressSave}
-                        initialValues={{
-                            postalCode: profile?.storefrontAddress?.postalCode ?? '',
-                            prefecture: profile?.storefrontAddress?.administrativeArea ?? '',
-                            address: profile?.storefrontAddress?.addressLines?.join(' ') ?? '',
-                        }}
-                    />
-                )
-            }
-
+            <EditStorefrontAddressModal
+                isOpen={isAddressModal}
+                onClose={closeAddressModal}
+                onSubmit={handleAddressSave}
+                initialValues={{
+                    postalCode: profile?.storefrontAddress?.postalCode ?? '',
+                    prefecture: profile?.storefrontAddress?.administrativeArea ?? '',
+                    address: profile?.storefrontAddress?.addressLines?.join(' ') ?? '',
+                }}
+            />
+            <EditServiceAreaModal
+                isOpen={isServiceAreaModal}
+                onClose={closeServiceAreaModal}
+                onSubmit={handleServiceAreaSave}
+                initialValues={{
+                    serviceArea: profile?.serviceArea?.places?.placeInfos?.[0]?.placeName ?? '',
+                    placeId: profile?.serviceArea?.places?.placeInfos?.[0]?.placeId ?? '',
+                }}
+                googleService={googleService}
+            />
         </Wrapper>
     );
 }
