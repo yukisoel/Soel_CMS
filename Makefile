@@ -39,6 +39,6 @@ kt2openApi2ts:
 	cd frontend && make openApiDocs2ts
 
 dockerComposeUp:
-	docker rm postgres_db
-	docker volume rm init_sql postgres_data
+	- docker rm postgres_db
+	- docker volume rm soel_cms_init_sql soel_cms_postgres_data
 	docker compose up

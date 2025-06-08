@@ -15,7 +15,7 @@ make start
 ## バックエンド
 JDK: 21推奨
 #### 初回
-.env.templateをコピーして.envを作成
+backendフォルダの.env.templateをコピーして.envを作成
 ```bash
 cp backend/.env.template backend/.env
 ```
@@ -32,7 +32,12 @@ cd backend
 make start
 ```
 ## データベース
+#### 初回
+プロジェクトフォルダ直下の.env.templateをコピーして.envを作成
+```bash
+cp .env.template .env
+```
 #### 起動
 ```bash
-docker-compose up -d
+make dockerComposeUp
 ```
