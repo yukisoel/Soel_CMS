@@ -37,3 +37,8 @@ submit:
 kt2openApi2ts:
 	cd backend && make kt2openApiDocs
 	cd frontend && make openApiDocs2ts
+
+dockerComposeUp:
+	docker rm postgres_db
+	docker volume rm init_sql postgres_data
+	docker compose up

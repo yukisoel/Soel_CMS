@@ -11,10 +11,18 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - ./database:/docker-entrypoint-initdb.d
+      - init_sql:/docker-entrypoint-initdb.d
+      - postgres_data:/var/lib/postgresql/data
     restart: always
 
 volumes:
-  database:
+  init_sql:
     driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ${PWD}/database
+  postgres_data:
+    driver: local
+
 
