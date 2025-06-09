@@ -51,9 +51,9 @@ class SecurityConfig {
         http
             .oauth2Login {
                 // ③ カスタム Resolver を登録
-                it.authorizationEndpoint { endpoint ->
-                endpoint.authorizationRequestResolver(defaultResolver)
-            }
+//                it.authorizationEndpoint { endpoint ->
+//                endpoint.authorizationRequestResolver(defaultResolver)
+//            }
                 it.successHandler{_, response, _ ->
                     response.sendRedirect(redirectUrl)
                 }
