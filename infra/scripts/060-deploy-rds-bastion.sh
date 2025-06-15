@@ -35,7 +35,7 @@ PRI_SUBNET_ID_2=$(aws cloudformation describe-stacks \
 
 RDS_SG_ID=$(aws cloudformation describe-stacks \
   --stack-name "$SG_STACK_NAME" \
-  --query "Stacks[0].Outputs[?OutputKey=='RDSSecurityGroupId'].OutputValue" \
+  --query "Stacks[0].Outputs[?OutputKey=='RdsSecurityGroup'].OutputValue" \
   --output text \
   --region "$REGION")
 

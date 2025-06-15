@@ -24,7 +24,8 @@ SCRIPTS=(
   "070-push-dummy-image.sh"
   "080-deploy-ecs.sh"
   "090-deploy-codedeploy.sh"
-  "100-deploy-app.sh"
+  "100-create-user-pool.sh"
+  "900-deploy-app.sh"
 )
 
 echo "🚀 全スタックを順番にデプロイします"

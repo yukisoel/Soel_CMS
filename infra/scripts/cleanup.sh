@@ -46,6 +46,7 @@ aws ecr delete-repository \
 
 # === CloudFormation stacks の削除 ===
 STACKS=(
+  "${ENV}-${PROJECT}-cognito"
   "${ENV}-${PROJECT}-codedeploy"
   "${ENV}-${PROJECT}-ecs-service"
   "${ENV}-${PROJECT}-ecs"
@@ -70,11 +71,11 @@ done
 echo "⏳ スタックの削除を待機（任意で監視を推奨）"
 
 # === SecretsManager シークレット削除 ===
-echo "🗝️ Deleting secret: $SECRET_NAME"
-aws secretsmanager delete-secret \
-  --secret-id "$SECRET_NAME" \
-  --force-delete-without-recovery \
-  --region "$REGION" || echo "⚠️ Secret not found or already deleted"
+# echo "🗝️ Deleting secret: $SECRET_NAME"
+# aws secretsmanager delete-secret \
+#   --secret-id "$SECRET_NAME" \
+#   --force-delete-without-recovery \
+#   --region "$REGION" || echo "⚠️ Secret not found or already deleted"
 
 # === CloudWatch Logs 削除 ===
 echo "📋 Deleting CloudWatch Logs group: $LOG_GROUP"
@@ -82,4 +83,31 @@ aws logs delete-log-group \
   --log-group-name "$LOG_GROUP" \
   --region "$REGION" || echo "⚠️ Log group not found or already deleted"
 
-echo "✅ クリーンアップ完了"
+# === ユーザープール削除 ===
+echo "🔍 ユーザープール名 '$USER_POOL_NAME' の ID を取得中..."
+
+USER_POOL_ID=$(aws cognito-idp list-user-pools \
+  --max-results 60 \
+  --region "$REGION" \
+  --query "UserPools[?Name=='$USER_POOL_NAME'].Id" \
+  --output text)
+
+if [[ -z "$USER_POOL_ID" ]]; then
+  echo "⚠️ ユーザープール '$USER_POOL_NAME' は見つかりませんでした。"
+  exit 1
+fi
+
+echo "✅ 見つかりました: ユーザープールID = $USER_POOL_ID"
+echo -n "⚠️ 本当にこのユーザープールを削除しますか？ [y/N]: "
+read -r CONFIRM
+
+if [[ "$CONFIRM" == "y" || "$CONFIRM" == "Y" ]]; then
+  echo "🗑️ ユーザープールを削除中..."
+  aws cognito-idp delete-user-pool \
+    --user-pool-id "$USER_POOL_ID" \
+    --region "$REGION"
+  echo "✅ 削除完了"
+else
+  echo "キャンセルしました。"
+fi
+echo "✅ クリーンアップ指示完了 スタックが完全に削除されるまでは数十分かかる場合があります"
