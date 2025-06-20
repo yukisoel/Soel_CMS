@@ -185,6 +185,10 @@ class GoogleController(val googleService: GoogleService, val googleUseCase: Goog
         return googleService.getLocationAnswers(googleClient.accessToken.tokenValue, locationId, questionId)
     }
 
+    @Operation(
+        summary = "Google:店舗のクチコミを全て取得",
+        description = "Google:店舗のクチコミを全て取得します",
+        tags = ["Google:GETメソッド"])
     @GetMapping("/location/reviews")
     fun getLocationReviews(
         @RegisteredOAuth2AuthorizedClient("google") googleClient: OAuth2AuthorizedClient,
@@ -192,6 +196,21 @@ class GoogleController(val googleService: GoogleService, val googleUseCase: Goog
         @RequestParam("locationId") locationId: String
     ): ResponseEntity<List<GoogleLocationReviewCustom>>? {
         return googleService.getLocationReviews(googleClient.accessToken.tokenValue,accountId, locationId)
+    }
+
+    @Operation(
+        summary = "Google:店舗のクチコミを取得",
+        description = "Google:店舗のクチコミを取得します",
+        tags = ["Google:GETメソッド"]
+    )
+    @GetMapping("/location/review")
+    fun getLocationReview(
+        @RegisteredOAuth2AuthorizedClient("google") googleClient: OAuth2AuthorizedClient,
+        @RequestParam("accountId") accountId: String,
+        @RequestParam("locationId") locationId: String,
+        @RequestParam("reviewId") reviewId: String
+    ): ResponseEntity<GoogleLocationReviewCustom>? {
+        return googleService.getLocationReview(googleClient.accessToken.tokenValue, accountId, locationId, reviewId)
     }
 
     @Operation(summary = "Google:Google API専用", description = "GoogleAPIに写真をアップロードするときに使用されます", tags = ["Google:特殊API"])

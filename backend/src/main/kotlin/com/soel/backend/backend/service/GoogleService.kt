@@ -40,6 +40,7 @@ interface GoogleService {
     fun getLocationAnswers(accessToken: String, locationId: String, questionId: String): ResponseEntity<List<GoogleLocationAnswer>>?
     fun getLocationPhotoLocal(filename: String): ResponseEntity<StreamingResponseBody>?
     fun getLocationReviews(accessToken: String, accountId: String, locationId: String): ResponseEntity<List<GoogleLocationReviewCustom>>?
+    fun getLocationReview(accessToken: String, accountId: String, locationId: String, reviewId: String): ResponseEntity<GoogleLocationReviewCustom>?
 
     fun deleteLocationPhotoLocal(filename: String)
 
@@ -423,6 +424,30 @@ class GoogleServiceImpl(val googleRepository: GoogleRepository, val menuLogRepos
             return ResponseEntity.ok(googleReviewsMutableList)
         } catch (e: Exception) {
             logger.error("Error getting location reviews", e)
+            return ResponseEntity
+                .badRequest()
+                .body(null)
+        }
+    }
+
+    override fun getLocationReview(accessToken: String, accountId: String, locationId: String, reviewId: String): ResponseEntity<GoogleLocationReviewCustom>? {
+        try {
+            val googleLocationReview = googleRepository.getLocationReview(accessToken, accountId, locationId, reviewId)
+            return ResponseEntity.ok(
+                GoogleLocationReviewCustom(
+                    googleLocationReview!!.name,
+                    googleLocationReview.reviewId,
+                    googleLocationReview.comment,
+                    googleLocationReview.starRating,
+                    googleLocationReview.reviewer,
+                    googleLocationReview.reviewReply,
+                    googleLocationReview.createTime,
+                    googleLocationReview.updateTime,
+                    isReply = googleLocationReview.reviewReply != null,
+                )
+            )
+        } catch (e: Exception) {
+            logger.error("Error getting location review", e)
             return ResponseEntity
                 .badRequest()
                 .body(null)

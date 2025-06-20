@@ -26,6 +26,7 @@ interface GoogleRepository {
     fun getLocationQuestions(accessToken: String, locationId: String, nextPageToken: String?): GoogleLocationQuestionsResponse?
     fun getLocationAnswers(accessToken: String, locationId: String, questionId: String, nextPageToken: String?): GoogleLocationAnswersResponse?
     fun getLocationReviews(accessToken: String, accountId: String, locationId: String, nextPageToken: String?): GoogleApiLocationReviewsResponse?
+    fun getLocationReview(accessToken: String, accountId: String, locationId: String, reviewId: String): GoogleLocationReview?
 
     fun postLocationPhoto(accessToken: String, accountId: String, locationId: String, filename: String)
     fun postLocationLocalPost(accessToken: String, accountId: String, locationId: String, localPost: GoogleLocationLocalPostModel, filenameList: List<String>)
@@ -364,6 +365,28 @@ class GoogleRepositoryImpl(val restTemplate: RestTemplate) : GoogleRepository {
             HttpMethod.GET,
             entity,
             GoogleApiLocationReviewsResponse::class.java
+        ).body
+    }
+
+    override fun getLocationReview(accessToken: String, accountId: String, locationId: String, reviewId: String): GoogleLocationReview? {
+        val requestUrl = "https://mybusiness.googleapis.com/v4/accounts/$accountId/locations/$locationId/reviews/$reviewId"
+        val uri = UriComponentsBuilder.fromHttpUrl(requestUrl)
+            .build()
+            .toUri()
+
+        val headers = HttpHeaders()
+
+        headers.apply {
+            setBearerAuth(accessToken)
+        }
+
+        val entity = HttpEntity<String>(headers)
+
+        return restTemplate.exchange(
+            uri,
+            HttpMethod.GET,
+            entity,
+            GoogleLocationReview::class.java
         ).body
     }
 
