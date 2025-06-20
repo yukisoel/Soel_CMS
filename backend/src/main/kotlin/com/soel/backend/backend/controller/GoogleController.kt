@@ -748,6 +748,25 @@ class GoogleController(val googleService: GoogleService, val googleUseCase: Goog
         return googleUseCase.updateLocationServiceOptions(googleClient.accessToken.tokenValue, locationId, serviceOptions)
     }
 
+    @PatchMapping("/location/review/reply")
+    @Operation(
+        summary = "Google:店舗のクチコミに返信",
+        description = """
+              Google:店舗のクチコミに返信します。
+              Request Bodyとして commentのstringにしてください。
+              例 : "Thank you for your feedback!"
+              """, tags = ["Google:PATCHメソッド"]
+    )
+    fun updateLocationReviewReply(
+        @RegisteredOAuth2AuthorizedClient("google") googleClient: OAuth2AuthorizedClient,
+        @RequestParam("accountId") accountId: String,
+        @RequestParam("locationId") locationId: String,
+        @RequestParam("reviewId") reviewId: String,
+        @RequestBody comment: String
+    ): ResponseEntity<GoogleLocationReviewReply>? {
+        return googleService.updateLocationReviewReply(googleClient.accessToken.tokenValue, accountId, locationId, reviewId, comment)
+    }
+
 
     @Operation(
         summary = "Google:店舗の質問の削除",
@@ -781,12 +800,6 @@ class GoogleController(val googleService: GoogleService, val googleUseCase: Goog
         return googleService.deleteLocationAnswer(googleClient.accessToken.tokenValue, locationId, questionId)
     }
     /*
-
-        口コミ取得
-    https://mybusiness.googleapis.com/v4/accounts/{accountId}/locations/{locationId}/reviews
-
-    特定の口コミ取得
-    https://mybusiness.googleapis.com/v4/accounts/{accountId}/locations/{locationId}/reviews/{reviewId}
 
     口コミに返信
     PUT

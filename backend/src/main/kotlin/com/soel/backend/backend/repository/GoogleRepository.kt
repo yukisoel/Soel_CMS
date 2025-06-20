@@ -3,10 +3,7 @@ package com.soel.backend.backend.repository
 import com.soel.backend.backend.model.*
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Primary
-import org.springframework.http.HttpEntity
-import org.springframework.http.HttpHeaders
-import org.springframework.http.HttpMethod
-import org.springframework.http.MediaType
+import org.springframework.http.*
 import org.springframework.stereotype.Repository
 import org.springframework.web.client.RestTemplate
 import org.springframework.web.util.UriComponentsBuilder
@@ -37,6 +34,7 @@ interface GoogleRepository {
     fun updateLocationFoodMenus(accessToken: String, accountId: String, locationId: String, foodMenus: GoogleLocationFoodMenusModel): GoogleLocationFoodMenusModel?
     fun updateLocationQuestion(accessToken: String, locationId: String, questionId: String, text: String): GoogleLocationQuestion?
     fun updateLocationAttributes(accessToken: String, locationId: String, attributeMask: String, attributes: GoogleLocationAttributesModel): GoogleLocationAttributesModel?
+    fun updateLocationReviewReply(accessToken: String, accountId: String, locationId: String, reviewId: String, comment: String): GoogleLocationReviewReply?
 
     fun deleteLocationQuestion(accessToken: String, locationId: String, questionId: String)
     fun deleteLocationAnswer(accessToken: String, locationId: String, questionId: String)
@@ -606,6 +604,30 @@ class GoogleRepositoryImpl(val restTemplate: RestTemplate) : GoogleRepository {
             entity,
             GoogleLocationAttributesModel::class.java
         )
+    }
+
+    override fun updateLocationReviewReply(accessToken: String, accountId: String, locationId: String, reviewId: String, comment: String): GoogleLocationReviewReply? {
+        val requestUrl = "https://mybusiness.googleapis.com/v4/accounts/$accountId/locations/$locationId/reviews/$reviewId"
+        val uri = UriComponentsBuilder.fromHttpUrl(requestUrl)
+            .build()
+            .toUri()
+
+        val headers = HttpHeaders()
+
+        headers.apply {
+            setBearerAuth(accessToken)
+        }
+
+        val entity = HttpEntity(GoogleLocationReviewReply(comment = comment), headers)
+        val response: ResponseEntity<GoogleLocationReviewReply> =
+            restTemplate.exchange(
+                uri,
+                HttpMethod.PUT,
+                entity,
+                GoogleLocationReviewReply::class.java
+            )
+
+        return response.body
     }
 
     override fun deleteLocationQuestion(accessToken: String, locationId: String, questionId: String) {

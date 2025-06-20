@@ -53,6 +53,7 @@ interface GoogleService {
     fun updateLocationFoodMenus(accessToken: String, accountId: String, locationId: String, locationFoodMenus: GoogleLocationFoodMenusModel): ResponseEntity<GoogleLocationFoodMenusModel>?
     fun updateLocationQuestion(accessToken: String, locationId: String, questionId: String, text: String): ResponseEntity<GoogleLocationQuestion>?
     fun updateLocationAttributes(accessToken: String, locationId: String, attributeMask: String, attributes: GoogleLocationAttributesModel): ResponseEntity<GoogleLocationAttributesModel>?
+    fun updateLocationReviewReply(accessToken: String, accountId: String, locationId: String, reviewId: String, comment: String): ResponseEntity<GoogleLocationReviewReply>?
 
     fun deleteLocationQuestion(accessToken: String, locationId: String, questionId: String)
     fun deleteLocationAnswer(accessToken: String, locationId: String, questionId: String)
@@ -599,6 +600,19 @@ class GoogleServiceImpl(val googleRepository: GoogleRepository, val menuLogRepos
             return ResponseEntity.ok(googleLocationAttributes)
         } catch (e: Exception) {
             logger.error("Error updating location attributes", e)
+            return ResponseEntity
+                .badRequest()
+                .body(null)
+        }
+    }
+
+    override fun updateLocationReviewReply(accessToken: String, accountId: String, locationId: String, reviewId: String, comment: String): ResponseEntity<GoogleLocationReviewReply>? {
+        try {
+            val googleLocationReviewReply =
+                googleRepository.updateLocationReviewReply(accessToken, accountId, locationId, reviewId, comment)
+            return ResponseEntity.ok(googleLocationReviewReply)
+        } catch (e: Exception) {
+            logger.error("Error updating location review reply", e)
             return ResponseEntity
                 .badRequest()
                 .body(null)
