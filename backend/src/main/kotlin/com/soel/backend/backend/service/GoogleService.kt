@@ -39,6 +39,7 @@ interface GoogleService {
     fun getLocationQuestions(accessToken: String, locationId: String): ResponseEntity<List<GoogleLocationQuestion>>?
     fun getLocationAnswers(accessToken: String, locationId: String, questionId: String): ResponseEntity<List<GoogleLocationAnswer>>?
     fun getLocationPhotoLocal(filename: String): ResponseEntity<StreamingResponseBody>?
+    fun getLocationReviews(accessToken: String, accountId: String, locationId: String): ResponseEntity<List<GoogleLocationReview>>?
 
     fun deleteLocationPhotoLocal(filename: String)
 
@@ -394,6 +395,38 @@ class GoogleServiceImpl(val googleRepository: GoogleRepository, val menuLogRepos
             .contentType(MediaType.parseMediaType(contentType))
             .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"${file.name}\"")
             .body(streamingResponseBody)
+    }
+
+    override fun getLocationReviews(accessToken: String, accountId: String, locationId: String): ResponseEntity<List<GoogleLocationReview>>? {
+        try {
+            val googleReviewsMutableList: MutableList<GoogleLocationReview> = mutableListOf()
+            var nextPageToken: String? = null
+            do {
+                val googleLocationReviewsResponse =
+                    googleRepository.getLocationReviews(accessToken, accountId, locationId, nextPageToken)
+                val googleLocationReviews = googleLocationReviewsResponse?.reviews?.map { review ->
+                    GoogleLocationReview(
+                        review.name,
+                        review.reviewId,
+                        review.comment,
+                        review.starRating,
+                        review.reviewer,
+                        review.reviewReply,
+                        review.createTime,
+                        review.updateTime,
+                    )
+                }
+                nextPageToken = googleLocationReviewsResponse?.nextPageToken
+                googleReviewsMutableList.addAll(googleLocationReviews!!.toMutableList())
+                println(nextPageToken)
+            } while (nextPageToken != null)
+            return ResponseEntity.ok(googleReviewsMutableList)
+        } catch (e: Exception) {
+            logger.error("Error getting location reviews", e)
+            return ResponseEntity
+                .badRequest()
+                .body(null)
+        }
     }
 
     override fun deleteLocationPhotoLocal(filename: String) {

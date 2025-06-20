@@ -185,6 +185,15 @@ class GoogleController(val googleService: GoogleService, val googleUseCase: Goog
         return googleService.getLocationAnswers(googleClient.accessToken.tokenValue, locationId, questionId)
     }
 
+    @GetMapping("/location/reviews")
+    fun getLocationReviews(
+        @RegisteredOAuth2AuthorizedClient("google") googleClient: OAuth2AuthorizedClient,
+        @RequestParam("accountId") accountId: String,
+        @RequestParam("locationId") locationId: String
+    ): ResponseEntity<List<GoogleLocationReview>>? {
+        return googleService.getLocationReviews(googleClient.accessToken.tokenValue,accountId, locationId)
+    }
+
     @Operation(summary = "Google:Google API専用", description = "GoogleAPIに写真をアップロードするときに使用されます", tags = ["Google:特殊API"])
     @GetMapping("/location/photo/{filename}")
     fun getLocationPhotoLocal(@PathVariable filename: String): ResponseEntity<StreamingResponseBody>? {
