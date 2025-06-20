@@ -190,7 +190,7 @@ class GoogleController(val googleService: GoogleService, val googleUseCase: Goog
         @RegisteredOAuth2AuthorizedClient("google") googleClient: OAuth2AuthorizedClient,
         @RequestParam("accountId") accountId: String,
         @RequestParam("locationId") locationId: String
-    ): ResponseEntity<List<GoogleLocationReview>>? {
+    ): ResponseEntity<List<GoogleLocationReviewCustom>>? {
         return googleService.getLocationReviews(googleClient.accessToken.tokenValue,accountId, locationId)
     }
 

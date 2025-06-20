@@ -39,7 +39,7 @@ interface GoogleService {
     fun getLocationQuestions(accessToken: String, locationId: String): ResponseEntity<List<GoogleLocationQuestion>>?
     fun getLocationAnswers(accessToken: String, locationId: String, questionId: String): ResponseEntity<List<GoogleLocationAnswer>>?
     fun getLocationPhotoLocal(filename: String): ResponseEntity<StreamingResponseBody>?
-    fun getLocationReviews(accessToken: String, accountId: String, locationId: String): ResponseEntity<List<GoogleLocationReview>>?
+    fun getLocationReviews(accessToken: String, accountId: String, locationId: String): ResponseEntity<List<GoogleLocationReviewCustom>>?
 
     fun deleteLocationPhotoLocal(filename: String)
 
@@ -397,15 +397,15 @@ class GoogleServiceImpl(val googleRepository: GoogleRepository, val menuLogRepos
             .body(streamingResponseBody)
     }
 
-    override fun getLocationReviews(accessToken: String, accountId: String, locationId: String): ResponseEntity<List<GoogleLocationReview>>? {
+    override fun getLocationReviews(accessToken: String, accountId: String, locationId: String): ResponseEntity<List<GoogleLocationReviewCustom>>? {
         try {
-            val googleReviewsMutableList: MutableList<GoogleLocationReview> = mutableListOf()
+            val googleReviewsMutableList: MutableList<GoogleLocationReviewCustom> = mutableListOf()
             var nextPageToken: String? = null
             do {
                 val googleLocationReviewsResponse =
                     googleRepository.getLocationReviews(accessToken, accountId, locationId, nextPageToken)
                 val googleLocationReviews = googleLocationReviewsResponse?.reviews?.map { review ->
-                    GoogleLocationReview(
+                    GoogleLocationReviewCustom(
                         review.name,
                         review.reviewId,
                         review.comment,
@@ -414,11 +414,11 @@ class GoogleServiceImpl(val googleRepository: GoogleRepository, val menuLogRepos
                         review.reviewReply,
                         review.createTime,
                         review.updateTime,
+                        isReply = review.reviewReply != null,
                     )
                 }
                 nextPageToken = googleLocationReviewsResponse?.nextPageToken
                 googleReviewsMutableList.addAll(googleLocationReviews!!.toMutableList())
-                println(nextPageToken)
             } while (nextPageToken != null)
             return ResponseEntity.ok(googleReviewsMutableList)
         } catch (e: Exception) {

@@ -369,7 +369,7 @@ data class GoogleLocationAuthor(
     val type: GoogleLocationAuthorType? = null,
 )
 
-data class GoogleLocationReviewsResponse(
+data class GoogleApiLocationReviewsResponse(
     val nextPageToken: String? = null,
     val reviews: List<GoogleLocationReview>? = null,
     val totalReviewCount: Int? = null,
@@ -385,6 +385,18 @@ data class GoogleLocationReview(
     val reviewReply: GoogleLocationReviewReply? = null,
     val createTime: String? = null,
     val updateTime: String? = null,
+)
+
+data class GoogleLocationReviewCustom(
+    val name: String? = null,
+    val reviewId: String? = null,
+    val comment: String? = null,
+    val starRating: StarRating? = null,
+    val reviewer: GoogleLocationReviewReviewer? = null,
+    val reviewReply: GoogleLocationReviewReply? = null,
+    val createTime: String? = null,
+    val updateTime: String? = null,
+    val isReply: Boolean? = null,
 )
 
 data class GoogleLocationReviewReviewer(

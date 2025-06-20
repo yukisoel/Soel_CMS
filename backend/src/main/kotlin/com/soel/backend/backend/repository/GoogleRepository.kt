@@ -25,7 +25,7 @@ interface GoogleRepository {
     fun getLocationFoodMenus(accessToken: String, accountId: String, locationId: String): GoogleLocationFoodMenusModel?
     fun getLocationQuestions(accessToken: String, locationId: String, nextPageToken: String?): GoogleLocationQuestionsResponse?
     fun getLocationAnswers(accessToken: String, locationId: String, questionId: String, nextPageToken: String?): GoogleLocationAnswersResponse?
-    fun getLocationReviews(accessToken: String, accountId: String, locationId: String, nextPageToken: String?): GoogleLocationReviewsResponse?
+    fun getLocationReviews(accessToken: String, accountId: String, locationId: String, nextPageToken: String?): GoogleApiLocationReviewsResponse?
 
     fun postLocationPhoto(accessToken: String, accountId: String, locationId: String, filename: String)
     fun postLocationLocalPost(accessToken: String, accountId: String, locationId: String, localPost: GoogleLocationLocalPostModel, filenameList: List<String>)
@@ -343,7 +343,7 @@ class GoogleRepositoryImpl(val restTemplate: RestTemplate) : GoogleRepository {
         ).body
     }
 
-    override fun getLocationReviews(accessToken: String, accountId: String, locationId: String, nextPageToken: String?): GoogleLocationReviewsResponse? {
+    override fun getLocationReviews(accessToken: String, accountId: String, locationId: String, nextPageToken: String?): GoogleApiLocationReviewsResponse? {
         val requestUrl = "https://mybusiness.googleapis.com/v4/accounts/$accountId/locations/$locationId/reviews"
         val uri = UriComponentsBuilder.fromHttpUrl(requestUrl)
             .queryParam("pageToken", nextPageToken)
@@ -363,7 +363,7 @@ class GoogleRepositoryImpl(val restTemplate: RestTemplate) : GoogleRepository {
             uri,
             HttpMethod.GET,
             entity,
-            GoogleLocationReviewsResponse::class.java
+            GoogleApiLocationReviewsResponse::class.java
         ).body
     }
 
