@@ -57,6 +57,7 @@ interface GoogleService {
 
     fun deleteLocationQuestion(accessToken: String, locationId: String, questionId: String)
     fun deleteLocationAnswer(accessToken: String, locationId: String, questionId: String)
+    fun deleteLocationReviewReply(accessToken: String, accountId: String, locationId: String, reviewId: String): ResponseEntity<Any>?
 }
 
 @Service
@@ -632,6 +633,18 @@ class GoogleServiceImpl(val googleRepository: GoogleRepository, val menuLogRepos
             googleRepository.deleteLocationAnswer(accessToken, locationId, questionId)
         } catch (e: Exception) {
             logger.error("Error deleting location answer", e)
+        }
+    }
+
+    override fun deleteLocationReviewReply(accessToken: String, accountId: String, locationId: String, reviewId: String): ResponseEntity<Any>? {
+        try {
+            val response = googleRepository.deleteLocationReviewReply(accessToken, accountId, locationId, reviewId)
+            return ResponseEntity.ok(response)
+        } catch (e: Exception) {
+            logger.error("Error deleting location review reply", e)
+            return ResponseEntity
+                .badRequest()
+                .body(null)
         }
     }
 }

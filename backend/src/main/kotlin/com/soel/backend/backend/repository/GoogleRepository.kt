@@ -38,6 +38,7 @@ interface GoogleRepository {
 
     fun deleteLocationQuestion(accessToken: String, locationId: String, questionId: String)
     fun deleteLocationAnswer(accessToken: String, locationId: String, questionId: String)
+    fun deleteLocationReviewReply(accessToken: String, accountId: String, locationId: String, reviewId: String): ResponseEntity<Any>
 }
 
 @Primary
@@ -607,7 +608,7 @@ class GoogleRepositoryImpl(val restTemplate: RestTemplate) : GoogleRepository {
     }
 
     override fun updateLocationReviewReply(accessToken: String, accountId: String, locationId: String, reviewId: String, comment: String): GoogleLocationReviewReply? {
-        val requestUrl = "https://mybusiness.googleapis.com/v4/accounts/$accountId/locations/$locationId/reviews/$reviewId"
+        val requestUrl = "https://mybusiness.googleapis.com/v4/accounts/$accountId/locations/$locationId/reviews/$reviewId/reply"
         val uri = UriComponentsBuilder.fromHttpUrl(requestUrl)
             .build()
             .toUri()
@@ -674,4 +675,26 @@ class GoogleRepositoryImpl(val restTemplate: RestTemplate) : GoogleRepository {
         )
     }
 
+    override fun deleteLocationReviewReply(accessToken: String, accountId: String, locationId: String, reviewId: String): ResponseEntity<Any> {
+        val requestUrl = "https://mybusiness.googleapis.com/v4/accounts/$accountId/locations/$locationId/reviews/$reviewId/reply"
+        val uri = UriComponentsBuilder.fromHttpUrl(requestUrl)
+            .build()
+            .toUri()
+
+        val headers = HttpHeaders()
+
+        headers.apply {
+            setBearerAuth(accessToken)
+        }
+
+        val entity = HttpEntity<String>(headers)
+
+        return restTemplate.exchange(
+            uri,
+            HttpMethod.DELETE,
+            entity,
+            Any::class.java
+        )
+    }
 }
+

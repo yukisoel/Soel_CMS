@@ -799,6 +799,24 @@ class GoogleController(val googleService: GoogleService, val googleUseCase: Goog
         println("deleteLocationAnswer called")
         return googleService.deleteLocationAnswer(googleClient.accessToken.tokenValue, locationId, questionId)
     }
+
+    @Operation(
+        summary = "Google:店舗のクチコミの返信を削除",
+        description = """
+              Google:店舗のクチコミの返信を削除します。
+        """, tags = ["Google:DELETEメソッド"]
+    )
+    @DeleteMapping("/location/review/reply")
+    fun deleteLocationReviewReply(
+        @RegisteredOAuth2AuthorizedClient("google") googleClient: OAuth2AuthorizedClient,
+        @RequestParam("accountId") accountId: String,
+        @RequestParam("locationId") locationId: String,
+        @RequestParam("reviewId") reviewId: String
+    ): ResponseEntity<Void> {
+        googleService.deleteLocationReviewReply(googleClient.accessToken.tokenValue, accountId, locationId, reviewId)
+        return ResponseEntity.ok().build()
+
+    }
     /*
 
     口コミに返信
