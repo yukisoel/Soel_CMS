@@ -2,25 +2,25 @@ package com.soel.backend.backend.service
 
 import com.soel.backend.backend.entity.BrandEntity
 import com.soel.backend.backend.mapper.BrandMapper
-import com.soel.backend.backend.model.api.BrandApiResponse
-import com.soel.backend.backend.model.api.BrandListApiResponse
 import com.soel.backend.backend.model.api.BrandListResponse
+import com.soel.backend.backend.model.api.BrandResponse
 import com.soel.backend.backend.repository.database.BrandRepository
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 import java.util.*
 
 interface BrandService {
-    fun findBrandAllByUserId(userId: String): ResponseEntity<BrandListApiResponse>
+    fun findBrandAllByUserId(userId: String): ResponseEntity<BrandListResponse>
+    fun createBrand(userId: String, brandName: String): ResponseEntity<BrandResponse>
     fun insertBrand(userId: String, brandName: String): BrandEntity
-    fun updateBrandName(brandId: String, brandName: String): ResponseEntity<BrandApiResponse>
+    fun updateBrandName(brandId: String, brandName: String): ResponseEntity<BrandResponse>
 }
 
 @Service
 class BrandServiceImpl(
     private val brandRepository: BrandRepository
 ): BrandService {
-    override fun findBrandAllByUserId(userId: String): ResponseEntity<BrandListApiResponse> {
+    override fun findBrandAllByUserId(userId: String): ResponseEntity<BrandListResponse> {
         val uuid = UUID.fromString(userId)
         val brands = brandRepository.findByUserId(uuid) ?: emptyList()
         return ResponseEntity.ok(
@@ -28,6 +28,16 @@ class BrandServiceImpl(
                 BrandMapper.entityToResponse(entity)
             })
         )
+    }
+
+    override fun createBrand(userId: String, brandName: String): ResponseEntity<BrandResponse> {
+        val uuid = UUID.fromString(userId)
+        val brandEntity = BrandEntity(
+            userId = uuid,
+            name = brandName
+        )
+        val savedBrand = brandRepository.save(brandEntity)
+        return ResponseEntity.ok(BrandMapper.entityToResponse(savedBrand))
     }
 
     override fun insertBrand(userId: String, brandName: String): BrandEntity {
@@ -40,7 +50,7 @@ class BrandServiceImpl(
         )
     }
 
-    override fun updateBrandName(brandId: String, brandName: String): ResponseEntity<BrandApiResponse> {
+    override fun updateBrandName(brandId: String, brandName: String): ResponseEntity<BrandResponse> {
         val uuid = UUID.fromString(brandId)
         val existingBrand = brandRepository.findByBrandId(uuid)
             ?: throw IllegalArgumentException("Brand does not exist.")

@@ -1,11 +1,11 @@
 package com.soel.backend.backend.controller.database
 
-import com.soel.backend.backend.model.api.BrandApiResponse
-import com.soel.backend.backend.model.api.BrandErrorResponse
-import com.soel.backend.backend.model.api.BrandListApiResponse
+import com.soel.backend.backend.api.exception.UnauthorizedException
+import com.soel.backend.backend.model.api.BrandListResponse
+import com.soel.backend.backend.model.api.BrandResponse
 import com.soel.backend.backend.service.BrandService
 import io.swagger.v3.oas.annotations.Operation
-import org.springframework.http.HttpStatus
+import jakarta.servlet.http.HttpServletRequest
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.security.oauth2.core.oidc.user.OidcUser
@@ -25,24 +25,40 @@ class BrandController(val brandService: BrandService) {
     )
     @GetMapping("/list")
     fun getBrandList(
+        request: HttpServletRequest,
         @AuthenticationPrincipal oidcUser: OidcUser?
-    ): ResponseEntity<BrandListApiResponse> {
-        val unauthorized = ResponseEntity
-            .status(HttpStatus.UNAUTHORIZED)
-            .body<BrandListApiResponse>(
-                BrandErrorResponse(
-                    error = "UNAUTHORIZED",
-                    message = "認証情報が存在しないか、有効ではありません"
-                )
-            )
+    ): ResponseEntity<BrandListResponse> {
         // そもそも認証されていない
         if (oidcUser == null) {
-            return unauthorized
+            throw UnauthorizedException(
+                "認証情報が存在しないか、有効ではありません",
+                request.requestURI
+            )
         }
 
         val sub = oidcUser.getClaim<String>("sub") ?: return ResponseEntity.badRequest().build()
 
         val result = brandService.findBrandAllByUserId(sub)
+        return ResponseEntity(result.body, result.statusCode)
+    }
+
+    @PostMapping("/create")
+    fun createBrand(
+        request: HttpServletRequest,
+        @AuthenticationPrincipal oidcUser: OidcUser?,
+        @RequestParam brandName: String
+    ): ResponseEntity<BrandResponse> {
+        // そもそも認証されていない
+        if (oidcUser == null) {
+            throw UnauthorizedException(
+                "認証情報が存在しないか、有効ではありません",
+                request.requestURI
+            )
+        }
+
+        val sub = oidcUser.getClaim<String>("sub") ?: return ResponseEntity.badRequest().build()
+
+        val result = brandService.createBrand(brandName = brandName, userId = sub)
         return ResponseEntity(result.body, result.statusCode)
     }
 
@@ -58,24 +74,18 @@ class BrandController(val brandService: BrandService) {
     )
     @PatchMapping("/name")
     fun updateBrandName(
+        request: HttpServletRequest,
         @AuthenticationPrincipal oidcUser: OidcUser?,
         @RequestParam brandId: String,
         @RequestBody brandName: String
-    ): ResponseEntity<BrandApiResponse> {
-        val unauthorized = ResponseEntity
-            .status(HttpStatus.UNAUTHORIZED)
-            .body<BrandApiResponse>(
-                BrandErrorResponse(
-                    error = "UNAUTHORIZED",
-                    message = "認証情報が存在しないか、有効ではありません"
-                )
-            )
+    ): ResponseEntity<BrandResponse> {
         // そもそも認証されていない
         if (oidcUser == null) {
-            return unauthorized
+            throw UnauthorizedException(
+                "認証情報が存在しないか、有効ではありません",
+                request.requestURI
+            )
         }
-
-        val sub = oidcUser.getClaim<String>("sub") ?: return ResponseEntity.badRequest().build()
 
         val result = brandService.updateBrandName(brandId = brandId, brandName = brandName)
         return ResponseEntity(result.body, result.statusCode)
