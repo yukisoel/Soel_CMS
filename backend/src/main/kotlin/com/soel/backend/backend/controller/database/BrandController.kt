@@ -100,4 +100,31 @@ class BrandController(val brandService: BrandService) {
         val result = brandService.updateBrandName(brandId = brandId, brandName = brandName)
         return ResponseEntity(result.body, result.statusCode)
     }
+
+    @DeleteMapping("/delete")
+    @Operation(
+        summary = "ブランドを削除",
+        description = """
+            認証されたユーザーのブランドを削除します。
+            認証されていない場合は、status 401 Unauthorized を返します。(Bodyは BrandErrorResponse)
+            ブランドの削除に成功した場合は、status 204 No Content を返します。
+            """,
+        tags = ["ブランド DELETEメソッド"]
+    )
+    fun deleteBrand(
+        request: HttpServletRequest,
+        @AuthenticationPrincipal oidcUser: OidcUser?,
+        @RequestParam brandId: String
+    ): ResponseEntity<Void> {
+        // そもそも認証されていない
+        if (oidcUser == null) {
+            throw UnauthorizedException(
+                "認証情報が存在しないか、有効ではありません",
+                request.requestURI
+            )
+        }
+
+        val result = brandService.deleteBrand(brandId = brandId)
+        return ResponseEntity(result.body, result.statusCode)
+    }
 }
