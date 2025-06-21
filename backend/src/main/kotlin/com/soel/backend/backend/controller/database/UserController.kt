@@ -1,4 +1,4 @@
-package com.soel.backend.backend.controller.cognito
+package com.soel.backend.backend.controller.database
 
 import com.soel.backend.backend.service.UserService
 import io.swagger.v3.oas.annotations.Operation

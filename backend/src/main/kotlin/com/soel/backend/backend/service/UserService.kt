@@ -2,7 +2,6 @@ package com.soel.backend.backend.service
 
 import com.soel.backend.backend.entity.UserEntity
 import com.soel.backend.backend.mapper.UserMapper
-import com.soel.backend.backend.model.api.UserApiResponse
 import com.soel.backend.backend.model.api.UserSuccessResponse
 import com.soel.backend.backend.repository.database.UserRepository
 import jakarta.transaction.Transactional
