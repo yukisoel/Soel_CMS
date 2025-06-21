@@ -15,7 +15,7 @@ data class BrandEntity(
     val userId: UUID,
 
     @Column(name = "name", nullable = false)
-    val name: String,
+    var name: String,
 
     @Column(name = "created_at", nullable = false)
     val createdAt: Instant = Instant.now(),

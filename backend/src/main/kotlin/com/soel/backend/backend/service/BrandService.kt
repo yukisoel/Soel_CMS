@@ -2,6 +2,7 @@ package com.soel.backend.backend.service
 
 import com.soel.backend.backend.entity.BrandEntity
 import com.soel.backend.backend.mapper.BrandMapper
+import com.soel.backend.backend.model.api.BrandApiResponse
 import com.soel.backend.backend.model.api.BrandListApiResponse
 import com.soel.backend.backend.model.api.BrandListResponse
 import com.soel.backend.backend.repository.database.BrandRepository
@@ -12,7 +13,7 @@ import java.util.*
 interface BrandService {
     fun findBrandAllByUserId(userId: String): ResponseEntity<BrandListApiResponse>
     fun insertBrand(userId: String, brandName: String): BrandEntity
-    fun updateBrandName(brandId: String, brandName: String): BrandEntity
+    fun updateBrandName(brandId: String, brandName: String): ResponseEntity<BrandApiResponse>
 }
 
 @Service
@@ -39,11 +40,14 @@ class BrandServiceImpl(
         )
     }
 
-    override fun updateBrandName(brandId: String, brandName: String): BrandEntity {
+    override fun updateBrandName(brandId: String, brandName: String): ResponseEntity<BrandApiResponse> {
         val uuid = UUID.fromString(brandId)
         val existingBrand = brandRepository.findByBrandId(uuid)
             ?: throw IllegalArgumentException("Brand does not exist.")
+        existingBrand.name = brandName
 
-        return brandRepository.save(existingBrand)
+        return ResponseEntity.ok(
+            BrandMapper.entityToResponse(brandRepository.save(existingBrand))
+        )
     }
 }
