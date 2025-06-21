@@ -5,6 +5,7 @@ import com.soel.backend.backend.mapper.BrandMapper
 import com.soel.backend.backend.model.api.BrandListResponse
 import com.soel.backend.backend.model.api.BrandResponse
 import com.soel.backend.backend.repository.database.BrandRepository
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 import java.util.*
@@ -12,8 +13,8 @@ import java.util.*
 interface BrandService {
     fun findBrandAllByUserId(userId: String): ResponseEntity<BrandListResponse>
     fun createBrand(userId: String, brandName: String): ResponseEntity<BrandResponse>
-    fun insertBrand(userId: String, brandName: String): BrandEntity
     fun updateBrandName(brandId: String, brandName: String): ResponseEntity<BrandResponse>
+    fun deleteBrand(brandId: String): ResponseEntity<Void>
 }
 
 @Service
@@ -37,17 +38,9 @@ class BrandServiceImpl(
             name = brandName
         )
         val savedBrand = brandRepository.save(brandEntity)
-        return ResponseEntity.ok(BrandMapper.entityToResponse(savedBrand))
-    }
-
-    override fun insertBrand(userId: String, brandName: String): BrandEntity {
-        val uuid = UUID.fromString(userId)
-        return brandRepository.save(
-            BrandEntity(
-                userId = uuid,
-                name = brandName,
-            )
-        )
+        return ResponseEntity
+            .status(HttpStatus.CREATED)
+            .body(BrandMapper.entityToResponse(savedBrand))
     }
 
     override fun updateBrandName(brandId: String, brandName: String): ResponseEntity<BrandResponse> {
@@ -59,5 +52,13 @@ class BrandServiceImpl(
         return ResponseEntity.ok(
             BrandMapper.entityToResponse(brandRepository.save(existingBrand))
         )
+    }
+
+    override fun deleteBrand(brandId: String): ResponseEntity<Void> {
+        val uuid = UUID.fromString(brandId)
+        val existingBrand = brandRepository.findByBrandId(uuid)
+            ?: throw IllegalArgumentException("Brand does not exist.")
+        brandRepository.delete(existingBrand)
+        return ResponseEntity.noContent().build()
     }
 }

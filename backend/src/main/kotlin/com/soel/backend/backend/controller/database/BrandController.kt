@@ -42,6 +42,16 @@ class BrandController(val brandService: BrandService) {
         return ResponseEntity(result.body, result.statusCode)
     }
 
+    @Operation(
+        summary = "新しいブランドを作成",
+        description = """
+            認証されたユーザーの新しいブランドを作成します。
+            Request Bodyにはブランド名の文字列を含めます。
+            認証されていない場合は、status 401 Unauthorized を返します。(Bodyは BrandErrorResponse)
+            ブランドの作成に成功した場合は、status 201 Created を返します。(Bodyは BrandResponse)
+            """,
+        tags = ["ブランド POSTメソッド"]
+    )
     @PostMapping("/create")
     fun createBrand(
         request: HttpServletRequest,
