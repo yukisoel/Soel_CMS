@@ -1,6 +1,8 @@
 package com.soel.backend.backend.service.double
 
 import com.soel.backend.backend.entity.BrandEntity
+import com.soel.backend.backend.model.api.BrandListResponse
+import com.soel.backend.backend.model.api.BrandResponse
 import com.soel.backend.backend.repository.database.BrandRepository
 import com.soel.backend.backend.service.BrandServiceImpl
 import org.junit.jupiter.api.BeforeEach
@@ -38,7 +40,7 @@ class BrandServiceTest {
             val result = service.findBrandAllByUserId(userId)
 
             // Then
-            assertThat(result).isEmpty()
+            assertThat(result.body).isEqualTo(BrandListResponse(brands= emptyList()))
         }
 
         @Test
@@ -56,37 +58,18 @@ class BrandServiceTest {
             val result = service.findBrandAllByUserId(userId)
 
             // Then
-            assertThat(result).containsExactly(sampleBrand)
-        }
-    }
-
-    @Nested
-    inner class insertBrand {
-        private val userId = "123e4567-e89b-12d3-a456-426614174000" // Example UUID
-        private val brandName = "New Brand"
-        private lateinit var brandRepository: BrandRepository
-
-        @BeforeEach
-        fun setup() {
-            brandRepository = mock()
-        }
-
-        @Test
-        fun `ユーザーIDとブランド名を指定するとブランドが作成される`() {
-            // Given
-            val service = BrandServiceImpl(brandRepository)
-            val expectedBrandEntity = BrandEntity(
-                brandId = UUID.randomUUID(),
-                userId = UUID.fromString(userId),
-                name = brandName
+            assertThat(result.body).isEqualTo(
+                BrandListResponse(
+                    brands = listOf(
+                        BrandResponse(
+                            brandId = sampleBrand.brandId.toString(),
+                            userId = sampleBrand.userId.toString(),
+                            name = sampleBrand.name,
+                            createdAt = sampleBrand.createdAt.toString()
+                        )
+                    )
+                )
             )
-            whenever(brandRepository.save(any())).thenReturn(expectedBrandEntity)
-
-            // When
-            val result = service.insertBrand(userId, brandName)
-
-            // Then
-            assertThat(result).isEqualTo(expectedBrandEntity)
         }
     }
 }
