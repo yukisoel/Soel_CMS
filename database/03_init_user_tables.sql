@@ -32,7 +32,7 @@ CREATE TABLE IF NOT EXISTS stores (
     name        TEXT      NOT NULL,
     google_account_id VARCHAR(128) NULL,   -- GBP の accountId
     google_location_id VARCHAR(128) NULL,  -- GBP の locationId
-    linked_at      TIMESTAMPTZ NULL DEFAULT now(),
+    google_linked_at      TIMESTAMPTZ NULL,
     created_at  TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 -- 検索を速くするためのインデックス

@@ -29,6 +29,9 @@ data class StoreEntity(
     @Column(name = "google_location_id", nullable = true)
     val googleLocationId: String? = null,
 
+    @Column(name = "google_linked_at", nullable = true)
+    val googleLinkedAt: Instant? = null,
+
     @Column(name = "created_at", nullable = false)
     val createdAt: Instant = Instant.now()
 ) {
@@ -40,6 +43,7 @@ data class StoreEntity(
         name = "dummy store",
         googleAccountId = null,
         googleLocationId = null,
+        googleLinkedAt = null,
         createdAt = Instant.now()
     )
 }

@@ -4,10 +4,8 @@ services:
   db:
     image: postgres:latest
     container_name: postgres_db
-    environment:
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: postgres
+    # .env ファイルを読み込んでコンテナ内に環境変数を渡す
+    env_file: .env
     ports:
       - "5432:5432"
     volumes:
