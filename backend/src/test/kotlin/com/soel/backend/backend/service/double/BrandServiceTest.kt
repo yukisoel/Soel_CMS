@@ -1,7 +1,7 @@
 package com.soel.backend.backend.service.double
 
 import com.soel.backend.backend.entity.BrandEntity
-import com.soel.backend.backend.repository.BrandRepository
+import com.soel.backend.backend.repository.database.BrandRepository
 import com.soel.backend.backend.service.BrandServiceImpl
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested

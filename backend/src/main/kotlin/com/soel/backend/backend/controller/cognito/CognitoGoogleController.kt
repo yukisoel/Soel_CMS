@@ -1,7 +1,7 @@
 package com.soel.backend.backend.controller.cognito
 
 import com.soel.backend.backend.api.exception.UnauthorizedException
-import com.soel.backend.backend.service.GoogleService
+import com.soel.backend.backend.service.google.GoogleService
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity

@@ -1,7 +1,7 @@
 package com.soel.backend.backend.service
 
 import com.soel.backend.backend.entity.UserEntity
-import com.soel.backend.backend.repository.UserRepository
+import com.soel.backend.backend.repository.database.UserRepository
 import jakarta.transaction.Transactional
 import org.springframework.stereotype.Service
 import java.util.*

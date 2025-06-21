@@ -1,4 +1,4 @@
-package com.soel.backend.backend.repository
+package com.soel.backend.backend.repository.database
 
 import com.soel.backend.backend.entity.BrandEntity
 import org.springframework.data.jpa.repository.JpaRepository

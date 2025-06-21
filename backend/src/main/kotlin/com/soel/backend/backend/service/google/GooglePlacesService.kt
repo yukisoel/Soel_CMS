@@ -1,10 +1,9 @@
-package com.soel.backend.backend.service
+package com.soel.backend.backend.service.google
 
 import com.soel.backend.backend.SecurityConfig
-import com.soel.backend.backend.model.GooglePlacesAutoComplete
 import com.soel.backend.backend.model.GooglePlacesAutoCompletePlaceSet
 import com.soel.backend.backend.model.GooglePlacesAutoCompleteResponse
-import com.soel.backend.backend.repository.GooglePlacesRepository
+import com.soel.backend.backend.repository.google.GooglePlacesRepository
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.http.ResponseEntity

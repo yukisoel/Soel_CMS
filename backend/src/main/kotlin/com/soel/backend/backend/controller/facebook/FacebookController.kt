@@ -1,17 +1,10 @@
-package com.soel.backend.backend.controller
+package com.soel.backend.backend.controller.facebook
 
-import com.soel.backend.backend.model.FacebookMe
-import com.soel.backend.backend.model.FacebookMeAccounts
-import com.soel.backend.backend.model.FacebookAdAccounts
-import com.soel.backend.backend.model.FacebookCampaingnDetails
-import com.soel.backend.backend.model.FacebookCampaingns
 import com.soel.backend.backend.service.FacebookService
 //import org.springframework.security.oauth2.client.OAuth2AuthorizedClient
 //import org.springframework.security.oauth2.client.annotation.RegisteredOAuth2AuthorizedClient
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.RequestParam
 
 @RestController
 @RequestMapping("/api/facebook")

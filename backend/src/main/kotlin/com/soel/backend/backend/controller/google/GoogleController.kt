@@ -1,8 +1,8 @@
-package com.soel.backend.backend.controller
+package com.soel.backend.backend.controller.google
 
 import com.soel.backend.backend.api.exception.UnauthorizedException
 import com.soel.backend.backend.model.*
-import com.soel.backend.backend.service.GoogleService
+import com.soel.backend.backend.service.google.GoogleService
 import com.soel.backend.backend.usecase.GoogleUseCase
 import io.swagger.v3.oas.annotations.Operation
 import jakarta.servlet.http.HttpServletRequest

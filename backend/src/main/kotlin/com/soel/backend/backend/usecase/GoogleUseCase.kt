@@ -1,9 +1,8 @@
 package com.soel.backend.backend.usecase
 
-import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.node.BooleanNode
 import com.soel.backend.backend.model.*
-import com.soel.backend.backend.service.GoogleService
+import com.soel.backend.backend.service.google.GoogleService
 import com.soel.backend.backend.utils.google.AttributesBuilder
 import com.soel.backend.backend.utils.google.ProfileBuilder
 import org.springframework.http.ResponseEntity

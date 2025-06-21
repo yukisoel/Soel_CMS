@@ -1,8 +1,8 @@
-package com.soel.backend.backend.controller
+package com.soel.backend.backend.controller.google
 
 import com.soel.backend.backend.model.GooglePlacesAutoCompleteRequest
 import com.soel.backend.backend.model.GooglePlacesAutoCompleteResponse
-import com.soel.backend.backend.service.GooglePlacesService
+import com.soel.backend.backend.service.google.GooglePlacesService
 import io.swagger.v3.oas.annotations.Operation
 import org.springframework.http.ResponseEntity
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient

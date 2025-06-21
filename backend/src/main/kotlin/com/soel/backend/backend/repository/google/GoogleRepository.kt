@@ -1,4 +1,4 @@
-package com.soel.backend.backend.repository
+package com.soel.backend.backend.repository.google
 
 import com.soel.backend.backend.model.*
 import org.springframework.beans.factory.annotation.Value

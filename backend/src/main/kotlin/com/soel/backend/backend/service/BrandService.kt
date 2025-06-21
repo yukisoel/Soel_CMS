@@ -1,7 +1,7 @@
 package com.soel.backend.backend.service
 
 import com.soel.backend.backend.entity.BrandEntity
-import com.soel.backend.backend.repository.BrandRepository
+import com.soel.backend.backend.repository.database.BrandRepository
 import org.springframework.stereotype.Service
 import java.util.*
 

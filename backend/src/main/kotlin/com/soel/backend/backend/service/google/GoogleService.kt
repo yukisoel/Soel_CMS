@@ -1,10 +1,10 @@
-package com.soel.backend.backend.service
+package com.soel.backend.backend.service.google
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.soel.backend.backend.SecurityConfig
 import com.soel.backend.backend.entity.MenuLog
 import com.soel.backend.backend.model.*
-import com.soel.backend.backend.repository.GoogleRepository
+import com.soel.backend.backend.repository.google.GoogleRepository
 import com.soel.backend.backend.repository.MenuLogRepository
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
