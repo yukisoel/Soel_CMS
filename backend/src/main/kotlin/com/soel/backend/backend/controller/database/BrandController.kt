@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/api/brand")
-class CognitoController(val brandService: BrandService) {
+class BrandController(val brandService: BrandService) {
     @Operation(
         summary = "ユーザーが持つブランド一覧を取得",
         description = """
