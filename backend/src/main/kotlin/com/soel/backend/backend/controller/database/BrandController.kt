@@ -64,7 +64,7 @@ class BrandController(val authHelper: AuthHelper, val brandService: BrandService
             """,
         tags = ["ブランド PATCHメソッド"]
     )
-    @PatchMapping("/name")
+    @PatchMapping("/update/name")
     fun updateBrandName(
         request: HttpServletRequest,
         @RequestParam brandId: String,
