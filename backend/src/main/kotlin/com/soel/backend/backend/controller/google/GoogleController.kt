@@ -7,6 +7,7 @@ import com.soel.backend.backend.usecase.GoogleUseCase
 import io.swagger.v3.oas.annotations.Operation
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.http.HttpStatus
+import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
@@ -192,12 +193,12 @@ class GoogleController(val authHelper: AuthHelper,  val googleService: GoogleSer
     }
 
     @Operation(summary = "Google:写真を追加", description = "Google:店舗の写真を追加します", tags = ["Google:POSTメソッド"])
-    @PostMapping("/location/photos")
+    @PostMapping("/location/photos", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
     fun postLocationPhotos(
         request: HttpServletRequest,
         @RequestParam("accountId") accountId: String,
         @RequestParam("locationId") locationId: String,
-        @RequestParam("files") files: List<MultipartFile>
+        @RequestPart("files") files: Array<MultipartFile>
     ): ResponseEntity<Any>  {
         files.forEach { file ->
             val name = file.originalFilename ?: "unknown"
@@ -240,7 +241,25 @@ class GoogleController(val authHelper: AuthHelper,  val googleService: GoogleSer
         return ResponseEntity.ok().build()
     }
 
-    @Operation(summary = "Google:最新情報を追加", description = "Google:店舗の最新情報を追加します", tags = ["Google:POSTメソッド"])
+    @Operation(summary = "Google:最新情報を追加",
+        description = """
+            Google:店舗の最新情報を追加します.
+            Request Bodyとして GoogleLocationLocalPostModelのJsonにしてください。
+            例 : {
+                "summary": "最新情報の概要",
+                "callToAction": {
+                    "actionType": "LEARN_MORE",
+                    "url": "https://example.com"
+                },
+                "media": [
+                    {
+                        "mediaFormat": "PHOTO",
+                        "sourceUrl": "https://example.com/photo.jpg"
+                    }
+                ]
+            }
+        """,
+        tags = ["Google:POSTメソッド"])
     @PostMapping("/location/local_posts")
     fun postLocationLocalPosts(
         request: HttpServletRequest,

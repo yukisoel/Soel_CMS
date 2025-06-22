@@ -221,6 +221,15 @@ data class GoogleLocationLocalPostModel(
     val offer: GoogleLocationOffer? = null,
 )
 
+data class GoogleLocationLocalPostRequest(
+    val summary: String,
+    val callToAction: GoogleLocationCallToAction? = null,
+    val event: GoogleLocationEvent? = null,
+    val topicType: String? = null,
+    val alertType: String,
+    val offer: GoogleLocationOffer? = null,
+)
+
 data class GoogleLocationCallToAction(
     val actionType: String? = null,
     val url: String? = null,

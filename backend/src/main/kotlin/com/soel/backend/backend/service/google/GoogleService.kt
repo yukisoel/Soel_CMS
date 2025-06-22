@@ -12,7 +12,6 @@ import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
-import org.springframework.security.oauth2.core.OAuth2AccessToken
 import org.springframework.stereotype.Service
 import org.springframework.web.client.HttpClientErrorException
 import org.springframework.web.multipart.MultipartFile
@@ -24,7 +23,6 @@ import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
 import java.util.*
-import java.util.concurrent.ConcurrentHashMap
 
 interface GoogleService {
     fun getMe(accessToken: String): GoogleMe?
@@ -46,7 +44,7 @@ interface GoogleService {
 
     fun deleteLocationPhotoLocal(filename: String)
 
-    fun postLocationPhotos(accessToken: String, accountId: String, locationId: String, files: List<MultipartFile>)
+    fun postLocationPhotos(accessToken: String, accountId: String, locationId: String, files: Array<MultipartFile>)
     fun postLocationLocalPosts(accessToken: String, accountId: String, locationId: String, localPost: GoogleLocationLocalPostModel, files: List<MultipartFile>)
     fun postLocationQuestion(accessToken: String, locationId: String, text: String)
     fun postLocationAnswer(accessToken: String, locationId: String, questionId: String, text: String)
@@ -468,23 +466,27 @@ class GoogleServiceImpl(val googleRepository: GoogleRepository, val menuLogRepos
         Files.delete(filePath)
     }
 
-    override fun postLocationPhotos(accessToken: String, accountId: String, locationId: String, files: List<MultipartFile>) {
+    override fun postLocationPhotos(accessToken: String, accountId: String, locationId: String, files: Array<MultipartFile>) {
         if (files.isEmpty()) {
             return
         }
         try {
             val uploadDir = System.getProperty("user.dir")
+            val filenameList = mutableListOf<String>()
             for (file in files) {
                 if (file.isEmpty) {
                     continue
                 }
                 val originalFilename = file.originalFilename
                 val fileExtension = originalFilename!!.substringAfterLast('.', "")
-                val fileName = "${UUID.randomUUID()}.$fileExtension"
+                val filename = "${UUID.randomUUID()}.$fileExtension"
+                filenameList.add(filename)
 
-                val targetLocation = Paths.get(uploadDir).resolve(fileName)
+                val targetLocation = Paths.get(uploadDir).resolve(filename)
                 Files.copy(file.inputStream, targetLocation)
-                val response = googleRepository.postLocationPhoto(accessToken, accountId, locationId, fileName)
+            }
+            for(filename in filenameList) {
+                val response = googleRepository.postLocationPhoto(accessToken, accountId, locationId, filename)
             }
         } catch (e: Exception) {
             logger.error("Error posting location photos", e)
