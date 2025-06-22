@@ -33,6 +33,9 @@ class SecurityConfig {
     @Value("\${app.redirect.url}")
     private lateinit var redirectUrl: String
 
+    @Autowired
+    private lateinit var authorizedClientService: OAuth2AuthorizedClientService
+
 
     @Bean
     fun securityFilterChain(http: HttpSecurity, clientRegistrationRepository: ClientRegistrationRepository): SecurityFilterChain {
@@ -55,7 +58,20 @@ class SecurityConfig {
                     if (authentication is OAuth2AuthenticationToken) {
                         when (authentication.authorizedClientRegistrationId) {
                             "google" -> {
+                                // principal 保存
                                 request.session.setAttribute("google_user", authentication.principal)
+
+                                // OAuth2AuthorizedClient をロードして Access Token を取り出す
+                                val client = authorizedClientService
+                                    .loadAuthorizedClient<OAuth2AuthorizedClient>(
+                                        "google",
+                                        authentication.name
+                                    )
+                                val accessToken = client?.accessToken?.tokenValue
+                                val refreshToken = client?.refreshToken?.tokenValue
+                                // セッションに保存
+                                request.session.setAttribute("google_access_token", accessToken)
+                                request.session.setAttribute("google_refresh_token", refreshToken)
                             }
                             "cognito" -> {
                                 // cognitoユーザー情報をセッションに保存

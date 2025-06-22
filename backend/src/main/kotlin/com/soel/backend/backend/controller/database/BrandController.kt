@@ -25,7 +25,7 @@ class BrandController(val authHelper: AuthHelper, val brandService: BrandService
     fun getBrandList(
         request: HttpServletRequest,
     ): ResponseEntity<BrandListResponse> {
-        val user = authHelper.getCognitoAuthenticatedUser(request)
+        val user = authHelper.getCognitoOidcUser(request)
         val sub = user.getClaim<String>("sub")
 
         val result = brandService.findBrandAllByUserId(sub)
@@ -47,7 +47,7 @@ class BrandController(val authHelper: AuthHelper, val brandService: BrandService
         request: HttpServletRequest,
         @RequestParam brandName: String
     ): ResponseEntity<BrandResponse> {
-        val user = authHelper.getCognitoAuthenticatedUser(request)
+        val user = authHelper.getCognitoOidcUser(request)
         val sub = user.getClaim<String>("sub") ?: return ResponseEntity.badRequest().build()
 
         val result = brandService.createBrand(brandName = brandName, userId = sub)
@@ -70,7 +70,7 @@ class BrandController(val authHelper: AuthHelper, val brandService: BrandService
         @RequestParam brandId: String,
         @RequestBody brandName: String
     ): ResponseEntity<BrandResponse> {
-        authHelper.getCognitoAuthenticatedUser(request)
+        authHelper.getCognitoOidcUser(request)
 
         val result = brandService.updateBrandName(brandId = brandId, brandName = brandName)
         return ResponseEntity(result.body, result.statusCode)
@@ -90,7 +90,7 @@ class BrandController(val authHelper: AuthHelper, val brandService: BrandService
         request: HttpServletRequest,
         @RequestParam brandId: String
     ): ResponseEntity<Void> {
-        authHelper.getCognitoAuthenticatedUser(request)
+        authHelper.getCognitoOidcUser(request)
 
         val result = brandService.deleteBrand(brandId = brandId)
         return ResponseEntity(result.body, result.statusCode)

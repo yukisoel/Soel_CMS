@@ -24,7 +24,7 @@ class CognitoController(val authHelper: AuthHelper) {
     fun getMe(
         request: HttpServletRequest
     ): ResponseEntity<Any> {
-        val user = authHelper.getCognitoAuthenticatedUser(request)
+        val user = authHelper.getCognitoOidcUser(request)
         val sub   = user.getClaim<String>("sub")
         val email = user.getClaim<String>("email")
 
