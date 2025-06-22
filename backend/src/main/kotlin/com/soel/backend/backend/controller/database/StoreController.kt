@@ -106,7 +106,7 @@ class StoreController(
         return ResponseEntity(result.body, result.statusCode)
     }
 
-    @PatchMapping("/name")
+    @PatchMapping("/update/name")
     @Operation(
         summary = "店舗名を更新",
         description = """
@@ -128,7 +128,7 @@ class StoreController(
         return ResponseEntity(result.body, result.statusCode)
     }
 
-    @PatchMapping("/brand")
+    @PatchMapping("/update/brand")
     @Operation(
         summary = "店舗のブランドを更新",
         description = """
@@ -150,7 +150,7 @@ class StoreController(
         return ResponseEntity(result.body, result.statusCode)
     }
 
-    @PatchMapping("/google/account")
+    @PatchMapping("/update/google/account")
     @Operation(
         summary = "店舗のGoogleアカウントを更新",
         description = """
@@ -172,7 +172,7 @@ class StoreController(
         return ResponseEntity(result.body, result.statusCode)
     }
 
-    @PatchMapping("/google/location")
+    @PatchMapping("/update/google/location")
     @Operation(
         summary = "店舗のGoogleロケーションを更新",
         description = """
@@ -194,7 +194,7 @@ class StoreController(
         return ResponseEntity(result.body, result.statusCode)
     }
 
-    @PatchMapping("/google")
+    @PatchMapping("/update/google")
     @Operation(
         summary = "店舗のGoogleアカウントとロケーションを更新",
         description = """
