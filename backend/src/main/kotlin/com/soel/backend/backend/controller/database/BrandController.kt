@@ -1,14 +1,12 @@
 package com.soel.backend.backend.controller.database
 
-import com.soel.backend.backend.api.exception.UnauthorizedException
+import com.soel.backend.backend.controller.AuthHelper
 import com.soel.backend.backend.model.api.BrandListResponse
 import com.soel.backend.backend.model.api.BrandResponse
 import com.soel.backend.backend.service.BrandService
 import io.swagger.v3.oas.annotations.Operation
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.http.ResponseEntity
-import org.springframework.security.core.annotation.AuthenticationPrincipal
-import org.springframework.security.oauth2.core.oidc.user.OidcUser
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -26,17 +24,9 @@ class BrandController(val brandService: BrandService) {
     @GetMapping("/list")
     fun getBrandList(
         request: HttpServletRequest,
-        @AuthenticationPrincipal oidcUser: OidcUser?
     ): ResponseEntity<BrandListResponse> {
-        // そもそも認証されていない
-        if (oidcUser == null) {
-            throw UnauthorizedException(
-                "認証情報が存在しないか、有効ではありません",
-                request.requestURI
-            )
-        }
-
-        val sub = oidcUser.getClaim<String>("sub") ?: return ResponseEntity.badRequest().build()
+        val user = AuthHelper.getCognitoAuthenticatedUser(request)
+        val sub = user.getClaim<String>("sub")
 
         val result = brandService.findBrandAllByUserId(sub)
         return ResponseEntity(result.body, result.statusCode)
@@ -55,18 +45,10 @@ class BrandController(val brandService: BrandService) {
     @PostMapping("/create")
     fun createBrand(
         request: HttpServletRequest,
-        @AuthenticationPrincipal oidcUser: OidcUser?,
         @RequestParam brandName: String
     ): ResponseEntity<BrandResponse> {
-        // そもそも認証されていない
-        if (oidcUser == null) {
-            throw UnauthorizedException(
-                "認証情報が存在しないか、有効ではありません",
-                request.requestURI
-            )
-        }
-
-        val sub = oidcUser.getClaim<String>("sub") ?: return ResponseEntity.badRequest().build()
+        val user = AuthHelper.getCognitoAuthenticatedUser(request)
+        val sub = user.getClaim<String>("sub") ?: return ResponseEntity.badRequest().build()
 
         val result = brandService.createBrand(brandName = brandName, userId = sub)
         return ResponseEntity(result.body, result.statusCode)
@@ -85,17 +67,10 @@ class BrandController(val brandService: BrandService) {
     @PatchMapping("/name")
     fun updateBrandName(
         request: HttpServletRequest,
-        @AuthenticationPrincipal oidcUser: OidcUser?,
         @RequestParam brandId: String,
         @RequestBody brandName: String
     ): ResponseEntity<BrandResponse> {
-        // そもそも認証されていない
-        if (oidcUser == null) {
-            throw UnauthorizedException(
-                "認証情報が存在しないか、有効ではありません",
-                request.requestURI
-            )
-        }
+        AuthHelper.getCognitoAuthenticatedUser(request)
 
         val result = brandService.updateBrandName(brandId = brandId, brandName = brandName)
         return ResponseEntity(result.body, result.statusCode)
@@ -113,16 +88,9 @@ class BrandController(val brandService: BrandService) {
     )
     fun deleteBrand(
         request: HttpServletRequest,
-        @AuthenticationPrincipal oidcUser: OidcUser?,
         @RequestParam brandId: String
     ): ResponseEntity<Void> {
-        // そもそも認証されていない
-        if (oidcUser == null) {
-            throw UnauthorizedException(
-                "認証情報が存在しないか、有効ではありません",
-                request.requestURI
-            )
-        }
+        AuthHelper.getCognitoAuthenticatedUser(request)
 
         val result = brandService.deleteBrand(brandId = brandId)
         return ResponseEntity(result.body, result.statusCode)
