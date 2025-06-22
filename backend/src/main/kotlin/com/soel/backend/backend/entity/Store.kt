@@ -11,23 +11,23 @@ import java.util.UUID
 @Table(name = "stores")
 data class StoreEntity(
     @Id
-    @Column(name = "store_id", nullable = false)
-    val storeId: UUID,
+    @Column(name = "store_id", updatable = false, nullable = false)
+    val storeId: UUID? = null,
 
     @Column(name = "user_id", nullable = false)
     val userId: UUID,
 
     @Column(name = "brand_id", nullable = true)
-    val brandId: UUID? = null,
+    var brandId: UUID? = null,
 
     @Column(name = "name", nullable = false)
-    val name: String,
+    var name: String,
 
     @Column(name = "google_account_id", nullable = true)
-    val googleAccountId: String? = null,
+    var googleAccountId: String? = null,
 
     @Column(name = "google_location_id", nullable = true)
-    val googleLocationId: String? = null,
+    var googleLocationId: String? = null,
 
     @Column(name = "google_linked_at", nullable = true)
     val googleLinkedAt: Instant? = null,
@@ -37,7 +37,6 @@ data class StoreEntity(
 ) {
     // 引数なしのコンストラクタを追加
     constructor() : this(
-        storeId = UUID.randomUUID(),
         userId = UUID.randomUUID(),
         brandId = null,
         name = "dummy store",

@@ -8,5 +8,6 @@ import java.util.UUID
 @Repository
 interface StoreRepository: JpaRepository<StoreEntity, UUID> {
     fun findByUserId(userId: UUID): List<StoreEntity>?
+    fun findByBrandId(brandId: UUID): List<StoreEntity>?
     fun findByStoreId(storeId: UUID): StoreEntity?
 }
