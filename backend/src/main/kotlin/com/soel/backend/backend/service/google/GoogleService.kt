@@ -45,7 +45,7 @@ interface GoogleService {
     fun deleteLocationPhotoLocal(filename: String)
 
     fun postLocationPhotos(accessToken: String, accountId: String, locationId: String, files: Array<MultipartFile>)
-    fun postLocationLocalPosts(accessToken: String, accountId: String, locationId: String, localPost: GoogleLocationLocalPostModel, files: List<MultipartFile>)
+    fun postLocationLocalPost(accessToken: String, accountId: String, locationId: String, localPost: GoogleLocationLocalPostModel, files: Array<MultipartFile>)
     fun postLocationQuestion(accessToken: String, locationId: String, text: String)
     fun postLocationAnswer(accessToken: String, locationId: String, questionId: String, text: String)
 
@@ -493,7 +493,7 @@ class GoogleServiceImpl(val googleRepository: GoogleRepository, val menuLogRepos
         }
     }
 
-    override fun postLocationLocalPosts(accessToken: String, accountId: String, locationId: String, localPost: GoogleLocationLocalPostModel, files: List<MultipartFile>) {
+    override fun postLocationLocalPost(accessToken: String, accountId: String, locationId: String, localPost: GoogleLocationLocalPostModel, files: Array<MultipartFile>) {
         println("postLocationLocalPosts")
         if (files.isEmpty()) {
             return

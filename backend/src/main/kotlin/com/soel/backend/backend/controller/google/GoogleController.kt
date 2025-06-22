@@ -5,6 +5,8 @@ import com.soel.backend.backend.model.*
 import com.soel.backend.backend.service.google.GoogleService
 import com.soel.backend.backend.usecase.GoogleUseCase
 import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.StringToClassMapItem
+import io.swagger.v3.oas.annotations.media.*
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
@@ -14,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody
 import java.io.IOException
 import javax.imageio.ImageIO
+import io.swagger.v3.oas.annotations.parameters.RequestBody
 
 @RestController
 @RequestMapping("/api/google")
@@ -241,7 +244,34 @@ class GoogleController(val authHelper: AuthHelper,  val googleService: GoogleSer
         return ResponseEntity.ok().build()
     }
 
-    @Operation(summary = "Google:最新情報を追加",
+    @Operation(
+        requestBody = RequestBody(
+            content = [
+                Content(
+                    mediaType = MediaType.MULTIPART_FORM_DATA_VALUE,
+                    schema = Schema(
+                        type = "object",
+                        properties = [
+                            StringToClassMapItem(
+                                key = "files",
+                                value = Array<MultipartFile>::class
+                            ),
+                            StringToClassMapItem(
+                                key = "localPost",
+                                value = GoogleLocationLocalPostModel::class
+                            ),
+                        ]
+                    ),
+                    encoding = [
+                        Encoding(
+                            name = "localPost",
+                            contentType = MediaType.APPLICATION_JSON_VALUE
+                        )
+                    ]
+                )
+            ]
+        ),
+        summary = "Google:最新情報を追加",
         description = """
             Google:店舗の最新情報を追加します.
             Request Bodyとして GoogleLocationLocalPostModelのJsonにしてください。
@@ -260,16 +290,19 @@ class GoogleController(val authHelper: AuthHelper,  val googleService: GoogleSer
             }
         """,
         tags = ["Google:POSTメソッド"])
-    @PostMapping("/location/local_posts")
+    @PostMapping(
+        "/location/local_post",
+        consumes = [MediaType.MULTIPART_FORM_DATA_VALUE]
+    )
     fun postLocationLocalPosts(
         request: HttpServletRequest,
         @RequestParam("accountId") accountId: String,
         @RequestParam("locationId") locationId: String,
-        @RequestParam("files") files: List<MultipartFile>,
-        @RequestBody localPost: GoogleLocationLocalPostModel
+        @RequestPart("files") files: Array<MultipartFile>,
+        @RequestPart("localPost") localPost: GoogleLocationLocalPostModel
     ) {
         val accessToken = authHelper.getGoogleAccessToken(request)
-        return googleService.postLocationLocalPosts(accessToken, accountId, locationId, localPost, files)
+        return googleService.postLocationLocalPost(accessToken, accountId, locationId, localPost, files)
     }
 
     @Operation(
