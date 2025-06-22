@@ -306,6 +306,67 @@ class GoogleController(val authHelper: AuthHelper,  val googleService: GoogleSer
     }
 
     @Operation(
+        requestBody = RequestBody(
+            content = [
+                Content(
+                    mediaType = MediaType.MULTIPART_FORM_DATA_VALUE,
+                    schema = Schema(
+                        type = "object",
+                        properties = [
+                            StringToClassMapItem(
+                                key = "files",
+                                value = Array<MultipartFile>::class
+                            ),
+                            StringToClassMapItem(
+                                key = "localPost",
+                                value = GoogleLocationLocalPostModel::class
+                            ),
+                        ]
+                    ),
+                    encoding = [
+                        Encoding(
+                            name = "localPost",
+                            contentType = MediaType.APPLICATION_JSON_VALUE
+                        )
+                    ]
+                )
+            ]
+        ),
+        summary = "Google:最新情報を追加",
+        description = """
+            Google:店舗の最新情報を追加します.
+            Request Bodyとして GoogleLocationLocalPostModelのJsonにしてください。
+            例 : {
+                "summary": "最新情報の概要",
+                "callToAction": {
+                    "actionType": "LEARN_MORE",
+                    "url": "https://example.com"
+                },
+                "media": [
+                    {
+                        "mediaFormat": "PHOTO",
+                        "sourceUrl": "https://example.com/photo.jpg"
+                    }
+                ]
+            }
+        """,
+        tags = ["Google:POSTメソッド"])
+    @PostMapping(
+        "/location/local_post/bulk",
+        consumes = [MediaType.MULTIPART_FORM_DATA_VALUE]
+    )
+    fun postBulkLocationLocalPost(
+        request: HttpServletRequest,
+        @RequestParam("accountId") accountId: String,
+        @RequestParam("locationIdList") locationIdList: Array<String>,
+        @RequestPart("files") files: Array<MultipartFile>,
+        @RequestPart("localPost") localPost: GoogleLocationLocalPostModel
+    ) {
+        val accessToken = authHelper.getGoogleAccessToken(request)
+        return googleService.postBulkLocationLocalPost(accessToken, accountId, locationIdList, localPost, files)
+    }
+
+    @Operation(
         summary = "Google:店舗のQ&Aを追加",
         description = """
               Google:店舗のQ&Aを追加します。

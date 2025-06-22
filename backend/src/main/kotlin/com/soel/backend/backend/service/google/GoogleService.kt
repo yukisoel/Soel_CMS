@@ -46,6 +46,7 @@ interface GoogleService {
 
     fun postLocationPhotos(accessToken: String, accountId: String, locationId: String, files: Array<MultipartFile>)
     fun postLocationLocalPost(accessToken: String, accountId: String, locationId: String, localPost: GoogleLocationLocalPostModel, files: Array<MultipartFile>)
+    fun postBulkLocationLocalPost(accessToken: String, accountId: String, locationIdList: Array<String>, localPost: GoogleLocationLocalPostModel, files: Array<MultipartFile>)
     fun postLocationQuestion(accessToken: String, locationId: String, text: String)
     fun postLocationAnswer(accessToken: String, locationId: String, questionId: String, text: String)
 
@@ -518,6 +519,35 @@ class GoogleServiceImpl(val googleRepository: GoogleRepository, val menuLogRepos
                 googleRepository.postLocationLocalPost(accessToken, accountId, locationId, localPost, filenameList)
         } catch (e: Exception) {
             logger.error("Error posting location local posts", e)
+        }
+    }
+
+    override fun postBulkLocationLocalPost(accessToken: String, accountId: String, locationIdList: Array<String>, localPost: GoogleLocationLocalPostModel, files: Array<MultipartFile>) {
+        println("postBulkLocationLocalPosts")
+        if (files.isEmpty()) {
+            return
+        }
+        try {
+            val filenameList = mutableListOf<String>()
+            val uploadDir = System.getProperty("user.dir")
+            for (file in files) {
+                if (file.isEmpty) {
+                    continue
+                }
+                val originalFilename = file.originalFilename
+                val fileExtension = originalFilename!!.substringAfterLast('.', "")
+                val fileName = "${UUID.randomUUID()}.$fileExtension"
+                filenameList.add(fileName)
+
+                val targetLocation = Paths.get(uploadDir).resolve(fileName)
+                println("fileName = $fileName")
+                Files.copy(file.inputStream, targetLocation)
+            }
+            for (locationId in locationIdList) {
+                googleRepository.postBulkLocationLocalPost(accessToken, accountId, locationId, localPost, filenameList)
+            }
+        } catch (e: Exception) {
+            logger.error("Error posting bulk location local posts", e)
         }
     }
 

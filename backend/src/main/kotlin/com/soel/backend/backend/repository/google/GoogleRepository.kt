@@ -27,6 +27,7 @@ interface GoogleRepository {
 
     fun postLocationPhoto(accessToken: String, accountId: String, locationId: String, filename: String)
     fun postLocationLocalPost(accessToken: String, accountId: String, locationId: String, localPost: GoogleLocationLocalPostModel, filenameList: List<String>)
+    fun postBulkLocationLocalPost(accessToken: String, accountId: String, locationId: String, localPost: GoogleLocationLocalPostModel, filenameList: List<String>)
     fun postLocationQuestion(accessToken: String, locationId: String, text: String)
     fun postLocationAnswer(accessToken: String, locationId: String, questionId: String, text: String)
 
@@ -426,6 +427,49 @@ class GoogleRepositoryImpl(val restTemplate: RestTemplate) : GoogleRepository {
 
     override fun postLocationLocalPost(accessToken: String, accountId: String, locationId: String, localPost: GoogleLocationLocalPostModel, filenameList: List<String>) {
         val requestUrl = "https://mybusiness.googleapis.com/v4/accounts/$accountId/locations/$locationId/localPosts"
+        val uri = UriComponentsBuilder.fromHttpUrl(requestUrl)
+            .build()
+            .toUri()
+
+        val mediaList = mutableListOf<GoogleLocationPhotoModel>()
+        for (filename in filenameList) {
+            val sourceUrl = "$baseUrl/api/google/location/photo/$filename"
+            println(sourceUrl)
+            mediaList.add(
+                GoogleLocationPhotoModel(
+                    mediaFormat = "PHOTO",
+                    locationAssociation = GoogleLocationAssociation(category = GoogleLocationAssociationCategory.ADDITIONAL),
+                    sourceUrl = sourceUrl
+                )
+            )
+        }
+
+        val headers = HttpHeaders()
+
+        headers.apply {
+            contentType = MediaType.APPLICATION_JSON
+            setBearerAuth(accessToken)
+        }
+
+        val request = GoogleLocationLocalPostModel(
+            languageCode = "ja",
+            summary = localPost.summary,
+            callToAction = localPost.callToAction,
+            media = mediaList,
+            topicType = localPost.topicType,
+        )
+
+        val entity = HttpEntity(request, headers)
+
+        restTemplate.postForObject(
+            uri,
+            entity,
+            GoogleLocationLocalPostModel::class.java
+        )
+    }
+
+    override fun postBulkLocationLocalPost(accessToken: String, accountId: String, locationId: String, localPost: GoogleLocationLocalPostModel, filenameList: List<String>) {
+        val requestUrl = "https://mybusiness.googleapis.com/v4/accounts/$accountId/locations/$locationId:bulkLocalPosts"
         val uri = UriComponentsBuilder.fromHttpUrl(requestUrl)
             .build()
             .toUri()
