@@ -14,14 +14,13 @@ import jakarta.servlet.http.HttpServletRequest
 @RequestMapping("/api/user")
 class UserController(val userService: UserService) {
     @Operation(
-        summary = "Cognito: ユーザー情報を取得",
+        summary = "ユーザー情報を取得",
         description = """
-            Cognitoを使用して、ユーザーの情報を取得します。
-            認証されていない場合は、status 401 Unauthorized を返します。(Bodyは UserErrorResponse)
-            ログインユーザーの情報がまだ登録されていない場合は、ユーザー情報を登録し、status 201 Created を返します。(Bodyは UserSuccessResponse)
-            既に登録されている場合は、status 200 OK を返します。(Bodyは UserSuccessResponse)
+            ユーザーの情報を取得します。
+            認証されていない場合は、status 401 Unauthorized を返します。(Bodyは UserApiResponse)
+            既に登録されている場合は、status 200 OK を返します。(Bodyは UserApiResponse)
             """,
-        tags = ["Cognito: ユーザー情報取得"]
+        tags = ["User: GETメソッド"]
     )
     @GetMapping("/me")
     fun getMe(request: HttpServletRequest): ResponseEntity<UserApiResponse> {

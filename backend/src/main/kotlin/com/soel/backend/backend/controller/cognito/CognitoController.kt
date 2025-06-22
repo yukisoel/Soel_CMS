@@ -18,7 +18,7 @@ class CognitoController {
             認証されていない場合は、status 401 Unauthorized を返します。(Bodyは CognitoAccountErrorResponse)
             既に登録されている場合は、status 200 OK を返します。(Bodyは CognitoAccountResponse)
             """,
-        tags = ["Cognito: ユーザー情報取得"]
+        tags = ["Cognito: GETメソッド"]
     )
     @GetMapping("/me")
     fun getMe(
