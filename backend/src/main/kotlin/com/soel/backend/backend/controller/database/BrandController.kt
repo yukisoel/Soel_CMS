@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/api/brand")
-class BrandController(val brandService: BrandService) {
+class BrandController(val authHelper: AuthHelper, val brandService: BrandService) {
     @Operation(
         summary = "ユーザーが持つブランド一覧を取得",
         description = """
@@ -25,7 +25,7 @@ class BrandController(val brandService: BrandService) {
     fun getBrandList(
         request: HttpServletRequest,
     ): ResponseEntity<BrandListResponse> {
-        val user = AuthHelper.getCognitoAuthenticatedUser(request)
+        val user = authHelper.getCognitoAuthenticatedUser(request)
         val sub = user.getClaim<String>("sub")
 
         val result = brandService.findBrandAllByUserId(sub)
@@ -47,7 +47,7 @@ class BrandController(val brandService: BrandService) {
         request: HttpServletRequest,
         @RequestParam brandName: String
     ): ResponseEntity<BrandResponse> {
-        val user = AuthHelper.getCognitoAuthenticatedUser(request)
+        val user = authHelper.getCognitoAuthenticatedUser(request)
         val sub = user.getClaim<String>("sub") ?: return ResponseEntity.badRequest().build()
 
         val result = brandService.createBrand(brandName = brandName, userId = sub)
@@ -70,7 +70,7 @@ class BrandController(val brandService: BrandService) {
         @RequestParam brandId: String,
         @RequestBody brandName: String
     ): ResponseEntity<BrandResponse> {
-        AuthHelper.getCognitoAuthenticatedUser(request)
+        authHelper.getCognitoAuthenticatedUser(request)
 
         val result = brandService.updateBrandName(brandId = brandId, brandName = brandName)
         return ResponseEntity(result.body, result.statusCode)
@@ -90,7 +90,7 @@ class BrandController(val brandService: BrandService) {
         request: HttpServletRequest,
         @RequestParam brandId: String
     ): ResponseEntity<Void> {
-        AuthHelper.getCognitoAuthenticatedUser(request)
+        authHelper.getCognitoAuthenticatedUser(request)
 
         val result = brandService.deleteBrand(brandId = brandId)
         return ResponseEntity(result.body, result.statusCode)

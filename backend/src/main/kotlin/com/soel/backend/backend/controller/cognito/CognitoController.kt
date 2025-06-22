@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/api/cognito")
-class CognitoController {
+class CognitoController(val authHelper: AuthHelper) {
     @Operation(
         summary = "Cognito: ユーザー情報を取得",
         description = """
@@ -24,7 +24,7 @@ class CognitoController {
     fun getMe(
         request: HttpServletRequest
     ): ResponseEntity<Any> {
-        val user = AuthHelper.getCognitoAuthenticatedUser(request)
+        val user = authHelper.getCognitoAuthenticatedUser(request)
         val sub   = user.getClaim<String>("sub")
         val email = user.getClaim<String>("email")
 

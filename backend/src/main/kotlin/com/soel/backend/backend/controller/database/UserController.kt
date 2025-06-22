@@ -12,7 +12,7 @@ import jakarta.servlet.http.HttpServletRequest
 
 @RestController
 @RequestMapping("/api/user")
-class UserController(val userService: UserService) {
+class UserController(val authHelper: AuthHelper, val userService: UserService) {
     @Operation(
         summary = "ユーザー情報を取得",
         description = """
@@ -24,7 +24,7 @@ class UserController(val userService: UserService) {
     )
     @GetMapping("/me")
     fun getMe(request: HttpServletRequest): ResponseEntity<UserApiResponse> {
-        val user = AuthHelper.getCognitoAuthenticatedUser(request)
+        val user = authHelper.getCognitoAuthenticatedUser(request)
         val sub = user.getClaim<String>("sub")
         val email = user.getClaim<String>("email")
 
