@@ -31,8 +31,17 @@ function App() {
   axiosApiClient.get('google/me')
     .then(_res => {
     })
-    .catch(_ => {
-      window.location.href = '/login'
+    .catch(err => {
+      const reason = err.response.headers['x-auth-error']
+      if (reason === 'cognito_required') {
+        // Cognito 未ログインを検知
+        window.location.href = '/oauth2/authorization/cognito'
+      } else if (reason === 'google_required') {
+        // Google 連携未完了を検知
+        window.location.href = '/oauth2/authorization/google'
+      } else {
+        console.error(err)
+      }
     })
 
   return (

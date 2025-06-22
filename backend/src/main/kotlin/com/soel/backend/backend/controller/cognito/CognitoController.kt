@@ -1,11 +1,10 @@
 package com.soel.backend.backend.controller.cognito
 
 import com.soel.backend.backend.model.api.CognitoAccountErrorResponse
-import com.soel.backend.backend.model.api.CognitoAccountResponse
 import io.swagger.v3.oas.annotations.Operation
+import jakarta.servlet.http.HttpServletRequest
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.security.oauth2.core.oidc.user.OidcUser
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
@@ -25,10 +24,13 @@ class CognitoController {
     )
     @GetMapping("/me")
     fun getMe(
-        @AuthenticationPrincipal oidcUser: OidcUser?,
+        request: HttpServletRequest
     ): ResponseEntity<Any> {
 
-        // 未認証またはOIDC情報が取れなかった場合の共通レスポンス
+        // セッションに保存されたcognitoユーザー情報を優先的に利用
+        val user = request.session.getAttribute("cognito_user") as? OidcUser
+
+        // 未認証またはユーザー情報が存在しない場合の共通レスポンス
         val unauthorized = ResponseEntity
             .status(HttpStatus.UNAUTHORIZED)
             .body<Any>(
@@ -38,25 +40,23 @@ class CognitoController {
                 )
             )
 
-        // そもそも認証されていない
-        if (oidcUser == null) {
+        if (user == null) {
             return unauthorized
         }
 
         // Claim から sub/email を取得
-        val sub   = oidcUser.getClaim<String>("sub")
-        val email = oidcUser.getClaim<String>("email")
+        val sub   = user.getClaim<String>("sub")
+        val email = user.getClaim<String>("email")
 
-        // 必須情報がない
         if (sub.isNullOrBlank() || email.isNullOrBlank()) {
             return unauthorized
         }
 
-        // 正常レスポンス
+        // 両方の情報を含めたレスポンスを生成
         return ResponseEntity.ok(
-            CognitoAccountResponse(
-                userId = sub,
-                email  = email
+            mapOf(
+                "userId" to sub,
+                "email" to email,
             )
         )
     }

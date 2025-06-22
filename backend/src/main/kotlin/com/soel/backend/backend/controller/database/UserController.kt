@@ -13,7 +13,7 @@ import com.soel.backend.backend.model.api.UserApiResponse
 import com.soel.backend.backend.model.api.UserErrorResponse
 
 @RestController
-@RequestMapping("/api/cognito/user")
+@RequestMapping("/api/user")
 class UserController(val userService: UserService) {
     @Operation(
         summary = "Cognito: ユーザー情報を取得",
