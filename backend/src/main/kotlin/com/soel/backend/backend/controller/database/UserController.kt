@@ -1,7 +1,7 @@
 package com.soel.backend.backend.controller.database
 
 import com.soel.backend.backend.controller.AuthHelper
-import com.soel.backend.backend.service.UserService
+import com.soel.backend.backend.service.database.UserService
 import io.swagger.v3.oas.annotations.Operation
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping

@@ -1,4 +1,4 @@
-package com.soel.backend.backend.service
+package com.soel.backend.backend.service.database
 
 import com.soel.backend.backend.entity.UserEntity
 import com.soel.backend.backend.mapper.UserMapper

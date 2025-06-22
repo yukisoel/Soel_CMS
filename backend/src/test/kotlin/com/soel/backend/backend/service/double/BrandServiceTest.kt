@@ -4,11 +4,10 @@ import com.soel.backend.backend.entity.BrandEntity
 import com.soel.backend.backend.model.api.BrandListResponse
 import com.soel.backend.backend.model.api.BrandResponse
 import com.soel.backend.backend.repository.database.BrandRepository
-import com.soel.backend.backend.service.BrandServiceImpl
+import com.soel.backend.backend.service.database.BrandServiceImpl
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
-import org.mockito.kotlin.any
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.whenever
 import org.assertj.core.api.Assertions.assertThat

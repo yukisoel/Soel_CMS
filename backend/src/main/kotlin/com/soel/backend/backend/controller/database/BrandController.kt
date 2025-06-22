@@ -3,7 +3,7 @@ package com.soel.backend.backend.controller.database
 import com.soel.backend.backend.controller.AuthHelper
 import com.soel.backend.backend.model.api.BrandListResponse
 import com.soel.backend.backend.model.api.BrandResponse
-import com.soel.backend.backend.service.BrandService
+import com.soel.backend.backend.service.database.BrandService
 import io.swagger.v3.oas.annotations.Operation
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.http.ResponseEntity
