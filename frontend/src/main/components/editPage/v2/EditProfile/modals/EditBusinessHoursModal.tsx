@@ -1,50 +1,81 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Modal from '@/main/common/Modal/Modal';
 import Wrapper from '@/main/common/Wrapper';
 import Typography from '@/main/common/Typography';
 import Button from '@/main/common/Button';
 import TimePicker from '@/main/common/TimePicker/TimePicker';
 import styles from '../EditProfileLayoutV2.module.scss';
-import { BusinessHoursPeriod, DayOfWeek } from '@/main/model/LocationModel';
+import { GoogleLocationTimePeriod } from '@/types/apiModel';
+import type { GoogleLocationTimePeriodOpenDay, GoogleLocationTimePeriodCloseDay } from '@/types/api.ts';
+import { dayMap } from '../tabs/HoursTab';
 
 type Props = {
     isOpen: boolean;
     onClose: () => void;
-    periods: BusinessHoursPeriod[];
-    onSave: (periods: BusinessHoursPeriod[]) => void;
-    title: string;
+    periods: GoogleLocationTimePeriod[];
+    onSave: (periods: GoogleLocationTimePeriod[]) => void;
+    hoursType: string;
     error?: string;
 };
 
-type ExtendedBusinessHoursPeriod = BusinessHoursPeriod & {
+type ExtendedBusinessHoursPeriod = GoogleLocationTimePeriod & {
     isClosed: boolean;
 };
 
-const DAYS_OF_WEEK: DayOfWeek[] = ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY'];
-const DAYS_OF_WEEK_JA = ['月', '火', '水', '木', '金', '土', '日'];
+const parseTimeObj = (timeObj: { hours?: number; minutes?: number } | undefined): Date | null => {
+    const date = new Date();
+    date.setHours(timeObj?.hours ?? 0);
+    date.setMinutes(timeObj?.minutes ?? 0);
+    date.setSeconds(0);
+    date.setMilliseconds(0);
+    return date;
+};
+
+// 共通関数: periodsとdayMapから全曜日分のExtendedBusinessHoursPeriod[]を生成
+function getFullBusinessHours(
+    periods: GoogleLocationTimePeriod[],
+    dayMap: { [key: string]: string }
+): ExtendedBusinessHoursPeriod[] {
+    return Object.keys(dayMap).map((day) => {
+        const period = periods.find(p => p.openDay === day);
+        if (period) {
+            return {
+                ...period,
+                isClosed: !period.openTime && !period.closeTime
+            };
+        } else {
+            return {
+                openDay: day as GoogleLocationTimePeriodOpenDay,
+                closeDay: day as GoogleLocationTimePeriodCloseDay,
+                openTime: {
+                    hours: undefined,
+                    minutes: undefined
+                },
+                closeTime: {
+                    hours: undefined,
+                    minutes: undefined
+                },
+                isClosed: true
+            };
+        }
+    });
+}
 
 export default function EditBusinessHoursModal({
     isOpen,
     onClose,
     periods,
     onSave,
-    title,
+    hoursType,
     error,
 }: Props) {
     const [businessHours, setBusinessHours] = useState<ExtendedBusinessHoursPeriod[]>(
-        periods.length > 0
-            ? periods.map(period => ({
-                ...period,
-                isClosed: !period.openTime && !period.closeTime
-            }))
-            : DAYS_OF_WEEK.map((day) => ({
-                openDay: day,
-                closeDay: day,
-                openTime: '',
-                closeTime: '',
-                isClosed: true
-            }))
+        getFullBusinessHours(periods, dayMap)
     );
+
+    useEffect(() => {
+        setBusinessHours(getFullBusinessHours(periods, dayMap));
+    }, [periods]);
 
     const handleTimeChange = (
         index: number,
@@ -53,28 +84,15 @@ export default function EditBusinessHoursModal({
     ) => {
         if (!date) return;
 
-        const timeString = date.toLocaleTimeString('ja-JP', {
-            hour: '2-digit',
-            minute: '2-digit',
-            hour12: false
-        });
-
+        const hours = date.getHours();
+        const minutes = date.getMinutes();
         const newHours = [...businessHours];
         newHours[index] = {
             ...newHours[index],
-            [field]: timeString,
+            [field]: { hours, minutes },
             isClosed: false
         };
         setBusinessHours(newHours);
-    };
-
-    const parseTimeString = (timeStr: string): Date | null => {
-        if (!timeStr) return null;
-        const [hours, minutes] = timeStr.split(':').map(Number);
-        const date = new Date();
-        date.setHours(hours);
-        date.setMinutes(minutes);
-        return date;
     };
 
     const handleToggleClosed = (index: number) => {
@@ -82,19 +100,29 @@ export default function EditBusinessHoursModal({
         const hour = newHours[index];
 
         if (hour.isClosed) {
-            // 休業から営業に変更
             newHours[index] = {
                 ...hour,
-                openTime: '',
-                closeTime: '',
+                openTime: {
+                    hours: 0,
+                    minutes: 0
+                },
+                closeTime: {
+                    hours: 0,
+                    minutes: 0
+                },
                 isClosed: false
             };
         } else {
-            // 営業から休業に変更
             newHours[index] = {
                 ...hour,
-                openTime: '',
-                closeTime: '',
+                openTime: {
+                    hours: undefined,
+                    minutes: undefined
+                },
+                closeTime: {
+                    hours: undefined,
+                    minutes: undefined
+                },
                 isClosed: true
             };
         }
@@ -102,8 +130,9 @@ export default function EditBusinessHoursModal({
     };
 
     const handleSave = () => {
-        // isClosed フラグを除いてから保存
-        const periodsToSave = businessHours.map(({ isClosed, ...period }) => period);
+        const periodsToSave = businessHours
+            .filter(({ isClosed }) => !isClosed)
+            .map(({ isClosed, ...period }) => period)
         onSave(periodsToSave);
         onClose();
     };
@@ -115,7 +144,7 @@ export default function EditBusinessHoursModal({
                 <Wrapper direction="col" gap="1rem">
                     {businessHours.map((hour, index) => (
                         <div key={index} className={styles.business_hours_row}>
-                            <Typography content={DAYS_OF_WEEK_JA[index]} color="primary" size="normal" />
+                            <Typography content={dayMap[hour.openDay]} color="primary" size="normal" />
                             {hour.isClosed ? (
                                 <Wrapper gap="1rem" align="align-center">
                                     <Button
@@ -129,12 +158,12 @@ export default function EditBusinessHoursModal({
                             ) : (
                                 <Wrapper gap="1rem" align="align-center">
                                     <TimePicker
-                                        defaultValue={parseTimeString(hour.openTime)}
+                                        defaultValue={parseTimeObj(hour.openTime)}
                                         onChange={(date) => handleTimeChange(index, 'openTime', date)}
                                     />
                                     <Typography content="~" color="primary" size="normal" />
                                     <TimePicker
-                                        defaultValue={parseTimeString(hour.closeTime)}
+                                        defaultValue={parseTimeObj(hour.closeTime)}
                                         onChange={(date) => handleTimeChange(index, 'closeTime', date)}
                                     />
                                     <Button
@@ -180,7 +209,7 @@ export default function EditBusinessHoursModal({
 
     return (
         <Modal
-            headerContent={`${title}を編集`}
+            headerContent={`${hoursType}を編集`}
             isOpen={isOpen}
             onClose={onClose}
             contentRender={renderContent}

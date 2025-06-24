@@ -128,7 +128,7 @@ class GoogleController(val authHelper: AuthHelper,  val googleService: GoogleSer
         summary = "Google:店舗のQ&Aを全て取得",
         description = """
            Google:店舗のQ&Aを全て取得します。
-           ビジネスプロフィールが無効だったり制限がかかっている場合はエラーが返ってきます。 
+           ビジネスプロフィールが無効だったり制限がかかっている場合はエラーが返ってきます。
         """,
         tags = ["Google:GETメソッド"]
     )
@@ -145,7 +145,7 @@ class GoogleController(val authHelper: AuthHelper,  val googleService: GoogleSer
         summary = "Google:店舗のQ&Aの特定の質問に対する回答を全て取得",
         description = """
            Google:店舗のQ&Aの特定の質問に対する回答を全て取得します。
-           ビジネスプロフィールが無効だったり制限がかかっている場合はエラーが返ってきます。 
+           ビジネスプロフィールが無効だったり制限がかかっている場合はエラーが返ってきます。
         """,
         tags = ["Google:GETメソッド"]
     )
@@ -458,7 +458,7 @@ class GoogleController(val authHelper: AuthHelper,  val googleService: GoogleSer
         description = """
               Google:店舗の追加カテゴリを更新します。
               Request Bodyとして nameのみ入った配列Jsonにしてください。
-              例 : 
+              例 :
               [
                 {"name": "カテゴリ名"},
                 {"name": "カテゴリ名"}
@@ -707,17 +707,17 @@ class GoogleController(val authHelper: AuthHelper,  val googleService: GoogleSer
                             {
                               "uri": "https://x.com/elonmuskkkkkk"
                             }
-                          ], 
-                          "valueType": "URL", 
+                          ],
+                          "valueType": "URL",
                           "name": "attributes/url_twitter"
-                        }, 
+                        },
                         {
                           "uriValues": [
                             {
                               "uri": "https://www.tiktok.com/@takafumi_horiekkkkk"
                             }
-                          ], 
-                          "valueType": "URL", 
+                          ],
+                          "valueType": "URL",
                           "name": "attributes/url_tiktok"
                         }
                       ]
@@ -801,7 +801,7 @@ class GoogleController(val authHelper: AuthHelper,  val googleService: GoogleSer
               例: SERVICE_ALCOHOL, service_alcohol, attributes/serves_alcohol, アルコール飲料あり
               valueはbooleanです。
               valueがnullの場合はサービスを削除します。
-              例 : 
+              例 :
               [
                 {
                   "type": "アルコール飲料あり",
@@ -833,7 +833,7 @@ class GoogleController(val authHelper: AuthHelper,  val googleService: GoogleSer
               例: HAS_SEATING_OUTDOORS, has_seating_outdoors, attributes/has_seating_outdoors, テラス席あり
               valueはbooleanです。
               valueがnullの場合はサービスを削除します。
-              例 : 
+              例 :
               [
                 {
                   "type": "テラス席あり",

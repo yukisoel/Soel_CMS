@@ -11,6 +11,72 @@
     }
   ],
   "paths": {
+    "/api/store/create": {
+      "post": {
+        "tags": [
+          "Store POSTメソッド"
+        ],
+        "summary": "新しい店舗を作成",
+        "description": "\n            認証されたユーザーの新しい店舗を作成します。\n            Request Bodyには店舗名の文字列を含めます。\n            認証されていない場合は、status 401 Unauthorized を返します。(Bodyは StoreErrorResponse)\n            店舗の作成に成功した場合は、status 201 Created を返します。(Bodyは StoreResponse)\n            ",
+        "operationId": "createStore",
+        "parameters": [
+          {
+            "name": "storeName",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "brandId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "googleAccountId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "googleLocationId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/StoreResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/google/places/autocomplete": {
       "post": {
         "tags": [
@@ -49,504 +115,6 @@
                 }
               }
             }
-          }
-        }
-      }
-    },
-    "/api/google/location/question": {
-      "post": {
-        "tags": [
-          "Google:POSTメソッド"
-        ],
-        "summary": "Google:店舗のQ\u0026Aを追加",
-        "description": "\n              Google:店舗のQ\u0026Aを追加します。\n              Request Bodyとして textのみ入ったJsonにしてください。\n              例 : {\"text\": \"質問内容\"}\n     ",
-        "operationId": "postLocationQuestion",
-        "parameters": [
-          {
-            "name": "locationId",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/GoogleLocationQuestion"
-              }
-            }
-          }
-        },
-        "responses": {
-          "401": {
-            "description": "Unauthorized",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "200": {
-            "description": "OK"
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "Google:DELETEメソッド"
-        ],
-        "summary": "Google:店舗の質問の削除",
-        "description": "\n              Google:店舗の質問を削除します。\n        ",
-        "operationId": "deleteLocationQuestion",
-        "parameters": [
-          {
-            "name": "locationId",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "questionId",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "401": {
-            "description": "Unauthorized",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "200": {
-            "description": "OK"
-          }
-        }
-      },
-      "patch": {
-        "tags": [
-          "Google:PATCHメソッド"
-        ],
-        "summary": "Google:店舗のQ\u0026Aの更新",
-        "description": "\n              Google:店舗のQ\u0026Aを更新します。\n              Request Bodyとして textのみ入ったJsonにしてください。\n              例 : {\"text\": \"質問内容\"}\n        ",
-        "operationId": "updateLocationQuestion",
-        "parameters": [
-          {
-            "name": "locationId",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "questionId",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/GoogleLocationQuestion"
-              }
-            }
-          }
-        },
-        "responses": {
-          "401": {
-            "description": "Unauthorized",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/GoogleLocationQuestion"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/google/location/photos": {
-      "get": {
-        "tags": [
-          "Google:GETメソッド"
-        ],
-        "summary": "Google:店舗の写真を全て取得",
-        "description": "Google:店舗の写真を全て取得します",
-        "operationId": "getLocationPhotos",
-        "parameters": [
-          {
-            "name": "accountId",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "locationId",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "401": {
-            "description": "Unauthorized",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/GoogleLocationPhotoModel"
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "tags": [
-          "Google:POSTメソッド"
-        ],
-        "summary": "Google:写真を追加",
-        "description": "Google:店舗の写真を追加します",
-        "operationId": "postLocationPhotos",
-        "parameters": [
-          {
-            "name": "accountId",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "locationId",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "multipart/form-data": {
-              "schema": {
-                "required": [
-                  "files"
-                ],
-                "type": "object",
-                "properties": {
-                  "files": {
-                    "type": "array",
-                    "items": {
-                      "type": "string",
-                      "format": "binary"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "401": {
-            "description": "Unauthorized",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "type": "object"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/google/location/local_post": {
-      "post": {
-        "tags": [
-          "Google:POSTメソッド"
-        ],
-        "summary": "Google:最新情報を追加",
-        "description": "\n            Google:店舗の最新情報を追加します.\n            Request Bodyとして GoogleLocationLocalPostModelのJsonにしてください。\n            例 : {\n                \"summary\": \"最新情報の概要\",\n                \"callToAction\": {\n                    \"actionType\": \"LEARN_MORE\",\n                    \"url\": \"https://example.com\"\n                },\n                \"media\": [\n                    {\n                        \"mediaFormat\": \"PHOTO\",\n                        \"sourceUrl\": \"https://example.com/photo.jpg\"\n                    }\n                ]\n            }\n        ",
-        "operationId": "postLocationLocalPosts",
-        "parameters": [
-          {
-            "name": "accountId",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "locationId",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "multipart/form-data": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "files": {
-                    "type": "array",
-                    "items": {
-                      "type": "string",
-                      "format": "binary"
-                    }
-                  },
-                  "localPost": {
-                    "$ref": "#/components/schemas/GoogleLocationLocalPostModel"
-                  }
-                }
-              },
-              "encoding": {
-                "localPost": {
-                  "contentType": "application/json"
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "401": {
-            "description": "Unauthorized",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/google/location/local_post/bulk": {
-      "post": {
-        "tags": [
-          "Google:POSTメソッド"
-        ],
-        "summary": "Google:最新情報を追加",
-        "description": "\n            Google:店舗の最新情報を追加します.\n            Request Bodyとして GoogleLocationLocalPostModelのJsonにしてください。\n            例 : {\n                \"summary\": \"最新情報の概要\",\n                \"callToAction\": {\n                    \"actionType\": \"LEARN_MORE\",\n                    \"url\": \"https://example.com\"\n                },\n                \"media\": [\n                    {\n                        \"mediaFormat\": \"PHOTO\",\n                        \"sourceUrl\": \"https://example.com/photo.jpg\"\n                    }\n                ]\n            }\n        ",
-        "operationId": "postBulkLocationLocalPost",
-        "parameters": [
-          {
-            "name": "accountId",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "locationIdList",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "multipart/form-data": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "files": {
-                    "type": "array",
-                    "items": {
-                      "type": "string",
-                      "format": "binary"
-                    }
-                  },
-                  "localPost": {
-                    "$ref": "#/components/schemas/GoogleLocationLocalPostModel"
-                  }
-                }
-              },
-              "encoding": {
-                "localPost": {
-                  "contentType": "application/json"
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "401": {
-            "description": "Unauthorized",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/google/location/answer": {
-      "post": {
-        "tags": [
-          "Google:POSTメソッド"
-        ],
-        "summary": "Google:店舗のQ\u0026Aに回答",
-        "description": "\n              Google:店舗のQ\u0026Aに現在のユーザー回答します。すでに回答している場合は回答内容を更新します。\n              Request Bodyとして textのみ入ったJsonにしてください。\n              例 : {\"text\": \"回答内容\"}\n        ",
-        "operationId": "postLocationAnswer",
-        "parameters": [
-          {
-            "name": "locationId",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "questionId",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/GoogleLocationAnswer"
-              }
-            }
-          }
-        },
-        "responses": {
-          "401": {
-            "description": "Unauthorized",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "200": {
-            "description": "OK"
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "Google:DELETEメソッド"
-        ],
-        "summary": "Google:店舗の回答の削除",
-        "description": "\n              Google:現在のユーザーが作成した回答を削除します。\n        ",
-        "operationId": "deleteLocationAnswer",
-        "parameters": [
-          {
-            "name": "locationId",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "questionId",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "401": {
-            "description": "Unauthorized",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "200": {
-            "description": "OK"
           }
         }
       }
@@ -593,66 +161,17 @@
         }
       }
     },
-    "/api/google/location/review/reply": {
-      "delete": {
-        "tags": [
-          "Google:DELETEメソッド"
-        ],
-        "summary": "Google:店舗のクチコミの返信を削除",
-        "description": "\n              Google:店舗のクチコミの返信を削除します。\n        ",
-        "operationId": "deleteLocationReviewReply",
-        "parameters": [
-          {
-            "name": "accountId",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "locationId",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "reviewId",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "401": {
-            "description": "Unauthorized",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "200": {
-            "description": "OK"
-          }
-        }
-      },
+    "/api/store/update/name": {
       "patch": {
         "tags": [
-          "Google:PATCHメソッド"
+          "Store PATCHメソッド"
         ],
-        "summary": "Google:店舗のクチコミに返信",
-        "description": "\n              Google:店舗のクチコミに返信します。\n              Request Bodyとして commentのstringにしてください。\n              例 : \"Thank you for your feedback!\"\n              ",
-        "operationId": "updateLocationReviewReply",
+        "summary": "店舗名を更新",
+        "description": "\n            認証されたユーザーの店舗名を更新します。\n            Request Bodyには新しい店舗名の文字列を含めます。\n            認証されていない場合は、status 401 Unauthorized を返します。(Bodyは StoreErrorResponse)\n            店舗名の更新に成功した場合は、status 200 OK を返します。(Bodyは StoreResponse)\n            ",
+        "operationId": "updateStoreName",
         "parameters": [
           {
-            "name": "accountId",
+            "name": "storeId",
             "in": "query",
             "required": true,
             "schema": {
@@ -660,15 +179,7 @@
             }
           },
           {
-            "name": "locationId",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "reviewId",
+            "name": "storeName",
             "in": "query",
             "required": true,
             "schema": {
@@ -676,15 +187,6 @@
             }
           }
         ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "string"
-              }
-            }
-          }
-        },
         "responses": {
           "401": {
             "description": "Unauthorized",
@@ -701,7 +203,7 @@
             "content": {
               "*/*": {
                 "schema": {
-                  "$ref": "#/components/schemas/GoogleLocationReviewReply"
+                  "$ref": "#/components/schemas/StoreResponse"
                 }
               }
             }
@@ -709,57 +211,17 @@
         }
       }
     },
-    "/api/google/location/profile": {
-      "get": {
-        "tags": [
-          "Google:GETメソッド"
-        ],
-        "summary": "Google:店舗プロフィールの取得",
-        "description": "Google:店舗プロフィールの取得を行います",
-        "operationId": "getLocationProfile",
-        "parameters": [
-          {
-            "name": "locationId",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "401": {
-            "description": "Unauthorized",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/GoogleLocationProfileModel"
-                }
-              }
-            }
-          }
-        }
-      },
+    "/api/store/update/google": {
       "patch": {
         "tags": [
-          "Google:PATCHメソッド"
+          "Store PATCHメソッド"
         ],
-        "summary": "Google:店舗プロフィールの更新",
-        "description": "Google:店舗プロフィールを更新します",
-        "operationId": "updateLocationProfile",
+        "summary": "店舗のGoogleアカウントとロケーションを更新",
+        "description": "\n            認証されたユーザーの店舗のGoogleアカウントとロケーションを同時に更新します。\n            Request Bodyには新しいGoogleアカウントIDとGoogleロケーションIDの文字列を含めます。\n            認証されていない場合は、status 401 Unauthorized を返します。(Bodyは StoreErrorResponse)\n            Googleアカウントとロケーションの更新に成功した場合は、status 200 OK を返します。(Bodyは StoreResponse)\n            ",
+        "operationId": "updateStoreGoogle",
         "parameters": [
           {
-            "name": "locationId",
+            "name": "storeId",
             "in": "query",
             "required": true,
             "schema": {
@@ -767,7 +229,15 @@
             }
           },
           {
-            "name": "updateMask",
+            "name": "googleAccountId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "googleLocationId",
             "in": "query",
             "required": true,
             "schema": {
@@ -775,15 +245,6 @@
             }
           }
         ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/GoogleLocationProfileModel"
-              }
-            }
-          }
-        },
         "responses": {
           "401": {
             "description": "Unauthorized",
@@ -800,7 +261,7 @@
             "content": {
               "*/*": {
                 "schema": {
-                  "$ref": "#/components/schemas/GoogleLocationProfileModel"
+                  "$ref": "#/components/schemas/StoreResponse"
                 }
               }
             }
@@ -808,17 +269,25 @@
         }
       }
     },
-    "/api/google/location/profile/website_uri": {
+    "/api/store/update/google/location": {
       "patch": {
         "tags": [
-          "Google:PATCHメソッド"
+          "Store PATCHメソッド"
         ],
-        "summary": "Google:店舗のプロフィールの更新:ウェブサイトURL",
-        "description": "\n              Google:店舗のウェブサイトURLを更新します。\n              Request Bodyとして websiteUriのStringにしてください。\n              例 : https://example.com\n        ",
-        "operationId": "updateLocationProfileWebsiteUri",
+        "summary": "店舗のGoogleロケーションを更新",
+        "description": "\n            認証されたユーザーの店舗のGoogleロケーションを更新します。\n            Request Bodyには新しいGoogleロケーションIDの文字列を含めます。\n            認証されていない場合は、status 401 Unauthorized を返します。(Bodyは StoreErrorResponse)\n            Googleロケーションの更新に成功した場合は、status 200 OK を返します。(Bodyは StoreResponse)\n            ",
+        "operationId": "updateStoreGoogleLocation",
         "parameters": [
           {
-            "name": "locationId",
+            "name": "storeId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "googleLocationId",
             "in": "query",
             "required": true,
             "schema": {
@@ -826,15 +295,6 @@
             }
           }
         ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "string"
-              }
-            }
-          }
-        },
         "responses": {
           "401": {
             "description": "Unauthorized",
@@ -851,7 +311,7 @@
             "content": {
               "*/*": {
                 "schema": {
-                  "$ref": "#/components/schemas/GoogleLocationProfileModel"
+                  "$ref": "#/components/schemas/StoreResponse"
                 }
               }
             }
@@ -859,17 +319,25 @@
         }
       }
     },
-    "/api/google/location/profile/title": {
+    "/api/store/update/google/account": {
       "patch": {
         "tags": [
-          "Google:PATCHメソッド"
+          "Store PATCHメソッド"
         ],
-        "summary": "Google:店舗のプロフィールの更新:ビジネス名",
-        "description": "Google:店舗のビジネス名を更新します",
-        "operationId": "updateLocationProfileTitle",
+        "summary": "店舗のGoogleアカウントを更新",
+        "description": "\n            認証されたユーザーの店舗のGoogleアカウントを更新します。\n            Request Bodyには新しいGoogleアカウントIDの文字列を含めます。\n            認証されていない場合は、status 401 Unauthorized を返します。(Bodyは StoreErrorResponse)\n            Googleアカウントの更新に成功した場合は、status 200 OK を返します。(Bodyは StoreResponse)\n            ",
+        "operationId": "updateStoreGoogleAccount",
         "parameters": [
           {
-            "name": "locationId",
+            "name": "storeId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "googleAccountId",
             "in": "query",
             "required": true,
             "schema": {
@@ -877,15 +345,6 @@
             }
           }
         ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "string"
-              }
-            }
-          }
-        },
         "responses": {
           "401": {
             "description": "Unauthorized",
@@ -902,7 +361,7 @@
             "content": {
               "*/*": {
                 "schema": {
-                  "$ref": "#/components/schemas/GoogleLocationProfileModel"
+                  "$ref": "#/components/schemas/StoreResponse"
                 }
               }
             }
@@ -910,431 +369,17 @@
         }
       }
     },
-    "/api/google/location/profile/store_front_address": {
+    "/api/store/update/brand": {
       "patch": {
         "tags": [
-          "Google:PATCHメソッド"
+          "Store PATCHメソッド"
         ],
-        "summary": "Google:店舗のプロフィールの更新:店舗の住所",
-        "description": "\n              Google:店舗のの住所を更新します。\n              Request Bodyとして GoogleLocationStoreFrontAddressRequestのJsonにしてください。\n              例 : {\n                      \"postalCode\": \"1234567\",\n                      \"administrativeArea\": \"東京都\",\n                      \"addressLines\": [\n                      \"渋谷区1-50\",\n                      \"戸島ビル303\"\n                      ]\n                    }\n        ",
-        "operationId": "updateLocationStoreFrontAddress",
+        "summary": "店舗のブランドを更新",
+        "description": "\n            認証されたユーザーの店舗のブランドを更新します。\n            Request Bodyには新しいブランドIDの文字列を含めます。\n            認証されていない場合は、status 401 Unauthorized を返します。(Bodyは StoreErrorResponse)\n            ブランドの更新に成功した場合は、status 200 OK を返します。(Bodyは StoreResponse)\n            ",
+        "operationId": "updateStoreBrand",
         "parameters": [
           {
-            "name": "locationId",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/GoogleLocationStoreFrontAddressRequest"
-              }
-            }
-          }
-        },
-        "responses": {
-          "401": {
-            "description": "Unauthorized",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/GoogleLocationProfileModel"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/google/location/profile/service_area": {
-      "patch": {
-        "tags": [
-          "Google:PATCHメソッド"
-        ],
-        "summary": "Google:店舗のプロフィールの更新:サービスエリア",
-        "description": "\n              Google:店舗のサービスエリアを更新します。\n              Request Bodyとして placeIdsのString配列にしてください。\n              例 : [\"ChIJLx1v3J2XGGAR5g4q0G7f8lE\", \"ChIJLx1v3J2XGGAR5g4q0G7f8lE\"]\n        ",
-        "operationId": "updateLocationServiceArea",
-        "parameters": [
-          {
-            "name": "locationId",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "array",
-                "items": {
-                  "type": "string"
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "401": {
-            "description": "Unauthorized",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/GoogleLocationProfileModel"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/google/location/profile/primary_category": {
-      "patch": {
-        "tags": [
-          "Google:PATCHメソッド"
-        ],
-        "summary": "Google:店舗のプロフィールの更新:メインカテゴリ",
-        "description": "Google:店舗のメインカテゴリを更新します",
-        "operationId": "updateLocationProfilePrimaryCategory",
-        "parameters": [
-          {
-            "name": "locationId",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/GoogleLocationCategory"
-              }
-            }
-          }
-        },
-        "responses": {
-          "401": {
-            "description": "Unauthorized",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/GoogleLocationProfileModel"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/google/location/profile/phone_number": {
-      "patch": {
-        "tags": [
-          "Google:PATCHメソッド"
-        ],
-        "summary": "Google:店舗のプロフィールの更新:電話番号",
-        "description": "\n              Google:店舗の電話番号を更新します。\n              Request Bodyとして phoneNumberのStringにしてください。\n              数字に変換した時に10桁である必要があります。\n              ハイフンとスペースは無視されます。\n              例1 : 09012345678\n              例2 : 9012345678\n              例3 : 090-1234-5678\n              例4 : 090 1234 5678\n        ",
-        "operationId": "updateLocationProfilePhoneNumber",
-        "parameters": [
-          {
-            "name": "locationId",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "string"
-              }
-            }
-          }
-        },
-        "responses": {
-          "401": {
-            "description": "Unauthorized",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/GoogleLocationProfileModel"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/google/location/profile/opening_date": {
-      "patch": {
-        "tags": [
-          "Google:PATCHメソッド"
-        ],
-        "summary": "Google:店舗のプロフィールの更新:オープン日",
-        "description": "\n              Google:店舗のオープン日を更新します。\n              Request Bodyとして dateのみ入ったJsonにしてください。\n              例 : {\"year\": 2023, \"month\": 10, \"day\": 1}\n        ",
-        "operationId": "updateLocationProfileOpeningDate",
-        "parameters": [
-          {
-            "name": "locationId",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/GoogleLocationDate"
-              }
-            }
-          }
-        },
-        "responses": {
-          "401": {
-            "description": "Unauthorized",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/GoogleLocationProfileModel"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/google/location/profile/description": {
-      "patch": {
-        "tags": [
-          "Google:PATCHメソッド"
-        ],
-        "summary": "Google:店舗のプロフィールの更新:説明",
-        "description": "\n              Google:店舗の説明を更新します。\n              Request Bodyとして descriptionのStringにしてください。\n              例 : これは店舗です。\n        ",
-        "operationId": "updateLocationProfileDescription",
-        "parameters": [
-          {
-            "name": "locationId",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "string"
-              }
-            }
-          }
-        },
-        "responses": {
-          "401": {
-            "description": "Unauthorized",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/GoogleLocationProfileModel"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/google/location/profile/business_hours": {
-      "patch": {
-        "tags": [
-          "Google:PATCHメソッド"
-        ],
-        "summary": "Google:店舗のプロフィールの更新:営業時間",
-        "description": "\n              Google:店舗の営業時間を更新します。\n              Request Bodyとして GoogleLocationBusinessHoursRequestのJsonにしてください。\n              通常営業時間を変更したいときはhoursTypeIdを通常営業またはREGULARにしてください。\n              例 : {\n                      \"hoursTypeId\": \"REGULAR\",\n                      \"periods\": [\n                        {\n                          \"openDay\": \"MONDAY\",\n                          \"openTime\": {\n                            \"hours\": 10,\n                            \"minutes\": 0\n                          },\n                          \"closeDay\": \"MONDAY\",\n                          \"closeTime\": {\n                            \"hours\": 20,\n                            \"minutes\": 0\n                          },\n                          \"openDay\": \"TUESDAY\",\n                          \"openTime\": {\n                            \"hours\": 10,\n                            \"minutes\": 0\n                          },\n                          \"closeDay\": \"TUESDAY\",\n                          \"closeTime\": {\n                            \"hours\": 20,\n                            \"minutes\": 0\n                          },\n                        }\n                      ]\n                    }\n        ",
-        "operationId": "updateLocationBusinessHours",
-        "parameters": [
-          {
-            "name": "locationId",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/GoogleLocationBusinessHoursRequest"
-              }
-            }
-          }
-        },
-        "responses": {
-          "401": {
-            "description": "Unauthorized",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/GoogleLocationProfileModel"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/google/location/profile/additional_categories": {
-      "patch": {
-        "tags": [
-          "Google:PATCHメソッド"
-        ],
-        "summary": "Google:店舗のプロフィールの更新:追加カテゴリ",
-        "description": "\n              Google:店舗の追加カテゴリを更新します。\n              Request Bodyとして nameのみ入った配列Jsonにしてください。\n              例 : \n              [\n                {\"name\": \"カテゴリ名\"},\n                {\"name\": \"カテゴリ名\"}\n              ]\n        ",
-        "operationId": "updateLocationProfileAdditionalCategories",
-        "parameters": [
-          {
-            "name": "locationId",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "array",
-                "items": {
-                  "$ref": "#/components/schemas/GoogleLocationCategory"
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "401": {
-            "description": "Unauthorized",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/GoogleLocationProfileModel"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/google/location/food_menus": {
-      "get": {
-        "tags": [
-          "Google:GETメソッド"
-        ],
-        "summary": "Google:店舗のメニューを全て取得",
-        "description": "Google:店舗のメニューを全て取得します",
-        "operationId": "getLocationFoodMenus",
-        "parameters": [
-          {
-            "name": "accountId",
+            "name": "storeId",
             "in": "query",
             "required": true,
             "schema": {
@@ -1342,7 +387,7 @@
             }
           },
           {
-            "name": "locationId",
+            "name": "brandId",
             "in": "query",
             "required": true,
             "schema": {
@@ -1366,424 +411,7 @@
             "content": {
               "*/*": {
                 "schema": {
-                  "$ref": "#/components/schemas/GoogleLocationFoodMenusModel"
-                }
-              }
-            }
-          }
-        }
-      },
-      "patch": {
-        "tags": [
-          "Google:PATCHメソッド"
-        ],
-        "summary": "Google:店舗のメニューの更新",
-        "description": "Google:店舗のメニューを更新します",
-        "operationId": "updateLocationFoodMenus",
-        "parameters": [
-          {
-            "name": "accountId",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "locationId",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/GoogleLocationFoodMenusModel"
-              }
-            }
-          }
-        },
-        "responses": {
-          "401": {
-            "description": "Unauthorized",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/GoogleLocationFoodMenusModel"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/google/location/attributes": {
-      "get": {
-        "tags": [
-          "Google:GETメソッド"
-        ],
-        "summary": "Google:店舗の属性情報を全て取得",
-        "description": "Google:店舗の属性情報を全て取得します",
-        "operationId": "getLocationAttributes",
-        "parameters": [
-          {
-            "name": "locationId",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "401": {
-            "description": "Unauthorized",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/GoogleLocationAttributesModel"
-                }
-              }
-            }
-          }
-        }
-      },
-      "patch": {
-        "tags": [
-          "Google:PATCHメソッド"
-        ],
-        "summary": "Google:店舗の属性の更新",
-        "description": "\n              Google:店舗の属性を更新します。\n              Request:\n                  Params: attributeMaskに更新する属性のカンマ区切りのリストを渡してください。\n                  例: attributes/url_twitter,attributes/url_tiktok\n                  Body: nameを除くattributesのJsonを渡してください。attributeMaskに含んでいない属性は無視されます。\n                  例 : {\n                      \"attributes\": [\n                        {\n                          \"uriValues\": [\n                            {\n                              \"uri\": \"https://x.com/elonmuskkkkkk\"\n                            }\n                          ], \n                          \"valueType\": \"URL\", \n                          \"name\": \"attributes/url_twitter\"\n                        }, \n                        {\n                          \"uriValues\": [\n                            {\n                              \"uri\": \"https://www.tiktok.com/@takafumi_horiekkkkk\"\n                            }\n                          ], \n                          \"valueType\": \"URL\", \n                          \"name\": \"attributes/url_tiktok\"\n                        }\n                      ]\n                    }\n        ",
-        "operationId": "updateLocationAttributes",
-        "parameters": [
-          {
-            "name": "locationId",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "attributeMask",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/GoogleLocationAttributesModel"
-              }
-            }
-          }
-        },
-        "responses": {
-          "401": {
-            "description": "Unauthorized",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/GoogleLocationAttributesModel"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/google/location/attributes/sns_link": {
-      "patch": {
-        "tags": [
-          "Google:PATCHメソッド"
-        ],
-        "summary": "Google:店舗のSNSリンクの更新",
-        "description": "\n              Google:店舗のSNSリンクを更新します。\n              Request Bodyとして snsTypeとsnsUrlのStringにしてください。\n              例 : {\"snsType\": \"TWITTER\", \"snsUrl\": \"https://x.com/elonmusk\"}\n              snsTypeはenumで以下から選択してください。(全部大文字で指定してください)\n                TWITTER, TIKTOK, INSTAGRAM, YOUTUBE, INSTAGRAM, FACEBOOK, LINKEDIN, PINTEREST\n        ",
-        "operationId": "updateLocationAttributeSnsLink",
-        "parameters": [
-          {
-            "name": "locationId",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/GoogleLocationAttributeSnsLinkRequest"
-              }
-            }
-          }
-        },
-        "responses": {
-          "401": {
-            "description": "Unauthorized",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/GoogleLocationAttributesModel"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/google/location/attributes/services": {
-      "patch": {
-        "tags": [
-          "Google:PATCHメソッド"
-        ],
-        "summary": "Google:店舗のサービスの更新",
-        "description": "\n              Google:店舗のサービスを更新します。\n              Request BodyはGoogleLocationAttributeServiceの配列のJsonにしてください。\n              typeはenumです。パターンとして以下の入力が可能です。\n              例: SERVICE_ALCOHOL, service_alcohol, attributes/serves_alcohol, アルコール飲料あり\n              valueはbooleanです。\n              valueがnullの場合はサービスを削除します。\n              例 : \n              [\n                {\n                  \"type\": \"アルコール飲料あり\",\n                  \"value\": true\n                },\n                {\n                  \"type\": \"SERVES_ORGANIC\",\n                  // valueがnullの場合はSERVES_ORGANICが削除されます。\n                }\n              ]\n        ",
-        "operationId": "updateLocationServices",
-        "parameters": [
-          {
-            "name": "locationId",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "array",
-                "items": {
-                  "$ref": "#/components/schemas/GoogleLocationAttributeService"
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "401": {
-            "description": "Unauthorized",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/GoogleLocationAttributesModel"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/google/location/attributes/serviceOptions": {
-      "patch": {
-        "tags": [
-          "Google:PATCHメソッド"
-        ],
-        "summary": "Google:店舗のサービスオプションの更新",
-        "description": "\n              Google:店舗のサービスオプションを更新します。\n              Request BodyはGoogleLocationAttributeServiceOptionの配列のJsonにしてください。\n              typeはenumです。パターンとして以下の入力が可能です。\n              例: HAS_SEATING_OUTDOORS, has_seating_outdoors, attributes/has_seating_outdoors, テラス席あり\n              valueはbooleanです。\n              valueがnullの場合はサービスを削除します。\n              例 : \n              [\n                {\n                  \"type\": \"テラス席あり\",\n                  \"value\": true\n                },\n                {\n                  \"type\": \"HAS_CURBSIDE_PICKUP\",\n                  // valueがnullの場合はSERVES_ORGANICが削除されます。\n                }\n              ]\n        ",
-        "operationId": "updateLocationServiceOptions",
-        "parameters": [
-          {
-            "name": "locationId",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "array",
-                "items": {
-                  "$ref": "#/components/schemas/GoogleLocationAttributeServiceOption"
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "401": {
-            "description": "Unauthorized",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/GoogleLocationAttributesModel"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/google/location/attributes/menu_link": {
-      "patch": {
-        "tags": [
-          "Google:PATCHメソッド"
-        ],
-        "summary": "Google:店舗のメニューリンクの更新",
-        "description": "\n              Google:店舗のメニューリンクを更新します。\n              Request Bodyとして menuLinkのStringにしてください。\n              例 : https://example.com/\n        ",
-        "operationId": "updateLocationAttributeMenuLink",
-        "parameters": [
-          {
-            "name": "locationId",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "string"
-              }
-            }
-          }
-        },
-        "responses": {
-          "401": {
-            "description": "Unauthorized",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/GoogleLocationAttributesModel"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/google/location/attributes/business_owner_info": {
-      "patch": {
-        "tags": [
-          "Google:PATCHメソッド"
-        ],
-        "summary": "Google:店舗のビジネスオーナー情報の更新",
-        "description": "\n              Google:店舗のビジネスオーナー情報を更新します。\n              Request BodyはBooleanにしてください。\n              Bodyがnullの場合はビジネスオーナー情報を削除します。\n              例 : true\n        ",
-        "operationId": "updateLocationBusinessOwnerInfo",
-        "parameters": [
-          {
-            "name": "locationId",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "boolean"
-              }
-            }
-          }
-        },
-        "responses": {
-          "401": {
-            "description": "Unauthorized",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/GoogleLocationAttributesModel"
+                  "$ref": "#/components/schemas/StoreResponse"
                 }
               }
             }
@@ -1875,49 +503,17 @@
         }
       }
     },
-    "/api/google/me": {
+    "/api/store": {
       "get": {
         "tags": [
-          "Google:GETメソッド"
+          "Store GETメソッド"
         ],
-        "summary": "Google:ログインユーザー情報の取得",
-        "description": "Google:ログインユーザー情報の取得を行います",
-        "operationId": "getMe_1",
-        "responses": {
-          "401": {
-            "description": "Unauthorized",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/GoogleMe"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/google/locations": {
-      "get": {
-        "tags": [
-          "Google:GETメソッド"
-        ],
-        "summary": "Google:店舗一覧の取得",
-        "description": "Google:店舗一覧の取得を行います",
-        "operationId": "getLocations",
+        "summary": "店舗情報を取得",
+        "description": "\n            指定された店舗IDの店舗情報を取得します。\n            認証されていない場合は、status 401 Unauthorized を返します。(Bodyは StoreErrorResponse)\n            店舗が存在しない場合は、status 404 Not Found を返します。(Bodyは StoreErrorResponse)\n            ",
+        "operationId": "getStore",
         "parameters": [
           {
-            "name": "accountId",
+            "name": "storeId",
             "in": "query",
             "required": true,
             "schema": {
@@ -1941,10 +537,7 @@
             "content": {
               "*/*": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/GoogleLocation"
-                  }
+                  "$ref": "#/components/schemas/StoreResponse"
                 }
               }
             }
@@ -1952,17 +545,49 @@
         }
       }
     },
-    "/api/google/location": {
+    "/api/store/list": {
       "get": {
         "tags": [
-          "Google:GETメソッド"
+          "Store GETメソッド"
         ],
-        "summary": "Google:店舗情報の取得",
-        "description": "Google:店舗情報の取得を行います",
-        "operationId": "getLocation",
+        "summary": "ユーザーが持つ店舗一覧を取得",
+        "description": "\n            認証されたユーザーの店舗情報を取得します。\n            認証されていない場合は、status 401 Unauthorized を返します。(Bodyは StoreErrorResponse)\n            ユーザーが持つ店舗情報が存在しない場合は、空のリストを返します。(Bodyは StoreListResponse)\n            ",
+        "operationId": "getStoreListByUserId",
+        "responses": {
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/StoreListResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/store/list/filter/brand": {
+      "get": {
+        "tags": [
+          "Store GETメソッド"
+        ],
+        "summary": "ブランドIDでフィルタリングした店舗一覧を取得",
+        "description": "\n            ブランドIDでフィルタリングした店舗情報を取得します。\n            認証されていない場合は、status 401 Unauthorized を返します。(Bodyは StoreErrorResponse)\n            ブランドIDが指定されていない場合は、全店舗を返します。(Bodyは StoreListResponse)\n            ",
+        "operationId": "getStoreListByBrandId",
         "parameters": [
           {
-            "name": "locationId",
+            "name": "brandId",
             "in": "query",
             "required": true,
             "schema": {
@@ -1986,423 +611,7 @@
             "content": {
               "*/*": {
                 "schema": {
-                  "$ref": "#/components/schemas/GoogleLocation"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/google/location/reviews": {
-      "get": {
-        "tags": [
-          "Google:GETメソッド"
-        ],
-        "summary": "Google:店舗のクチコミを全て取得",
-        "description": "Google:店舗のクチコミを全て取得します",
-        "operationId": "getLocationReviews",
-        "parameters": [
-          {
-            "name": "accountId",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "locationId",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "401": {
-            "description": "Unauthorized",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/GoogleLocationReviewCustom"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/google/location/review": {
-      "get": {
-        "tags": [
-          "Google:GETメソッド"
-        ],
-        "summary": "Google:店舗のクチコミを取得",
-        "description": "Google:店舗のクチコミを取得します",
-        "operationId": "getLocationReview",
-        "parameters": [
-          {
-            "name": "accountId",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "locationId",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "reviewId",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "401": {
-            "description": "Unauthorized",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/GoogleLocationReviewCustom"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/google/location/questions": {
-      "get": {
-        "tags": [
-          "Google:GETメソッド"
-        ],
-        "summary": "Google:店舗のQ\u0026Aを全て取得",
-        "description": "\n           Google:店舗のQ\u0026Aを全て取得します。\n           ビジネスプロフィールが無効だったり制限がかかっている場合はエラーが返ってきます。 \n        ",
-        "operationId": "getLocationQuestions",
-        "parameters": [
-          {
-            "name": "locationId",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "401": {
-            "description": "Unauthorized",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/GoogleLocationQuestion"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/google/location/photo/{filename}": {
-      "get": {
-        "tags": [
-          "Google:特殊API"
-        ],
-        "summary": "Google:Google API専用",
-        "description": "GoogleAPIに写真をアップロードするときに使用されます",
-        "operationId": "getLocationPhotoLocal",
-        "parameters": [
-          {
-            "name": "filename",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "401": {
-            "description": "Unauthorized",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/StreamingResponseBody"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/google/location/local_posts": {
-      "get": {
-        "tags": [
-          "Google:GETメソッド"
-        ],
-        "summary": "Google:店舗の最新情報を全て取得",
-        "description": "Google:店舗の最新情報を全て取得します",
-        "operationId": "getLocationLocalPosts",
-        "parameters": [
-          {
-            "name": "accountId",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "locationId",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "401": {
-            "description": "Unauthorized",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/GoogleLocationLocalPostModel"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/google/location/answers": {
-      "get": {
-        "tags": [
-          "Google:GETメソッド"
-        ],
-        "summary": "Google:店舗のQ\u0026Aの特定の質問に対する回答を全て取得",
-        "description": "\n           Google:店舗のQ\u0026Aの特定の質問に対する回答を全て取得します。\n           ビジネスプロフィールが無効だったり制限がかかっている場合はエラーが返ってきます。 \n        ",
-        "operationId": "getLocationAnswers",
-        "parameters": [
-          {
-            "name": "locationId",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "questionId",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "401": {
-            "description": "Unauthorized",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/GoogleLocationAnswer"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/google/categories": {
-      "get": {
-        "tags": [
-          "Google:GETメソッド"
-        ],
-        "summary": "Google:カテゴリ一覧の取得",
-        "description": "Google:カテゴリ一覧の取得を行います",
-        "operationId": "getCategories",
-        "responses": {
-          "401": {
-            "description": "Unauthorized",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/GoogleLocationCategory"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/google/accounts": {
-      "get": {
-        "tags": [
-          "Google:GETメソッド"
-        ],
-        "summary": "Google:アカウント一覧の取得",
-        "description": "Google:アカウント一覧の取得を行います",
-        "operationId": "getAccounts",
-        "responses": {
-          "401": {
-            "description": "Unauthorized",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/GoogleAccount"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/google/account": {
-      "get": {
-        "tags": [
-          "Google:GETメソッド"
-        ],
-        "summary": "Google:アカウント情報の取得",
-        "description": "Google:アカウント情報の取得を行います",
-        "operationId": "getAccount",
-        "parameters": [
-          {
-            "name": "accountId",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "401": {
-            "description": "Unauthorized",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/GoogleAccount"
+                  "$ref": "#/components/schemas/StoreListResponse"
                 }
               }
             }
@@ -2417,7 +626,7 @@
         ],
         "summary": "Cognito: ユーザー情報を取得",
         "description": "\n            Cognitoを使用して、ユーザーの情報を取得します。\n            認証されていない場合は、status 401 Unauthorized を返します。(Bodyは CognitoAccountErrorResponse)\n            既に登録されている場合は、status 200 OK を返します。(Bodyは CognitoAccountResponse)\n            ",
-        "operationId": "getMe_2",
+        "operationId": "getMe_1",
         "responses": {
           "401": {
             "description": "Unauthorized",
@@ -2470,6 +679,41 @@
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "/api/store/delete": {
+      "delete": {
+        "tags": [
+          "Store DELETEメソッド"
+        ],
+        "summary": "店舗を削除",
+        "description": "\n            認証されたユーザーの店舗を削除します。\n            認証されていない場合は、status 401 Unauthorized を返します。(Bodyは StoreErrorResponse)\n            店舗の削除に成功した場合は、status 204 No Content を返します。\n            ",
+        "operationId": "deleteStore",
+        "parameters": [
+          {
+            "name": "storeId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK"
           }
         }
       }
@@ -2541,6 +785,41 @@
           }
         }
       },
+      "StoreResponse": {
+        "required": [
+          "createdAt",
+          "name",
+          "storeId",
+          "userId"
+        ],
+        "type": "object",
+        "properties": {
+          "storeId": {
+            "type": "string"
+          },
+          "userId": {
+            "type": "string"
+          },
+          "brandId": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "googleAccountId": {
+            "type": "string"
+          },
+          "googleLocationId": {
+            "type": "string"
+          },
+          "googleLinkedAt": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string"
+          }
+        }
+      },
       "GooglePlacesAutoCompleteRequest": {
         "required": [
           "input"
@@ -2574,282 +853,6 @@
           }
         }
       },
-      "GoogleLocationAnswer": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string"
-          },
-          "text": {
-            "type": "string"
-          },
-          "createTime": {
-            "type": "string"
-          },
-          "updateTime": {
-            "type": "string"
-          },
-          "upvoteCount": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "author": {
-            "$ref": "#/components/schemas/GoogleLocationAuthor"
-          }
-        }
-      },
-      "GoogleLocationAuthor": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string"
-          },
-          "profilePhotoUrl": {
-            "type": "string"
-          },
-          "type": {
-            "type": "string",
-            "enum": [
-              "AUTHOR_TYPE_UNSPECIFIED",
-              "REGULAR_USER",
-              "LOCAL_GUIDE",
-              "MERCHANT"
-            ]
-          }
-        }
-      },
-      "GoogleLocationQuestion": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string"
-          },
-          "text": {
-            "type": "string"
-          },
-          "createTime": {
-            "type": "string"
-          },
-          "updateTime": {
-            "type": "string"
-          },
-          "upvoteCount": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "totalAnswerCount": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "author": {
-            "$ref": "#/components/schemas/GoogleLocationAuthor"
-          },
-          "topAnswers": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/GoogleLocationAnswer"
-            }
-          }
-        }
-      },
-      "GoogleLocationAssociation": {
-        "type": "object",
-        "properties": {
-          "category": {
-            "type": "string",
-            "enum": [
-              "COVER",
-              "PROFILE",
-              "LOGO",
-              "EXTERIOR",
-              "INTERIOR",
-              "PRODUCT",
-              "AT_WORK",
-              "FOOD_AND_DRINK",
-              "MENU",
-              "ROOMS",
-              "TEAMS",
-              "ADDITIONAL",
-              "CATEGORY_UNSPECIFIED"
-            ]
-          }
-        }
-      },
-      "GoogleLocationCallToAction": {
-        "type": "object",
-        "properties": {
-          "actionType": {
-            "type": "string"
-          },
-          "url": {
-            "type": "string"
-          }
-        }
-      },
-      "GoogleLocationDate": {
-        "type": "object",
-        "properties": {
-          "year": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "month": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "day": {
-            "type": "integer",
-            "format": "int32"
-          }
-        }
-      },
-      "GoogleLocationEvent": {
-        "type": "object",
-        "properties": {
-          "title": {
-            "type": "string"
-          },
-          "schedule": {
-            "$ref": "#/components/schemas/GoogleLocationTimeInterval"
-          }
-        }
-      },
-      "GoogleLocationLocalPostModel": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string"
-          },
-          "languageCode": {
-            "type": "string"
-          },
-          "summary": {
-            "type": "string"
-          },
-          "callToAction": {
-            "$ref": "#/components/schemas/GoogleLocationCallToAction"
-          },
-          "createTime": {
-            "type": "string"
-          },
-          "updateTime": {
-            "type": "string"
-          },
-          "event": {
-            "$ref": "#/components/schemas/GoogleLocationEvent"
-          },
-          "state": {
-            "type": "string"
-          },
-          "media": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/GoogleLocationPhotoModel"
-            }
-          },
-          "searchUrl": {
-            "type": "string"
-          },
-          "topicType": {
-            "type": "string"
-          },
-          "alertType": {
-            "type": "string"
-          },
-          "offer": {
-            "$ref": "#/components/schemas/GoogleLocationOffer"
-          }
-        }
-      },
-      "GoogleLocationOffer": {
-        "type": "object",
-        "properties": {
-          "couponCode": {
-            "type": "string"
-          },
-          "redeemOnlineUrl": {
-            "type": "string"
-          },
-          "termsConditions": {
-            "type": "string"
-          }
-        }
-      },
-      "GoogleLocationPhotoDataRef": {
-        "type": "object",
-        "properties": {
-          "resourceName": {
-            "type": "string"
-          }
-        }
-      },
-      "GoogleLocationPhotoModel": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string"
-          },
-          "mediaFormat": {
-            "type": "string"
-          },
-          "googleUrl": {
-            "type": "string"
-          },
-          "thumbnailUrl": {
-            "type": "string"
-          },
-          "createTime": {
-            "type": "string"
-          },
-          "locationAssociation": {
-            "$ref": "#/components/schemas/GoogleLocationAssociation"
-          },
-          "dataRef": {
-            "$ref": "#/components/schemas/GoogleLocationPhotoDataRef"
-          },
-          "sourceUrl": {
-            "type": "string"
-          }
-        }
-      },
-      "GoogleLocationTimeInterval": {
-        "type": "object",
-        "properties": {
-          "startDate": {
-            "$ref": "#/components/schemas/GoogleLocationDate"
-          },
-          "endDate": {
-            "$ref": "#/components/schemas/GoogleLocationDate"
-          },
-          "startTime": {
-            "$ref": "#/components/schemas/GoogleLocationTimeOfDay"
-          },
-          "endTime": {
-            "$ref": "#/components/schemas/GoogleLocationTimeOfDay"
-          }
-        }
-      },
-      "GoogleLocationTimeOfDay": {
-        "type": "object",
-        "properties": {
-          "hours": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "minutes": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "seconds": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "nanos": {
-            "type": "integer",
-            "format": "int32"
-          }
-        }
-      },
       "BrandResponse": {
         "required": [
           "brandId",
@@ -2873,857 +876,20 @@
           }
         }
       },
-      "GoogleLocationReviewReply": {
-        "type": "object",
-        "properties": {
-          "comment": {
-            "type": "string"
-          },
-          "updateTime": {
-            "type": "string"
-          }
-        }
-      },
-      "GoogleLocationBusinessHours": {
-        "required": [
-          "periods"
-        ],
-        "type": "object",
-        "properties": {
-          "periods": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/GoogleLocationTimePeriod"
-            }
-          }
-        }
-      },
-      "GoogleLocationCategories": {
-        "type": "object",
-        "properties": {
-          "primaryCategory": {
-            "$ref": "#/components/schemas/GoogleLocationCategory"
-          },
-          "additionalCategories": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/GoogleLocationCategory"
-            }
-          }
-        }
-      },
-      "GoogleLocationCategory": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string"
-          },
-          "displayName": {
-            "type": "string"
-          }
-        }
-      },
-      "GoogleLocationMoreHours": {
-        "type": "object",
-        "properties": {
-          "hoursTypeId": {
-            "type": "string"
-          },
-          "periods": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/GoogleLocationTimePeriod"
-            }
-          }
-        }
-      },
-      "GoogleLocationOpenInfo": {
-        "type": "object",
-        "properties": {
-          "status": {
-            "type": "string"
-          },
-          "canReopen": {
-            "type": "boolean"
-          },
-          "openingDate": {
-            "$ref": "#/components/schemas/GoogleLocationDate"
-          }
-        }
-      },
-      "GoogleLocationPhoneNumbers": {
-        "type": "object",
-        "properties": {
-          "primaryPhone": {
-            "type": "string"
-          },
-          "additionalPhones": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          }
-        }
-      },
-      "GoogleLocationPlaceInfo": {
-        "type": "object",
-        "properties": {
-          "placeName": {
-            "type": "string"
-          },
-          "placeId": {
-            "type": "string"
-          }
-        }
-      },
-      "GoogleLocationPlaceInfos": {
-        "type": "object",
-        "properties": {
-          "placeInfos": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/GoogleLocationPlaceInfo"
-            }
-          }
-        }
-      },
-      "GoogleLocationPostalAddress": {
-        "type": "object",
-        "properties": {
-          "postalCode": {
-            "type": "string"
-          },
-          "regionCode": {
-            "type": "string"
-          },
-          "administrativeArea": {
-            "type": "string"
-          },
-          "addressLines": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          }
-        }
-      },
-      "GoogleLocationProfile": {
-        "type": "object",
-        "properties": {
-          "description": {
-            "type": "string"
-          }
-        }
-      },
-      "GoogleLocationProfileModel": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string"
-          },
-          "title": {
-            "type": "string"
-          },
-          "phoneNumbers": {
-            "$ref": "#/components/schemas/GoogleLocationPhoneNumbers"
-          },
-          "categories": {
-            "$ref": "#/components/schemas/GoogleLocationCategories"
-          },
-          "storefrontAddress": {
-            "$ref": "#/components/schemas/GoogleLocationPostalAddress"
-          },
-          "websiteUri": {
-            "type": "string"
-          },
-          "regularHours": {
-            "$ref": "#/components/schemas/GoogleLocationBusinessHours"
-          },
-          "moreHours": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/GoogleLocationMoreHours"
-            }
-          },
-          "profile": {
-            "$ref": "#/components/schemas/GoogleLocationProfile"
-          },
-          "openInfo": {
-            "$ref": "#/components/schemas/GoogleLocationOpenInfo"
-          },
-          "serviceArea": {
-            "$ref": "#/components/schemas/GoogleLocationServiceArea"
-          }
-        }
-      },
-      "GoogleLocationServiceArea": {
-        "type": "object",
-        "properties": {
-          "businessType": {
-            "type": "string"
-          },
-          "regionCode": {
-            "type": "string"
-          },
-          "places": {
-            "$ref": "#/components/schemas/GoogleLocationPlaceInfos"
-          }
-        }
-      },
-      "GoogleLocationTimePeriod": {
-        "required": [
-          "closeDay",
-          "closeTime",
-          "openDay",
-          "openTime"
-        ],
-        "type": "object",
-        "properties": {
-          "openDay": {
-            "type": "string",
-            "enum": [
-              "DAY_OF_WEEK_UNSPECIFIED",
-              "MONDAY",
-              "TUESDAY",
-              "WEDNESDAY",
-              "THURSDAY",
-              "FRIDAY",
-              "SATURDAY",
-              "SUNDAY"
-            ]
-          },
-          "openTime": {
-            "$ref": "#/components/schemas/GoogleLocationTimeOfDay"
-          },
-          "closeDay": {
-            "type": "string",
-            "enum": [
-              "DAY_OF_WEEK_UNSPECIFIED",
-              "MONDAY",
-              "TUESDAY",
-              "WEDNESDAY",
-              "THURSDAY",
-              "FRIDAY",
-              "SATURDAY",
-              "SUNDAY"
-            ]
-          },
-          "closeTime": {
-            "$ref": "#/components/schemas/GoogleLocationTimeOfDay"
-          }
-        }
-      },
-      "GoogleLocationStoreFrontAddressRequest": {
-        "required": [
-          "addressLines",
-          "administrativeArea",
-          "postalCode"
-        ],
-        "type": "object",
-        "properties": {
-          "postalCode": {
-            "type": "string"
-          },
-          "administrativeArea": {
-            "type": "string",
-            "enum": [
-              "北海道",
-              "青森県",
-              "岩手県",
-              "宮城県",
-              "秋田県",
-              "山形県",
-              "福島県",
-              "茨城県",
-              "栃木県",
-              "群馬県",
-              "埼玉県",
-              "千葉県",
-              "東京都",
-              "神奈川県",
-              "新潟県",
-              "富山県",
-              "石川県",
-              "福井県",
-              "山梨県",
-              "長野県",
-              "岐阜県",
-              "静岡県",
-              "愛知県",
-              "三重県",
-              "滋賀県",
-              "京都府",
-              "大阪府",
-              "兵庫県",
-              "奈良県",
-              "和歌山県",
-              "鳥取県",
-              "島根県",
-              "岡山県",
-              "広島県",
-              "山口県",
-              "徳島県",
-              "香川県",
-              "愛媛県",
-              "高知県",
-              "福岡県",
-              "佐賀県",
-              "長崎県",
-              "熊本県",
-              "大分県",
-              "宮崎県",
-              "鹿児島県",
-              "沖縄県"
-            ]
-          },
-          "addressLines": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          }
-        }
-      },
-      "GoogleLocationBusinessHoursRequest": {
-        "required": [
-          "hoursTypeId",
-          "periods"
-        ],
-        "type": "object",
-        "properties": {
-          "hoursTypeId": {
-            "type": "string",
-            "enum": [
-              "通常営業",
-              "入店可能時間",
-              "注文可能時間",
-              "ドライブスルー",
-              "宅配",
-              "テイクアウト",
-              "朝食",
-              "ランチ",
-              "ディナー",
-              "ブランチ",
-              "ハッピーアワー",
-              "高齢者限定時間帯",
-              "オンラインサービスの提供時間"
-            ]
-          },
-          "periods": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/GoogleLocationTimePeriod"
-            }
-          }
-        }
-      },
-      "GoogleLocationCaloriesFact": {
-        "type": "object",
-        "properties": {
-          "lowerAmount": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "upperAmount": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "unit": {
-            "type": "string"
-          }
-        }
-      },
-      "GoogleLocationFoodMenu": {
-        "type": "object",
-        "properties": {
-          "labels": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/GoogleLocationMenuLabel"
-            }
-          },
-          "sourceUrl": {
-            "type": "string"
-          },
-          "sections": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/GoogleLocationFoodMenuSection"
-            }
-          },
-          "cuisines": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          }
-        }
-      },
-      "GoogleLocationFoodMenuItem": {
-        "type": "object",
-        "properties": {
-          "labels": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/GoogleLocationMenuLabel"
-            }
-          },
-          "attributes": {
-            "$ref": "#/components/schemas/GoogleLocationFoodMenuItemAttributes"
-          },
-          "options": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/GoogleLocationFoodMenuItemOption"
-            }
-          }
-        }
-      },
-      "GoogleLocationFoodMenuItemAttributes": {
-        "type": "object",
-        "properties": {
-          "price": {
-            "$ref": "#/components/schemas/GoogleLocationMoney"
-          },
-          "spiciness": {
-            "type": "string"
-          },
-          "allergen": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "dietaryRestriction": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "nutritionFacts": {
-            "$ref": "#/components/schemas/GoogleLocationNutritionFacts"
-          },
-          "ingredients": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/GoogleLocationIngredient"
-            }
-          },
-          "servesNumPeople": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "preparationMethods": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "portionSize": {
-            "$ref": "#/components/schemas/GoogleLocationPortionSize"
-          },
-          "mediaKeys": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          }
-        }
-      },
-      "GoogleLocationFoodMenuItemOption": {
-        "type": "object",
-        "properties": {
-          "labels": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/GoogleLocationMenuLabel"
-            }
-          },
-          "attributes": {
-            "$ref": "#/components/schemas/GoogleLocationFoodMenuItemAttributes"
-          }
-        }
-      },
-      "GoogleLocationFoodMenuSection": {
-        "type": "object",
-        "properties": {
-          "labels": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/GoogleLocationMenuLabel"
-            }
-          },
-          "items": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/GoogleLocationFoodMenuItem"
-            }
-          }
-        }
-      },
-      "GoogleLocationFoodMenusModel": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string"
-          },
-          "menus": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/GoogleLocationFoodMenu"
-            }
-          }
-        }
-      },
-      "GoogleLocationIngredient": {
-        "type": "object",
-        "properties": {
-          "labels": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/GoogleLocationMenuLabel"
-            }
-          }
-        }
-      },
-      "GoogleLocationMenuLabel": {
-        "type": "object",
-        "properties": {
-          "displayName": {
-            "type": "string"
-          },
-          "description": {
-            "type": "string"
-          },
-          "languageCode": {
-            "type": "string"
-          }
-        }
-      },
-      "GoogleLocationMoney": {
-        "type": "object",
-        "properties": {
-          "currencyCode": {
-            "type": "string"
-          },
-          "units": {
-            "type": "string"
-          },
-          "nanos": {
-            "type": "integer",
-            "format": "int32"
-          }
-        }
-      },
-      "GoogleLocationNutritionFact": {
-        "type": "object",
-        "properties": {
-          "lowerAmount": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "upperAmount": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "unit": {
-            "type": "string"
-          }
-        }
-      },
-      "GoogleLocationNutritionFacts": {
-        "type": "object",
-        "properties": {
-          "calories": {
-            "$ref": "#/components/schemas/GoogleLocationCaloriesFact"
-          },
-          "totalFat": {
-            "$ref": "#/components/schemas/GoogleLocationNutritionFact"
-          },
-          "cholesterol": {
-            "$ref": "#/components/schemas/GoogleLocationNutritionFact"
-          },
-          "sodium": {
-            "$ref": "#/components/schemas/GoogleLocationNutritionFact"
-          },
-          "totalCarbohydrates": {
-            "$ref": "#/components/schemas/GoogleLocationNutritionFact"
-          },
-          "protein": {
-            "$ref": "#/components/schemas/GoogleLocationNutritionFact"
-          }
-        }
-      },
-      "GoogleLocationPortionSize": {
-        "type": "object",
-        "properties": {
-          "quantity": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "unit": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/GoogleLocationMenuLabel"
-            }
-          }
-        }
-      },
-      "GoogleLocationAttribute": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string"
-          },
-          "valueType": {
-            "type": "string",
-            "enum": [
-              "ATTRIBUTE_VALUE_TYPE_UNSPECIFIED",
-              "URL",
-              "BOOL",
-              "ENUM",
-              "REPEATED_ENUM"
-            ]
-          },
-          "uriValues": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/GoogleLocationAttributeUriValue"
-            }
-          },
-          "values": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/JsonNode"
-            }
-          }
-        }
-      },
-      "GoogleLocationAttributeUriValue": {
-        "type": "object",
-        "properties": {
-          "uri": {
-            "type": "string"
-          }
-        }
-      },
-      "GoogleLocationAttributesModel": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string"
-          },
-          "attributes": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/GoogleLocationAttribute"
-            }
-          }
-        }
-      },
-      "JsonNode": {
-        "type": "object"
-      },
-      "GoogleLocationAttributeSnsLinkRequest": {
-        "required": [
-          "snsType",
-          "snsUrl"
-        ],
-        "type": "object",
-        "properties": {
-          "snsType": {
-            "type": "string",
-            "enum": [
-              "TWITTER",
-              "TIKTOK",
-              "YOUTUBE",
-              "INSTAGRAM",
-              "FACEBOOK",
-              "LINKEDIN",
-              "PINTEREST"
-            ]
-          },
-          "snsUrl": {
-            "type": "string"
-          }
-        }
-      },
-      "GoogleLocationAttributeService": {
-        "required": [
-          "type"
-        ],
-        "type": "object",
-        "properties": {
-          "type": {
-            "type": "string",
-            "enum": [
-              "アルコール飲料あり",
-              "オーガニック料理あり",
-              "カクテルあり",
-              "コーヒーあり",
-              "サラダバーあり",
-              "ドリンクのハッピーアワーあり",
-              "ハードリカーあり",
-              "ハラルメニューあり",
-              "ビーガンメニューあり",
-              "ビールあり",
-              "ベジタリアンメニューあり",
-              "ワインあり",
-              "個室あり",
-              "小皿料理を提供するお店",
-              "食べ物のハッピーアワーあり",
-              "食べ放題あり",
-              "深夜の食事可",
-              "点字メニューあり"
-            ]
-          },
-          "value": {
-            "type": "boolean"
-          }
-        }
-      },
-      "GoogleLocationAttributeServiceOption": {
-        "required": [
-          "type"
-        ],
-        "type": "object",
-        "properties": {
-          "type": {
-            "type": "string",
-            "enum": [
-              "テラス席あり",
-              "店先受取可",
-              "非接触宅配可",
-              "宅配可",
-              "ドライブスルーあり",
-              "実店舗の営業あり",
-              "テイクアウト可",
-              "イートイン利用可"
-            ]
-          },
-          "value": {
-            "type": "boolean"
-          }
-        }
-      },
       "UserApiResponse": {
         "type": "object"
       },
-      "GoogleMe": {
+      "StoreListResponse": {
         "required": [
-          "names"
+          "stores"
         ],
         "type": "object",
         "properties": {
-          "names": {
+          "stores": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/GoogleName"
+              "$ref": "#/components/schemas/StoreResponse"
             }
-          }
-        }
-      },
-      "GoogleName": {
-        "required": [
-          "displayName"
-        ],
-        "type": "object",
-        "properties": {
-          "displayName": {
-            "type": "string"
-          },
-          "familyName": {
-            "type": "string"
-          },
-          "givenName": {
-            "type": "string"
-          }
-        }
-      },
-      "GoogleLocation": {
-        "required": [
-          "name",
-          "title"
-        ],
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string"
-          },
-          "title": {
-            "type": "string"
-          }
-        }
-      },
-      "GoogleLocationReviewCustom": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string"
-          },
-          "reviewId": {
-            "type": "string"
-          },
-          "comment": {
-            "type": "string"
-          },
-          "starRating": {
-            "type": "string",
-            "enum": [
-              "STAR_RATING_UNSPECIFIED",
-              "ONE",
-              "TWO",
-              "THREE",
-              "FOUR",
-              "FIVE"
-            ]
-          },
-          "reviewer": {
-            "$ref": "#/components/schemas/GoogleLocationReviewReviewer"
-          },
-          "reviewReply": {
-            "$ref": "#/components/schemas/GoogleLocationReviewReply"
-          },
-          "createTime": {
-            "type": "string"
-          },
-          "updateTime": {
-            "type": "string"
-          },
-          "isReply": {
-            "type": "boolean"
-          }
-        }
-      },
-      "GoogleLocationReviewReviewer": {
-        "type": "object",
-        "properties": {
-          "profilePhotoUrl": {
-            "type": "string"
-          },
-          "displayName": {
-            "type": "string"
-          },
-          "isAnonymous": {
-            "type": "boolean"
-          }
-        }
-      },
-      "StreamingResponseBody": {
-        "type": "object"
-      },
-      "GoogleAccount": {
-        "required": [
-          "accountName",
-          "name"
-        ],
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string"
-          },
-          "accountName": {
-            "type": "string"
           }
         }
       },

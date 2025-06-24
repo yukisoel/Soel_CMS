@@ -4,6 +4,31 @@
  */
 
 export interface paths {
+    "/api/store/create": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * 新しい店舗を作成
+         * @description
+         *                 認証されたユーザーの新しい店舗を作成します。
+         *                 Request Bodyには店舗名の文字列を含めます。
+         *                 認証されていない場合は、status 401 Unauthorized を返します。(Bodyは StoreErrorResponse)
+         *                 店舗の作成に成功した場合は、status 201 Created を返します。(Bodyは StoreResponse)
+         *
+         */
+        post: operations["createStore"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/google/places/autocomplete": {
         parameters: {
             query?: never;
@@ -211,6 +236,131 @@ export interface paths {
         options?: never;
         head?: never;
         patch?: never;
+        trace?: never;
+    };
+    "/api/store/update/name": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * 店舗名を更新
+         * @description
+         *                 認証されたユーザーの店舗名を更新します。
+         *                 Request Bodyには新しい店舗名の文字列を含めます。
+         *                 認証されていない場合は、status 401 Unauthorized を返します。(Bodyは StoreErrorResponse)
+         *                 店舗名の更新に成功した場合は、status 200 OK を返します。(Bodyは StoreResponse)
+         *
+         */
+        patch: operations["updateStoreName"];
+        trace?: never;
+    };
+    "/api/store/update/google": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * 店舗のGoogleアカウントとロケーションを更新
+         * @description
+         *                 認証されたユーザーの店舗のGoogleアカウントとロケーションを同時に更新します。
+         *                 Request Bodyには新しいGoogleアカウントIDとGoogleロケーションIDの文字列を含めます。
+         *                 認証されていない場合は、status 401 Unauthorized を返します。(Bodyは StoreErrorResponse)
+         *                 Googleアカウントとロケーションの更新に成功した場合は、status 200 OK を返します。(Bodyは StoreResponse)
+         *
+         */
+        patch: operations["updateStoreGoogle"];
+        trace?: never;
+    };
+    "/api/store/update/google/location": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * 店舗のGoogleロケーションを更新
+         * @description
+         *                 認証されたユーザーの店舗のGoogleロケーションを更新します。
+         *                 Request Bodyには新しいGoogleロケーションIDの文字列を含めます。
+         *                 認証されていない場合は、status 401 Unauthorized を返します。(Bodyは StoreErrorResponse)
+         *                 Googleロケーションの更新に成功した場合は、status 200 OK を返します。(Bodyは StoreResponse)
+         *
+         */
+        patch: operations["updateStoreGoogleLocation"];
+        trace?: never;
+    };
+    "/api/store/update/google/account": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * 店舗のGoogleアカウントを更新
+         * @description
+         *                 認証されたユーザーの店舗のGoogleアカウントを更新します。
+         *                 Request Bodyには新しいGoogleアカウントIDの文字列を含めます。
+         *                 認証されていない場合は、status 401 Unauthorized を返します。(Bodyは StoreErrorResponse)
+         *                 Googleアカウントの更新に成功した場合は、status 200 OK を返します。(Bodyは StoreResponse)
+         *
+         */
+        patch: operations["updateStoreGoogleAccount"];
+        trace?: never;
+    };
+    "/api/store/update/brand": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * 店舗のブランドを更新
+         * @description
+         *                 認証されたユーザーの店舗のブランドを更新します。
+         *                 Request Bodyには新しいブランドIDの文字列を含めます。
+         *                 認証されていない場合は、status 401 Unauthorized を返します。(Bodyは StoreErrorResponse)
+         *                 ブランドの更新に成功した場合は、status 200 OK を返します。(Bodyは StoreResponse)
+         *
+         */
+        patch: operations["updateStoreBrand"];
         trace?: never;
     };
     "/api/google/location/review/reply": {
@@ -818,6 +968,78 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/store": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * 店舗情報を取得
+         * @description
+         *                 指定された店舗IDの店舗情報を取得します。
+         *                 認証されていない場合は、status 401 Unauthorized を返します。(Bodyは StoreErrorResponse)
+         *                 店舗が存在しない場合は、status 404 Not Found を返します。(Bodyは StoreErrorResponse)
+         *
+         */
+        get: operations["getStore"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/store/list": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * ユーザーが持つ店舗一覧を取得
+         * @description
+         *                 認証されたユーザーの店舗情報を取得します。
+         *                 認証されていない場合は、status 401 Unauthorized を返します。(Bodyは StoreErrorResponse)
+         *                 ユーザーが持つ店舗情報が存在しない場合は、空のリストを返します。(Bodyは StoreListResponse)
+         *
+         */
+        get: operations["getStoreListByUserId"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/store/list/filter/brand": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * ブランドIDでフィルタリングした店舗一覧を取得
+         * @description
+         *                 ブランドIDでフィルタリングした店舗情報を取得します。
+         *                 認証されていない場合は、status 401 Unauthorized を返します。(Bodyは StoreErrorResponse)
+         *                 ブランドIDが指定されていない場合は、全店舗を返します。(Bodyは StoreListResponse)
+         *
+         */
+        get: operations["getStoreListByBrandId"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/google/me": {
         parameters: {
             query?: never;
@@ -1112,6 +1334,30 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/store/delete": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * 店舗を削除
+         * @description
+         *                 認証されたユーザーの店舗を削除します。
+         *                 認証されていない場合は、status 401 Unauthorized を返します。(Bodyは StoreErrorResponse)
+         *                 店舗の削除に成功した場合は、status 204 No Content を返します。
+         *
+         */
+        delete: operations["deleteStore"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/brand/delete": {
         parameters: {
             query?: never;
@@ -1148,6 +1394,16 @@ export interface components {
             error: string;
             message: string;
             path: string;
+        };
+        StoreResponse: {
+            storeId: string;
+            userId: string;
+            brandId?: string;
+            name: string;
+            googleAccountId?: string;
+            googleLocationId?: string;
+            googleLinkedAt?: string;
+            createdAt: string;
         };
         GooglePlacesAutoCompleteRequest: {
             input: string;
@@ -1450,6 +1706,9 @@ export interface components {
             value?: boolean;
         };
         UserApiResponse: Record<string, never>;
+        StoreListResponse: {
+            stores: components["schemas"]["StoreResponse"][];
+        };
         GoogleMe: {
             names: components["schemas"]["GoogleName"][];
         };
@@ -1496,6 +1755,40 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    createStore: {
+        parameters: {
+            query: {
+                storeName: string;
+                brandId?: string;
+                googleAccountId?: string;
+                googleLocationId?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["StoreResponse"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
     postPlacesAutoComplete: {
         parameters: {
             query?: never;
@@ -1854,6 +2147,167 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["BrandResponse"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    updateStoreName: {
+        parameters: {
+            query: {
+                storeId: string;
+                storeName: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["StoreResponse"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    updateStoreGoogle: {
+        parameters: {
+            query: {
+                storeId: string;
+                googleAccountId: string;
+                googleLocationId: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["StoreResponse"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    updateStoreGoogleLocation: {
+        parameters: {
+            query: {
+                storeId: string;
+                googleLocationId: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["StoreResponse"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    updateStoreGoogleAccount: {
+        parameters: {
+            query: {
+                storeId: string;
+                googleAccountId: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["StoreResponse"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    updateStoreBrand: {
+        parameters: {
+            query: {
+                storeId: string;
+                brandId: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["StoreResponse"];
                 };
             };
             /** @description Unauthorized */
@@ -2726,6 +3180,97 @@ export interface operations {
             };
         };
     };
+    getStore: {
+        parameters: {
+            query: {
+                storeId: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["StoreResponse"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    getStoreListByUserId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["StoreListResponse"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    getStoreListByBrandId: {
+        parameters: {
+            query: {
+                brandId: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["StoreListResponse"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
     getMe_1: {
         parameters: {
             query?: never;
@@ -3143,6 +3688,35 @@ export interface operations {
                 content: {
                     "*/*": components["schemas"]["BrandListResponse"];
                 };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    deleteStore: {
+        parameters: {
+            query: {
+                storeId: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
             /** @description Unauthorized */
             401: {
