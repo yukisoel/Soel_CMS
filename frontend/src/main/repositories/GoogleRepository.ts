@@ -27,7 +27,6 @@ export interface GoogleRepository {
   getCategories(): Promise<GoogleLocationCategory[]>
 
   postLocationPhoto(accountId: string, locationId: string, photos: FileList): Promise<void>
-  postLocationLocalPost(accountId: string, locationId: string, localPost: GoogleLocationLocalPostModel, photos: FileList): Promise<void>
 
   updateLocationProfile(locationId: string, updateMask: string, locationProfile: GoogleLocationProfileModel): Promise<GoogleLocationProfileModel>
 
@@ -234,33 +233,6 @@ export class GoogleRepositoryImpl implements GoogleRepository {
     } catch (error) {
       console.error(error)
       throw new Error("google post location photo failed")
-    }
-  }
-
-  async postLocationLocalPost(accountId: string, locationId: string, localPost: GoogleLocationLocalPostModel, photos: FileList): Promise<void> {
-    try {
-      const formData = new FormData()
-      for (let i = 0; i < photos.length; i++) {
-        formData.append('files', photos[i])
-      }
-      formData.append('localPost', JSON.stringify(localPost))
-
-      const response: AxiosResponse<void> = await axiosApiClient.post(
-        'google/location/localPost',
-        formData,
-        {
-          params: {
-            accountId: accountId,
-            locationId: locationId
-          },
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        })
-      console.log(response)
-    } catch (error) {
-      console.error(error)
-      throw new Error("google post location local post failed")
     }
   }
 
@@ -592,8 +564,8 @@ export class GoogleRepositoryImpl implements GoogleRepository {
       Array.from(photos).forEach((file) => {
         formData.append('files', file)
       })
-      formData.append('localPost', JSON.stringify(localPost))
-      await axiosApiClient.post('google/location/local_posts', formData, {
+      formData.append('localPost', new Blob([JSON.stringify(localPost)], {type: 'application/json'}))
+      await axiosApiClient.post('google/location/local_post', formData, {
         params: {
           accountId: accountId,
           locationId: locationId

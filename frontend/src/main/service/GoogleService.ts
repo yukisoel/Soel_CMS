@@ -17,7 +17,6 @@ export interface GoogleService {
   getLocationAttributes(locationId: string): Promise<GoogleLocationAttributesModel>
   getCategories(): Promise<GoogleLocationCategory[]>
   postLocationPhoto(accountId:string, locationId:string, photos:FileList): Promise<void>
-  postLocationLocalPost(accountId:string, locationId:string, localPost:GoogleLocationLocalPostModel, photos:FileList): Promise<void>
   updateLocationProfile(locationId:string, updateMask:string, locationProfile:GoogleLocationProfileModel): Promise<GoogleLocationProfileModel>
   updateLocationProfileTitle(locationId:string, title:string): Promise<GoogleLocationProfileModel>
   updateLocationProfileDescription(locationId:string, description:string): Promise<GoogleLocationProfileModel>
@@ -85,10 +84,6 @@ export class GoogleServiceImpl implements GoogleService {
 
   async postLocationPhoto(accountId:string, locationId:string, photos:FileList): Promise<void> {
     return this.googleRepository.postLocationPhoto(accountId, locationId, photos)
-  }
-
-  async postLocationLocalPost(accountId:string, locationId:string, localPost:GoogleLocationLocalPostModel, photos:FileList): Promise<void> {
-    return this.googleRepository.postLocationLocalPost(accountId, locationId, localPost, photos)
   }
 
   async updateLocationProfile(locationId:string, updateMask:string, locationProfile:GoogleLocationProfileModel): Promise<GoogleLocationProfileModel> {
