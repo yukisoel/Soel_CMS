@@ -1,11 +1,10 @@
-package com.soel.backend.backend.repository
+package com.soel.backend.backend.repository.google
 
 import com.soel.backend.backend.model.GooglePlacesAutoCompleteRequest
 import com.soel.backend.backend.model.GooglePlacesAutoComplete
 import org.springframework.context.annotation.Primary
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
-import org.springframework.http.HttpMethod
 import org.springframework.http.MediaType
 import org.springframework.stereotype.Repository
 import org.springframework.web.client.RestTemplate

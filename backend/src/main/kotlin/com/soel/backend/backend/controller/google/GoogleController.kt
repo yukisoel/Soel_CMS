@@ -1,155 +1,127 @@
-package com.soel.backend.backend.controller
+package com.soel.backend.backend.controller.google
 
-import com.soel.backend.backend.api.exception.UnauthorizedException
+import com.soel.backend.backend.controller.AuthHelper
 import com.soel.backend.backend.model.*
-import com.soel.backend.backend.service.GoogleService
+import com.soel.backend.backend.service.google.GoogleService
 import com.soel.backend.backend.usecase.GoogleUseCase
 import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.StringToClassMapItem
+import io.swagger.v3.oas.annotations.media.*
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.http.HttpStatus
+import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
-import org.springframework.security.core.Authentication
-import org.springframework.security.core.annotation.AuthenticationPrincipal
-import org.springframework.security.oauth2.client.OAuth2AuthorizedClient
-import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService
-import org.springframework.security.oauth2.client.annotation.RegisteredOAuth2AuthorizedClient
-import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository
-import org.springframework.security.oauth2.core.OAuth2AccessToken
-import org.springframework.security.oauth2.core.oidc.user.OidcUser
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody
 import java.io.IOException
-import java.time.Instant
 import javax.imageio.ImageIO
+import io.swagger.v3.oas.annotations.parameters.RequestBody
 
 @RestController
 @RequestMapping("/api/google")
-class GoogleController(val googleService: GoogleService, val googleUseCase: GoogleUseCase, val clientService: OAuth2AuthorizedClientService, val clientRegRepo: ClientRegistrationRepository) {
+class GoogleController(val authHelper: AuthHelper,  val googleService: GoogleService, val googleUseCase: GoogleUseCase) {
 
     @Operation(summary = "Google:ログインユーザー情報の取得", description = "Google:ログインユーザー情報の取得を行います", tags = ["Google:GETメソッド"])
     @GetMapping("/me")
     fun getMe(
-        auth: Authentication,
-        @AuthenticationPrincipal oidcUser: OidcUser?,
         request: HttpServletRequest
-        ): GoogleMe? {
-        val registrationId = "google"
-        val principalName  = auth.name
-        // 1) 直接 Google ログインのトークン優先
-        var googleClient = clientService.loadAuthorizedClient<OAuth2AuthorizedClient>(registrationId, principalName)
-        val directToken = googleClient?.accessToken?.tokenValue
-        // 2) 次に Cognito 経由で custom:ggle_access_token に入った元 Google トークン
-        val federatedToken = oidcUser
-            ?.getClaim("custom:ggle_access_token") as String?
-
-        if (googleClient == null && federatedToken != null) {
-            // ClientRegistration を取得
-            val clientReg = clientRegRepo.findByRegistrationId(registrationId)
-                ?: throw IllegalStateException("ClientRegistration $registrationId not found")
-
-            // OAuth2AccessToken を作成（※有効期限は適宜調整してください）
-            val accessToken = OAuth2AccessToken(
-                OAuth2AccessToken.TokenType.BEARER,
-                federatedToken,
-                Instant.now(),
-                Instant.now().plusSeconds(3600)
-            )
-
-            // AuthorizedClient を組み立て
-            googleClient = OAuth2AuthorizedClient(
-                clientReg,
-                principalName,
-                accessToken
-            )
-
-            // Service に保存することで、以降の loadAuthorizedClient で拾えるようにする
-            clientService.saveAuthorizedClient(googleClient, auth)
+    ): ResponseEntity<GoogleMe> {
+        val accessToken = authHelper.getGoogleAccessToken(request)
+        val googleMe = googleService.getMe(accessToken)
+        return if (googleMe == null) {
+            ResponseEntity.notFound().build()
+        } else {
+            ResponseEntity.ok(googleMe)
         }
-
-        // 3) どちらもないならエラー
-        val token = directToken ?: federatedToken
-        ?: throw UnauthorizedException("Google のアクセストークンが取得できていません", request.requestURI)
-
-        return googleService.getMe(token)
     }
 
     @Operation(summary = "Google:アカウント一覧の取得", description = "Google:アカウント一覧の取得を行います", tags = ["Google:GETメソッド"])
     @GetMapping("/accounts")
-    fun getAccounts(@RegisteredOAuth2AuthorizedClient("google") googleClient: OAuth2AuthorizedClient): ResponseEntity<List<GoogleAccount>>? {
-        return googleService.getAccounts(googleClient.accessToken.tokenValue)
+    fun getAccounts(request: HttpServletRequest): ResponseEntity<List<GoogleAccount>>? {
+        val accessToken = authHelper.getGoogleAccessToken(request)
+        return googleService.getAccounts(accessToken)
     }
 
     @Operation(summary = "Google:アカウント情報の取得", description = "Google:アカウント情報の取得を行います", tags = ["Google:GETメソッド"])
     @GetMapping("/account")
-    fun getAccount(@RegisteredOAuth2AuthorizedClient("google") googleClient: OAuth2AuthorizedClient, @RequestParam("accountId") accountId: String): ResponseEntity<GoogleAccount>? {
-        return googleService.getAccount(googleClient.accessToken.tokenValue, accountId)
+    fun getAccount(request: HttpServletRequest, @RequestParam("accountId") accountId: String): ResponseEntity<GoogleAccount>? {
+        val accessToken = authHelper.getGoogleAccessToken(request)
+        return googleService.getAccount(accessToken, accountId)
     }
 
     @Operation(summary = "Google:カテゴリ一覧の取得", description = "Google:カテゴリ一覧の取得を行います", tags = ["Google:GETメソッド"])
     @GetMapping("/categories")
-    fun getCategories(@RegisteredOAuth2AuthorizedClient("google") googleClient: OAuth2AuthorizedClient): ResponseEntity<List<GoogleLocationCategory>>? {
-        return googleService.getCategories(googleClient.accessToken.tokenValue)
+    fun getCategories(request: HttpServletRequest): ResponseEntity<List<GoogleLocationCategory>>? {
+        val accessToken = authHelper.getGoogleAccessToken(request)
+        return googleService.getCategories(accessToken)
     }
 
     @Operation(summary = "Google:店舗一覧の取得", description = "Google:店舗一覧の取得を行います", tags = ["Google:GETメソッド"])
     @GetMapping("/locations")
-    fun getLocations(@RegisteredOAuth2AuthorizedClient("google") googleClient: OAuth2AuthorizedClient, @RequestParam("accountId") accountId: String): ResponseEntity<List<GoogleLocation>>? {
-        return googleService.getLocations(googleClient.accessToken.tokenValue, accountId)
+    fun getLocations(request: HttpServletRequest, @RequestParam("accountId") accountId: String): ResponseEntity<List<GoogleLocation>>? {
+        val accessToken = authHelper.getGoogleAccessToken(request)
+        return googleService.getLocations(accessToken, accountId)
     }
 
     @Operation(summary = "Google:店舗情報の取得", description = "Google:店舗情報の取得を行います", tags = ["Google:GETメソッド"])
     @GetMapping("/location")
-    fun getLocation(@RegisteredOAuth2AuthorizedClient("google") googleClient: OAuth2AuthorizedClient, @RequestParam("locationId") locationId: String): ResponseEntity<GoogleLocation>? {
-        return googleService.getLocation(googleClient.accessToken.tokenValue, locationId)
+    fun getLocation(request: HttpServletRequest, @RequestParam("locationId") locationId: String): ResponseEntity<GoogleLocation>? {
+        val accessToken = authHelper.getGoogleAccessToken(request)
+        return googleService.getLocation(accessToken, locationId)
     }
 
     @Operation(summary = "Google:店舗プロフィールの取得", description = "Google:店舗プロフィールの取得を行います", tags = ["Google:GETメソッド"])
     @GetMapping("/location/profile")
     fun getLocationProfile(
-        @RegisteredOAuth2AuthorizedClient("google") googleClient: OAuth2AuthorizedClient,
+        request: HttpServletRequest,
         @RequestParam("locationId") locationId: String
     ): ResponseEntity<GoogleLocationProfileModel>? {
-        return googleService.getLocationProfile(googleClient.accessToken.tokenValue, locationId)
+        val accessToken = authHelper.getGoogleAccessToken(request)
+        return googleService.getLocationProfile(accessToken, locationId)
     }
 
     @Operation(summary = "Google:店舗の属性情報を全て取得", description = "Google:店舗の属性情報を全て取得します", tags = ["Google:GETメソッド"])
     @GetMapping("/location/attributes")
     fun getLocationAttributes(
-        @RegisteredOAuth2AuthorizedClient("google") googleClient: OAuth2AuthorizedClient,
+        request: HttpServletRequest,
         @RequestParam("locationId") locationId: String
     ): ResponseEntity<GoogleLocationAttributesModel>? {
-        return googleService.getLocationAttributes(googleClient.accessToken.tokenValue, locationId)
+        val accessToken = authHelper.getGoogleAccessToken(request)
+        return googleService.getLocationAttributes(accessToken, locationId)
     }
 
     @Operation(summary = "Google:店舗の写真を全て取得", description = "Google:店舗の写真を全て取得します", tags = ["Google:GETメソッド"])
     @GetMapping("/location/photos")
     fun getLocationPhotos(
-        @RegisteredOAuth2AuthorizedClient("google") googleClient: OAuth2AuthorizedClient,
+        request: HttpServletRequest,
         @RequestParam("accountId") accountId: String,
         @RequestParam("locationId") locationId: String
     ): ResponseEntity<List<GoogleLocationPhotoModel>>? {
-        return googleService.getLocationPhotos(googleClient.accessToken.tokenValue, accountId, locationId)
+        val accessToken = authHelper.getGoogleAccessToken(request)
+        return googleService.getLocationPhotos(accessToken, accountId, locationId)
     }
 
     @Operation(summary = "Google:店舗の最新情報を全て取得", description = "Google:店舗の最新情報を全て取得します", tags = ["Google:GETメソッド"])
     @GetMapping("/location/local_posts")
     fun getLocationLocalPosts(
-        @RegisteredOAuth2AuthorizedClient("google") googleClient: OAuth2AuthorizedClient,
+        request: HttpServletRequest,
         @RequestParam("accountId") accountId: String,
         @RequestParam("locationId") locationId: String
     ): ResponseEntity<List<GoogleLocationLocalPostModel>>? {
-        return googleService.getLocationLocalPosts(googleClient.accessToken.tokenValue, accountId, locationId)
+        val accessToken = authHelper.getGoogleAccessToken(request)
+        return googleService.getLocationLocalPosts(accessToken, accountId, locationId)
     }
 
     @Operation(summary = "Google:店舗のメニューを全て取得", description = "Google:店舗のメニューを全て取得します", tags = ["Google:GETメソッド"])
     @GetMapping("/location/food_menus")
     fun getLocationFoodMenus(
-        @RegisteredOAuth2AuthorizedClient("google") googleClient: OAuth2AuthorizedClient,
+        request: HttpServletRequest,
         @RequestParam("accountId") accountId: String,
         @RequestParam("locationId") locationId: String
     ): ResponseEntity<GoogleLocationFoodMenusModel>? {
-        return googleService.getLocationFoodMenus(googleClient.accessToken.tokenValue, accountId, locationId)
+        val accessToken = authHelper.getGoogleAccessToken(request)
+        return googleService.getLocationFoodMenus(accessToken, accountId, locationId)
     }
 
     @Operation(
@@ -162,10 +134,11 @@ class GoogleController(val googleService: GoogleService, val googleUseCase: Goog
     )
     @GetMapping("/location/questions")
     fun getLocationQuestions(
-        @RegisteredOAuth2AuthorizedClient("google") googleClient: OAuth2AuthorizedClient,
+        request: HttpServletRequest,
         @RequestParam("locationId") locationId: String
     ): ResponseEntity<List<GoogleLocationQuestion>>? {
-        return googleService.getLocationQuestions(googleClient.accessToken.tokenValue, locationId)
+        val accessToken = authHelper.getGoogleAccessToken(request)
+        return googleService.getLocationQuestions(accessToken, locationId)
     }
 
     @Operation(
@@ -178,11 +151,42 @@ class GoogleController(val googleService: GoogleService, val googleUseCase: Goog
     )
     @GetMapping("/location/answers")
     fun getLocationAnswers(
-        @RegisteredOAuth2AuthorizedClient("google") googleClient: OAuth2AuthorizedClient,
+        request: HttpServletRequest,
         @RequestParam("locationId") locationId: String,
         @RequestParam("questionId") questionId: String
     ): ResponseEntity<List<GoogleLocationAnswer>>? {
-        return googleService.getLocationAnswers(googleClient.accessToken.tokenValue, locationId, questionId)
+        val accessToken = authHelper.getGoogleAccessToken(request)
+        return googleService.getLocationAnswers(accessToken, locationId, questionId)
+    }
+
+    @Operation(
+        summary = "Google:店舗のクチコミを全て取得",
+        description = "Google:店舗のクチコミを全て取得します",
+        tags = ["Google:GETメソッド"])
+    @GetMapping("/location/reviews")
+    fun getLocationReviews(
+        request: HttpServletRequest,
+        @RequestParam("accountId") accountId: String,
+        @RequestParam("locationId") locationId: String
+    ): ResponseEntity<List<GoogleLocationReviewCustom>>? {
+        val accessToken = authHelper.getGoogleAccessToken(request)
+        return googleService.getLocationReviews(accessToken,accountId, locationId)
+    }
+
+    @Operation(
+        summary = "Google:店舗のクチコミを取得",
+        description = "Google:店舗のクチコミを取得します",
+        tags = ["Google:GETメソッド"]
+    )
+    @GetMapping("/location/review")
+    fun getLocationReview(
+        request: HttpServletRequest,
+        @RequestParam("accountId") accountId: String,
+        @RequestParam("locationId") locationId: String,
+        @RequestParam("reviewId") reviewId: String
+    ): ResponseEntity<GoogleLocationReviewCustom>? {
+        val accessToken = authHelper.getGoogleAccessToken(request)
+        return googleService.getLocationReview(accessToken, accountId, locationId, reviewId)
     }
 
     @Operation(summary = "Google:Google API専用", description = "GoogleAPIに写真をアップロードするときに使用されます", tags = ["Google:特殊API"])
@@ -192,12 +196,12 @@ class GoogleController(val googleService: GoogleService, val googleUseCase: Goog
     }
 
     @Operation(summary = "Google:写真を追加", description = "Google:店舗の写真を追加します", tags = ["Google:POSTメソッド"])
-    @PostMapping("/location/photos")
+    @PostMapping("/location/photos", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
     fun postLocationPhotos(
-        @RegisteredOAuth2AuthorizedClient("google") googleClient: OAuth2AuthorizedClient,
+        request: HttpServletRequest,
         @RequestParam("accountId") accountId: String,
         @RequestParam("locationId") locationId: String,
-        @RequestParam("files") files: List<MultipartFile>
+        @RequestPart("files") files: Array<MultipartFile>
     ): ResponseEntity<Any>  {
         files.forEach { file ->
             val name = file.originalFilename ?: "unknown"
@@ -235,20 +239,131 @@ class GoogleController(val googleService: GoogleService, val googleUseCase: Goog
                     .body("ファイル '$name' の画像サイズが小さすぎます（${image.width}x${image.height}px） <(250px x 250px)")
             }
         }
-        googleService.postLocationPhotos(googleClient.accessToken.tokenValue, accountId, locationId, files)
+        val accessToken = authHelper.getGoogleAccessToken(request)
+        googleService.postLocationPhotos(accessToken, accountId, locationId, files)
         return ResponseEntity.ok().build()
     }
 
-    @Operation(summary = "Google:最新情報を追加", description = "Google:店舗の最新情報を追加します", tags = ["Google:POSTメソッド"])
-    @PostMapping("/location/local_posts")
+    @Operation(
+        requestBody = RequestBody(
+            content = [
+                Content(
+                    mediaType = MediaType.MULTIPART_FORM_DATA_VALUE,
+                    schema = Schema(
+                        type = "object",
+                        properties = [
+                            StringToClassMapItem(
+                                key = "files",
+                                value = Array<MultipartFile>::class
+                            ),
+                            StringToClassMapItem(
+                                key = "localPost",
+                                value = GoogleLocationLocalPostModel::class
+                            ),
+                        ]
+                    ),
+                    encoding = [
+                        Encoding(
+                            name = "localPost",
+                            contentType = MediaType.APPLICATION_JSON_VALUE
+                        )
+                    ]
+                )
+            ]
+        ),
+        summary = "Google:最新情報を追加",
+        description = """
+            Google:店舗の最新情報を追加します.
+            Request Bodyとして GoogleLocationLocalPostModelのJsonにしてください。
+            例 : {
+                "summary": "最新情報の概要",
+                "callToAction": {
+                    "actionType": "LEARN_MORE",
+                    "url": "https://example.com"
+                },
+                "media": [
+                    {
+                        "mediaFormat": "PHOTO",
+                        "sourceUrl": "https://example.com/photo.jpg"
+                    }
+                ]
+            }
+        """,
+        tags = ["Google:POSTメソッド"])
+    @PostMapping(
+        "/location/local_post",
+        consumes = [MediaType.MULTIPART_FORM_DATA_VALUE]
+    )
     fun postLocationLocalPosts(
-        @RegisteredOAuth2AuthorizedClient("google") googleClient: OAuth2AuthorizedClient,
+        request: HttpServletRequest,
         @RequestParam("accountId") accountId: String,
         @RequestParam("locationId") locationId: String,
-        @RequestParam("files") files: List<MultipartFile>,
-        @RequestBody localPost: GoogleLocationLocalPostModel
+        @RequestPart("files") files: Array<MultipartFile>,
+        @RequestPart("localPost") localPost: GoogleLocationLocalPostModel
     ) {
-        return googleService.postLocationLocalPosts(googleClient.accessToken.tokenValue, accountId, locationId, localPost, files)
+        val accessToken = authHelper.getGoogleAccessToken(request)
+        return googleService.postLocationLocalPost(accessToken, accountId, locationId, localPost, files)
+    }
+
+    @Operation(
+        requestBody = RequestBody(
+            content = [
+                Content(
+                    mediaType = MediaType.MULTIPART_FORM_DATA_VALUE,
+                    schema = Schema(
+                        type = "object",
+                        properties = [
+                            StringToClassMapItem(
+                                key = "files",
+                                value = Array<MultipartFile>::class
+                            ),
+                            StringToClassMapItem(
+                                key = "localPost",
+                                value = GoogleLocationLocalPostModel::class
+                            ),
+                        ]
+                    ),
+                    encoding = [
+                        Encoding(
+                            name = "localPost",
+                            contentType = MediaType.APPLICATION_JSON_VALUE
+                        )
+                    ]
+                )
+            ]
+        ),
+        summary = "Google:最新情報を追加",
+        description = """
+            Google:店舗の最新情報を追加します.
+            Request Bodyとして GoogleLocationLocalPostModelのJsonにしてください。
+            例 : {
+                "summary": "最新情報の概要",
+                "callToAction": {
+                    "actionType": "LEARN_MORE",
+                    "url": "https://example.com"
+                },
+                "media": [
+                    {
+                        "mediaFormat": "PHOTO",
+                        "sourceUrl": "https://example.com/photo.jpg"
+                    }
+                ]
+            }
+        """,
+        tags = ["Google:POSTメソッド"])
+    @PostMapping(
+        "/location/local_post/bulk",
+        consumes = [MediaType.MULTIPART_FORM_DATA_VALUE]
+    )
+    fun postBulkLocationLocalPost(
+        request: HttpServletRequest,
+        @RequestParam("accountId") accountId: String,
+        @RequestParam("locationIdList") locationIdList: Array<String>,
+        @RequestPart("files") files: Array<MultipartFile>,
+        @RequestPart("localPost") localPost: GoogleLocationLocalPostModel
+    ) {
+        val accessToken = authHelper.getGoogleAccessToken(request)
+        return googleService.postBulkLocationLocalPost(accessToken, accountId, locationIdList, localPost, files)
     }
 
     @Operation(
@@ -262,7 +377,7 @@ class GoogleController(val googleService: GoogleService, val googleUseCase: Goog
     )
     @PostMapping("/location/question")
     fun postLocationQuestion(
-        @RegisteredOAuth2AuthorizedClient("google") googleClient: OAuth2AuthorizedClient,
+        request: HttpServletRequest,
         @RequestParam("locationId") locationId: String,
         @RequestBody question: GoogleLocationQuestion
     ) {
@@ -270,7 +385,8 @@ class GoogleController(val googleService: GoogleService, val googleUseCase: Goog
         if (question.text == null) {
             throw IllegalArgumentException("text is required")
         }
-        return googleService.postLocationQuestion(googleClient.accessToken.tokenValue, locationId, question.text)
+        val accessToken = authHelper.getGoogleAccessToken(request)
+        return googleService.postLocationQuestion(accessToken, locationId, question.text)
     }
 
     @Operation(
@@ -284,7 +400,7 @@ class GoogleController(val googleService: GoogleService, val googleUseCase: Goog
     )
     @PostMapping("/location/answer")
     fun postLocationAnswer(
-        @RegisteredOAuth2AuthorizedClient("google") googleClient: OAuth2AuthorizedClient,
+        request: HttpServletRequest,
         @RequestParam("locationId") locationId: String,
         @RequestParam("questionId") questionId: String,
         @RequestBody answer: GoogleLocationAnswer
@@ -293,44 +409,48 @@ class GoogleController(val googleService: GoogleService, val googleUseCase: Goog
         if (answer.text == null) {
             throw IllegalArgumentException("text is required")
         }
-        return googleService.postLocationAnswer(googleClient.accessToken.tokenValue, locationId, questionId, answer.text)
+        val accessToken = authHelper.getGoogleAccessToken(request)
+        return googleService.postLocationAnswer(accessToken, locationId, questionId, answer.text)
     }
 
     @Operation(summary = "Google:店舗プロフィールの更新", description = "Google:店舗プロフィールを更新します", tags = ["Google:PATCHメソッド"])
     @PatchMapping("/location/profile")
     fun updateLocationProfile(
-        @RegisteredOAuth2AuthorizedClient("google") googleClient: OAuth2AuthorizedClient,
+        request: HttpServletRequest,
         @RequestParam("locationId") locationId: String,
         @RequestParam("updateMask") updateMask: String,
         @RequestBody locationProfile: GoogleLocationProfileModel
     ): ResponseEntity<GoogleLocationProfileModel>? {
-        return googleService.updateLocationProfile(googleClient.accessToken.tokenValue, locationId, updateMask, locationProfile)
+        val accessToken = authHelper.getGoogleAccessToken(request)
+        return googleService.updateLocationProfile(accessToken, locationId, updateMask, locationProfile)
     }
 
     @Operation(summary = "Google:店舗のプロフィールの更新:ビジネス名", description = "Google:店舗のビジネス名を更新します", tags = ["Google:PATCHメソッド"])
     @PatchMapping("/location/profile/title")
     fun updateLocationProfileTitle(
-        @RegisteredOAuth2AuthorizedClient("google") googleClient: OAuth2AuthorizedClient,
+        request: HttpServletRequest,
         @RequestParam("locationId") locationId: String,
         @RequestBody title: String,
     ): ResponseEntity<GoogleLocationProfileModel>? {
         if (title.isBlank()) {
             return ResponseEntity.status(440).body(null)
         }
-        return googleUseCase.updateProfileTitle(googleClient.accessToken.tokenValue, locationId, title)
+        val accessToken = authHelper.getGoogleAccessToken(request)
+        return googleUseCase.updateProfileTitle(accessToken, locationId, title)
     }
 
     @Operation(summary = "Google:店舗のプロフィールの更新:メインカテゴリ", description = "Google:店舗のメインカテゴリを更新します", tags = ["Google:PATCHメソッド"])
     @PatchMapping("/location/profile/primary_category")
     fun updateLocationProfilePrimaryCategory(
-        @RegisteredOAuth2AuthorizedClient("google") googleClient: OAuth2AuthorizedClient,
+        request: HttpServletRequest,
         @RequestParam("locationId") locationId: String,
         @RequestBody category: GoogleLocationCategory
     ): ResponseEntity<GoogleLocationProfileModel>? {
         if (category.name.isNullOrBlank()) {
             return ResponseEntity.status(440).body(null)
         }
-        return googleUseCase.updateLocationProfilePrimaryCategory(googleClient.accessToken.tokenValue, locationId, category)
+        val accessToken = authHelper.getGoogleAccessToken(request)
+        return googleUseCase.updateLocationProfilePrimaryCategory(accessToken, locationId, category)
     }
 
     @Operation(
@@ -347,7 +467,7 @@ class GoogleController(val googleService: GoogleService, val googleUseCase: Goog
     )
     @PatchMapping("/location/profile/additional_categories")
     fun updateLocationProfileAdditionalCategories(
-        @RegisteredOAuth2AuthorizedClient("google") googleClient: OAuth2AuthorizedClient,
+        request: HttpServletRequest,
         @RequestParam("locationId") locationId: String,
         @RequestBody categoryList: List<GoogleLocationCategory>
     ): ResponseEntity<GoogleLocationProfileModel>? {
@@ -356,7 +476,8 @@ class GoogleController(val googleService: GoogleService, val googleUseCase: Goog
                 return ResponseEntity.status(440).body(null)
             }
         }
-        return googleUseCase.updateLocationProfileAdditionalCategories(googleClient.accessToken.tokenValue, locationId, categoryList)
+        val accessToken = authHelper.getGoogleAccessToken(request)
+        return googleUseCase.updateLocationProfileAdditionalCategories(accessToken, locationId, categoryList)
     }
 
     @Operation(
@@ -369,14 +490,15 @@ class GoogleController(val googleService: GoogleService, val googleUseCase: Goog
     )
     @PatchMapping("/location/profile/description")
     fun updateLocationProfileDescription(
-        @RegisteredOAuth2AuthorizedClient("google") googleClient: OAuth2AuthorizedClient,
+        request: HttpServletRequest,
         @RequestParam("locationId") locationId: String,
         @RequestBody description: String
     ): ResponseEntity<GoogleLocationProfileModel>? {
         if (description.isBlank()) {
             return ResponseEntity.status(440).body(null)
         }
-        return googleUseCase.updateLocationProfileDescription(googleClient.accessToken.tokenValue, locationId, description)
+        val accessToken = authHelper.getGoogleAccessToken(request)
+        return googleUseCase.updateLocationProfileDescription(accessToken, locationId, description)
     }
 
     @Operation(
@@ -389,14 +511,15 @@ class GoogleController(val googleService: GoogleService, val googleUseCase: Goog
     )
     @PatchMapping("/location/profile/opening_date")
     fun updateLocationProfileOpeningDate(
-        @RegisteredOAuth2AuthorizedClient("google") googleClient: OAuth2AuthorizedClient,
+        request: HttpServletRequest,
         @RequestParam("locationId") locationId: String,
         @RequestBody openingDate: GoogleLocationDate
     ): ResponseEntity<GoogleLocationProfileModel>? {
         if (openingDate.year == null || openingDate.month == null || openingDate.day == null) {
             return ResponseEntity.status(440).body(null)
         }
-        return googleUseCase.updateLocationProfileOpeningDate(googleClient.accessToken.tokenValue, locationId, openingDate)
+        val accessToken = authHelper.getGoogleAccessToken(request)
+        return googleUseCase.updateLocationProfileOpeningDate(accessToken, locationId, openingDate)
     }
 
     @Operation(
@@ -414,14 +537,15 @@ class GoogleController(val googleService: GoogleService, val googleUseCase: Goog
     )
     @PatchMapping("/location/profile/phone_number")
     fun updateLocationProfilePhoneNumber(
-        @RegisteredOAuth2AuthorizedClient("google") googleClient: OAuth2AuthorizedClient,
+        request: HttpServletRequest,
         @RequestParam("locationId") locationId: String,
         @RequestBody phoneNumber: String
     ): ResponseEntity<GoogleLocationProfileModel>? {
         if (phoneNumber.isBlank()) {
             return ResponseEntity.status(440).body(null)
         }
-        return googleUseCase.updateLocationProfilePhoneNumber(googleClient.accessToken.tokenValue, locationId, phoneNumber)
+        val accessToken = authHelper.getGoogleAccessToken(request)
+        return googleUseCase.updateLocationProfilePhoneNumber(accessToken, locationId, phoneNumber)
     }
 
     @Operation(
@@ -434,14 +558,15 @@ class GoogleController(val googleService: GoogleService, val googleUseCase: Goog
     )
     @PatchMapping("/location/profile/website_uri")
     fun updateLocationProfileWebsiteUri(
-        @RegisteredOAuth2AuthorizedClient("google") googleClient: OAuth2AuthorizedClient,
+        request: HttpServletRequest,
         @RequestParam("locationId") locationId: String,
         @RequestBody websiteUri: String
     ): ResponseEntity<GoogleLocationProfileModel>? {
         if (websiteUri.isBlank()) {
             return ResponseEntity.status(440).body(null)
         }
-        return googleUseCase.updateLocationProfileWebsiteUri(googleClient.accessToken.tokenValue, locationId, websiteUri)
+        val accessToken = authHelper.getGoogleAccessToken(request)
+        return googleUseCase.updateLocationProfileWebsiteUri(accessToken, locationId, websiteUri)
     }
 
     @Operation(
@@ -454,11 +579,12 @@ class GoogleController(val googleService: GoogleService, val googleUseCase: Goog
     )
     @PatchMapping("/location/profile/service_area")
     fun updateLocationServiceArea(
-        @RegisteredOAuth2AuthorizedClient("google") googleClient: OAuth2AuthorizedClient,
+        request: HttpServletRequest,
         @RequestParam("locationId") locationId: String,
         @RequestBody placeIds: List<String>
     ): ResponseEntity<GoogleLocationProfileModel>? {
-        return googleUseCase.updateLocationProfileServiceArea(googleClient.accessToken.tokenValue, locationId, placeIds)
+        val accessToken = authHelper.getGoogleAccessToken(request)
+        return googleUseCase.updateLocationProfileServiceArea(accessToken, locationId, placeIds)
     }
 
     @Operation(
@@ -478,11 +604,12 @@ class GoogleController(val googleService: GoogleService, val googleUseCase: Goog
     )
     @PatchMapping("/location/profile/store_front_address")
     fun updateLocationStoreFrontAddress(
-        @RegisteredOAuth2AuthorizedClient("google") googleClient: OAuth2AuthorizedClient,
+        request: HttpServletRequest,
         @RequestParam("locationId") locationId: String,
         @RequestBody storeFrontAddressRequest: GoogleLocationStoreFrontAddressRequest
     ): ResponseEntity<GoogleLocationProfileModel>? {
-        return googleUseCase.updateLocationStoreFrontAddress(googleClient.accessToken.tokenValue, locationId, storeFrontAddressRequest)
+        val accessToken = authHelper.getGoogleAccessToken(request)
+        return googleUseCase.updateLocationStoreFrontAddress(accessToken, locationId, storeFrontAddressRequest)
     }
 
     @Operation(
@@ -522,22 +649,24 @@ class GoogleController(val googleService: GoogleService, val googleUseCase: Goog
     )
     @PatchMapping("/location/profile/business_hours")
     fun updateLocationBusinessHours(
-        @RegisteredOAuth2AuthorizedClient("google") googleClient: OAuth2AuthorizedClient,
+        request: HttpServletRequest,
         @RequestParam("locationId") locationId: String,
         @RequestBody businessHoursRequest: GoogleLocationBusinessHoursRequest
     ): ResponseEntity<GoogleLocationProfileModel>? {
-        return googleUseCase.updateLocationBusinessHours(googleClient.accessToken.tokenValue, locationId, businessHoursRequest)
+        val accessToken = authHelper.getGoogleAccessToken(request)
+        return googleUseCase.updateLocationBusinessHours(accessToken, locationId, businessHoursRequest)
     }
 
     @Operation(summary = "Google:店舗のメニューの更新", description = "Google:店舗のメニューを更新します", tags = ["Google:PATCHメソッド"])
     @PatchMapping("/location/food_menus")
     fun updateLocationFoodMenus(
-        @RegisteredOAuth2AuthorizedClient("google") googleClient: OAuth2AuthorizedClient,
+        request: HttpServletRequest,
         @RequestParam("accountId") accountId: String,
         @RequestParam("locationId") locationId: String,
         @RequestBody foodMenus: GoogleLocationFoodMenusModel
     ): ResponseEntity<GoogleLocationFoodMenusModel>? {
-        return googleService.updateLocationFoodMenus(googleClient.accessToken.tokenValue, accountId, locationId, foodMenus)
+        val accessToken = authHelper.getGoogleAccessToken(request)
+        return googleService.updateLocationFoodMenus(accessToken, accountId, locationId, foodMenus)
     }
 
     @Operation(
@@ -550,7 +679,7 @@ class GoogleController(val googleService: GoogleService, val googleUseCase: Goog
     )
     @PatchMapping("/location/question")
     fun updateLocationQuestion(
-        @RegisteredOAuth2AuthorizedClient("google") googleClient: OAuth2AuthorizedClient,
+        request: HttpServletRequest,
         @RequestParam("locationId") locationId: String,
         @RequestParam("questionId") questionId: String,
         @RequestBody question: GoogleLocationQuestion
@@ -559,7 +688,8 @@ class GoogleController(val googleService: GoogleService, val googleUseCase: Goog
         if (question.text == null) {
             throw IllegalArgumentException("text is required")
         }
-        return googleService.updateLocationQuestion(googleClient.accessToken.tokenValue, locationId, questionId, question.text)
+        val accessToken = authHelper.getGoogleAccessToken(request)
+        return googleService.updateLocationQuestion(accessToken, locationId, questionId, question.text)
     }
 
     @Operation(
@@ -596,12 +726,13 @@ class GoogleController(val googleService: GoogleService, val googleUseCase: Goog
     )
     @PatchMapping("/location/attributes")
     fun updateLocationAttributes(
-        @RegisteredOAuth2AuthorizedClient("google") googleClient: OAuth2AuthorizedClient,
+        request: HttpServletRequest,
         @RequestParam("locationId") locationId: String,
         @RequestParam("attributeMask") attributeMask: String,
         @RequestBody attributes: GoogleLocationAttributesModel
     ): ResponseEntity<GoogleLocationAttributesModel>? {
-        return googleService.updateLocationAttributes(googleClient.accessToken.tokenValue, locationId, attributeMask, attributes)
+        val accessToken = authHelper.getGoogleAccessToken(request)
+        return googleService.updateLocationAttributes(accessToken, locationId, attributeMask, attributes)
     }
 
     @Operation(
@@ -616,11 +747,12 @@ class GoogleController(val googleService: GoogleService, val googleUseCase: Goog
     )
     @PatchMapping("/location/attributes/sns_link")
     fun updateLocationAttributeSnsLink(
-        @RegisteredOAuth2AuthorizedClient("google") googleClient: OAuth2AuthorizedClient,
+        request: HttpServletRequest,
         @RequestParam("locationId") locationId: String,
         @RequestBody snsLinkRequest: GoogleLocationAttributeSnsLinkRequest
     ): ResponseEntity<GoogleLocationAttributesModel>? {
-        return googleUseCase.updateLocationAttributeSnsLink(googleClient.accessToken.tokenValue, locationId, snsLinkRequest)
+        val accessToken = authHelper.getGoogleAccessToken(request)
+        return googleUseCase.updateLocationAttributeSnsLink(accessToken, locationId, snsLinkRequest)
     }
 
     @Operation(
@@ -633,11 +765,12 @@ class GoogleController(val googleService: GoogleService, val googleUseCase: Goog
     )
     @PatchMapping("/location/attributes/menu_link")
     fun updateLocationAttributeMenuLink(
-        @RegisteredOAuth2AuthorizedClient("google") googleClient: OAuth2AuthorizedClient,
+        request: HttpServletRequest,
         @RequestParam("locationId") locationId: String,
         @RequestBody menuLink: String,
     ): ResponseEntity<GoogleLocationAttributesModel>? {
-        return googleUseCase.updateLocationAttributeMenuLink(googleClient.accessToken.tokenValue, locationId, menuLink)
+        val accessToken = authHelper.getGoogleAccessToken(request)
+        return googleUseCase.updateLocationAttributeMenuLink(accessToken, locationId, menuLink)
     }
 
     @Operation(
@@ -651,11 +784,12 @@ class GoogleController(val googleService: GoogleService, val googleUseCase: Goog
     )
     @PatchMapping("/location/attributes/business_owner_info")
     fun updateLocationBusinessOwnerInfo(
-        @RegisteredOAuth2AuthorizedClient("google") googleClient: OAuth2AuthorizedClient,
+        request: HttpServletRequest,
         @RequestParam("locationId") locationId: String,
         @RequestBody isOwnedByWomen: Boolean?,
     ): ResponseEntity<GoogleLocationAttributesModel>? {
-        return googleUseCase.updateLocationBusinessOwnerInfo(googleClient.accessToken.tokenValue, locationId, isOwnedByWomen)
+        val accessToken = authHelper.getGoogleAccessToken(request)
+        return googleUseCase.updateLocationBusinessOwnerInfo(accessToken, locationId, isOwnedByWomen)
     }
 
     @Operation(
@@ -664,7 +798,7 @@ class GoogleController(val googleService: GoogleService, val googleUseCase: Goog
               Google:店舗のサービスを更新します。
               Request BodyはGoogleLocationAttributeServiceの配列のJsonにしてください。
               typeはenumです。パターンとして以下の入力が可能です。
-              例: SERVICE_ALCOHOL, sevice_alcohol, attributes/serves_alcohol, アルコール飲料あり
+              例: SERVICE_ALCOHOL, service_alcohol, attributes/serves_alcohol, アルコール飲料あり
               valueはbooleanです。
               valueがnullの場合はサービスを削除します。
               例 :
@@ -682,11 +816,12 @@ class GoogleController(val googleService: GoogleService, val googleUseCase: Goog
     )
     @PatchMapping("/location/attributes/services")
     fun updateLocationServices(
-        @RegisteredOAuth2AuthorizedClient("google") googleClient: OAuth2AuthorizedClient,
+        request: HttpServletRequest,
         @RequestParam("locationId") locationId: String,
         @RequestBody services: List<GoogleLocationAttributeService>
     ): ResponseEntity<GoogleLocationAttributesModel>? {
-        return googleUseCase.updateLocationServices(googleClient.accessToken.tokenValue, locationId, services)
+        val accessToken = authHelper.getGoogleAccessToken(request)
+        return googleUseCase.updateLocationServices(accessToken, locationId, services)
     }
 
     @Operation(
@@ -713,11 +848,32 @@ class GoogleController(val googleService: GoogleService, val googleUseCase: Goog
     )
     @PatchMapping("/location/attributes/serviceOptions")
     fun updateLocationServiceOptions(
-        @RegisteredOAuth2AuthorizedClient("google") googleClient: OAuth2AuthorizedClient,
+        request: HttpServletRequest,
         @RequestParam("locationId") locationId: String,
         @RequestBody serviceOptions: List<GoogleLocationAttributeServiceOption>
     ): ResponseEntity<GoogleLocationAttributesModel>? {
-        return googleUseCase.updateLocationServiceOptions(googleClient.accessToken.tokenValue, locationId, serviceOptions)
+        val accessToken = authHelper.getGoogleAccessToken(request)
+        return googleUseCase.updateLocationServiceOptions(accessToken, locationId, serviceOptions)
+    }
+
+    @PatchMapping("/location/review/reply")
+    @Operation(
+        summary = "Google:店舗のクチコミに返信",
+        description = """
+              Google:店舗のクチコミに返信します。
+              Request Bodyとして commentのstringにしてください。
+              例 : "Thank you for your feedback!"
+              """, tags = ["Google:PATCHメソッド"]
+    )
+    fun updateLocationReviewReply(
+        request: HttpServletRequest,
+        @RequestParam("accountId") accountId: String,
+        @RequestParam("locationId") locationId: String,
+        @RequestParam("reviewId") reviewId: String,
+        @RequestBody comment: String
+    ): ResponseEntity<GoogleLocationReviewReply>? {
+        val accessToken = authHelper.getGoogleAccessToken(request)
+        return googleService.updateLocationReviewReply(accessToken, accountId, locationId, reviewId, comment)
     }
 
 
@@ -729,12 +885,12 @@ class GoogleController(val googleService: GoogleService, val googleUseCase: Goog
     )
     @DeleteMapping("/location/question")
     fun deleteLocationQuestion(
-        @RegisteredOAuth2AuthorizedClient("google") googleClient: OAuth2AuthorizedClient,
+        request: HttpServletRequest,
         @RequestParam("locationId") locationId: String,
         @RequestParam("questionId") questionId: String
     ) {
-        println("deleteLocationQuestion called")
-        return googleService.deleteLocationQuestion(googleClient.accessToken.tokenValue, locationId, questionId)
+        val accessToken = authHelper.getGoogleAccessToken(request)
+        return googleService.deleteLocationQuestion(accessToken, locationId, questionId)
     }
 
     @Operation(
@@ -745,34 +901,33 @@ class GoogleController(val googleService: GoogleService, val googleUseCase: Goog
     )
     @DeleteMapping("/location/answer")
     fun deleteLocationAnswer(
-        @RegisteredOAuth2AuthorizedClient("google") googleClient: OAuth2AuthorizedClient,
+        request: HttpServletRequest,
         @RequestParam("locationId") locationId: String,
         @RequestParam("questionId") questionId: String
     ) {
-        println("deleteLocationAnswer called")
-        return googleService.deleteLocationAnswer(googleClient.accessToken.tokenValue, locationId, questionId)
+        val accessToken = authHelper.getGoogleAccessToken(request)
+        return googleService.deleteLocationAnswer(accessToken, locationId, questionId)
+    }
+
+    @Operation(
+        summary = "Google:店舗のクチコミの返信を削除",
+        description = """
+              Google:店舗のクチコミの返信を削除します。
+        """, tags = ["Google:DELETEメソッド"]
+    )
+    @DeleteMapping("/location/review/reply")
+    fun deleteLocationReviewReply(
+        request: HttpServletRequest,
+        @RequestParam("accountId") accountId: String,
+        @RequestParam("locationId") locationId: String,
+        @RequestParam("reviewId") reviewId: String
+    ): ResponseEntity<Void> {
+        val accessToken = authHelper.getGoogleAccessToken(request)
+        googleService.deleteLocationReviewReply(accessToken, accountId, locationId, reviewId)
+        return ResponseEntity.ok().build()
+
     }
     /*
-
-        口コミ取得
-    https://mybusiness.googleapis.com/v4/accounts/{accountId}/locations/{locationId}/reviews
-
-    特定の口コミ取得
-    https://mybusiness.googleapis.com/v4/accounts/{accountId}/locations/{locationId}/reviews/{reviewId}
-
-    口コミに返信
-    PUT
-    https://mybusiness.googleapis.com/v4/accounts/{accountId}/locations/{locationId}/reviews/{reviewId}/reply
-
-    {
-      comment: "Thank you for visiting our business!"
-    }
-
-    口コミの返信を削除
-    DELETE
-    https://mybusiness.googleapis.com/v4/accounts/{accountId}/locations/{locationId}/reviews/{reviewId}/reply
-
-
     写真のリスト取得
     GET
     https://mybusiness.googleapis.com/v4/accounts/{accountId}/locations/{locationId}/media

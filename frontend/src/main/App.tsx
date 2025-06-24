@@ -28,12 +28,7 @@ const googleService = new GoogleServiceImpl({googleRepository})
 
 function App() {
 
-  axiosApiClient.get('google/me')
-    .then(_res => {
-    })
-    .catch(_ => {
-      window.location.href = '/oauth2/authorization/cognito'
-    })
+  axiosApiClient.get('cognito/me')
 
   return (
     <Routes>
