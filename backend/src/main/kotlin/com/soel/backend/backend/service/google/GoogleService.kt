@@ -1,10 +1,10 @@
-package com.soel.backend.backend.service
+package com.soel.backend.backend.service.google
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.soel.backend.backend.SecurityConfig
 import com.soel.backend.backend.entity.MenuLog
 import com.soel.backend.backend.model.*
-import com.soel.backend.backend.repository.GoogleRepository
+import com.soel.backend.backend.repository.google.GoogleRepository
 import com.soel.backend.backend.repository.MenuLogRepository
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -39,11 +39,14 @@ interface GoogleService {
     fun getLocationQuestions(accessToken: String, locationId: String): ResponseEntity<List<GoogleLocationQuestion>>?
     fun getLocationAnswers(accessToken: String, locationId: String, questionId: String): ResponseEntity<List<GoogleLocationAnswer>>?
     fun getLocationPhotoLocal(filename: String): ResponseEntity<StreamingResponseBody>?
+    fun getLocationReviews(accessToken: String, accountId: String, locationId: String): ResponseEntity<List<GoogleLocationReviewCustom>>?
+    fun getLocationReview(accessToken: String, accountId: String, locationId: String, reviewId: String): ResponseEntity<GoogleLocationReviewCustom>?
 
     fun deleteLocationPhotoLocal(filename: String)
 
-    fun postLocationPhotos(accessToken: String, accountId: String, locationId: String, files: List<MultipartFile>)
-    fun postLocationLocalPosts(accessToken: String, accountId: String, locationId: String, localPost: GoogleLocationLocalPostModel, files: List<MultipartFile>)
+    fun postLocationPhotos(accessToken: String, accountId: String, locationId: String, files: Array<MultipartFile>)
+    fun postLocationLocalPost(accessToken: String, accountId: String, locationId: String, localPost: GoogleLocationLocalPostModel, files: Array<MultipartFile>)
+    fun postBulkLocationLocalPost(accessToken: String, accountId: String, locationIdList: Array<String>, localPost: GoogleLocationLocalPostModel, files: Array<MultipartFile>)
     fun postLocationQuestion(accessToken: String, locationId: String, text: String)
     fun postLocationAnswer(accessToken: String, locationId: String, questionId: String, text: String)
 
@@ -51,9 +54,11 @@ interface GoogleService {
     fun updateLocationFoodMenus(accessToken: String, accountId: String, locationId: String, locationFoodMenus: GoogleLocationFoodMenusModel): ResponseEntity<GoogleLocationFoodMenusModel>?
     fun updateLocationQuestion(accessToken: String, locationId: String, questionId: String, text: String): ResponseEntity<GoogleLocationQuestion>?
     fun updateLocationAttributes(accessToken: String, locationId: String, attributeMask: String, attributes: GoogleLocationAttributesModel): ResponseEntity<GoogleLocationAttributesModel>?
+    fun updateLocationReviewReply(accessToken: String, accountId: String, locationId: String, reviewId: String, comment: String): ResponseEntity<GoogleLocationReviewReply>?
 
     fun deleteLocationQuestion(accessToken: String, locationId: String, questionId: String)
     fun deleteLocationAnswer(accessToken: String, locationId: String, questionId: String)
+    fun deleteLocationReviewReply(accessToken: String, accountId: String, locationId: String, reviewId: String): ResponseEntity<Any>?
 }
 
 @Service
@@ -396,6 +401,62 @@ class GoogleServiceImpl(val googleRepository: GoogleRepository, val menuLogRepos
             .body(streamingResponseBody)
     }
 
+    override fun getLocationReviews(accessToken: String, accountId: String, locationId: String): ResponseEntity<List<GoogleLocationReviewCustom>>? {
+        try {
+            val googleReviewsMutableList: MutableList<GoogleLocationReviewCustom> = mutableListOf()
+            var nextPageToken: String? = null
+            do {
+                val googleLocationReviewsResponse =
+                    googleRepository.getLocationReviews(accessToken, accountId, locationId, nextPageToken)
+                val googleLocationReviews = googleLocationReviewsResponse?.reviews?.map { review ->
+                    GoogleLocationReviewCustom(
+                        review.name,
+                        review.reviewId,
+                        review.comment,
+                        review.starRating,
+                        review.reviewer,
+                        review.reviewReply,
+                        review.createTime,
+                        review.updateTime,
+                        isReply = review.reviewReply != null,
+                    )
+                }
+                nextPageToken = googleLocationReviewsResponse?.nextPageToken
+                googleReviewsMutableList.addAll(googleLocationReviews!!.toMutableList())
+            } while (nextPageToken != null)
+            return ResponseEntity.ok(googleReviewsMutableList)
+        } catch (e: Exception) {
+            logger.error("Error getting location reviews", e)
+            return ResponseEntity
+                .badRequest()
+                .body(null)
+        }
+    }
+
+    override fun getLocationReview(accessToken: String, accountId: String, locationId: String, reviewId: String): ResponseEntity<GoogleLocationReviewCustom>? {
+        try {
+            val googleLocationReview = googleRepository.getLocationReview(accessToken, accountId, locationId, reviewId)
+            return ResponseEntity.ok(
+                GoogleLocationReviewCustom(
+                    googleLocationReview!!.name,
+                    googleLocationReview.reviewId,
+                    googleLocationReview.comment,
+                    googleLocationReview.starRating,
+                    googleLocationReview.reviewer,
+                    googleLocationReview.reviewReply,
+                    googleLocationReview.createTime,
+                    googleLocationReview.updateTime,
+                    isReply = googleLocationReview.reviewReply != null,
+                )
+            )
+        } catch (e: Exception) {
+            logger.error("Error getting location review", e)
+            return ResponseEntity
+                .badRequest()
+                .body(null)
+        }
+    }
+
     override fun deleteLocationPhotoLocal(filename: String) {
         println("deleteLocationPhotoLocal")
         val uploadDir = System.getProperty("user.dir")
@@ -406,30 +467,34 @@ class GoogleServiceImpl(val googleRepository: GoogleRepository, val menuLogRepos
         Files.delete(filePath)
     }
 
-    override fun postLocationPhotos(accessToken: String, accountId: String, locationId: String, files: List<MultipartFile>) {
+    override fun postLocationPhotos(accessToken: String, accountId: String, locationId: String, files: Array<MultipartFile>) {
         if (files.isEmpty()) {
             return
         }
         try {
             val uploadDir = System.getProperty("user.dir")
+            val filenameList = mutableListOf<String>()
             for (file in files) {
                 if (file.isEmpty) {
                     continue
                 }
                 val originalFilename = file.originalFilename
                 val fileExtension = originalFilename!!.substringAfterLast('.', "")
-                val fileName = "${UUID.randomUUID()}.$fileExtension"
+                val filename = "${UUID.randomUUID()}.$fileExtension"
+                filenameList.add(filename)
 
-                val targetLocation = Paths.get(uploadDir).resolve(fileName)
+                val targetLocation = Paths.get(uploadDir).resolve(filename)
                 Files.copy(file.inputStream, targetLocation)
-                val response = googleRepository.postLocationPhoto(accessToken, accountId, locationId, fileName)
+            }
+            for(filename in filenameList) {
+                val response = googleRepository.postLocationPhoto(accessToken, accountId, locationId, filename)
             }
         } catch (e: Exception) {
             logger.error("Error posting location photos", e)
         }
     }
 
-    override fun postLocationLocalPosts(accessToken: String, accountId: String, locationId: String, localPost: GoogleLocationLocalPostModel, files: List<MultipartFile>) {
+    override fun postLocationLocalPost(accessToken: String, accountId: String, locationId: String, localPost: GoogleLocationLocalPostModel, files: Array<MultipartFile>) {
         println("postLocationLocalPosts")
         if (files.isEmpty()) {
             return
@@ -454,6 +519,35 @@ class GoogleServiceImpl(val googleRepository: GoogleRepository, val menuLogRepos
                 googleRepository.postLocationLocalPost(accessToken, accountId, locationId, localPost, filenameList)
         } catch (e: Exception) {
             logger.error("Error posting location local posts", e)
+        }
+    }
+
+    override fun postBulkLocationLocalPost(accessToken: String, accountId: String, locationIdList: Array<String>, localPost: GoogleLocationLocalPostModel, files: Array<MultipartFile>) {
+        println("postBulkLocationLocalPosts")
+        if (files.isEmpty()) {
+            return
+        }
+        try {
+            val filenameList = mutableListOf<String>()
+            val uploadDir = System.getProperty("user.dir")
+            for (file in files) {
+                if (file.isEmpty) {
+                    continue
+                }
+                val originalFilename = file.originalFilename
+                val fileExtension = originalFilename!!.substringAfterLast('.', "")
+                val fileName = "${UUID.randomUUID()}.$fileExtension"
+                filenameList.add(fileName)
+
+                val targetLocation = Paths.get(uploadDir).resolve(fileName)
+                println("fileName = $fileName")
+                Files.copy(file.inputStream, targetLocation)
+            }
+            for (locationId in locationIdList) {
+                googleRepository.postBulkLocationLocalPost(accessToken, accountId, locationId, localPost, filenameList)
+            }
+        } catch (e: Exception) {
+            logger.error("Error posting bulk location local posts", e)
         }
     }
 
@@ -547,6 +641,19 @@ class GoogleServiceImpl(val googleRepository: GoogleRepository, val menuLogRepos
         }
     }
 
+    override fun updateLocationReviewReply(accessToken: String, accountId: String, locationId: String, reviewId: String, comment: String): ResponseEntity<GoogleLocationReviewReply>? {
+        try {
+            val googleLocationReviewReply =
+                googleRepository.updateLocationReviewReply(accessToken, accountId, locationId, reviewId, comment)
+            return ResponseEntity.ok(googleLocationReviewReply)
+        } catch (e: Exception) {
+            logger.error("Error updating location review reply", e)
+            return ResponseEntity
+                .badRequest()
+                .body(null)
+        }
+    }
+
     override fun deleteLocationQuestion(accessToken: String, locationId: String, questionId: String) {
         try {
             googleRepository.deleteLocationQuestion(accessToken, locationId, questionId)
@@ -560,6 +667,18 @@ class GoogleServiceImpl(val googleRepository: GoogleRepository, val menuLogRepos
             googleRepository.deleteLocationAnswer(accessToken, locationId, questionId)
         } catch (e: Exception) {
             logger.error("Error deleting location answer", e)
+        }
+    }
+
+    override fun deleteLocationReviewReply(accessToken: String, accountId: String, locationId: String, reviewId: String): ResponseEntity<Any>? {
+        try {
+            val response = googleRepository.deleteLocationReviewReply(accessToken, accountId, locationId, reviewId)
+            return ResponseEntity.ok(response)
+        } catch (e: Exception) {
+            logger.error("Error deleting location review reply", e)
+            return ResponseEntity
+                .badRequest()
+                .body(null)
         }
     }
 }

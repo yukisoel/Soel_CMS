@@ -221,6 +221,15 @@ data class GoogleLocationLocalPostModel(
     val offer: GoogleLocationOffer? = null,
 )
 
+data class GoogleLocationLocalPostRequest(
+    val summary: String,
+    val callToAction: GoogleLocationCallToAction? = null,
+    val event: GoogleLocationEvent? = null,
+    val topicType: String? = null,
+    val alertType: String,
+    val offer: GoogleLocationOffer? = null,
+)
+
 data class GoogleLocationCallToAction(
     val actionType: String? = null,
     val url: String? = null,
@@ -369,6 +378,47 @@ data class GoogleLocationAuthor(
     val type: GoogleLocationAuthorType? = null,
 )
 
+data class GoogleApiLocationReviewsResponse(
+    val nextPageToken: String? = null,
+    val reviews: List<GoogleLocationReview>? = null,
+    val totalReviewCount: Int? = null,
+    val averageRating: Double? = null,
+)
+
+data class GoogleLocationReview(
+    val name: String? = null,
+    val reviewId: String? = null,
+    val comment: String? = null,
+    val starRating: StarRating? = null,
+    val reviewer: GoogleLocationReviewReviewer? = null,
+    val reviewReply: GoogleLocationReviewReply? = null,
+    val createTime: String? = null,
+    val updateTime: String? = null,
+)
+
+data class GoogleLocationReviewCustom(
+    val name: String? = null,
+    val reviewId: String? = null,
+    val comment: String? = null,
+    val starRating: StarRating? = null,
+    val reviewer: GoogleLocationReviewReviewer? = null,
+    val reviewReply: GoogleLocationReviewReply? = null,
+    val createTime: String? = null,
+    val updateTime: String? = null,
+    val isReply: Boolean? = null,
+)
+
+data class GoogleLocationReviewReviewer(
+    val profilePhotoUrl: String? = null,
+    val displayName: String? = null,
+    val isAnonymous: Boolean? = null,
+)
+
+data class GoogleLocationReviewReply(
+    val comment: String? = null,
+    val updateTime: String? = null,
+)
+
 enum class GoogleLocationAttributeValueType {
     ATTRIBUTE_VALUE_TYPE_UNSPECIFIED,
     URL,
@@ -409,6 +459,15 @@ enum class GoogleLocationAssociationCategory {
     TEAMS,
     ADDITIONAL,
     CATEGORY_UNSPECIFIED,
+}
+
+enum class StarRating {
+    STAR_RATING_UNSPECIFIED,
+    ONE,
+    TWO,
+    THREE,
+    FOUR,
+    FIVE,
 }
 
 enum class Prefecture(
