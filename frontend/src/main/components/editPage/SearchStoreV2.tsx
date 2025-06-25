@@ -40,7 +40,6 @@ export default function SearchStoreV2({ googleService }: Props) {
   }, [selectedService]);
 
   useEffect(() => {
-    console.log('selectedAccountName', selectedAccountName);
     if (selectedAccountName) {
       const googleAccount = accountList.find(account => account.accountName === selectedAccountName);
       if (googleAccount) {
@@ -51,7 +50,6 @@ export default function SearchStoreV2({ googleService }: Props) {
   }, [selectedAccountName]);
 
   useEffect(() => {
-    console.log('selectedLocationTitle', selectedLocationTitle);
     if (selectedLocationTitle) {
       const googleLocation = locationList.find(location => location.title === selectedLocationTitle);
       if (googleLocation) setGoogleSelectedLocation(googleLocation);
@@ -60,8 +58,6 @@ export default function SearchStoreV2({ googleService }: Props) {
 
   const handleNextClick = () => {
     if (selectedService === ServiceName.GBP && selectedAccount && googleSelectedLocation) {
-      console.log('selectedAccount', selectedAccount);
-      console.log('googleSelectedLocation', googleSelectedLocation);
       navigate(`/edit/gbp/accounts/${selectedAccount.name}/location/${googleSelectedLocation.name}`);
     }
   };
