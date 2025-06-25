@@ -34,6 +34,10 @@ locals {
           "valueFrom" = "${data.aws_secretsmanager_secret.project_secrets.arn}:COGNITO_USER_POOL_ID::"
         },
         {
+          "name"      = "COGNITO_CLIENT_ID"
+          "valueFrom" = "${data.aws_secretsmanager_secret.project_secrets.arn}:COGNITO_CLIENT_ID::"
+        },
+        {
           "name"      = "COGNITO_CLIENT_SECRET"
           "valueFrom" = "${data.aws_secretsmanager_secret.project_secrets.arn}:COGNITO_CLIENT_SECRET::"
         },
