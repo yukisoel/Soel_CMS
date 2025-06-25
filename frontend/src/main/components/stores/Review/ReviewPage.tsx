@@ -86,6 +86,12 @@ export default function ReviewPage({ googleService }: Props) {
         openReviewDetailModal();
     };
 
+    const handleReply = (replyContent: string) => {
+        if (accountId && locationId && selectedReview) {
+            googleService.postLocationReviewReply(accountId, locationId, selectedReview.id.toString(), replyContent);
+        }
+    };
+
     return (
         <Wrapper direction="col" padding="5rem 4.3rem 5.9rem 5rem" className={styles.content_container}>
             <Wrapper direction="col" gap="2rem">
@@ -113,7 +119,7 @@ export default function ReviewPage({ googleService }: Props) {
             </Wrapper>
             <SearchDetailModal isOpen={isSearchModalOpen} onClose={closeSearchModal} />
             {selectedReview && (
-                <ReviewDetailModal isOpen={isReviewDetailModalOpen} onClose={closeReviewDetailModal} review={selectedReview} />
+                <ReviewDetailModal isOpen={isReviewDetailModalOpen} onClose={closeReviewDetailModal} review={selectedReview} handleReply={handleReply} />
             )}
         </Wrapper>
     );
