@@ -1,5 +1,5 @@
 import styles from "@/main/common/AdvancedSidebarMenu.module.scss";
-import {useMemo, useState} from "react";
+import {useContext, useEffect, useMemo, useState} from "react";
 import Wrapper from "@/main/common/Wrapper";
 import Typography from "@/main/common/Typography";
 import SoelLogoIcon from '@/main/assets/SoelLogo.svg'
@@ -10,16 +10,22 @@ import AdManageIcon from '@/main/assets/AdManageIcon.svg'
 import ReviewIcon from '@/main/assets/ReviewIcon.svg'
 import StoreMangeIcon from '@/main/assets/StoreManageIcon.svg'
 import classNames from "classnames";
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
+import { GoogleAccountsContext } from "../contexts/GoogleAccountsContext";
+import { GoogleSelectedLocationContext } from "../contexts/GoogleSelectedLocationContext";
 
-const SidebarItems = [
+export default function AdvancedSidebarMenu() {
+  const {selectedAccount} = useContext(GoogleAccountsContext)
+  const {googleSelectedLocation} = useContext(GoogleSelectedLocationContext)
+
+  const SidebarItems = useMemo(() => [
     {
         title: '基本情報',
         icon: StoreMangeIcon,
         items: [
-            {title: '各店基本情報変更', link: '/basic/store'},
-            {title: '写真一括変更', link: '/basic/bulk/photo'},
-            {title: '特別営業時間一括変更', link: '/basic/bulk/special'}
+            {title: '各店基本情報変更', link: '/edit/store'},
+            {title: '写真一括変更', link: '/edit/bulk/photo'},
+            {title: '特別営業時間一括変更', link: '/edit/bulk/special'}
         ],
         flipIcon: true
     },
@@ -27,9 +33,9 @@ const SidebarItems = [
         title: '投稿',
         icon: EditorIcon,
         items: [
-            {title: '一括投稿', link: '/basic/bulk/schedule-post'},
-            {title: '投稿予約一覧', link: '/basic/bulk/schedule-post-list'},
-            {title: '過去投稿一覧', link: '/basic/bulk/history-post-list'}
+            {title: '一括投稿', link: '/edit/bulk/schedule-post'},
+            {title: '投稿予約一覧', link: '/edit/bulk/schedule-post-list'},
+            {title: '過去投稿一覧', link: '/edit/bulk/history-post-list'}
         ],
         flipIcon: true
     },
@@ -37,7 +43,7 @@ const SidebarItems = [
         title: '口コミ管理',
         icon: ReviewIcon,
         items: [
-            {title: '口コミ一覧', link: '/basic/review'},
+            {title: '口コミ一覧', link: `/edit/accounts/${selectedAccount?.name}/location/${googleSelectedLocation?.name}/review`},
             {title: '口コミ分析', link: '#'}
         ],
         flipIcon: true
@@ -48,9 +54,8 @@ const SidebarItems = [
         items: [],
         flipIcon: true
     }
-]
+  ], [selectedAccount, googleSelectedLocation])
 
-export default function AdvancedSidebarMenu() {
   return (
     <Wrapper direction="col" className={styles.sidebar_container}>
         <Wrapper padding="3.4rem 12.3rem 3.1rem 5.8rem">
@@ -103,9 +108,9 @@ function SidebarItem({title, icon: Icon, items, flipIcon = false}: SidebarItemPr
           <Wrapper direction="col" padding="0 0 3rem">
             {items.map(({title, link}, index) => (
             <Wrapper className={link === pathname ? styles.sub_menu_container_selected : ''} key={index} padding="2rem 0 2rem 7.8rem">
-              <a href={link}>
+              <Link to={link}>
                 <Typography content={title} size="normal" weight="normal" color="primary" />
-              </a>
+              </Link>
             </Wrapper>
             ))}
           </Wrapper>

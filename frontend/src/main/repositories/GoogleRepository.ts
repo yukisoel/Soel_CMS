@@ -5,7 +5,7 @@ import {
   GoogleLocationLocalPostModel,
   GoogleLocationPhotoModel,
 } from "@/main/model/LocationModel.ts";
-import {GoogleAccount, GoogleLocation, GoogleLocationProfileModel, GoogleLocationDate, GoogleLocationCategory, GoogleLocationAttributeSnsLinkRequest, GoogleLocationAttributesModel, GoogleLocationStoreFrontAddressRequest, GoogleLocationBusinessHoursRequest, GooglePlacesAutoCompleteResponse, GoogleLocationLocalPostRequest } from "@/types/apiModel.ts";
+import {GoogleAccount, GoogleLocation, GoogleLocationProfileModel, GoogleLocationDate, GoogleLocationCategory, GoogleLocationAttributeSnsLinkRequest, GoogleLocationAttributesModel, GoogleLocationStoreFrontAddressRequest, GoogleLocationBusinessHoursRequest, GooglePlacesAutoCompleteResponse, GoogleLocationLocalPostRequest, GoogleLocationReviewModel } from "@/types/apiModel.ts";
 
 export interface GoogleRepository {
   getAccounts(): Promise<GoogleAccount[]>
@@ -25,6 +25,8 @@ export interface GoogleRepository {
   getLocationAttributes(locationId: string): Promise<GoogleLocationAttributesModel>
 
   getCategories(): Promise<GoogleLocationCategory[]>
+
+  getLocationReviews(accountId: string, locationId: string): Promise<GoogleLocationReviewModel[]>
 
   postLocationPhoto(accountId: string, locationId: string, photos: FileList): Promise<void>
 
@@ -59,6 +61,10 @@ export interface GoogleRepository {
   postPlacesAutoComplete(input: string): Promise<GooglePlacesAutoCompleteResponse>
 
   postLocationLocalPosts(accountId: string, locationId: string, localPost: GoogleLocationLocalPostRequest, photos: FileList): Promise<void>
+
+  postLocationReviewReply(accountId: string, locationId: string, reviewId: string, content: string): Promise<void>
+
+  deleteLocationReviewReply(accountId: string, locationId: string, reviewId: string): Promise<void>
 }
 
 type AccountListResponse = GoogleAccount[]
@@ -207,6 +213,22 @@ export class GoogleRepositoryImpl implements GoogleRepository {
     } catch (error) {
       console.error(error)
       throw new Error("google get categories failed")
+    }
+  }
+
+  async getLocationReviews(accountId: string, locationId: string): Promise<GoogleLocationReviewModel[]> {
+
+    try {
+      const response: AxiosResponse<GoogleLocationReviewModel[]> = await axiosApiClient.get('google/location/reviews', {
+        params: {
+          accountId: accountId,
+          locationId: locationId
+        },
+      })
+      return response.data
+    } catch (error) {
+      console.error(error)
+      throw new Error("google get location reviews failed")
     }
   }
 
@@ -577,6 +599,37 @@ export class GoogleRepositoryImpl implements GoogleRepository {
     } catch (error) {
       console.error('Error posting location local post:', error)
       throw error
+    }
+  }
+
+  async postLocationReviewReply(accountId: string, locationId: string, reviewId: string, content: string): Promise<void> {
+    try {
+      const response: AxiosResponse<void> = await axiosApiClient.patch('google/location/reviews', {
+        accountId: accountId,
+        locationId: locationId,
+        reviewId: reviewId,
+        content: content
+      })
+      return response.data
+    } catch (error) {
+      console.error(error)
+      throw new Error("google post location reviews failed")
+    }
+  }
+
+  async deleteLocationReviewReply(accountId: string, locationId: string, reviewId: string): Promise<void> {
+    try {
+      const response: AxiosResponse<void> = await axiosApiClient.delete('google/location/reviews', {
+        params: {
+          accountId: accountId,
+          locationId: locationId,
+          reviewId: reviewId
+        }
+      })
+      return response.data
+    } catch (error) {
+      console.error(error)
+      throw new Error("google delete location review reply failed")
     }
   }
 }
