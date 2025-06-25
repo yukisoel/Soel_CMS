@@ -30,6 +30,18 @@ locals {
           "valueFrom" = "${data.aws_secretsmanager_secret.project_secrets.arn}:GOOGLE_CLIENT_SECRET::"
         },
         {
+          "name"      = "COGNITO_USER_POOL_ID"
+          "valueFrom" = "${data.aws_secretsmanager_secret.project_secrets.arn}:COGNITO_USER_POOL_ID::"
+        },
+        {
+          "name"      = "COGNITO_CLIENT_SECRET"
+          "valueFrom" = "${data.aws_secretsmanager_secret.project_secrets.arn}:COGNITO_CLIENT_SECRET::"
+        },
+        {
+          "name"      = "COGNITO_USER_POOL_DOMAIN"
+          "valueFrom" = "${data.aws_secretsmanager_secret.project_secrets.arn}:COGNITO_USER_POOL_DOMAIN::"
+        },
+        {
           "name" = "POSTGRES_HOST"
             "valueFrom" = "${data.aws_secretsmanager_secret.project_secrets.arn}:POSTGRES_HOST::"
         },
