@@ -1,5 +1,7 @@
 package com.soel.backend.backend.model.api
 
+import com.soel.backend.backend.domain.enum.Prefecture
+
 data class Store(
     val storeId: String,
     val userId: String,
@@ -8,7 +10,8 @@ data class Store(
     val googleAccountId: String? = null,
     val googleLocationId: String? = null,
     val googleLinkedAt: String? = null,
-    val createdAt: String
+    val createdAt: String,
+    val prefecture: Prefecture? = null
 )
 
 data class StoreResponse(
@@ -19,7 +22,9 @@ data class StoreResponse(
     val googleAccountId: String? = null,
     val googleLocationId: String? = null,
     val googleLinkedAt: String? = null,
-    val createdAt: String
+    val createdAt: String,
+    val prefectureName: String? = null,
+    val prefectureJapaneseName: String? = null
 )
 
 data class StoreListResponse(

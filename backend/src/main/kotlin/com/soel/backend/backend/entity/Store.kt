@@ -1,6 +1,9 @@
 package com.soel.backend.backend.entity
 
+import com.soel.backend.backend.domain.converter.PrefectureConverter
+import com.soel.backend.backend.domain.enum.Prefecture
 import jakarta.persistence.Column
+import jakarta.persistence.Convert
 import jakarta.persistence.Entity
 import jakarta.persistence.Id
 import jakarta.persistence.Table
@@ -33,7 +36,11 @@ data class StoreEntity(
     val googleLinkedAt: Instant? = null,
 
     @Column(name = "created_at", nullable = false)
-    val createdAt: Instant = Instant.now()
+    val createdAt: Instant = Instant.now(),
+
+    @Convert(converter = PrefectureConverter::class)
+    @Column(name = "prefecture", nullable = true)
+    var prefecture: Prefecture? = null
 ) {
     // 引数なしのコンストラクタを追加
     constructor() : this(
@@ -43,6 +50,7 @@ data class StoreEntity(
         googleAccountId = null,
         googleLocationId = null,
         googleLinkedAt = null,
-        createdAt = Instant.now()
+        createdAt = Instant.now(),
+        prefecture = null
     )
 }
