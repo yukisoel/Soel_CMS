@@ -17,3 +17,16 @@ data class BrandResponse(
 data class BrandListResponse(
     val brands: List<BrandResponse>
 )
+
+data class BrandWithStoresResponse(
+    val brandId: String,
+    val userId: String,
+    val name: String,
+    val createdAt: String,
+    val stores: List<StoreResponse>,
+    val storesCount: Int = stores.size
+)
+
+data class BrandWithStoresListResponse(
+    val brands: List<BrandWithStoresResponse>
+)

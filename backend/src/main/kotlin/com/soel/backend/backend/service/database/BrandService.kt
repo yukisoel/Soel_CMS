@@ -4,14 +4,17 @@ import com.soel.backend.backend.entity.BrandEntity
 import com.soel.backend.backend.mapper.BrandMapper
 import com.soel.backend.backend.model.api.BrandListResponse
 import com.soel.backend.backend.model.api.BrandResponse
+import com.soel.backend.backend.model.api.BrandWithStoresListResponse
+import com.soel.backend.backend.model.api.BrandWithStoresResponse
 import com.soel.backend.backend.repository.database.BrandRepository
+import com.soel.backend.backend.repository.database.StoreRepository
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 import java.util.*
 
 interface BrandService {
-    fun findBrandAllByUserId(userId: String): ResponseEntity<BrandListResponse>
+    fun findBrandAllByUserId(userId: String): ResponseEntity<BrandWithStoresListResponse>
     fun createBrand(userId: String, brandName: String): ResponseEntity<BrandResponse>
     fun updateBrandName(brandId: String, brandName: String): ResponseEntity<BrandResponse>
     fun deleteBrand(brandId: String): ResponseEntity<Void>
@@ -19,15 +22,29 @@ interface BrandService {
 
 @Service
 class BrandServiceImpl(
-    private val brandRepository: BrandRepository
+    private val brandRepository: BrandRepository,
+    private val storeRepository: StoreRepository
 ): BrandService {
-    override fun findBrandAllByUserId(userId: String): ResponseEntity<BrandListResponse> {
+    override fun findBrandAllByUserId(userId: String): ResponseEntity<BrandWithStoresListResponse> {
         val uuid = UUID.fromString(userId)
         val brands = brandRepository.findByUserId(uuid) ?: emptyList()
+        val brandWithStoresResponse = mutableListOf<BrandWithStoresResponse>()
+
+
+        brands.forEach { entity ->
+            storeRepository.findByBrandId(entity.brandId)?.let { stores ->
+                brandWithStoresResponse.add(
+                    BrandMapper.entityAndStoresToResponse(entity, stores)
+                )
+            } ?: run {
+                brandWithStoresResponse.add(
+                    BrandMapper.entityAndStoresToResponse(entity, emptyList())
+                )
+            }
+        }
+
         return ResponseEntity.ok(
-            BrandListResponse(brands.map { entity ->
-                BrandMapper.entityToResponse(entity)
-            })
+            BrandWithStoresListResponse(brandWithStoresResponse)
         )
     }
 
