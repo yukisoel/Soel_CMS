@@ -4,9 +4,9 @@ import com.soel.backend.backend.domain.enum.Prefecture
 
 data class Store(
     val storeId: String,
+    val name: String,
     val userId: String,
     val brandId: String? = null,
-    val name: String,
     val googleAccountId: String? = null,
     val googleLocationId: String? = null,
     val googleLinkedAt: String? = null,
@@ -16,9 +16,9 @@ data class Store(
 
 data class StoreResponse(
     val storeId: String,
+    val name: String,
     val userId: String,
     val brandId: String? = null,
-    val name: String,
     val googleAccountId: String? = null,
     val googleLocationId: String? = null,
     val googleLinkedAt: String? = null,

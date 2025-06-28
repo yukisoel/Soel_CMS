@@ -1,6 +1,8 @@
 package com.soel.backend.backend.service.database
 
+import com.soel.backend.backend.domain.enum.Prefecture
 import com.soel.backend.backend.entity.StoreEntity
+import com.soel.backend.backend.mapper.StoreMapper
 import com.soel.backend.backend.model.api.StoreListResponse
 import com.soel.backend.backend.model.api.StoreResponse
 import com.soel.backend.backend.repository.database.StoreRepository
@@ -13,8 +15,9 @@ interface StoreService {
     fun findStoresByBrandId(brandId: String): ResponseEntity<StoreListResponse>
     fun findStoreByStoreId(storeId: String): ResponseEntity<StoreResponse>
 
-    fun createStore(userId: String, storeName: String, brandId: String?, googleAccountId: String?, googleLocationId: String?): ResponseEntity<StoreResponse>
+    fun createStore(userId: String, storeName: String, brandId: String?, googleAccountId: String?, googleLocationId: String?, prefectureName: String?): ResponseEntity<StoreResponse>
 
+    fun updateStore(storeId: String, storeName: String, brandId: String?, googleAccountId: String?, googleLocationId: String?, prefectureName: String?): ResponseEntity<StoreResponse>
     fun updateStoreName(storeId: String, storeName: String): ResponseEntity<StoreResponse>
     fun updateStoreBrand(storeId: String, brandId: String): ResponseEntity<StoreResponse>
     fun updateStoreGoogleAccount(storeId: String, googleAccountId: String): ResponseEntity<StoreResponse>
@@ -24,13 +27,14 @@ interface StoreService {
         googleAccountId: String,
         googleLocationId: String
     ): ResponseEntity<StoreResponse>
+    fun updateStorePrefecture(storeId: String, prefectureName: String): ResponseEntity<StoreResponse>
 
     fun deleteStore(storeId: String): ResponseEntity<Void>
 }
 
 @Service
 class StoreServiceImpl(
-     private val storeRepository: StoreRepository
+    private val storeRepository: StoreRepository
 ): StoreService {
     override fun findStoresByUserId(userId: String): ResponseEntity<StoreListResponse> {
         val uuid = UUID.fromString(userId)
@@ -45,7 +49,9 @@ class StoreServiceImpl(
                     googleAccountId = entity.googleAccountId,
                     googleLocationId = entity.googleLocationId,
                     googleLinkedAt = entity.googleLinkedAt?.toString(),
-                    createdAt = entity.createdAt.toString()
+                    createdAt = entity.createdAt.toString(),
+                    prefectureName = entity.prefecture?.name,
+                    prefectureJapaneseName = entity.prefecture?.japaneseName
                 )
             })
         )
@@ -56,16 +62,7 @@ class StoreServiceImpl(
         val stores = storeRepository.findByBrandId(uuid) ?: emptyList()
         return ResponseEntity.ok(
             StoreListResponse(stores.map { entity ->
-                StoreResponse(
-                    storeId = entity.storeId.toString(),
-                    userId = entity.userId.toString(),
-                    brandId = entity.brandId?.toString(),
-                    name = entity.name,
-                    googleAccountId = entity.googleAccountId,
-                    googleLocationId = entity.googleLocationId,
-                    googleLinkedAt = entity.googleLinkedAt?.toString(),
-                    createdAt = entity.createdAt.toString()
-                )
+                StoreMapper.entityToResponse(entity)
             })
         )
     }
@@ -75,43 +72,37 @@ class StoreServiceImpl(
         val store = storeRepository.findByStoreId(uuid)
             ?: return ResponseEntity.notFound().build()
 
-        return ResponseEntity.ok(
-            StoreResponse(
-                storeId = store.storeId.toString(),
-                userId = store.userId.toString(),
-                brandId = store.brandId?.toString(),
-                name = store.name,
-                googleAccountId = store.googleAccountId,
-                googleLocationId = store.googleLocationId,
-                googleLinkedAt = store.googleLinkedAt?.toString(),
-                createdAt = store.createdAt.toString()
-            )
-        )
+        return ResponseEntity.ok(StoreMapper.entityToResponse(store))
     }
 
-    override fun createStore(userId: String, storeName: String, brandId: String?, googleAccountId: String?, googleLocationId: String?): ResponseEntity<StoreResponse> {
+    override fun createStore(userId: String, storeName: String, brandId: String?, googleAccountId: String?, googleLocationId: String?, prefectureName: String?): ResponseEntity<StoreResponse> {
         val userUuid = UUID.fromString(userId)
         val brandUuid = brandId?.let { UUID.fromString(it) }
-
+        val prefecture = prefectureName?.let { Prefecture.fromValue(it) }
         val storeEntity = StoreEntity(userId = userUuid, name = storeName, brandId = brandUuid,
-            googleAccountId = googleAccountId, googleLocationId = googleLocationId)
+            googleAccountId = googleAccountId, googleLocationId = googleLocationId, prefecture = prefecture)
 
         val savedStore = storeRepository.save(storeEntity)
 
         return ResponseEntity
             .status(org.springframework.http.HttpStatus.CREATED)
-            .body(
-                StoreResponse(
-                    storeId = savedStore.storeId.toString(),
-                    userId = savedStore.userId.toString(),
-                    brandId = savedStore.brandId?.toString(),
-                    name = savedStore.name,
-                    googleAccountId = savedStore.googleAccountId,
-                    googleLocationId = savedStore.googleLocationId,
-                    googleLinkedAt = savedStore.googleLinkedAt?.toString(),
-                    createdAt = savedStore.createdAt.toString()
-                )
-            )
+            .body(StoreMapper.entityToResponse(savedStore))
+    }
+
+    override fun updateStore(storeId: String, storeName: String, brandId: String?, googleAccountId: String?, googleLocationId: String?, prefectureName: String?): ResponseEntity<StoreResponse> {
+        val uuid = UUID.fromString(storeId)
+        val existingStore = storeRepository.findByStoreId(uuid)
+            ?: return ResponseEntity.notFound().build()
+
+        existingStore.name = storeName
+        existingStore.brandId = brandId?.let { UUID.fromString(it) }
+        existingStore.googleAccountId = googleAccountId
+        existingStore.googleLocationId = googleLocationId
+        existingStore.prefecture = prefectureName?.let { Prefecture.fromValue(it) }
+
+        val updatedStore = storeRepository.save(existingStore)
+
+        return ResponseEntity.ok(StoreMapper.entityToResponse(updatedStore))
     }
 
     override fun updateStoreName(storeId: String, storeName: String): ResponseEntity<StoreResponse> {
@@ -123,18 +114,7 @@ class StoreServiceImpl(
 
         val updatedStore = storeRepository.save(existingStore)
 
-        return ResponseEntity.ok(
-            StoreResponse(
-                storeId = updatedStore.storeId.toString(),
-                userId = updatedStore.userId.toString(),
-                brandId = updatedStore.brandId?.toString(),
-                name = updatedStore.name,
-                googleAccountId = updatedStore.googleAccountId,
-                googleLocationId = updatedStore.googleLocationId,
-                googleLinkedAt = updatedStore.googleLinkedAt?.toString(),
-                createdAt = updatedStore.createdAt.toString()
-            )
-        )
+        return ResponseEntity.ok(StoreMapper.entityToResponse(updatedStore))
     }
 
     override fun updateStoreBrand(storeId: String, brandId: String): ResponseEntity<StoreResponse> {
@@ -148,18 +128,7 @@ class StoreServiceImpl(
 
         val updatedStore = storeRepository.save(existingStore)
 
-        return ResponseEntity.ok(
-            StoreResponse(
-                storeId = updatedStore.storeId.toString(),
-                userId = updatedStore.userId.toString(),
-                brandId = updatedStore.brandId?.toString(),
-                name = updatedStore.name,
-                googleAccountId = updatedStore.googleAccountId,
-                googleLocationId = updatedStore.googleLocationId,
-                googleLinkedAt = updatedStore.googleLinkedAt?.toString(),
-                createdAt = updatedStore.createdAt.toString()
-            )
-        )
+        return ResponseEntity.ok(StoreMapper.entityToResponse(updatedStore))
     }
 
     override fun updateStoreGoogleAccount(storeId: String, googleAccountId: String): ResponseEntity<StoreResponse> {
@@ -171,18 +140,7 @@ class StoreServiceImpl(
 
         val updatedStore = storeRepository.save(existingStore)
 
-        return ResponseEntity.ok(
-            StoreResponse(
-                storeId = updatedStore.storeId.toString(),
-                userId = updatedStore.userId.toString(),
-                brandId = updatedStore.brandId?.toString(),
-                name = updatedStore.name,
-                googleAccountId = updatedStore.googleAccountId,
-                googleLocationId = updatedStore.googleLocationId,
-                googleLinkedAt = updatedStore.googleLinkedAt?.toString(),
-                createdAt = updatedStore.createdAt.toString()
-            )
-        )
+        return ResponseEntity.ok(StoreMapper.entityToResponse(updatedStore))
     }
 
     override fun updateStoreGoogleLocation(storeId: String, googleLocationId: String): ResponseEntity<StoreResponse> {
@@ -194,18 +152,7 @@ class StoreServiceImpl(
 
         val updatedStore = storeRepository.save(existingStore)
 
-        return ResponseEntity.ok(
-            StoreResponse(
-                storeId = updatedStore.storeId.toString(),
-                userId = updatedStore.userId.toString(),
-                brandId = updatedStore.brandId?.toString(),
-                name = updatedStore.name,
-                googleAccountId = updatedStore.googleAccountId,
-                googleLocationId = updatedStore.googleLocationId,
-                googleLinkedAt = updatedStore.googleLinkedAt?.toString(),
-                createdAt = updatedStore.createdAt.toString()
-            )
-        )
+        return ResponseEntity.ok(StoreMapper.entityToResponse(updatedStore))
     }
 
     override fun updateStoreGoogleAccountLocation(
@@ -222,18 +169,20 @@ class StoreServiceImpl(
 
         val updatedStore = storeRepository.save(existingStore)
 
-        return ResponseEntity.ok(
-            StoreResponse(
-                storeId = updatedStore.storeId.toString(),
-                userId = updatedStore.userId.toString(),
-                brandId = updatedStore.brandId?.toString(),
-                name = updatedStore.name,
-                googleAccountId = updatedStore.googleAccountId,
-                googleLocationId = updatedStore.googleLocationId,
-                googleLinkedAt = updatedStore.googleLinkedAt?.toString(),
-                createdAt = updatedStore.createdAt.toString()
-            )
-        )
+        return ResponseEntity.ok(StoreMapper.entityToResponse(updatedStore))
+    }
+
+    override fun updateStorePrefecture(storeId: String, prefectureName: String): ResponseEntity<StoreResponse> {
+        val uuid = UUID.fromString(storeId)
+        val existingStore = storeRepository.findByStoreId(uuid)
+            ?: return ResponseEntity.notFound().build()
+
+        val prefecture = Prefecture.fromValue(prefectureName)
+        existingStore.prefecture = prefecture
+
+        val updatedStore = storeRepository.save(existingStore)
+
+        return ResponseEntity.ok(StoreMapper.entityToResponse(updatedStore))
     }
 
     override fun deleteStore(storeId: String): ResponseEntity<Void> {
