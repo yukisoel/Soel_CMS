@@ -39,5 +39,3 @@ CREATE TABLE IF NOT EXISTS stores (
 -- 検索を速くするためのインデックス
 CREATE INDEX idx_stores_user_id  ON stores(user_id);
 CREATE INDEX idx_stores_brand_id ON stores(brand_id);
-CREATE INDEX idx_stores_prefecture_brand_id ON stores(prefecture, brand_id);
-
