@@ -86,8 +86,8 @@ class StoreServiceImpl(
                 )
             }
             PrefectureWithBrandListWithStoreListResponse(
-                prefectureName = prefecture?.name,
-                prefectureJapaneseName = prefecture?.japaneseName,
+                prefectureName = prefecture?.name ?: "",
+                prefectureJapaneseName = prefecture?.japaneseName ?: "",
                 brands = brandListWithStoresResponse
             )
         }
