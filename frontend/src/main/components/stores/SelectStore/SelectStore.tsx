@@ -1,10 +1,11 @@
 import styles from "@/main/components/stores/SelectStore/SelectStore.module.scss";
 import Wrapper from "@/main/common/Wrapper";
 import Typography from "@/main/common/Typography";
-import { useAdvancedTabs } from "@/main/common/AdvancedTabs/useAdvancedTabs";
 import BrandSelector from "./BrandSelector";
 import AreaSelector from "./AreaSelector";
 import Button from "@/main/common/Button";
+import Separator from "@/main/common/Separator";
+import { useSearchParams } from "react-router-dom";
 
 export type Branch = {
   id: string
@@ -40,25 +41,26 @@ type Props = {
 }
 
 export default function SelectStore({areaSelectorProps, brandSelectorProps, onChangeSelectedBranches, onNextClick, onBackClick, isNextButtonDisabled}: Props) {
-  const { selectedTab, tabsRender } = useAdvancedTabs([
-    {tabKey: 'brand', content: 'ブランドから選択'},
-    {tabKey: 'area', content: 'エリアから選択'}
-  ])
+  const [searchParams] = useSearchParams();
+  const mode = searchParams.get('mode') || 'brand';
 
   return (
     <>
       <Wrapper direction="col" padding="5rem 4.3rem 5.9rem 5rem" className={styles.content_container}>
         <Wrapper direction="col" gap="5rem">
           <Typography content="投稿する店舗を選択" color="primary" size="medium" />
-          {tabsRender()}
+          <Wrapper direction="col" gap="1rem">
+            <Typography content={mode === 'brand' ? 'ブランドから選択' : 'エリアから選択'} color="primary" size="normal" />
+            <Separator />
+          </Wrapper>
         </Wrapper>
         {
-          selectedTab === 'brand' && (
+          mode === 'brand' && (
             <BrandSelector stores={brandSelectorProps} onChangeSelectedBranches={onChangeSelectedBranches} />
           )
         }
         {
-          selectedTab === 'area' && (
+          mode === 'area' && (
             <AreaSelector regions={areaSelectorProps} onChangeSelectedBranches={onChangeSelectedBranches} />
           )
         }
