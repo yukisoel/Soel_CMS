@@ -1,6 +1,7 @@
 package com.soel.backend.backend.controller.database
 
 import com.soel.backend.backend.controller.AuthHelper
+import com.soel.backend.backend.model.api.PrefectureListWithBrandListWithStoreListResponse
 import com.soel.backend.backend.model.api.StoreListResponse
 import com.soel.backend.backend.model.api.StoreResponse
 import com.soel.backend.backend.service.database.StoreService
@@ -83,6 +84,26 @@ class StoreController(
         } else {
             storeService.findStoresByBrandId(brandId)
         }
+        return ResponseEntity(result.body, result.statusCode)
+    }
+
+    @GetMapping("/list/prefecture")
+    @Operation(
+        summary = "都道府県ごとの店舗一覧を取得",
+        description = """
+            都道府県ごとにグループ化された店舗情報を取得します。
+            認証されていない場合は、status 401 Unauthorized を返します。(Bodyは StoreErrorResponse)
+            都道府県ごとの店舗情報が存在しない場合は、空のリストを返します。(Bodyは PrefectureListWithBrandListWithStoreListResponse)
+            """,
+        tags = ["Store GETメソッド"]
+    )
+    fun getStoreListByPrefecture(
+        request: HttpServletRequest
+    ): ResponseEntity<PrefectureListWithBrandListWithStoreListResponse> {
+        val user = authHelper.getCognitoOidcUser(request)
+
+        val sub = user.getClaim<String>("sub")
+        val result = storeService.findStoreGroupByPrefecture(userId = sub)
         return ResponseEntity(result.body, result.statusCode)
     }
 
