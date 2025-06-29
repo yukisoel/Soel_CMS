@@ -5,7 +5,6 @@ import BrandSelector from "./BrandSelector";
 import AreaSelector from "./AreaSelector";
 import Button from "@/main/common/Button";
 import Separator from "@/main/common/Separator";
-import { useSearchParams } from "react-router-dom";
 
 export type Branch = {
   id: string
@@ -38,11 +37,10 @@ type Props = {
   onNextClick: () => void
   onBackClick: () => void
   isNextButtonDisabled: boolean
+  mode: 'brand' | 'area'
 }
 
-export default function SelectStore({areaSelectorProps, brandSelectorProps, onChangeSelectedBranches, onNextClick, onBackClick, isNextButtonDisabled}: Props) {
-  const [searchParams] = useSearchParams();
-  const mode = searchParams.get('mode') || 'brand';
+export default function SelectStore({areaSelectorProps, brandSelectorProps, onChangeSelectedBranches, onNextClick, onBackClick, isNextButtonDisabled, mode}: Props) {
 
   return (
     <>
