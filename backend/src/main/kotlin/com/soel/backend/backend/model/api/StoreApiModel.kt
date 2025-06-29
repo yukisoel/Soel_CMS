@@ -30,3 +30,13 @@ data class StoreResponse(
 data class StoreListResponse(
     val stores: List<StoreResponse>
 )
+
+data class PrefectureWithBrandListWithStoreListResponse(
+    val prefectureName: String?,
+    val prefectureJapaneseName: String?,
+    val brands: List<BrandWithStoresResponse>
+)
+
+data class PrefectureListWithBrandListWithStoreListResponse(
+    val prefectures: List<PrefectureWithBrandListWithStoreListResponse>
+)

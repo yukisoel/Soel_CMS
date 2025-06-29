@@ -73,11 +73,16 @@ class StoreController(
     )
     fun getStoreListByBrandId(
         request: HttpServletRequest,
-        @RequestParam brandId: String
+        @RequestParam(required = false, defaultValue = "") brandId: String
     ): ResponseEntity<StoreListResponse> {
-        authHelper.getCognitoOidcUser(request)
+        val user = authHelper.getCognitoOidcUser(request)
 
-        val result = storeService.findStoresByBrandId(brandId)
+        val result = if (brandId.isBlank()) {
+            val sub = user.getClaim<String>("sub")
+            storeService.findStoresByUserIdAndBrandIdIsNull(sub)
+        } else {
+            storeService.findStoresByBrandId(brandId)
+        }
         return ResponseEntity(result.body, result.statusCode)
     }
 

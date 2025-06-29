@@ -7,6 +7,8 @@ import jakarta.persistence.Convert
 import jakarta.persistence.Entity
 import jakarta.persistence.Id
 import jakarta.persistence.Table
+import org.hibernate.annotations.Generated
+import org.hibernate.generator.EventType
 import java.time.Instant
 import java.util.UUID
 
@@ -14,7 +16,8 @@ import java.util.UUID
 @Table(name = "stores")
 data class StoreEntity(
     @Id
-    @Column(name = "store_id", updatable = false, nullable = false)
+    @Column(name = "store_id", updatable = false, nullable = false, insertable = false)
+    @Generated(event = [ EventType.INSERT ])
     val storeId: UUID? = null,
 
     @Column(name = "user_id", nullable = false)

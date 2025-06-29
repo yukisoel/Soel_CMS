@@ -5,6 +5,7 @@ import com.soel.backend.backend.entity.StoreEntity
 import com.soel.backend.backend.mapper.StoreMapper
 import com.soel.backend.backend.model.api.StoreListResponse
 import com.soel.backend.backend.model.api.StoreResponse
+import com.soel.backend.backend.repository.database.BrandRepository
 import com.soel.backend.backend.repository.database.StoreRepository
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
@@ -12,6 +13,8 @@ import java.util.*
 
 interface StoreService {
     fun findStoresByUserId(userId: String): ResponseEntity<StoreListResponse>
+    fun findStoresByUserIdAndBrandIdIsNull(userId: String): ResponseEntity<StoreListResponse>
+//    fun findStoresAndGroupByPrefecture(userId: String): ResponseEntity<PrefectureListWithBrandListWithStoreListResponse>
     fun findStoresByBrandId(brandId: String): ResponseEntity<StoreListResponse>
     fun findStoreByStoreId(storeId: String): ResponseEntity<StoreResponse>
 
@@ -34,28 +37,53 @@ interface StoreService {
 
 @Service
 class StoreServiceImpl(
-    private val storeRepository: StoreRepository
+    private val storeRepository: StoreRepository,
+    private val brandRepository: BrandRepository
 ): StoreService {
     override fun findStoresByUserId(userId: String): ResponseEntity<StoreListResponse> {
         val uuid = UUID.fromString(userId)
         val stores = storeRepository.findByUserId(uuid) ?: emptyList()
         return ResponseEntity.ok(
             StoreListResponse(stores.map { entity ->
-                StoreResponse(
-                    storeId = entity.storeId.toString(),
-                    userId = entity.userId.toString(),
-                    brandId = entity.brandId?.toString(),
-                    name = entity.name,
-                    googleAccountId = entity.googleAccountId,
-                    googleLocationId = entity.googleLocationId,
-                    googleLinkedAt = entity.googleLinkedAt?.toString(),
-                    createdAt = entity.createdAt.toString(),
-                    prefectureName = entity.prefecture?.name,
-                    prefectureJapaneseName = entity.prefecture?.japaneseName
-                )
+                StoreMapper.entityToResponse(entity)
             })
         )
     }
+
+    override fun findStoresByUserIdAndBrandIdIsNull(userId: String): ResponseEntity<StoreListResponse> {
+        val uuid = UUID.fromString(userId)
+        val stores = storeRepository.findByUserIdAndBrandIdIsNull(uuid) ?: emptyList()
+        return ResponseEntity.ok(
+            StoreListResponse(stores.map { entity ->
+                StoreMapper.entityToResponse(entity)
+            })
+        )
+    }
+
+//    override fun findStoresAndGroupByPrefecture(userId: String): ResponseEntity<PrefectureListWithBrandListWithStoreListResponse> {
+//        val uuid = UUID.fromString(userId)
+//        val stores = storeRepository.findByUserId(uuid) ?: emptyList()
+//        val brands = brandRepository.findByUserId(uuid) ?: emptyList()
+//
+//        val groupedByPrefecture = stores.groupBy { it.prefecture }
+//        val ggg = groupedByPrefecture.map { (prefecture, stores) ->
+//            val groupedByBrand = stores.groupBy { it.brandId }
+//            val brandsWithStores = groupedByBrand.map { (brandId, brandStores) ->
+//                val brandEntity = brands.find { it.brandId == brandId }
+//                val brand = BrandMapper.entityToResponse(brandEntity)
+//
+//                StoreMapper.entityToResponse(entity)
+//            }
+//
+//            PrefectureListWithBrandListWithStoreListResponse(
+//                prefectureName = prefectureName,
+//                prefectureJapaneseName = prefectureJapaneseName,
+//                brands = brandsWithStores
+//            )
+//        }
+//
+//        return ResponseEntity.ok(PrefectureListWithBrandListWithStoreListResponse(groupedStores))
+//    }
 
     override fun findStoresByBrandId(brandId: String): ResponseEntity<StoreListResponse> {
         val uuid = UUID.fromString(brandId)
