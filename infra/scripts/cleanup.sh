@@ -50,7 +50,7 @@ STACKS=(
   "${ENV}-${PROJECT}-codedeploy"
   "${ENV}-${PROJECT}-ecs-service"
   "${ENV}-${PROJECT}-ecs"
-  "${ENV}-${PROJECT}-rds-bastion"
+  "${ENV}-${PROJECT}-rds"
   "${ENV}-${PROJECT}-ecr"
   "${ENV}-${PROJECT}-alb"
   "${ENV}-${PROJECT}-vpce"
@@ -71,11 +71,11 @@ done
 echo "⏳ スタックの削除を待機（任意で監視を推奨）"
 
 # === SecretsManager シークレット削除 ===
-# echo "🗝️ Deleting secret: $SECRET_NAME"
-# aws secretsmanager delete-secret \
-#   --secret-id "$SECRET_NAME" \
-#   --force-delete-without-recovery \
-#   --region "$REGION" || echo "⚠️ Secret not found or already deleted"
+echo "🗝️ Deleting secret: $SECRET_NAME"
+aws secretsmanager delete-secret \
+  --secret-id "$SECRET_NAME" \
+  --force-delete-without-recovery \
+  --region "$REGION" || echo "⚠️ Secret not found or already deleted"
 
 # === CloudWatch Logs 削除 ===
 echo "📋 Deleting CloudWatch Logs group: $LOG_GROUP"

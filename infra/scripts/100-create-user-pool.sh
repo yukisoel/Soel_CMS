@@ -35,6 +35,7 @@ aws cloudformation deploy \
   --template-file cloudformation/cognito/cognito.yml \
   --stack-name ${ENV}-${PROJECT}-cognito \
   --parameter-overrides $PARAMS \
-  --region $REGION
+  --region $REGION \
+  --role-arn ${CF_EXEC_ROLE}
 
 echo "✅ Cognito ユーザープール デプロイ完了"
