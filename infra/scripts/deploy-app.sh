@@ -34,7 +34,7 @@ SECRET_ARN=$(aws secretsmanager describe-secret \
   --output text)
 
 RDS_SECRET_ARN=$(aws cloudformation describe-stacks \
-  --stack-name "${ENV}-${PROJECT}-rds-bastion" \
+  --stack-name "${ENV}-${PROJECT}-rds" \
   --query "Stacks[0].Outputs[?OutputKey=='RDSSecretArn'].OutputValue" \
   --output text)
 

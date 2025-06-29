@@ -28,7 +28,7 @@ SECRET_ARN=$(aws secretsmanager describe-secret \
   --output text)
 
 RDS_SECRET_ARN=$(aws cloudformation describe-stacks \
-  --stack-name "${ENV}-${PROJECT}-rds-bastion" \
+  --stack-name "${ENV}-${PROJECT}-rds" \
   --query "Stacks[0].Outputs[?OutputKey=='RDSSecretArn'].OutputValue" \
   --output text)
 
@@ -76,7 +76,8 @@ aws cloudformation deploy \
     RdsSecretArn=$RDS_SECRET_ARN \
     LogGroupName=$LOG_GROUP \
   --capabilities CAPABILITY_NAMED_IAM \
-  --region "$REGION"
+  --region $REGION \
+  --role-arn ${CF_EXEC_ROLE}
 
 # ✅ タスク定義とクラスタ名を取得
 TASK_DEFINITION_ARN=$(aws cloudformation describe-stacks \
@@ -105,6 +106,7 @@ aws cloudformation deploy \
     SubnetPrivate2Id=$SUBNET_PRIVATE2 \
     EcsSecurityGroup=$ECS_SG \
   --capabilities CAPABILITY_NAMED_IAM \
-  --region "$REGION"
+  --region $REGION \
+  --role-arn ${CF_EXEC_ROLE}
 
 echo "✅ ECSサービスのデプロイが完了しました"
