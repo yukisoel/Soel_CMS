@@ -5,7 +5,7 @@ import {
   GoogleLocationLocalPostModel,
   GoogleLocationPhotoModel,
 } from "@/main/model/LocationModel.ts";
-import {GoogleAccount, GoogleLocation, GoogleLocationProfileModel, GoogleLocationDate, GoogleLocationCategory, GoogleLocationAttributeSnsLinkRequest, GoogleLocationAttributesModel, GoogleLocationStoreFrontAddressRequest, GoogleLocationBusinessHoursRequest, GooglePlacesAutoCompleteResponse, GoogleLocationLocalPostRequest, GoogleLocationReviewModel } from "@/types/apiModel.ts";
+import {GoogleAccount, GoogleLocation, GoogleLocationProfileModel, GoogleLocationDate, GoogleLocationCategory, GoogleLocationAttributeSnsLinkRequest, GoogleLocationAttributesModel, GoogleLocationStoreFrontAddressRequest, GoogleLocationBusinessHoursRequest, GooglePlacesAutoCompleteResponse, GoogleLocationLocalPostRequest, GoogleLocationReviewModel, BrandWithStoresListResponse } from "@/types/apiModel.ts";
 
 export interface GoogleRepository {
   getAccounts(): Promise<GoogleAccount[]>
@@ -27,6 +27,8 @@ export interface GoogleRepository {
   getCategories(): Promise<GoogleLocationCategory[]>
 
   getLocationReviews(accountId: string, locationId: string): Promise<GoogleLocationReviewModel[]>
+
+  getBrandList(): Promise<BrandWithStoresListResponse>
 
   postLocationPhoto(accountId: string, locationId: string, photos: FileList): Promise<void>
 
@@ -229,6 +231,16 @@ export class GoogleRepositoryImpl implements GoogleRepository {
     } catch (error) {
       console.error(error)
       throw new Error("google get location reviews failed")
+    }
+  }
+
+  async getBrandList(): Promise<BrandWithStoresListResponse> {
+    try {
+      const response: AxiosResponse<BrandWithStoresListResponse> = await axiosApiClient.get('brand/list')
+      return response.data
+    } catch (error) {
+      console.error(error)
+      throw new Error("google get brand list failed")
     }
   }
 

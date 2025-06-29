@@ -4,7 +4,7 @@ import {
   GoogleLocationLocalPostModel,
   GoogleLocationPhotoModel,
 } from "@/main/model/LocationModel.ts";
-import {GoogleAccount, GoogleLocation, GoogleLocationCategory, GoogleLocationDate, GoogleLocationAttributeSnsLinkRequest, GoogleLocationAttributesModel, GoogleLocationStoreFrontAddressRequest, GoogleLocationBusinessHoursRequest, GooglePlacesAutoCompleteResponse, GoogleLocationLocalPostRequest, GoogleLocationReviewModel } from "@/types/apiModel.ts";
+import {GoogleAccount, GoogleLocation, GoogleLocationCategory, GoogleLocationDate, GoogleLocationAttributeSnsLinkRequest, GoogleLocationAttributesModel, GoogleLocationStoreFrontAddressRequest, GoogleLocationBusinessHoursRequest, GooglePlacesAutoCompleteResponse, GoogleLocationLocalPostRequest, GoogleLocationReviewModel, BrandWithStoresListResponse } from "@/types/apiModel.ts";
 import {GoogleLocationProfileModel} from "@/types/apiModel.ts";
 export interface GoogleService {
   getAccounts(): Promise<GoogleAccount[]>
@@ -17,6 +17,7 @@ export interface GoogleService {
   getLocationAttributes(locationId: string): Promise<GoogleLocationAttributesModel>
   getCategories(): Promise<GoogleLocationCategory[]>
   getLocationReviews(accountId: string, locationId: string): Promise<GoogleLocationReviewModel[]>
+  getBrandList(): Promise<BrandWithStoresListResponse>
   postLocationPhoto(accountId:string, locationId:string, photos:FileList): Promise<void>
   updateLocationProfile(locationId:string, updateMask:string, locationProfile:GoogleLocationProfileModel): Promise<GoogleLocationProfileModel>
   updateLocationProfileTitle(locationId:string, title:string): Promise<GoogleLocationProfileModel>
@@ -87,6 +88,10 @@ export class GoogleServiceImpl implements GoogleService {
 
   async getLocationReviews(accountId: string, locationId: string): Promise<GoogleLocationReviewModel[]> {
     return this.googleRepository.getLocationReviews(accountId, locationId)
+  }
+
+  async getBrandList(): Promise<BrandWithStoresListResponse> {
+    return this.googleRepository.getBrandList()
   }
 
   async postLocationPhoto(accountId:string, locationId:string, photos:FileList): Promise<void> {

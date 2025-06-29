@@ -919,7 +919,7 @@ export interface paths {
         patch: operations["updateLocationBusinessOwnerInfo"];
         trace?: never;
     };
-    "/api/brand/name": {
+    "/api/brand/update/name": {
         parameters: {
             query?: never;
             header?: never;
@@ -1743,8 +1743,17 @@ export interface components {
             name: string;
             accountName: string;
         };
-        BrandListResponse: {
-            brands: components["schemas"]["BrandResponse"][];
+        BrandWithStoresListResponse: {
+            brands: components["schemas"]["BrandWithStoresResponse"][];
+        };
+        BrandWithStoresResponse: {
+            brandId: string;
+            userId: string;
+            name: string;
+            createdAt: string;
+            stores: components["schemas"]["StoreResponse"][];
+            /** Format: int32 */
+            storesCount: number;
         };
     };
     responses: never;
@@ -3686,7 +3695,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["BrandListResponse"];
+                    "*/*": components["schemas"]["BrandWithStoresListResponse"];
                 };
             };
             /** @description Unauthorized */

@@ -53,6 +53,7 @@ export type GoogleLocationLocalPostRequest = components['schemas']['GoogleLocati
 export type GoogleLocationReviewModel = components['schemas']['GoogleLocationReviewCustom']
 export type GoogleLocationReviewReviewer = components['schemas']['GoogleLocationReviewReviewer']
 export type GoogleLocationReviewReply = components['schemas']['GoogleLocationReviewReply']
+export type BrandWithStoresListResponse = components['schemas']['BrandWithStoresListResponse']
 // export type GoogleLocationBusinessHours = paths['/api/google/location/profile']['get']['responses']['200']['content']['*/*']['regularHours']
 // export type GoogleLocationTimePeriod = paths['/api/google/location/profile']['get']['responses']['200']['content']['*/*']['regularHours']['periods'][0]
 // export type GoogleLocationTimeOfDay = paths['/api/google/location/profile']['get']['responses']['200']['content']['*/*']['regularHours']['periods'][0]['openTime']
