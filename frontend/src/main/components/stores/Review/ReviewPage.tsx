@@ -36,7 +36,7 @@ export default function ReviewPage({ googleService }: Props) {
                         locationId
                     );
 
-                    const formattedReviews: Review[] = locationReviews.map((review: GoogleLocationReviewModel) => {
+                    const formattedReviews: Review[] = locationReviews.map((review: GoogleLocationReviewModel, index: number) => {
                         const ratingValue = review.starRating ? (() => {
                             switch (review.starRating) {
                                 case GoogleLocationReviewCustomStarRating.ONE:
@@ -61,13 +61,30 @@ export default function ReviewPage({ googleService }: Props) {
                             return `${year}年${month}月${day}日`;
                         })() : '';
 
+                        // 確実に一意のIDを生成（indexベースで一意性を保証）
+                        const generateUniqueId = () => {
+                            // reviewIdが存在し、有効な数値に変換できる場合
+                            if (review.reviewId && typeof review.reviewId === 'string' && review.reviewId.trim() !== '') {
+                                const parsedId = parseInt(review.reviewId);
+                                if (!isNaN(parsedId) && parsedId > 0) {
+                                    return parsedId;
+                                }
+                            }
+                            // フォールバック: indexベースで一意性を保証
+                            return index + 1;
+                        };
+
                         return {
-                            id: typeof review.reviewId === 'string' ? parseInt(review.reviewId) : Math.floor(Math.random() * 1000000),
+                            id: generateUniqueId(),
                             serviceName: "GBP",
                             rating: ratingValue,
                             date: reviewDate,
                             content: review.comment || '',
-                            replied: !!review.reviewReply
+                            replied: !!review.reviewReply,
+                            reviewReply: review.reviewReply ? {
+                                comment: review.reviewReply.comment || '',
+                                updateTime: review.reviewReply.updateTime || ''
+                            } : undefined
                         };
                     });
 
@@ -89,6 +106,24 @@ export default function ReviewPage({ googleService }: Props) {
     const handleReply = (replyContent: string) => {
         if (accountId && locationId && selectedReview) {
             googleService.postLocationReviewReply(accountId, locationId, selectedReview.id.toString(), replyContent);
+        }
+    };
+
+    const handleDeleteReply = async () => {
+        if (accountId && locationId && selectedReview) {
+            try {
+                await googleService.deleteLocationReviewReply(accountId, locationId, selectedReview.id.toString());
+                // Refresh the reviews after deletion
+                const updatedReviews = reviews.map(review => 
+                    review.id === selectedReview.id 
+                        ? { ...review, replied: false, reviewReply: undefined }
+                        : review
+                );
+                setReviews(updatedReviews);
+                closeReviewDetailModal();
+            } catch (error) {
+                console.error('Failed to delete review reply:', error);
+            }
         }
     };
 
@@ -119,7 +154,13 @@ export default function ReviewPage({ googleService }: Props) {
             </Wrapper>
             <SearchDetailModal isOpen={isSearchModalOpen} onClose={closeSearchModal} />
             {selectedReview && (
-                <ReviewDetailModal isOpen={isReviewDetailModalOpen} onClose={closeReviewDetailModal} review={selectedReview} handleReply={handleReply} />
+                <ReviewDetailModal 
+                    isOpen={isReviewDetailModalOpen} 
+                    onClose={closeReviewDetailModal} 
+                    review={selectedReview} 
+                    handleReply={handleReply}
+                    handleDeleteReply={handleDeleteReply}
+                />
             )}
         </Wrapper>
     );

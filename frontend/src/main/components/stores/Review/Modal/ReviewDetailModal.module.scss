@@ -35,3 +35,10 @@
     border-radius: 1rem;
     @include custom-scrollbar();
 }
+
+.reply_container {
+    width: 100%;
+    background-color: vars.$background-color-secondary;
+    border-radius: 1rem;
+    box-sizing: border-box;
+}
