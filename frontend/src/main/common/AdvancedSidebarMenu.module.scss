@@ -2,6 +2,10 @@
 
 .sidebar_container {
     width: 32.9rem;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 .separator {
@@ -61,6 +65,15 @@
 }
 
 .flyout_item {
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+
+    &:hover {
+        background-color: vars.$background-color-primary-light;
+    }
+}
+
+.logout_container {
     cursor: pointer;
     transition: background-color 0.2s ease;
 

@@ -61,22 +61,32 @@ export default function AdvancedSidebarMenu() {
   ], [selectedAccount, googleSelectedLocation])
 
   return (
-    <Wrapper direction="col" className={styles.sidebar_container}>
-        <Wrapper padding="3.4rem 12.3rem 3.1rem 5.8rem">
-          <img src={SoelLogoIcon} alt="soel_logo" />
+    <Wrapper direction="col" className={styles.sidebar_container} justify="justify-between">
+        <Wrapper direction="col">
+            <Wrapper padding="3.4rem 12.3rem 3.1rem 5.8rem">
+              <img src={SoelLogoIcon} alt="soel_logo" />
+            </Wrapper>
+            <div className={styles.separator} />
+            <Link to="/edit">
+              <Wrapper gap="1.7rem" padding="2.1rem 0 2.1rem 4.4rem">
+                  <img src={HomeIcon} alt="home_icon" />
+                  <Typography content="ホーム" size="medium" color="primary" />
+              </Wrapper>
+            </Link>
+            {
+                SidebarItems.map((item, index) => (
+                    <SidebarItem key={index} {...item} />
+                ))
+            }
         </Wrapper>
-        <div className={styles.separator} />
-        <Link to="/edit">
-          <Wrapper gap="1.7rem" padding="2.1rem 0 2.1rem 4.4rem">
-              <img src={HomeIcon} alt="home_icon" />
-              <Typography content="ホーム" size="medium" color="primary" />
-          </Wrapper>
-        </Link>
-        {
-            SidebarItems.map((item, index) => (
-                <SidebarItem key={index} {...item} />
-            ))
-        }
+        <Wrapper direction="col" padding="0 0 3rem 0">
+            <div className={styles.separator} />
+            <a href={`${window.location.origin}/logout`}>
+              <Wrapper gap="1.7rem" padding="2.1rem 0 2.1rem 4.4rem" className={styles.logout_container}>
+                  <Typography content="ログアウト" size="medium" color="primary" />
+              </Wrapper>
+            </a>
+        </Wrapper>
     </Wrapper>
   )
 }
