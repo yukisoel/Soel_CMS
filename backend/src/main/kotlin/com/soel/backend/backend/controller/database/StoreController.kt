@@ -1,6 +1,7 @@
 package com.soel.backend.backend.controller.database
 
 import com.soel.backend.backend.controller.AuthHelper
+import com.soel.backend.backend.model.api.PrefectureListWithBrandListWithStoreListResponse
 import com.soel.backend.backend.model.api.StoreListResponse
 import com.soel.backend.backend.model.api.StoreResponse
 import com.soel.backend.backend.service.database.StoreService
@@ -73,11 +74,36 @@ class StoreController(
     )
     fun getStoreListByBrandId(
         request: HttpServletRequest,
-        @RequestParam brandId: String
+        @RequestParam(required = false, defaultValue = "") brandId: String
     ): ResponseEntity<StoreListResponse> {
-        authHelper.getCognitoOidcUser(request)
+        val user = authHelper.getCognitoOidcUser(request)
 
-        val result = storeService.findStoresByBrandId(brandId)
+        val result = if (brandId.isBlank()) {
+            val sub = user.getClaim<String>("sub")
+            storeService.findStoresByUserIdAndBrandIdIsNull(sub)
+        } else {
+            storeService.findStoresByBrandId(brandId)
+        }
+        return ResponseEntity(result.body, result.statusCode)
+    }
+
+    @GetMapping("/list/prefecture")
+    @Operation(
+        summary = "都道府県ごとの店舗一覧を取得",
+        description = """
+            都道府県ごとにグループ化された店舗情報を取得します。
+            認証されていない場合は、status 401 Unauthorized を返します。(Bodyは StoreErrorResponse)
+            都道府県ごとの店舗情報が存在しない場合は、空のリストを返します。(Bodyは PrefectureListWithBrandListWithStoreListResponse)
+            """,
+        tags = ["Store GETメソッド"]
+    )
+    fun getStoreListByPrefecture(
+        request: HttpServletRequest
+    ): ResponseEntity<PrefectureListWithBrandListWithStoreListResponse> {
+        val user = authHelper.getCognitoOidcUser(request)
+
+        val sub = user.getClaim<String>("sub")
+        val result = storeService.findStoreGroupByPrefecture(userId = sub)
         return ResponseEntity(result.body, result.statusCode)
     }
 
@@ -97,12 +123,53 @@ class StoreController(
         @RequestParam storeName: String,
         @RequestParam brandId: String? = null,
         @RequestParam googleAccountId: String? = null,
-        @RequestParam googleLocationId: String? = null
+        @RequestParam googleLocationId: String? = null,
+        @RequestParam prefectureName: String? = null
     ): ResponseEntity<StoreResponse> {
         val user = authHelper.getCognitoOidcUser(request)
         val sub = user.getClaim<String>("sub") ?: return ResponseEntity.badRequest().build()
 
-        val result = storeService.createStore(storeName, sub, brandId, googleAccountId, googleLocationId)
+        val result = storeService.createStore(
+            userId = sub,
+            storeName = storeName,
+            brandId = brandId,
+            googleAccountId = googleAccountId,
+            googleLocationId = googleLocationId,
+            prefectureName = prefectureName
+            )
+        return ResponseEntity(result.body, result.statusCode)
+    }
+
+    @PatchMapping("/update")
+    @Operation(
+        summary = "店舗情報を更新",
+        description = """
+            認証されたユーザーの店舗情報を更新します。
+            Request Bodyには更新する店舗情報を含めます。
+            認証されていない場合は、status 401 Unauthorized を返します。(Bodyは StoreErrorResponse)
+            店舗情報の更新に成功した場合は、status 200 OK を返します。(Bodyは StoreResponse)
+            """,
+        tags = ["Store PATCHメソッド"]
+    )
+    fun updateStore(
+        request: HttpServletRequest,
+        @RequestParam storeId: String,
+        @RequestParam storeName: String,
+        @RequestParam brandId: String? = null,
+        @RequestParam googleAccountId: String? = null,
+        @RequestParam googleLocationId: String? = null,
+        @RequestParam prefectureName: String? = null
+    ): ResponseEntity<StoreResponse> {
+        authHelper.getCognitoOidcUser(request)
+
+        val result = storeService.updateStore(
+            storeId = storeId,
+            storeName = storeName,
+            brandId = brandId,
+            googleAccountId = googleAccountId,
+            googleLocationId = googleLocationId,
+            prefectureName = prefectureName
+        )
         return ResponseEntity(result.body, result.statusCode)
     }
 
@@ -199,13 +266,13 @@ class StoreController(
         summary = "店舗のGoogleアカウントとロケーションを更新",
         description = """
             認証されたユーザーの店舗のGoogleアカウントとロケーションを同時に更新します。
-            Request Bodyには新しいGoogleアカウントIDとGoogleロケーションIDの文字列を含めます。
+            Requestパラメータには新しいGoogleアカウントIDとGoogleロケーションIDの文字列を含めます。
             認証されていない場合は、status 401 Unauthorized を返します。(Bodyは StoreErrorResponse)
             Googleアカウントとロケーションの更新に成功した場合は、status 200 OK を返します。(Bodyは StoreResponse)
             """,
         tags = ["Store PATCHメソッド"]
     )
-    fun updateStoreGoogle(
+    fun updateStoreGoogleAccountLocation(
         request: HttpServletRequest,
         @RequestParam storeId: String,
         @RequestParam googleAccountId: String,
@@ -214,6 +281,28 @@ class StoreController(
         authHelper.getCognitoOidcUser(request)
 
         val result = storeService.updateStoreGoogleAccountLocation(storeId, googleAccountId, googleLocationId)
+        return ResponseEntity(result.body, result.statusCode)
+    }
+
+    @PatchMapping("/update/prefecture")
+    @Operation(
+        summary = "店舗の都道府県を更新",
+        description = """
+            認証されたユーザーの店舗の都道府県を更新します。
+            Request パラメータには新しい都道府県名のNameかJapaneseNameを含めます。(例: "TOKYO" または "東京都")
+            認証されていない場合は、status 401 Unauthorized を返します。(Bodyは StoreErrorResponse)
+            都道府県の更新に成功した場合は、status 200 OK を返します。(Bodyは StoreResponse)
+            """,
+        tags = ["Store PATCHメソッド"]
+    )
+    fun updateStorePrefecture(
+        request: HttpServletRequest,
+        @RequestParam storeId: String,
+        @RequestParam prefectureName: String
+    ): ResponseEntity<StoreResponse> {
+        authHelper.getCognitoOidcUser(request)
+
+        val result = storeService.updateStorePrefecture(storeId, prefectureName)
         return ResponseEntity(result.body, result.statusCode)
     }
 

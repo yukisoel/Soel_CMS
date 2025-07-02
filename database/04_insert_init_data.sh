@@ -17,12 +17,13 @@ VALUES (
   '${SAMPLE_BRAND_NAME}'
 );
 -- 3) stores テーブルへの初期店舗登録
-INSERT INTO stores (brand_id, user_id, name, google_account_id, google_location_id)
+INSERT INTO stores (brand_id, user_id, name, google_account_id, google_location_id, prefecture)
 VALUES (
   '${SAMPLE_BRAND_ID}',
   '${SAMPLE_USER_ID}',
   '${SAMPLE_STORE_NAME}',
   '${SAMPLE_GOOGLE_ACCOUNT_ID}',
-  '${SAMPLE_GOOGLE_LOCATION_ID}'
+  '${SAMPLE_GOOGLE_LOCATION_ID}',
+  '${SAMPLE_STORE_PREFECTURE}'
 );
 EOSQL

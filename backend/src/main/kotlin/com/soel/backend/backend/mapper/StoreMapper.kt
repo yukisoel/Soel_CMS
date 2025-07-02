@@ -15,7 +15,8 @@ object StoreMapper {
             googleAccountId = e.googleAccountId,
             googleLocationId = e.googleLocationId,
             googleLinkedAt = e.googleLinkedAt?.toString(),
-            createdAt = e.createdAt.toString()
+            createdAt = e.createdAt.toString(),
+            prefecture = e.prefecture
         )
 
     fun entityToResponse(e: StoreEntity): StoreResponse =
@@ -27,7 +28,9 @@ object StoreMapper {
             googleAccountId = e.googleAccountId,
             googleLocationId = e.googleLocationId,
             googleLinkedAt = e.googleLinkedAt?.toString(),
-            createdAt = e.createdAt.toString()
+            createdAt = e.createdAt.toString(),
+            prefectureName = e.prefecture?.name,
+            prefectureJapaneseName = e.prefecture?.japaneseName
         )
 
     fun entitiesToResponses(entities: List<StoreEntity>): List<StoreResponse> =
