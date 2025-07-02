@@ -4,7 +4,7 @@ import {
   GoogleLocationLocalPostModel,
   GoogleLocationPhotoModel,
 } from "@/main/model/LocationModel.ts";
-import {GoogleAccount, GoogleLocation, GoogleLocationCategory, GoogleLocationDate, GoogleLocationAttributeSnsLinkRequest, GoogleLocationAttributesModel, GoogleLocationStoreFrontAddressRequest, GoogleLocationBusinessHoursRequest, GooglePlacesAutoCompleteResponse, GoogleLocationLocalPostRequest, GoogleLocationReviewModel, BrandWithStoresListResponse } from "@/types/apiModel.ts";
+import {GoogleAccount, GoogleLocation, GoogleLocationCategory, GoogleLocationDate, GoogleLocationAttributeSnsLinkRequest, GoogleLocationAttributesModel, GoogleLocationStoreFrontAddressRequest, GoogleLocationBusinessHoursRequest, GooglePlacesAutoCompleteResponse, GoogleLocationLocalPostRequest, GoogleLocationReviewModel, BrandWithStoresListResponse, PrefectureListWithBrandListWithStoreListResponse } from "@/types/apiModel.ts";
 import {GoogleLocationProfileModel} from "@/types/apiModel.ts";
 export interface GoogleService {
   getAccounts(): Promise<GoogleAccount[]>
@@ -18,6 +18,7 @@ export interface GoogleService {
   getCategories(): Promise<GoogleLocationCategory[]>
   getLocationReviews(accountId: string, locationId: string): Promise<GoogleLocationReviewModel[]>
   getBrandList(): Promise<BrandWithStoresListResponse>
+  getStoreListByPrefecture(): Promise<PrefectureListWithBrandListWithStoreListResponse>
   postLocationPhoto(accountId:string, locationId:string, photos:FileList): Promise<void>
   updateLocationProfile(locationId:string, updateMask:string, locationProfile:GoogleLocationProfileModel): Promise<GoogleLocationProfileModel>
   updateLocationProfileTitle(locationId:string, title:string): Promise<GoogleLocationProfileModel>
@@ -92,6 +93,10 @@ export class GoogleServiceImpl implements GoogleService {
 
   async getBrandList(): Promise<BrandWithStoresListResponse> {
     return this.googleRepository.getBrandList()
+  }
+
+  async getStoreListByPrefecture(): Promise<PrefectureListWithBrandListWithStoreListResponse> {
+    return this.googleRepository.getStoreListByPrefecture()
   }
 
   async postLocationPhoto(accountId:string, locationId:string, photos:FileList): Promise<void> {

@@ -1,7 +1,8 @@
 import { GoogleService } from "@/main/service/GoogleService";
 import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
-import SelectStore, { Branch, Region, Store } from "./SelectStore";
+import SelectStore, { Branch, Region, Store, Prefecture } from "./SelectStore";
+import { initializeRegionMapForStores, regionOrder, getBrandMapByPrefecture } from "@/main/utils/prefectureToRegion";
 
 type Props = {
     googleService: GoogleService
@@ -9,151 +10,24 @@ type Props = {
     onBackClick: () => void
 }
 
-// Temporary hardcoded data - will be replaced by API data
+// Default data
 const defaultBrandSelectorProps: Store[] = []
-
-const areaSelectorProps: Region[] = [
-{
-    name: '東北',
-    prefectures: [
-    {
-        name: '青森',
-        stores: [
-        {
-            name: '鳥貴族',
-            branches: [
-            { id: '1', name: '熱海店', checked: false },
-            { id: '2', name: '青山一丁目駅前', checked: false },
-            { id: '3', name: '六本木ヒルズ', checked: false },
-            { id: '4', name: '文字数が多い場合は改行です', checked: false },
-            { id: '5', name: '六本木ヒルズ', checked: false },
-            ],
-            checked: false
-        },
-        {
-            name: '焼肉きんぐ',
-            branches: [
-            { id: '1', name: '熱海店', checked: false },
-            { id: '2', name: '青山一丁目駅前', checked: false },
-            { id: '3', name: '六本木ヒルズ', checked: false },
-            { id: '4', name: '文字数が多い場合は改行です', checked: false },
-            { id: '5', name: '六本木ヒルズ', checked: false },
-            ],
-            checked: false
-        }
-        ],
-        checked: false
-    },
-    {
-        name: '岩手',
-        stores: [
-        {
-            name: '鳥貴族',
-            branches: [
-            { id: '1', name: '熱海店', checked: false },
-            { id: '2', name: '青山一丁目駅前', checked: false },
-            { id: '3', name: '六本木ヒルズ', checked: false },
-            { id: '4', name: '文字数が多い場合は改行です', checked: false },
-            { id: '5', name: '六本木ヒルズ', checked: false },
-            ],
-            checked: false
-        },
-        {
-            name: '焼肉きんぐ',
-            branches: [
-            { id: '1', name: '熱海店', checked: false },
-            { id: '2', name: '青山一丁目駅前', checked: false },
-            { id: '3', name: '六本木ヒルズ', checked: false },
-            { id: '4', name: '文字数が多い場合は改行です', checked: false },
-            { id: '5', name: '六本木ヒルズ', checked: false },
-            ],
-            checked: false
-        }
-        ],
-        checked: false
-    }
-    ],
-    checked: false
-},
-{
-    name: '関東',
-    prefectures: [
-    {
-        name: '茨城',
-        stores: [
-        {
-            name: '鳥貴族',
-            branches: [
-            { id: '1', name: '熱海店', checked: false },
-            { id: '2', name: '青山一丁目駅前', checked: false },
-            { id: '3', name: '六本木ヒルズ', checked: false },
-            { id: '4', name: '文字数が多い場合は改行です', checked: false },
-            { id: '5', name: '六本木ヒルズ', checked: false },
-            ],
-            checked: false
-        },
-        {
-            name: '焼肉きんぐ',
-            branches: [
-            { id: '1', name: '熱海店', checked: false },
-            { id: '2', name: '青山一丁目駅前', checked: false },
-            { id: '3', name: '六本木ヒルズ', checked: false },
-            { id: '4', name: '文字数が多い場合は改行です', checked: false },
-            { id: '5', name: '六本木ヒルズ', checked: false },
-            ],
-            checked: false
-        }
-        ],
-        checked: false
-    },
-    {
-        name: '栃木',
-        stores: [
-        {
-            name: '鳥貴族',
-            branches: [
-            { id: '1', name: '熱海店', checked: false },
-            { id: '2', name: '青山一丁目駅前', checked: false },
-            { id: '3', name: '六本木ヒルズ', checked: false },
-            { id: '4', name: '文字数が多い場合は改行です', checked: false },
-            { id: '5', name: '六本木ヒルズ', checked: false },
-            ],
-            checked: false
-        },
-        {
-            name: '焼肉きんぐ',
-            branches: [
-            { id: '1', name: '熱海店', checked: false },
-            { id: '2', name: '青山一丁目駅前', checked: false },
-            { id: '3', name: '六本木ヒルズ', checked: false },
-            { id: '4', name: '文字数が多い場合は改行です', checked: false },
-            { id: '5', name: '六本木ヒルズ', checked: false },
-            ],
-            checked: false
-        }
-        ],
-        checked: false
-    }
-    ],
-    checked: false
-}
-]
+const defaultAreaSelectorProps: Region[] = []
 
 export const useSelectStore = ({googleService, onNextClick, onBackClick}: Props) => {
     const [selectedBranches, setSelectedBranches] = useState<Array<Omit<Branch, 'checked'>>>([]);
     const [brandSelectorProps, setBrandSelectorProps] = useState<Store[]>(defaultBrandSelectorProps);
+    const [areaSelectorProps, setAreaSelectorProps] = useState<Region[]>(defaultAreaSelectorProps);
     const [isLoading, setIsLoading] = useState(true);
     const [searchParams] = useSearchParams();
     const mode = searchParams.get('mode') || 'brand';
 
     useEffect(() => {
+        // Brand data fetching function
         const fetchBrandData = async () => {
             try {
-                setIsLoading(true);
                 const response = await googleService.getBrandList();
-                console.log(response);
 
-                // Transform API response to match Store[] format
                 const transformedData: Store[] = response.brands.map(brand => ({
                     name: brand.name,
                     branches: brand.stores.map(store => ({
@@ -164,19 +38,100 @@ export const useSelectStore = ({googleService, onNextClick, onBackClick}: Props)
                     checked: false
                 }));
 
-                console.log('Transformed data:', transformedData);
                 setBrandSelectorProps(transformedData);
             } catch (error) {
                 console.error('Failed to fetch brand data:', error);
-                // Keep empty array on error
                 setBrandSelectorProps([]);
+            }
+        };
+
+        // Area data fetching function
+        const fetchAreaData = async () => {
+            try {
+                const response = await googleService.getStoreListByPrefecture();
+
+                // Step 1: すべての地域・都道府県を含むMapを初期化
+                // 構造: { 地域名: { 都道府県名: { ブランド名: Branch[] } } }
+                const regionMap = initializeRegionMapForStores();
+
+                // Step 2: APIレスポンスのデータをMapに配置
+                response.prefectures.forEach(prefecture => {
+                    const prefectureName = prefecture.prefectureJapaneseName || prefecture.prefectureName || '';
+
+                    // 該当する都道府県のbrandMapを取得
+                    const brandMap = getBrandMapByPrefecture(regionMap, prefectureName);
+
+                    if (brandMap) {
+                        // ブランドごとに店舗をグループ化
+                        prefecture.brands.forEach(brand => {
+                            const branches: Branch[] = brand.stores.map(store => ({
+                                id: store.storeId,
+                                name: store.name,
+                                checked: false
+                            }));
+
+                            // ブランドと店舗をセット
+                            brandMap.set(brand.name, branches);
+                        });
+                    }
+                });
+
+                // Step 3: MapをRegion[]構造に変換（全地域を含む）
+                const transformedAreaData: Region[] = regionOrder.map(regionName => {
+                    const prefectureMap = regionMap.get(regionName)!;
+
+                    // 都道府県ごとのデータを作成（店舗がない都道府県も含む）
+                    const prefectures: Prefecture[] = Array.from(prefectureMap.entries())
+                        .map(([prefectureName, brandMap]) => {
+                            // ブランドごとのデータを作成
+                            const stores: Store[] = Array.from(brandMap.entries())
+                                .map(([brandName, branches]) => ({
+                                    name: brandName,
+                                    branches: branches,
+                                    checked: false
+                                }));
+
+                            return {
+                                name: prefectureName,
+                                stores: stores,
+                                checked: false
+                            };
+                        });
+
+                    return {
+                        name: regionName,
+                        prefectures: prefectures,
+                        checked: false
+                    };
+                });
+
+                setAreaSelectorProps(transformedAreaData);
+            } catch (error) {
+                console.error('Failed to fetch area data:', error);
+                setAreaSelectorProps([]);
+            }
+        };
+
+        const fetchData = async () => {
+            try {
+                setIsLoading(true);
+
+                // Fetch data based on mode to prevent over-fetching
+                if (mode === 'brand') {
+                    await fetchBrandData();
+                } else if (mode === 'area') {
+                    await fetchAreaData();
+                }
+
+            } catch (error) {
+                console.error(`Failed to fetch ${mode} data:`, error);
             } finally {
                 setIsLoading(false);
             }
         };
 
-        fetchBrandData();
-    }, [googleService]);
+        fetchData();
+    }, [googleService, mode]);
 
     const onChangeSelectedBranches = (stores: Branch[]) => {
         setSelectedBranches(stores)

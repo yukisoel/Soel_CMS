@@ -5,7 +5,7 @@ import {
   GoogleLocationLocalPostModel,
   GoogleLocationPhotoModel,
 } from "@/main/model/LocationModel.ts";
-import {GoogleAccount, GoogleLocation, GoogleLocationProfileModel, GoogleLocationDate, GoogleLocationCategory, GoogleLocationAttributeSnsLinkRequest, GoogleLocationAttributesModel, GoogleLocationStoreFrontAddressRequest, GoogleLocationBusinessHoursRequest, GooglePlacesAutoCompleteResponse, GoogleLocationLocalPostRequest, GoogleLocationReviewModel, BrandWithStoresListResponse } from "@/types/apiModel.ts";
+import {GoogleAccount, GoogleLocation, GoogleLocationProfileModel, GoogleLocationDate, GoogleLocationCategory, GoogleLocationAttributeSnsLinkRequest, GoogleLocationAttributesModel, GoogleLocationStoreFrontAddressRequest, GoogleLocationBusinessHoursRequest, GooglePlacesAutoCompleteResponse, GoogleLocationLocalPostRequest, GoogleLocationReviewModel, BrandWithStoresListResponse, PrefectureListWithBrandListWithStoreListResponse } from "@/types/apiModel.ts";
 
 export interface GoogleRepository {
   getAccounts(): Promise<GoogleAccount[]>
@@ -29,6 +29,8 @@ export interface GoogleRepository {
   getLocationReviews(accountId: string, locationId: string): Promise<GoogleLocationReviewModel[]>
 
   getBrandList(): Promise<BrandWithStoresListResponse>
+
+  getStoreListByPrefecture(): Promise<PrefectureListWithBrandListWithStoreListResponse>
 
   postLocationPhoto(accountId: string, locationId: string, photos: FileList): Promise<void>
 
@@ -241,6 +243,17 @@ export class GoogleRepositoryImpl implements GoogleRepository {
     } catch (error) {
       console.error(error)
       throw new Error("google get brand list failed")
+    }
+  }
+
+  async getStoreListByPrefecture(): Promise<PrefectureListWithBrandListWithStoreListResponse> {
+
+    try {
+      const response: AxiosResponse<PrefectureListWithBrandListWithStoreListResponse> = await axiosApiClient.get('store/list/prefecture')
+      return response.data
+    } catch (error) {
+      console.error(error)
+      throw new Error("google get store list by prefecture failed")
     }
   }
 
