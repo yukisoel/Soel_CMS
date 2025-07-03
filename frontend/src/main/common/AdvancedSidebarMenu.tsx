@@ -80,6 +80,11 @@ export default function AdvancedSidebarMenu() {
             }
         </Wrapper>
         <Wrapper direction="col" padding="0 0 3rem 0">
+            <a href="/oauth2/authorization/google">
+              <Wrapper gap="1.7rem" padding="2.1rem 0 2.1rem 4.4rem">
+                  <Typography content="Google連携" size="medium" color="primary" />
+              </Wrapper>
+            </a>
             <div className={styles.separator} />
             <a href={`${window.location.origin}/logout`}>
               <Wrapper gap="1.7rem" padding="2.1rem 0 2.1rem 4.4rem" className={styles.logout_container}>
