@@ -36,6 +36,7 @@ export interface GoogleService {
   updateLocationProfileBusinessHours(locationId: string, businessHours: GoogleLocationBusinessHoursRequest): Promise<GoogleLocationProfileModel>
   postPlacesAutoComplete(input: string): Promise<GooglePlacesAutoCompleteResponse>
   postLocationLocalPosts(accountId: string, locationId: string, localPost: GoogleLocationLocalPostRequest, photos: FileList): Promise<void>
+  postLocationLocalPostBulk(accountId: string, locationIdList: string[], localPost: GoogleLocationLocalPostRequest, photos: FileList): Promise<void>
   postLocationReviewReply(accountId: string, locationId: string, reviewId: string, content: string): Promise<void>
   deleteLocationReviewReply(accountId: string, locationId: string, reviewId: string): Promise<void>
 }
@@ -165,6 +166,10 @@ export class GoogleServiceImpl implements GoogleService {
 
   async postLocationLocalPosts(accountId: string, locationId: string, localPost: GoogleLocationLocalPostRequest, photos: FileList): Promise<void> {
     return this.googleRepository.postLocationLocalPosts(accountId, locationId, localPost, photos)
+  }
+
+  async postLocationLocalPostBulk(accountId: string, locationIdList: string[], localPost: GoogleLocationLocalPostRequest, photos: FileList): Promise<void> {
+    return this.googleRepository.postLocationLocalPostBulk(accountId, locationIdList, localPost, photos)
   }
 
   async postLocationReviewReply(accountId: string, locationId: string, reviewId: string, content: string): Promise<void> {

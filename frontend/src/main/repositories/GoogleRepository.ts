@@ -66,6 +66,8 @@ export interface GoogleRepository {
 
   postLocationLocalPosts(accountId: string, locationId: string, localPost: GoogleLocationLocalPostRequest, photos: FileList): Promise<void>
 
+  postLocationLocalPostBulk(accountId: string, locationIdList: string[], localPost: GoogleLocationLocalPostRequest, photos: FileList): Promise<void>
+
   postLocationReviewReply(accountId: string, locationId: string, reviewId: string, content: string): Promise<void>
 
   deleteLocationReviewReply(accountId: string, locationId: string, reviewId: string): Promise<void>
@@ -616,6 +618,28 @@ export class GoogleRepositoryImpl implements GoogleRepository {
         params: {
           accountId: accountId,
           locationId: locationId
+        },
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      })
+    } catch (error) {
+      console.error('Error posting location local post:', error)
+      throw error
+    }
+  }
+
+  async postLocationLocalPostBulk(accountId: string, locationIdList: string[], localPost: GoogleLocationLocalPostRequest, photos: FileList): Promise<void> {
+    try {
+      const formData = new FormData()
+      Array.from(photos).forEach((file) => {
+        formData.append('files', file)
+      })
+      formData.append('localPost', new Blob([JSON.stringify(localPost)], {type: 'application/json'}))
+      await axiosApiClient.post('google/location/local_post/bulk', formData, {
+        params: {
+          accountId: accountId,
+          locationIdList: locationIdList.join(',')  // カンマ区切りの文字列として送信
         },
         headers: {
           'Content-Type': 'multipart/form-data',
