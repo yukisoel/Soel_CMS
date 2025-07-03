@@ -24,7 +24,7 @@ export default function AdvancedSidebarMenu() {
         title: '基本情報',
         icon: StoreMangeIcon,
         items: [
-            {title: '各店基本情報変更', link: '/edit/store'},
+            {title: '各店基本情報変更', link: '/edit'},
             {title: '写真一括変更', link: '/edit/bulk/photo'},
             {title: '特別営業時間一括変更', link: '/edit/bulk/special'}
         ],
@@ -67,7 +67,7 @@ export default function AdvancedSidebarMenu() {
               <img src={SoelLogoIcon} alt="soel_logo" />
             </Wrapper>
             <div className={styles.separator} />
-            <Link to="/edit">
+            <Link to="" onClick={(e) => e.preventDefault()}>
               <Wrapper gap="1.7rem" padding="2.1rem 0 2.1rem 4.4rem">
                   <img src={HomeIcon} alt="home_icon" />
                   <Typography content="ホーム" size="medium" color="primary" />
