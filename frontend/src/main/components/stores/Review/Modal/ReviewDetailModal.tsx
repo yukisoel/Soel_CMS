@@ -13,12 +13,18 @@ import { Review } from "../ReviewCard";
 
 type Props = {
     isOpen: boolean;
+    handleReply: (replyContent: string  ) => void;
     onClose: () => void;
     review: Review
 };
 
-export default function ReviewDetailModal({ isOpen, onClose, review }: Props) {
+export default function ReviewDetailModal({ isOpen, handleReply, onClose, review }: Props) {
     const [replyContent, setReplyContent] = useState<string>("");
+
+    const handleSubmit = () => {
+        handleReply(replyContent);
+        setReplyContent("");
+    };
 
     const handleClose = () => {
         setReplyContent("");
@@ -57,7 +63,7 @@ export default function ReviewDetailModal({ isOpen, onClose, review }: Props) {
                     <Button bgColor="secondary" padding="7px 20px" onClick={handleClose}>
                         <Typography content="戻る" color="primary" size="normal" weight="normal" />
                     </Button>
-                    <Button bgColor="primary" padding="7px 10px" onClick={() => { }}>
+                    <Button bgColor="primary" padding="7px 10px" onClick={handleSubmit}>
                         <Typography content="返信する" color="primary" size="normal" weight="normal" />
                     </Button>
                 </Wrapper>

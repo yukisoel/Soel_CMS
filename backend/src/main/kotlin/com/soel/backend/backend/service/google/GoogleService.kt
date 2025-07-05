@@ -420,16 +420,16 @@ class GoogleServiceImpl(val googleRepository: GoogleRepository, val menuLogRepos
                         review.updateTime,
                         isReply = review.reviewReply != null,
                     )
-                }
+                } ?: emptyList()
                 nextPageToken = googleLocationReviewsResponse?.nextPageToken
-                googleReviewsMutableList.addAll(googleLocationReviews!!.toMutableList())
+                googleReviewsMutableList.addAll(googleLocationReviews.toMutableList())
             } while (nextPageToken != null)
             return ResponseEntity.ok(googleReviewsMutableList)
         } catch (e: Exception) {
             logger.error("Error getting location reviews", e)
             return ResponseEntity
                 .badRequest()
-                .body(null)
+                .body(emptyList())
         }
     }
 

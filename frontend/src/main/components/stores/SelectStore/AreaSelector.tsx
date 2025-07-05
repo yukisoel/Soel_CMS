@@ -20,6 +20,10 @@ export default function AreaSelector({ regions, onChangeSelectedBranches }: Prop
     const [indeterminate, setIndeterminate] = useState<boolean>(false);
 
     useEffect(() => {
+        setRegionData(regions);
+    }, [regions]);
+
+    useEffect(() => {
         // 選択されたブランチを収集
         const branches = regionData.reduce((acc, region) => {
             const selectedBranches = region.prefectures.reduce((acc, prefecture) => {

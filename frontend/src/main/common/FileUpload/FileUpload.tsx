@@ -7,6 +7,7 @@ type Props = {
     setUploadedPhotoFileList: (fileList: FileList) => void
     size: 'regular' | 'large'
     onReset?: () => void
+    showPreview?: boolean
 }
 
 const ACCEPTED_TYPES = [
@@ -15,7 +16,7 @@ const ACCEPTED_TYPES = [
   'image/png',
 ];
 
-export default function FileUpload({setUploadedPhotoFileList, size, onReset}: Props) {
+export default function FileUpload({setUploadedPhotoFileList, size, onReset, showPreview = true}: Props) {
     const [uploadedPhotoUrlList, setUploadedPhotoUrlList] = useState<string[]>([])
     const [showAddPhotoListPage, setShowAddPhotoListPage] = useState<boolean>(false)
     const fileUploadInputRef = useRef<HTMLInputElement>(null)
@@ -56,13 +57,15 @@ export default function FileUpload({setUploadedPhotoFileList, size, onReset}: Pr
     }
 
     const handleFileUpload = (files: FileList) => {
-        const urls = []
-        for (let i = 0; i < files.length; i++) {
-          urls.push(URL.createObjectURL(files[i]))
+        if (showPreview) {
+            const urls = []
+            for (let i = 0; i < files.length; i++) {
+              urls.push(URL.createObjectURL(files[i]))
+            }
+            setUploadedPhotoUrlList(urls)
+            setShowAddPhotoListPage(true)
         }
         setUploadedPhotoFileList(files)
-        setUploadedPhotoUrlList(urls)
-        setShowAddPhotoListPage(true)
     }
 
     const clickSelectFileButton = () => {
@@ -83,7 +86,7 @@ export default function FileUpload({setUploadedPhotoFileList, size, onReset}: Pr
 
     return (
     <>
-        {!showAddPhotoListPage && (
+        {(!showAddPhotoListPage || !showPreview) && (
             <div className={styles.file_upload_area_container}>
                 <div className={styles[`file_upload_area_${size}`]}
                     onDragEnter={onDivDragOver}
@@ -114,7 +117,7 @@ export default function FileUpload({setUploadedPhotoFileList, size, onReset}: Pr
                 )}
             </div>
         )}
-        {showAddPhotoListPage && (
+        {showPreview && showAddPhotoListPage && (
             <div className={styles.photo_list_container}>
             {uploadedPhotoUrlList.map((url, index) => {
                 return (

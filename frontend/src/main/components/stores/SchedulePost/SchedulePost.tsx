@@ -1,15 +1,18 @@
 import { GoogleService } from "@/main/service/GoogleService"
 import { useSelectStore } from "../SelectStore/useSelectStore"
 import { useSelectService } from "../SelectService/useSelectService";
-import { useMemo, useState } from "react";
+import { useContext, useMemo, useState } from "react";
 import PostContentConfirm from "./PostContentConfirm";
 import usePostContentForm from "./usePostContentForm";
+import { GoogleLocationLocalPostRequest } from "@/types/apiModel";
+import { GoogleAccountsContext } from "@/main/contexts/GoogleAccountsContext";
 
 type Props = {
     googleService: GoogleService
 }
 
 export default function SchedulePost({googleService}: Props) {
+    const {selectedAccount} = useContext(GoogleAccountsContext)
     const [mode, setMode] = useState<'selectStore' | 'selectService' | 'schedulePost' | 'confirmPost'>('selectStore');
 
     const { selectedBranches, selectStoreRender } = useSelectStore({
@@ -54,15 +57,41 @@ export default function SchedulePost({googleService}: Props) {
                     formState={formState}
                     uploadedPhotoFileList={uploadedPhotoFileList}
                     onEdit={() => setMode('schedulePost')}
-                    onSubmit={() => {
-                        // 投稿内容を送信する処理をここに追加
-                        console.log('投稿内容:', formState.content);
-                        console.log('ハッシュタグ:', formState.hashtags);
-                        console.log('店舗のタグをつける:', formState.tagStore);
-                        console.log('店舗の位置情報をつける:', formState.tagLocation);
-                        console.log('投稿予約をする:', formState.schedulePost);
-                        console.log('選択された日付:', formState.selectedDate);
-                        console.log('選択された時間:', formState.selectedTime);
+                    onSubmit={async () => {
+                        try {
+                            // 選択された全てのブランチのIDを配列で取得
+                            const locationIdList = selectedBranches.map(branch => branch.id);
+
+                            // 投稿内容を作成（単一のオブジェクト）
+                            const localPost: GoogleLocationLocalPostRequest = {
+                                summary: formState.content,
+                                alertType: 'STANDARD',
+                                topicType: 'STANDARD'
+                            };
+
+                            const accountId = selectedAccount?.accountName;
+                            if (!accountId) {
+                                throw new Error('Account ID is required');
+                            }
+
+                            // 一度のAPI呼び出しで全ての店舗に投稿
+                            await googleService.postLocationLocalPostBulk(
+                                accountId,
+                                locationIdList,
+                                localPost,
+                                uploadedPhotoFileList || new DataTransfer().files
+                            );
+
+                            // 成功時の処理
+                            alert('投稿が正常に送信されました');
+
+                            // TODO: 投稿成功後の画面遷移やリセット処理を追加
+                            setMode('selectStore')
+
+                        } catch (error) {
+                            console.error('投稿エラー:', error);
+                            alert('投稿の送信中にエラーが発生しました');
+                        }
                     }}
                 />
             )}

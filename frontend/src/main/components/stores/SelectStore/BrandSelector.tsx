@@ -20,6 +20,10 @@ export default function BrandSelector({ stores, onChangeSelectedBranches }: Prop
     const [indeterminate, setIndeterminate] = useState<boolean>(false);
 
     useEffect(() => {
+        setStoreData(stores);
+    }, [stores]);
+
+    useEffect(() => {
         const branches = storeData.reduce((acc, store) => {
             const selectedBranches = store.branches.filter(branch => branch.checked);
             return [...acc, ...selectedBranches];
@@ -30,7 +34,7 @@ export default function BrandSelector({ stores, onChangeSelectedBranches }: Prop
         const someChecked = storeData.some(store => store.checked || store.branches.some(branch => branch.checked));
         setSelectAll(allChecked);
         setIndeterminate(!allChecked && someChecked);
-    }, [storeData]);
+    }, [storeData, onChangeSelectedBranches]);
 
     const handleStoreChange = (storeIndex: number) => {
         const newStoreData = [...storeData];
@@ -95,7 +99,7 @@ function BrandWithBranches({ name, branches, checked, storeIndex, onStoreChange,
                 </div>
                 {isOpen && (
                     <Wrapper direction="col">
-                        <Wrapper padding="0 0 2.6rem" gap="2rem" className={styles.checkbox_container}>
+                        <Wrapper padding="0 0 2.6rem 2rem" gap="2rem" className={styles.checkbox_container}>
                             {branches.map(({ name, checked }, branchIndex) => (
                                 <div className={styles.checkbox_wrapper} key={branchIndex}>
                                     <Checkbox label={name} checked={checked} onChange={() => onBranchChange(storeIndex, branchIndex)} />
