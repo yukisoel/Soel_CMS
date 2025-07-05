@@ -49,6 +49,7 @@ export type GoogleLocationTimePeriod = components['schemas']['GoogleLocationTime
 export type JsonNode = components['schemas']['JsonNode']
 export type GooglePlacesAutoCompleteRequest = components['schemas']['GooglePlacesAutoCompleteRequest']
 export type GooglePlacesAutoCompleteResponse = components['schemas']['GooglePlacesAutoCompleteResponse']
+export type GoogleLocationLocalPostRequest = components['schemas']['GoogleLocationLocalPostModel']
 // export type GoogleLocationBusinessHours = paths['/api/google/location/profile']['get']['responses']['200']['content']['*/*']['regularHours']
 // export type GoogleLocationTimePeriod = paths['/api/google/location/profile']['get']['responses']['200']['content']['*/*']['regularHours']['periods'][0]
 // export type GoogleLocationTimeOfDay = paths['/api/google/location/profile']['get']['responses']['200']['content']['*/*']['regularHours']['periods'][0]['openTime']
@@ -57,3 +58,21 @@ export type GooglePlacesAutoCompleteResponse = components['schemas']['GooglePlac
 
 export type GoogleLocationOffer = paths['/api/google/location/local_posts']['get']['responses']['200']['content']['*/*'][0]['offer']
 
+export enum LocationButtonName {
+    ACTION_TYPE_UNSPECIFIED = '未指定',
+    BOOK = '予約',
+    ORDER = 'オンライン注文',
+    SHOP = '購入',
+    LEARN_MORE = '詳細',
+    SIGN_UP = '登録',
+    // GET_OFFER = 'オファー',
+    CALL = '今すぐ電話',
+}
+
+export enum LocalPostTopicType {
+    LOCAL_POST_TOPIC_TYPE_UNSPECIFIED = 'LOCAL_POST_TOPIC_TYPE_UNSPECIFIED',
+    STANDARD = 'STANDARD',
+    EVENT = 'EVENT',
+    OFFER = 'OFFER',
+    ALERT = 'ALERT',
+}

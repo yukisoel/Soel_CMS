@@ -5,7 +5,7 @@ import {
   GoogleLocationLocalPostModel,
   GoogleLocationPhotoModel,
 } from "@/main/model/LocationModel.ts";
-import {GoogleAccount, GoogleLocation, GoogleLocationProfileModel, GoogleLocationDate, GoogleLocationCategory, GoogleLocationAttributeSnsLinkRequest, GoogleLocationAttributesModel, GoogleLocationStoreFrontAddressRequest, GoogleLocationBusinessHoursRequest, GooglePlacesAutoCompleteResponse} from "@/types/apiModel.ts";
+import {GoogleAccount, GoogleLocation, GoogleLocationProfileModel, GoogleLocationDate, GoogleLocationCategory, GoogleLocationAttributeSnsLinkRequest, GoogleLocationAttributesModel, GoogleLocationStoreFrontAddressRequest, GoogleLocationBusinessHoursRequest, GooglePlacesAutoCompleteResponse, GoogleLocationLocalPostRequest } from "@/types/apiModel.ts";
 
 export interface GoogleRepository {
   getAccounts(): Promise<GoogleAccount[]>
@@ -27,7 +27,6 @@ export interface GoogleRepository {
   getCategories(): Promise<GoogleLocationCategory[]>
 
   postLocationPhoto(accountId: string, locationId: string, photos: FileList): Promise<void>
-  postLocationLocalPost(accountId: string, locationId: string, localPost: GoogleLocationLocalPostModel, photos: FileList): Promise<void>
 
   updateLocationProfile(locationId: string, updateMask: string, locationProfile: GoogleLocationProfileModel): Promise<GoogleLocationProfileModel>
 
@@ -58,6 +57,8 @@ export interface GoogleRepository {
   updateLocationProfileBusinessHours(locationId: string, businessHours: GoogleLocationBusinessHoursRequest): Promise<GoogleLocationProfileModel>
 
   postPlacesAutoComplete(input: string): Promise<GooglePlacesAutoCompleteResponse>
+
+  postLocationLocalPosts(accountId: string, locationId: string, localPost: GoogleLocationLocalPostRequest, photos: FileList): Promise<void>
 }
 
 type AccountListResponse = GoogleAccount[]
@@ -232,33 +233,6 @@ export class GoogleRepositoryImpl implements GoogleRepository {
     } catch (error) {
       console.error(error)
       throw new Error("google post location photo failed")
-    }
-  }
-
-  async postLocationLocalPost(accountId: string, locationId: string, localPost: GoogleLocationLocalPostModel, photos: FileList): Promise<void> {
-    try {
-      const formData = new FormData()
-      for (let i = 0; i < photos.length; i++) {
-        formData.append('files', photos[i])
-      }
-      formData.append('localPost', JSON.stringify(localPost))
-
-      const response: AxiosResponse<void> = await axiosApiClient.post(
-        'google/location/localPost',
-        formData,
-        {
-          params: {
-            accountId: accountId,
-            locationId: locationId
-          },
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        })
-      console.log(response)
-    } catch (error) {
-      console.error(error)
-      throw new Error("google post location local post failed")
     }
   }
 
@@ -581,6 +555,28 @@ export class GoogleRepositoryImpl implements GoogleRepository {
     } catch (error) {
       console.error(error)
       throw new Error("google post places auto complete failed")
+    }
+  }
+
+  async postLocationLocalPosts(accountId: string, locationId: string, localPost: GoogleLocationLocalPostRequest, photos: FileList): Promise<void> {
+    try {
+      const formData = new FormData()
+      Array.from(photos).forEach((file) => {
+        formData.append('files', file)
+      })
+      formData.append('localPost', new Blob([JSON.stringify(localPost)], {type: 'application/json'}))
+      await axiosApiClient.post('google/location/local_post', formData, {
+        params: {
+          accountId: accountId,
+          locationId: locationId
+        },
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      })
+    } catch (error) {
+      console.error('Error posting location local post:', error)
+      throw error
     }
   }
 }
