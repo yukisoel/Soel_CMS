@@ -501,11 +501,17 @@ class GoogleServiceImpl(
     }
 
     override fun postLocationPhotos(accessToken: String, accountId: String, locationId: String, files: Array<MultipartFile>) {
+        println("postLocationPhotos")
         if (files.isEmpty()) {
+            println("No files to upload")
             return
         }
 
         val targetDir = Paths.get(PHOTO_DIR, UUID.randomUUID().toString())
+        if (!Files.exists(targetDir)) {
+            println("Creating target directory: $targetDir")
+            Files.createDirectories(targetDir)
+        }
         val directoryName = targetDir.fileName.toString()
 
         try {
