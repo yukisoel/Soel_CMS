@@ -200,8 +200,34 @@ class GoogleController(val authHelper: AuthHelper,  val googleService: GoogleSer
     @GetMapping("/location/photo/{directoryName}/{filename}")
     fun getLocationPhotoLocal(
         @PathVariable directoryName: String,
-        @PathVariable filename: String
+        @PathVariable filename: String,
+        request: HttpServletRequest
     ): ResponseEntity<StreamingResponseBody>? {
+        // ヘッダー一覧
+        val headerNames = request.headerNames.toList()
+        headerNames.forEach { name ->
+            val value = request.getHeader(name)
+            println("Header: $name = $value")
+        }
+
+        // クエリパラメータ
+        request.parameterMap.forEach { (key, values) ->
+            println("Param: $key = ${values.joinToString()}")
+        }
+
+        // クッキー
+        request.cookies?.forEach {
+            println("Cookie: ${it.name} = ${it.value}")
+        }
+
+        // リモート情報
+        println("RemoteAddr: ${request.remoteAddr}")
+        println("Method: ${request.method}")
+        println("RequestURI: ${request.requestURI}")
+
+        // ボディ（GET では通常空。POST/PUT/…ならこう読む。ただし、一度読むとコントローラ処理で再利用できなくなるので注意）
+        val body = request.inputStream.bufferedReader().use { it.readText() }
+        println("Body: $body")
         return googleService.getLocationPhotoLocal(directoryName, filename)
     }
 
