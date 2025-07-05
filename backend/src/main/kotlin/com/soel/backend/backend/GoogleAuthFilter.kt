@@ -15,6 +15,16 @@ class GoogleAuthFilter : OncePerRequestFilter() {
     override fun doFilterInternal(request: HttpServletRequest, response: HttpServletResponse, filterChain: FilterChain) {
         val uri = request.requestURI
 
+        // ────────────────
+        // まずは除外パスをチェック
+        // ────────────────
+        if (uri.startsWith("/api/google/location/photo/") ||
+            uri.startsWith("/api/google/location/photo/bulk/")) {
+            // 認証チェックせずに次へ
+            filterChain.doFilter(request, response)
+            return
+        }
+
         // 1) /api/** はまず Cognito ログイン済みかを必須とする
         if (uri.startsWith("/api")) {
             val session = request.getSession(false)
