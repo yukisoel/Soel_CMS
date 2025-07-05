@@ -14,6 +14,19 @@ export const useMenuFood = (googleService: GoogleService, accountId: string, loc
 
   const getFoodMenus = async () => {
     return googleService.getLocationFoodMenus(accountId, locationId).then(data => {
+      // Ensure menus is never null
+      if (data && !data.menus) {
+        data.menus = [{
+          labels: [{
+            displayName: 'メニュー',
+            description: null,
+            languageCode: null
+          }],
+          sections: [],
+          sourceUrl: null,
+          cuisines: null
+        }]
+      }
       setFoodMenu(data)
     })
 

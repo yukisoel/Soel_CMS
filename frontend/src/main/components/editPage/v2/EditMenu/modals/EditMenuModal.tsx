@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Modal from '@/main/common/Modal/Modal';
 import Wrapper from '@/main/common/Wrapper';
 import Typography from '@/main/common/Typography';
@@ -8,8 +8,10 @@ import Textarea from '@/main/common/Textarea';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import useFileUpload from '@/main/common/FileUpload/useFileUpload';
 import LayoutLabeledFormItem from '@/main/common/LayoutLabeledFormItem';
+import { PhotoSelector } from '../components/PhotoSelector';
+import { GoogleService } from '@/main/service/GoogleService';
+import { GoogleLocationPhotoModel } from '@/main/model/LocationModel';
 
 const schema = z.object({
   title: z.string()
@@ -26,12 +28,14 @@ type EditMenuModalProps = {
   isOpen: boolean;
   onClose: () => void;
   title: string;
-  onSubmit: (data: FormData) => Promise<void>;
+  onSubmit: (data: FormData & { selectedPhoto?: GoogleLocationPhotoModel }) => Promise<void>;
   onDelete?: () => Promise<void>;
+  googleService: GoogleService;
   initialValues?: {
     title: string;
     price: string;
     description: string;
+    selectedPhoto?: GoogleLocationPhotoModel;
   };
 };
 
@@ -41,6 +45,7 @@ export const EditMenuModal: React.FC<EditMenuModalProps> = ({
   title,
   onSubmit,
   onDelete,
+  googleService,
   initialValues,
 }) => {
   const {
@@ -56,6 +61,7 @@ export const EditMenuModal: React.FC<EditMenuModalProps> = ({
 
   const titleValue = watch('title') || '';
   const descriptionValue = watch('description') || '';
+  const [selectedPhoto, setSelectedPhoto] = useState<GoogleLocationPhotoModel | undefined>(initialValues?.selectedPhoto);
 
   React.useEffect(() => {
     if (isOpen) {
@@ -64,13 +70,20 @@ export const EditMenuModal: React.FC<EditMenuModalProps> = ({
         price: '',
         description: '',
       });
+      setSelectedPhoto(initialValues?.selectedPhoto);
     }
   }, [isOpen, initialValues, reset]);
 
-  const { render: renderFileUpload } = useFileUpload({ size: 'regular' });
+  const handlePhotoSelect = (photo: GoogleLocationPhotoModel) => {
+    setSelectedPhoto(photo);
+  };
+
+  const handleFormSubmit = (data: FormData) => {
+    return onSubmit({ ...data, selectedPhoto });
+  };
 
   const contentRender = () => (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <form onSubmit={handleSubmit(handleFormSubmit)}>
       <Wrapper direction="col" gap="2rem">
         <LayoutLabeledFormItem
           label="メニュー名"
@@ -100,8 +113,12 @@ export const EditMenuModal: React.FC<EditMenuModalProps> = ({
             <Typography content={errors.price.message || ''} size="xsmall" color="error" />
           )}
         </LayoutLabeledFormItem>
-        <LayoutLabeledFormItem label="写真を追加">
-          {renderFileUpload()}
+        <LayoutLabeledFormItem label="写真を選択">
+          <PhotoSelector
+            googleService={googleService}
+            onPhotoSelect={handlePhotoSelect}
+            selectedPhoto={selectedPhoto}
+          />
         </LayoutLabeledFormItem>
         <LayoutLabeledFormItem
           label="説明"

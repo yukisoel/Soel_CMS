@@ -10,7 +10,7 @@ import { EditMenuModal } from './modals/EditMenuModal';
 import { EditSectionModal } from './modals/EditSectionModal';
 import { useModal } from '@/main/common/Modal/useModal';
 import { GoogleService } from '@/main/service/GoogleService';
-import { GoogleLocationFoodMenuSection, GoogleLocationFoodMenusModel, GoogleLocationFoodMenuItem } from '@/main/model/LocationModel';
+import { GoogleLocationFoodMenuSection, GoogleLocationFoodMenusModel, GoogleLocationFoodMenuItem, GoogleLocationPhotoModel } from '@/main/model/LocationModel';
 import { useParams } from 'react-router-dom';
 import { useMenuFood } from '@/main/hooks/EditMenu/useFoodMenu';
 
@@ -40,6 +40,7 @@ export const EditMenuLayoutV2: React.FC<Props> = ({ googleService }) => {
     title: string;
     price: string;
     description: string;
+    selectedPhoto?: GoogleLocationPhotoModel;
   } | undefined>(undefined);
   const [sectionInitialValues, setSectionInitialValues] = React.useState<{
     title: string;
@@ -119,10 +120,21 @@ export const EditMenuLayoutV2: React.FC<Props> = ({ googleService }) => {
     const section = foodMenu?.menus[0].sections[parseInt(sectionId)];
     const menuItem = section?.items[parseInt(menuItemId)];
     if (menuItem) {
+      // Create a dummy photo object if mediaKeys exist
+      let selectedPhoto: GoogleLocationPhotoModel | undefined;
+      if (menuItem.attributes.mediaKeys && menuItem.attributes.mediaKeys.length > 0) {
+        selectedPhoto = {
+          name: `media/${menuItem.attributes.mediaKeys[0]}`,
+          googleUrl: undefined,
+          thumbnailUrl: undefined
+        };
+      }
+      
       setMenuInitialValues({
         title: menuItem.labels[0]?.displayName || '',
         price: menuItem.attributes.price?.units || '',
         description: menuItem.labels[0]?.description || '',
+        selectedPhoto
       });
     }
     openMenuModal();
@@ -196,36 +208,57 @@ export const EditMenuLayoutV2: React.FC<Props> = ({ googleService }) => {
     }
   };
 
-  const handleSaveMenuItem = async (data: { title: string; price: string; description: string; image?: FileList }) => {
+  const handleSaveMenuItem = async (data: { title: string; price: string; description: string; selectedPhoto?: GoogleLocationPhotoModel }) => {
     try {
       if (!foodMenu) return;
 
       const sectionIndex = foodMenu.menus[0].sections.findIndex((_, index) => index.toString() === selectedSection);
       if (sectionIndex === -1) return;
 
+      // Get the existing menu item if editing
+      let existingMenuItem: GoogleLocationFoodMenuItem | undefined;
+      if (selectedMenuItem) {
+        const section = foodMenu.menus[0].sections[sectionIndex];
+        existingMenuItem = section.items[parseInt(selectedMenuItem)];
+      }
+
+      // Extract media key from photo name
+      let mediaKeys: string[] | null = null;
+      if (data.selectedPhoto?.name) {
+        const mediaPrefix = 'media/';
+        const mediaIndex = data.selectedPhoto.name.indexOf(mediaPrefix);
+        if (mediaIndex !== -1) {
+          const mediaKey = data.selectedPhoto.name.substring(mediaIndex + mediaPrefix.length);
+          mediaKeys = [mediaKey];
+        }
+      } else if (existingMenuItem?.attributes.mediaKeys) {
+        // Preserve existing mediaKeys if no new photo selected
+        mediaKeys = existingMenuItem.attributes.mediaKeys;
+      }
+
       const newMenuItem: GoogleLocationFoodMenuItem = {
         labels: [{
           displayName: data.title,
           description: data.description,
-          languageCode: null
+          languageCode: existingMenuItem?.labels[0]?.languageCode || null
         }],
         attributes: {
           price: {
             units: data.price,
-            currencyCode: 'JPY',
-            nanos: null
+            currencyCode: existingMenuItem?.attributes.price?.currencyCode || 'JPY',
+            nanos: existingMenuItem?.attributes.price?.nanos || null
           },
-          spiciness: null,
-          allergen: null,
-          dietaryRestriction: null,
-          nutritionFacts: null,
-          ingredients: null,
-          servesNumPeople: null,
-          preparationMethods: null,
-          portionSize: null,
-          mediaKeys: null
+          spiciness: existingMenuItem?.attributes.spiciness || null,
+          allergen: existingMenuItem?.attributes.allergen || null,
+          dietaryRestriction: existingMenuItem?.attributes.dietaryRestriction || null,
+          nutritionFacts: existingMenuItem?.attributes.nutritionFacts || null,
+          ingredients: existingMenuItem?.attributes.ingredients || null,
+          servesNumPeople: existingMenuItem?.attributes.servesNumPeople || null,
+          preparationMethods: existingMenuItem?.attributes.preparationMethods || null,
+          portionSize: existingMenuItem?.attributes.portionSize || null,
+          mediaKeys: mediaKeys
         },
-        options: null
+        options: existingMenuItem?.options || null
       };
 
       const updatedSections = foodMenu.menus[0].sections.map((section, index) => {
@@ -416,6 +449,7 @@ export const EditMenuLayoutV2: React.FC<Props> = ({ googleService }) => {
         title={selectedMenuItem ? 'メニュー項目の編集' : 'メニュー項目の追加'}
         onSubmit={handleSaveMenuItem}
         onDelete={selectedMenuItem && selectedSection ? () => handleDeleteMenuItem(selectedSection, selectedMenuItem) : undefined}
+        googleService={googleService}
         initialValues={menuInitialValues}
       />
       <EditSectionModal
