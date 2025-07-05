@@ -189,10 +189,35 @@ class GoogleController(val authHelper: AuthHelper,  val googleService: GoogleSer
         return googleService.getLocationReview(accessToken, accountId, locationId, reviewId)
     }
 
-    @Operation(summary = "Google:Google API専用", description = "GoogleAPIに写真をアップロードするときに使用されます", tags = ["Google:特殊API"])
+    @Operation(
+        summary = "Google:Google API専用 写真取得API",
+        description = """
+            Google:Google API専用のエンドポイントです。
+            特定のファイル名の写真を取得します。
+            ファイルは取得されたと同時に削除されます。
+        """,
+        tags = ["Google:特殊API"]
+    )
     @GetMapping("/location/photo/{filename}")
     fun getLocationPhotoLocal(@PathVariable filename: String): ResponseEntity<StreamingResponseBody>? {
         return googleService.getLocationPhotoLocal(filename)
+    }
+
+    @Operation(
+        summary = "Google:Google API専用 一括投稿用写真取得API",
+        description = """
+            Google:Google API専用のエンドポイントです。
+            特定のディレクトリ名とファイル名の写真を取得します。
+            ファイルは取得された後も削除されません。
+        """,
+        tags = ["Google:特殊API"]
+    )
+    @GetMapping("/location/photo/bulk/{directoryName}/{filename}")
+    fun getLocationPhotoLocalBulk(
+        @PathVariable directoryName: String,
+        @PathVariable filename: String
+    ): ResponseEntity<StreamingResponseBody>? {
+        return googleService.getLocationPhotoLocalBulk(directoryName, filename)
     }
 
     @Operation(summary = "Google:写真を追加", description = "Google:店舗の写真を追加します", tags = ["Google:POSTメソッド"])

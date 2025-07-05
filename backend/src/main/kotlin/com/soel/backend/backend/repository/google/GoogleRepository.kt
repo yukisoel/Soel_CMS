@@ -27,7 +27,7 @@ interface GoogleRepository {
 
     fun postLocationPhoto(accessToken: String, accountId: String, locationId: String, filename: String)
     fun postLocationLocalPost(accessToken: String, accountId: String, locationId: String, localPost: GoogleLocationLocalPostModel, filenameList: List<String>)
-    fun postBulkLocationLocalPost(accessToken: String, accountId: String, locationId: String, localPost: GoogleLocationLocalPostModel, filenameList: List<String>)
+    fun postBulkLocationLocalPost(accessToken: String, accountId: String, locationId: String, localPost: GoogleLocationLocalPostModel, directoryName: String, filenameList: List<String>)
     fun postLocationQuestion(accessToken: String, locationId: String, text: String)
     fun postLocationAnswer(accessToken: String, locationId: String, questionId: String, text: String)
 
@@ -468,7 +468,7 @@ class GoogleRepositoryImpl(val restTemplate: RestTemplate) : GoogleRepository {
         )
     }
 
-    override fun postBulkLocationLocalPost(accessToken: String, accountId: String, locationId: String, localPost: GoogleLocationLocalPostModel, filenameList: List<String>) {
+    override fun postBulkLocationLocalPost(accessToken: String, accountId: String, locationId: String, localPost: GoogleLocationLocalPostModel, directoryName: String, filenameList: List<String>) {
         val requestUrl = "https://mybusiness.googleapis.com/v4/accounts/$accountId/locations/$locationId:bulkLocalPosts"
         val uri = UriComponentsBuilder.fromHttpUrl(requestUrl)
             .build()
@@ -476,7 +476,7 @@ class GoogleRepositoryImpl(val restTemplate: RestTemplate) : GoogleRepository {
 
         val mediaList = mutableListOf<GoogleLocationPhotoModel>()
         for (filename in filenameList) {
-            val sourceUrl = "$baseUrl/api/google/location/photo/$filename"
+            val sourceUrl = "$baseUrl/api/google/location/photo/bulk/$directoryName/$filename"
             println(sourceUrl)
             mediaList.add(
                 GoogleLocationPhotoModel(
