@@ -194,13 +194,15 @@ class GoogleController(val authHelper: AuthHelper,  val googleService: GoogleSer
         description = """
             Google:Google API専用のエンドポイントです。
             特定のファイル名の写真を取得します。
-            ファイルは取得されたと同時に削除されます。
         """,
         tags = ["Google:特殊API"]
     )
-    @GetMapping("/location/photo/{filename}")
-    fun getLocationPhotoLocal(@PathVariable filename: String): ResponseEntity<StreamingResponseBody>? {
-        return googleService.getLocationPhotoLocal(filename)
+    @GetMapping("/location/photo/{directoryName}/{filename}")
+    fun getLocationPhotoLocal(
+        @PathVariable directoryName: String,
+        @PathVariable filename: String
+    ): ResponseEntity<StreamingResponseBody>? {
+        return googleService.getLocationPhotoLocal(directoryName, filename)
     }
 
     @Operation(
