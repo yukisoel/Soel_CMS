@@ -24,6 +24,7 @@ export default function ReviewPage({ googleService }: Props) {
     const [selectedReview, setSelectedReview] = useState<Review | null>(null);
     const [reviews, setReviews] = useState<Review[]>([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [searchQuery, setSearchQuery] = useState('');
 
     const { accountId, locationId } = useParams();
 
@@ -99,12 +100,24 @@ export default function ReviewPage({ googleService }: Props) {
         }
     };
 
+    const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setSearchQuery(e.target.value);
+    };
+
+    // 検索クエリに基づいてレビューをフィルタリング
+    const filteredReviews = reviews.filter(review => {
+        if (!searchQuery) return true;
+
+        const query = searchQuery.toLowerCase();
+        return review.content.toLowerCase().includes(query);
+    });
+
     return (
         <Wrapper direction="col" padding="5rem 4.3rem 5.9rem 5rem" className={styles.content_container}>
             <Wrapper direction="col" gap="2rem">
                 <Typography content="口コミ" color="primary" size="medium" />
                 <Wrapper gap="3rem">
-                    <SearchBox placeholder="ワードを検索" width="42.7rem" onChange={() => {}} />
+                    <SearchBox placeholder="ワードを検索" width="42.7rem" onChange={handleSearch} value={searchQuery} />
                     <Button bgColor="primary" onClick={openSearchModal}>
                         <Typography content="詳細を指定" color="primary" size="normal" weight="normal" />
                     </Button>
@@ -116,10 +129,10 @@ export default function ReviewPage({ googleService }: Props) {
                     <Wrapper justify="justify-center" align="align-center" style={{ width: '100%', minHeight: '200px' }}>
                         <Typography content="レビューを読み込み中..." size="normal" color="secondary" />
                     </Wrapper>
-                ) : reviews.length === 0 ? (
-                    <Typography content="レビューがありません" color="gray" size="normal" />
+                ) : filteredReviews.length === 0 ? (
+                    <Typography content={searchQuery ? "検索結果が見つかりません" : "レビューがありません"} color="gray" size="normal" />
                 ) : (
-                    reviews.map(review => (
+                    filteredReviews.map(review => (
                         <ReviewCard
                             key={review.id}
                             review={review}
