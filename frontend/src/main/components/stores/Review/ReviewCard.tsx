@@ -7,7 +7,7 @@ import ReplyedIcon from "@/main/assets/ReplyedIcon.svg";
 import Button from "@/main/common/Button";
 
 export type Review = {
-    id: number;
+    id: string;
     serviceName: string;
     rating: number;
     date: string;

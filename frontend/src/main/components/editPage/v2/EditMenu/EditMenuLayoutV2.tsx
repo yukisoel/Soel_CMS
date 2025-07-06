@@ -35,7 +35,7 @@ export const EditMenuLayoutV2: React.FC<Props> = ({ googleService }) => {
   const [selectedMenuItem, setSelectedMenuItem] = React.useState<string | null>(null);
   const [searchQuery, setSearchQuery] = React.useState('');
   const { accountId, locationId } = useParams();
-  const { foodMenu, updateFoodMenus } = useMenuFood(googleService, accountId ?? '', locationId ?? '');
+  const { foodMenu, updateFoodMenus, isLoading } = useMenuFood(googleService, accountId ?? '', locationId ?? '');
   const [menuInitialValues, setMenuInitialValues] = React.useState<{
     title: string;
     price: string;
@@ -354,6 +354,14 @@ export const EditMenuLayoutV2: React.FC<Props> = ({ googleService }) => {
     closeSectionModalBase();
   };
 
+  if (isLoading) {
+    return (
+      <Wrapper direction="col" padding="5rem" gap="4rem" justify="justify-center" align="align-center" style={{ minHeight: '400px' }}>
+        <Typography content="メニューを読み込み中..." size="medium" color="secondary" />
+      </Wrapper>
+    );
+  }
+
   if (!foodMenu) return null;
 
   return (
@@ -379,8 +387,8 @@ export const EditMenuLayoutV2: React.FC<Props> = ({ googleService }) => {
         <Separator borderWidth="2px" />
       </Wrapper>
 
-      {filteredSections.map((section, index) => (
-        <React.Fragment key={index}>
+      {filteredSections.map((section) => (
+        <React.Fragment key={section.originalIndex}>
           <Wrapper direction="col" gap="2rem">
             <Wrapper className={styles.sectionHeader}>
               <Wrapper className={styles.sectionTitle}>
@@ -407,8 +415,8 @@ export const EditMenuLayoutV2: React.FC<Props> = ({ googleService }) => {
             </Wrapper>
             <Separator />
 
-            {section.items.map((item, itemIndex) => (
-              <React.Fragment key={itemIndex}>
+            {section.items.map((item) => (
+              <React.Fragment key={`${item.originalSectionIndex}-${item.originalItemIndex}`}>
                 <Wrapper gap="16px" padding="16px 0" align="align-start" className={styles.menuItem}>
                   <Wrapper direction="col" className={styles.menuItemContent}>
                     <Wrapper gap="8px" align="align-center" justify='justify-between'>

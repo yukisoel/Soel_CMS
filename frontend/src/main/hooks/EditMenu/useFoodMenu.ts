@@ -4,10 +4,13 @@ import { GoogleLocationFoodMenusModel } from '@/main/model/LocationModel'
 
 export const useMenuFood = (googleService: GoogleService, accountId: string, locationId: string) => {
   const [foodMenu, setFoodMenu] = useState<GoogleLocationFoodMenusModel>()
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
     async function fetchData() {
+      setIsLoading(true)
       await getFoodMenus()
+      setIsLoading(false)
     }
     fetchData()
   }, [accountId, locationId])
@@ -33,11 +36,14 @@ export const useMenuFood = (googleService: GoogleService, accountId: string, loc
   }
 
   const updateFoodMenus = async (foodMenu: GoogleLocationFoodMenusModel) => {
+    setIsLoading(true)
     return googleService.updateLocationFoodMenus(accountId, locationId, foodMenu).then(async () => {
       await getFoodMenus()
+    }).finally(() => {
+      setIsLoading(false)
     })
   }
 
-  return { foodMenu, updateFoodMenus }
+  return { foodMenu, updateFoodMenus, isLoading }
 }
 
