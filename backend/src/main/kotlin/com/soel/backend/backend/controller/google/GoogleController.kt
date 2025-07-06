@@ -16,7 +16,6 @@ import org.springframework.web.multipart.MultipartFile
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody
 import java.io.IOException
 import javax.imageio.ImageIO
-import io.swagger.v3.oas.annotations.parameters.RequestBody
 
 @RestController
 @RequestMapping("/api/google")
@@ -298,7 +297,7 @@ class GoogleController(val authHelper: AuthHelper,  val googleService: GoogleSer
     }
 
     @Operation(
-        requestBody = RequestBody(
+        requestBody = io.swagger.v3.oas.annotations.parameters.RequestBody(
             content = [
                 Content(
                     mediaType = MediaType.MULTIPART_FORM_DATA_VALUE,
@@ -359,7 +358,7 @@ class GoogleController(val authHelper: AuthHelper,  val googleService: GoogleSer
     }
 
     @Operation(
-        requestBody = RequestBody(
+        requestBody =  io.swagger.v3.oas.annotations.parameters.RequestBody(
             content = [
                 Content(
                     mediaType = MediaType.MULTIPART_FORM_DATA_VALUE,
