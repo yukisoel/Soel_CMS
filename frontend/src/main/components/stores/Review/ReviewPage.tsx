@@ -23,11 +23,14 @@ export default function ReviewPage({ googleService }: Props) {
     const { isOpen: isReviewDetailModalOpen, openModal: openReviewDetailModal, closeModal: closeReviewDetailModal } = useModal();
     const [selectedReview, setSelectedReview] = useState<Review | null>(null);
     const [reviews, setReviews] = useState<Review[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [searchQuery, setSearchQuery] = useState('');
 
     const { accountId, locationId } = useParams();
 
     useEffect(() => {
         const fetchReviews = async () => {
+            setIsLoading(true);
             try {
                 // Contextの値が設定されている場合のみAPIを呼び出し
                 if (accountId && locationId) {
@@ -36,7 +39,7 @@ export default function ReviewPage({ googleService }: Props) {
                         locationId
                     );
 
-                    const formattedReviews: Review[] = locationReviews.map((review: GoogleLocationReviewModel) => {
+                    const formattedReviews: Review[] = locationReviews.map((review: GoogleLocationReviewModel, index: number) => {
                         const ratingValue = review.starRating ? (() => {
                             switch (review.starRating) {
                                 case GoogleLocationReviewCustomStarRating.ONE:
@@ -61,8 +64,11 @@ export default function ReviewPage({ googleService }: Props) {
                             return `${year}年${month}月${day}日`;
                         })() : '';
 
+                        // reviewIdはUUIDとして扱う
+                        const reviewId = review.reviewId || `review-${index}-${Date.now()}`;
+
                         return {
-                            id: typeof review.reviewId === 'string' ? parseInt(review.reviewId) : Math.floor(Math.random() * 1000000),
+                            id: reviewId,
                             serviceName: "GBP",
                             rating: ratingValue,
                             date: reviewDate,
@@ -75,6 +81,8 @@ export default function ReviewPage({ googleService }: Props) {
                 }
             } catch (error) {
                 console.error('Failed to fetch reviews:', error);
+            } finally {
+                setIsLoading(false);
             }
         };
 
@@ -88,16 +96,28 @@ export default function ReviewPage({ googleService }: Props) {
 
     const handleReply = (replyContent: string) => {
         if (accountId && locationId && selectedReview) {
-            googleService.postLocationReviewReply(accountId, locationId, selectedReview.id.toString(), replyContent);
+            googleService.postLocationReviewReply(accountId, locationId, selectedReview.id, replyContent);
         }
     };
+
+    const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setSearchQuery(e.target.value);
+    };
+
+    // 検索クエリに基づいてレビューをフィルタリング
+    const filteredReviews = reviews.filter(review => {
+        if (!searchQuery) return true;
+
+        const query = searchQuery.toLowerCase();
+        return review.content.toLowerCase().includes(query);
+    });
 
     return (
         <Wrapper direction="col" padding="5rem 4.3rem 5.9rem 5rem" className={styles.content_container}>
             <Wrapper direction="col" gap="2rem">
                 <Typography content="口コミ" color="primary" size="medium" />
                 <Wrapper gap="3rem">
-                    <SearchBox placeholder="ワードを検索" width="42.7rem" onChange={() => {}} />
+                    <SearchBox placeholder="ワードを検索" width="42.7rem" onChange={handleSearch} value={searchQuery} />
                     <Button bgColor="primary" onClick={openSearchModal}>
                         <Typography content="詳細を指定" color="primary" size="normal" weight="normal" />
                     </Button>
@@ -105,10 +125,14 @@ export default function ReviewPage({ googleService }: Props) {
                 <Separator width="100%" borderWidth="2px" />
             </Wrapper>
             <Wrapper direction="col" gap="2rem" align="align-start" padding="4rem 0 0 0">
-                {reviews.length === 0 ? (
-                    <Typography content="レビューがありません" color="gray" size="normal" />
+                {isLoading ? (
+                    <Wrapper justify="justify-center" align="align-center" style={{ width: '100%', minHeight: '200px' }}>
+                        <Typography content="レビューを読み込み中..." size="normal" color="secondary" />
+                    </Wrapper>
+                ) : filteredReviews.length === 0 ? (
+                    <Typography content={searchQuery ? "検索結果が見つかりません" : "レビューがありません"} color="gray" size="normal" />
                 ) : (
-                    reviews.map(review => (
+                    filteredReviews.map(review => (
                         <ReviewCard
                             key={review.id}
                             review={review}
