@@ -653,12 +653,20 @@ export class GoogleRepositoryImpl implements GoogleRepository {
 
   async postLocationReviewReply(accountId: string, locationId: string, reviewId: string, content: string): Promise<void> {
     try {
-      const response: AxiosResponse<void> = await axiosApiClient.patch('google/location/reviews', {
-        accountId: accountId,
-        locationId: locationId,
-        reviewId: reviewId,
-        content: content
-      })
+      const response: AxiosResponse<void> = await axiosApiClient.patch('google/location/review/reply',
+        content,
+        {
+          params: {
+            accountId: accountId,
+            locationId: locationId,
+            reviewId: reviewId,
+          },
+          headers: {
+            'Accept': 'application/json; charset=utf-8',
+            'Content-Type': 'application/json',
+          },
+        }
+      )
       return response.data
     } catch (error) {
       console.error(error)
@@ -668,7 +676,7 @@ export class GoogleRepositoryImpl implements GoogleRepository {
 
   async deleteLocationReviewReply(accountId: string, locationId: string, reviewId: string): Promise<void> {
     try {
-      const response: AxiosResponse<void> = await axiosApiClient.delete('google/location/reviews', {
+      const response: AxiosResponse<void> = await axiosApiClient.delete('google/location/review/reply', {
         params: {
           accountId: accountId,
           locationId: locationId,
