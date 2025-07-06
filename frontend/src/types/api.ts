@@ -238,6 +238,56 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/store/update": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * 店舗情報を更新
+         * @description
+         *                 認証されたユーザーの店舗情報を更新します。
+         *                 Request Bodyには更新する店舗情報を含めます。
+         *                 認証されていない場合は、status 401 Unauthorized を返します。(Bodyは StoreErrorResponse)
+         *                 店舗情報の更新に成功した場合は、status 200 OK を返します。(Bodyは StoreResponse)
+         *
+         */
+        patch: operations["updateStore"];
+        trace?: never;
+    };
+    "/api/store/update/prefecture": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * 店舗の都道府県を更新
+         * @description
+         *                 認証されたユーザーの店舗の都道府県を更新します。
+         *                 Request パラメータには新しい都道府県名のNameかJapaneseNameを含めます。(例: "TOKYO" または "東京都")
+         *                 認証されていない場合は、status 401 Unauthorized を返します。(Bodyは StoreErrorResponse)
+         *                 都道府県の更新に成功した場合は、status 200 OK を返します。(Bodyは StoreResponse)
+         *
+         */
+        patch: operations["updateStorePrefecture"];
+        trace?: never;
+    };
     "/api/store/update/name": {
         parameters: {
             query?: never;
@@ -280,12 +330,12 @@ export interface paths {
          * 店舗のGoogleアカウントとロケーションを更新
          * @description
          *                 認証されたユーザーの店舗のGoogleアカウントとロケーションを同時に更新します。
-         *                 Request Bodyには新しいGoogleアカウントIDとGoogleロケーションIDの文字列を含めます。
+         *                 Requestパラメータには新しいGoogleアカウントIDとGoogleロケーションIDの文字列を含めます。
          *                 認証されていない場合は、status 401 Unauthorized を返します。(Bodyは StoreErrorResponse)
          *                 Googleアカウントとロケーションの更新に成功した場合は、status 200 OK を返します。(Bodyは StoreResponse)
          *
          */
-        patch: operations["updateStoreGoogle"];
+        patch: operations["updateStoreGoogleAccountLocation"];
         trace?: never;
     };
     "/api/store/update/google/location": {
@@ -919,7 +969,7 @@ export interface paths {
         patch: operations["updateLocationBusinessOwnerInfo"];
         trace?: never;
     };
-    "/api/brand/name": {
+    "/api/brand/update/name": {
         parameters: {
             query?: never;
             header?: never;
@@ -1008,6 +1058,30 @@ export interface paths {
          *
          */
         get: operations["getStoreListByUserId"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/store/list/prefecture": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * 都道府県ごとの店舗一覧を取得
+         * @description
+         *                 都道府県ごとにグループ化された店舗情報を取得します。
+         *                 認証されていない場合は、status 401 Unauthorized を返します。(Bodyは StoreErrorResponse)
+         *                 都道府県ごとの店舗情報が存在しない場合は、空のリストを返します。(Bodyは PrefectureListWithBrandListWithStoreListResponse)
+         *
+         */
+        get: operations["getStoreListByPrefecture"];
         put?: never;
         post?: never;
         delete?: never;
@@ -1397,13 +1471,15 @@ export interface components {
         };
         StoreResponse: {
             storeId: string;
+            name: string;
             userId: string;
             brandId?: string;
-            name: string;
             googleAccountId?: string;
             googleLocationId?: string;
             googleLinkedAt?: string;
             createdAt: string;
+            prefectureName?: string;
+            prefectureJapaneseName?: string;
         };
         GooglePlacesAutoCompleteRequest: {
             input: string;
@@ -1709,6 +1785,23 @@ export interface components {
         StoreListResponse: {
             stores: components["schemas"]["StoreResponse"][];
         };
+        BrandWithStoresResponse: {
+            brandId: string;
+            userId: string;
+            name: string;
+            createdAt: string;
+            stores: components["schemas"]["StoreResponse"][];
+            /** Format: int32 */
+            storesCount: number;
+        };
+        PrefectureListWithBrandListWithStoreListResponse: {
+            prefectures: components["schemas"]["PrefectureWithBrandListWithStoreListResponse"][];
+        };
+        PrefectureWithBrandListWithStoreListResponse: {
+            prefectureName?: string;
+            prefectureJapaneseName?: string;
+            brands: components["schemas"]["BrandWithStoresResponse"][];
+        };
         GoogleMe: {
             names: components["schemas"]["GoogleName"][];
         };
@@ -1743,8 +1836,8 @@ export interface components {
             name: string;
             accountName: string;
         };
-        BrandListResponse: {
-            brands: components["schemas"]["BrandResponse"][];
+        BrandWithStoresListResponse: {
+            brands: components["schemas"]["BrandWithStoresResponse"][];
         };
     };
     responses: never;
@@ -1762,6 +1855,7 @@ export interface operations {
                 brandId?: string;
                 googleAccountId?: string;
                 googleLocationId?: string;
+                prefectureName?: string;
             };
             header?: never;
             path?: never;
@@ -2160,6 +2254,74 @@ export interface operations {
             };
         };
     };
+    updateStore: {
+        parameters: {
+            query: {
+                storeId: string;
+                storeName: string;
+                brandId?: string;
+                googleAccountId?: string;
+                googleLocationId?: string;
+                prefectureName?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["StoreResponse"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    updateStorePrefecture: {
+        parameters: {
+            query: {
+                storeId: string;
+                prefectureName: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["StoreResponse"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
     updateStoreName: {
         parameters: {
             query: {
@@ -2192,7 +2354,7 @@ export interface operations {
             };
         };
     };
-    updateStoreGoogle: {
+    updateStoreGoogleAccountLocation: {
         parameters: {
             query: {
                 storeId: string;
@@ -3240,10 +3402,39 @@ export interface operations {
             };
         };
     };
+    getStoreListByPrefecture: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["PrefectureListWithBrandListWithStoreListResponse"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
     getStoreListByBrandId: {
         parameters: {
-            query: {
-                brandId: string;
+            query?: {
+                brandId?: string;
             };
             header?: never;
             path?: never;
@@ -3686,7 +3877,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["BrandListResponse"];
+                    "*/*": components["schemas"]["BrandWithStoresListResponse"];
                 };
             };
             /** @description Unauthorized */

@@ -23,6 +23,7 @@ import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
 import java.util.*
+import java.util.concurrent.TimeUnit
 
 interface GoogleService {
     fun getMe(accessToken: String): GoogleMe?
@@ -38,9 +39,10 @@ interface GoogleService {
     fun getLocationFoodMenus(accessToken: String, accountId: String, locationId: String): ResponseEntity<GoogleLocationFoodMenusModel>?
     fun getLocationQuestions(accessToken: String, locationId: String): ResponseEntity<List<GoogleLocationQuestion>>?
     fun getLocationAnswers(accessToken: String, locationId: String, questionId: String): ResponseEntity<List<GoogleLocationAnswer>>?
-    fun getLocationPhotoLocal(filename: String): ResponseEntity<StreamingResponseBody>?
     fun getLocationReviews(accessToken: String, accountId: String, locationId: String): ResponseEntity<List<GoogleLocationReviewCustom>>?
     fun getLocationReview(accessToken: String, accountId: String, locationId: String, reviewId: String): ResponseEntity<GoogleLocationReviewCustom>?
+    fun getLocationPhotoLocal(directoryName: String, filename: String): ResponseEntity<StreamingResponseBody>?
+    fun getLocationPhotoLocalBulk(directoryName: String, filename: String): ResponseEntity<StreamingResponseBody>?
 
     fun deleteLocationPhotoLocal(filename: String)
 
@@ -62,8 +64,16 @@ interface GoogleService {
 }
 
 @Service
-class GoogleServiceImpl(val googleRepository: GoogleRepository, val menuLogRepository: MenuLogRepository, val objectMapper: ObjectMapper) : GoogleService {
+class GoogleServiceImpl(
+    val googleRepository: GoogleRepository,
+    val menuLogRepository: MenuLogRepository,
+    val directoryCleanupService: DirectoryCleanupService,
+    val objectMapper: ObjectMapper) : GoogleService {
     private val logger: Logger = LoggerFactory.getLogger(SecurityConfig::class.java)
+
+    // 共通の写真保存ディレクトリのパスを定義（ユーザーの作業ディレクトリ直下に "common_photos" フォルダを作成）
+    private val LOCAL_POST_PHOTO_DIR: String = Paths.get(System.getProperty("user.dir"), "local_post_photos").toString()
+    private val PHOTO_DIR: String = Paths.get(System.getProperty("user.dir"), "photos").toString()
 
     override fun getMe(accessToken: String): GoogleMe? {
         return googleRepository.getMe(accessToken)
@@ -371,10 +381,10 @@ class GoogleServiceImpl(val googleRepository: GoogleRepository, val menuLogRepos
         }
     }
 
-    override fun getLocationPhotoLocal(filename: String): ResponseEntity<StreamingResponseBody>? {
+    override fun getLocationPhotoLocal(directoryName: String, filename: String): ResponseEntity<StreamingResponseBody>? {
         println("getLocationPhotoLocal")
-        val uploadDir = System.getProperty("user.dir")
-        val filePath: Path = Paths.get(uploadDir).resolve(filename).normalize()
+        val targetDir = Paths.get(PHOTO_DIR, directoryName)
+        val filePath: Path = targetDir.resolve(filename).normalize()
         if (!Files.exists(filePath) || !Files.isReadable(filePath)) {
             throw ResponseStatusException(HttpStatus.NOT_FOUND, "ファイルが見つかりません")
         }
@@ -389,9 +399,32 @@ class GoogleServiceImpl(val googleRepository: GoogleRepository, val menuLogRepos
                 }
             } catch (e: IOException) {
                 println("Error streaming file: ${e.message}")
-            } finally {
-                println("before:deleteLocationPhotoLocal")
-                this.deleteLocationPhotoLocal(filename)
+            }
+        }
+
+        return ResponseEntity.ok()
+            .contentType(MediaType.parseMediaType(contentType))
+            .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"${file.name}\"")
+            .body(streamingResponseBody)
+    }
+
+    override fun getLocationPhotoLocalBulk(directoryName: String, filename: String): ResponseEntity<StreamingResponseBody>? {
+        println("getLocationPhotoLocalBulk")
+        val filePath: Path = Paths.get(LOCAL_POST_PHOTO_DIR, directoryName, filename).normalize()
+        if (!Files.exists(filePath) || !Files.isReadable(filePath)) {
+            throw ResponseStatusException(HttpStatus.NOT_FOUND, "ファイルが見つかりません")
+        }
+        println("filePath = $filePath")
+        val file = filePath.toFile()
+        val contentType: String = Files.probeContentType(filePath) ?: "application/octet-stream"
+
+        val streamingResponseBody = StreamingResponseBody { outputStream ->
+            try {
+                FileInputStream(file).use { inputStream ->
+                    inputStream.copyTo(outputStream)
+                }
+            } catch (e: IOException) {
+                println("Error streaming file: ${e.message}")
             }
         }
 
@@ -468,11 +501,20 @@ class GoogleServiceImpl(val googleRepository: GoogleRepository, val menuLogRepos
     }
 
     override fun postLocationPhotos(accessToken: String, accountId: String, locationId: String, files: Array<MultipartFile>) {
+        println("postLocationPhotos")
         if (files.isEmpty()) {
+            println("No files to upload")
             return
         }
+
+        val targetDir = Paths.get(PHOTO_DIR, UUID.randomUUID().toString())
+        if (!Files.exists(targetDir)) {
+            println("Creating target directory: $targetDir")
+            Files.createDirectories(targetDir)
+        }
+        val directoryName = targetDir.fileName.toString()
+
         try {
-            val uploadDir = System.getProperty("user.dir")
             val filenameList = mutableListOf<String>()
             for (file in files) {
                 if (file.isEmpty) {
@@ -483,14 +525,17 @@ class GoogleServiceImpl(val googleRepository: GoogleRepository, val menuLogRepos
                 val filename = "${UUID.randomUUID()}.$fileExtension"
                 filenameList.add(filename)
 
-                val targetLocation = Paths.get(uploadDir).resolve(filename)
+                val targetLocation = targetDir.resolve(filename)
                 Files.copy(file.inputStream, targetLocation)
             }
             for(filename in filenameList) {
-                val response = googleRepository.postLocationPhoto(accessToken, accountId, locationId, filename)
+                val response = googleRepository.postLocationPhoto(accessToken, accountId, locationId, directoryName, filename)
             }
         } catch (e: Exception) {
             logger.error("Error posting location photos", e)
+        } finally {
+            // すべて処理完了後（もしくは一定時間経過後）に cleanup をスケジュール（例：30秒）
+            directoryCleanupService.scheduleCleanup(targetDir.toString(), 30, TimeUnit.SECONDS)
         }
     }
 
@@ -527,9 +572,14 @@ class GoogleServiceImpl(val googleRepository: GoogleRepository, val menuLogRepos
         if (files.isEmpty()) {
             return
         }
+        val targetDirectory = Paths.get(LOCAL_POST_PHOTO_DIR, UUID.randomUUID().toString())
+        if (!Files.exists(targetDirectory)) {
+            Files.createDirectories(targetDirectory)
+        }
+        // 保存先ディレクトリ名（UUID文字列）
+        val directoryName = targetDirectory.fileName.toString()
         try {
             val filenameList = mutableListOf<String>()
-            val uploadDir = System.getProperty("user.dir")
             for (file in files) {
                 if (file.isEmpty) {
                     continue
@@ -539,15 +589,17 @@ class GoogleServiceImpl(val googleRepository: GoogleRepository, val menuLogRepos
                 val fileName = "${UUID.randomUUID()}.$fileExtension"
                 filenameList.add(fileName)
 
-                val targetLocation = Paths.get(uploadDir).resolve(fileName)
-                println("fileName = $fileName")
+                val targetLocation = targetDirectory.resolve(fileName)
                 Files.copy(file.inputStream, targetLocation)
             }
             for (locationId in locationIdList) {
-                googleRepository.postBulkLocationLocalPost(accessToken, accountId, locationId, localPost, filenameList)
+                googleRepository.postBulkLocationLocalPost(accessToken, accountId, locationId, localPost, directoryName, filenameList)
             }
         } catch (e: Exception) {
             logger.error("Error posting bulk location local posts", e)
+        } finally {
+            // すべて処理完了後（もしくは一定時間経過後）に cleanup をスケジュール（例：60秒）
+            directoryCleanupService.scheduleCleanup(targetDirectory.toString(), 30, TimeUnit.SECONDS)
         }
     }
 

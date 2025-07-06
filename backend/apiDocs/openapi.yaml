@@ -51,6 +51,14 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "prefectureName",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -659,6 +667,138 @@
         }
       }
     },
+    "/api/store/update": {
+      "patch": {
+        "tags": [
+          "Store PATCHメソッド"
+        ],
+        "summary": "店舗情報を更新",
+        "description": "\n            認証されたユーザーの店舗情報を更新します。\n            Request Bodyには更新する店舗情報を含めます。\n            認証されていない場合は、status 401 Unauthorized を返します。(Bodyは StoreErrorResponse)\n            店舗情報の更新に成功した場合は、status 200 OK を返します。(Bodyは StoreResponse)\n            ",
+        "operationId": "updateStore",
+        "parameters": [
+          {
+            "name": "storeId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "storeName",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "brandId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "googleAccountId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "googleLocationId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "prefectureName",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/StoreResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/store/update/prefecture": {
+      "patch": {
+        "tags": [
+          "Store PATCHメソッド"
+        ],
+        "summary": "店舗の都道府県を更新",
+        "description": "\n            認証されたユーザーの店舗の都道府県を更新します。\n            Request パラメータには新しい都道府県名のNameかJapaneseNameを含めます。(例: \"TOKYO\" または \"東京都\")\n            認証されていない場合は、status 401 Unauthorized を返します。(Bodyは StoreErrorResponse)\n            都道府県の更新に成功した場合は、status 200 OK を返します。(Bodyは StoreResponse)\n            ",
+        "operationId": "updateStorePrefecture",
+        "parameters": [
+          {
+            "name": "storeId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "prefectureName",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/StoreResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/store/update/name": {
       "patch": {
         "tags": [
@@ -715,8 +855,8 @@
           "Store PATCHメソッド"
         ],
         "summary": "店舗のGoogleアカウントとロケーションを更新",
-        "description": "\n            認証されたユーザーの店舗のGoogleアカウントとロケーションを同時に更新します。\n            Request Bodyには新しいGoogleアカウントIDとGoogleロケーションIDの文字列を含めます。\n            認証されていない場合は、status 401 Unauthorized を返します。(Bodyは StoreErrorResponse)\n            Googleアカウントとロケーションの更新に成功した場合は、status 200 OK を返します。(Bodyは StoreResponse)\n            ",
-        "operationId": "updateStoreGoogle",
+        "description": "\n            認証されたユーザーの店舗のGoogleアカウントとロケーションを同時に更新します。\n            Requestパラメータには新しいGoogleアカウントIDとGoogleロケーションIDの文字列を含めます。\n            認証されていない場合は、status 401 Unauthorized を返します。(Bodyは StoreErrorResponse)\n            Googleアカウントとロケーションの更新に成功した場合は、status 200 OK を返します。(Bodyは StoreResponse)\n            ",
+        "operationId": "updateStoreGoogleAccountLocation",
         "parameters": [
           {
             "name": "storeId",
@@ -2115,7 +2255,7 @@
         }
       }
     },
-    "/api/brand/name": {
+    "/api/brand/update/name": {
       "patch": {
         "tags": [
           "ブランド PATCHメソッド"
@@ -2273,6 +2413,38 @@
         }
       }
     },
+    "/api/store/list/prefecture": {
+      "get": {
+        "tags": [
+          "Store GETメソッド"
+        ],
+        "summary": "都道府県ごとの店舗一覧を取得",
+        "description": "\n            都道府県ごとにグループ化された店舗情報を取得します。\n            認証されていない場合は、status 401 Unauthorized を返します。(Bodyは StoreErrorResponse)\n            都道府県ごとの店舗情報が存在しない場合は、空のリストを返します。(Bodyは PrefectureListWithBrandListWithStoreListResponse)\n            ",
+        "operationId": "getStoreListByPrefecture",
+        "responses": {
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PrefectureListWithBrandListWithStoreListResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/store/list/filter/brand": {
       "get": {
         "tags": [
@@ -2285,9 +2457,10 @@
           {
             "name": "brandId",
             "in": "query",
-            "required": true,
+            "required": false,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "default": ""
             }
           }
         ],
@@ -2906,7 +3079,7 @@
             "content": {
               "*/*": {
                 "schema": {
-                  "$ref": "#/components/schemas/BrandListResponse"
+                  "$ref": "#/components/schemas/BrandWithStoresListResponse"
                 }
               }
             }
@@ -3028,13 +3201,13 @@
           "storeId": {
             "type": "string"
           },
+          "name": {
+            "type": "string"
+          },
           "userId": {
             "type": "string"
           },
           "brandId": {
-            "type": "string"
-          },
-          "name": {
             "type": "string"
           },
           "googleAccountId": {
@@ -3047,6 +3220,12 @@
             "type": "string"
           },
           "createdAt": {
+            "type": "string"
+          },
+          "prefectureName": {
+            "type": "string"
+          },
+          "prefectureJapaneseName": {
             "type": "string"
           }
         }
@@ -4133,6 +4312,75 @@
           }
         }
       },
+      "BrandWithStoresResponse": {
+        "required": [
+          "brandId",
+          "createdAt",
+          "name",
+          "stores",
+          "storesCount",
+          "userId"
+        ],
+        "type": "object",
+        "properties": {
+          "brandId": {
+            "type": "string"
+          },
+          "userId": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string"
+          },
+          "stores": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/StoreResponse"
+            }
+          },
+          "storesCount": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "PrefectureListWithBrandListWithStoreListResponse": {
+        "required": [
+          "prefectures"
+        ],
+        "type": "object",
+        "properties": {
+          "prefectures": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PrefectureWithBrandListWithStoreListResponse"
+            }
+          }
+        }
+      },
+      "PrefectureWithBrandListWithStoreListResponse": {
+        "required": [
+          "brands"
+        ],
+        "type": "object",
+        "properties": {
+          "prefectureName": {
+            "type": "string"
+          },
+          "prefectureJapaneseName": {
+            "type": "string"
+          },
+          "brands": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BrandWithStoresResponse"
+            }
+          }
+        }
+      },
       "GoogleMe": {
         "required": [
           "names"
@@ -4251,7 +4499,7 @@
           }
         }
       },
-      "BrandListResponse": {
+      "BrandWithStoresListResponse": {
         "required": [
           "brands"
         ],
@@ -4260,7 +4508,7 @@
           "brands": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/BrandResponse"
+              "$ref": "#/components/schemas/BrandWithStoresResponse"
             }
           }
         }

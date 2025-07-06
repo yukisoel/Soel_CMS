@@ -16,7 +16,6 @@ import org.springframework.web.multipart.MultipartFile
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody
 import java.io.IOException
 import javax.imageio.ImageIO
-import io.swagger.v3.oas.annotations.parameters.RequestBody
 
 @RestController
 @RequestMapping("/api/google")
@@ -189,10 +188,63 @@ class GoogleController(val authHelper: AuthHelper,  val googleService: GoogleSer
         return googleService.getLocationReview(accessToken, accountId, locationId, reviewId)
     }
 
-    @Operation(summary = "Google:Google API専用", description = "GoogleAPIに写真をアップロードするときに使用されます", tags = ["Google:特殊API"])
-    @GetMapping("/location/photo/{filename}")
-    fun getLocationPhotoLocal(@PathVariable filename: String): ResponseEntity<StreamingResponseBody>? {
-        return googleService.getLocationPhotoLocal(filename)
+    @Operation(
+        summary = "Google:Google API専用 写真取得API",
+        description = """
+            Google:Google API専用のエンドポイントです。
+            特定のファイル名の写真を取得します。
+        """,
+        tags = ["Google:特殊API"]
+    )
+    @GetMapping("/location/photo/{directoryName}/{filename}")
+    fun getLocationPhotoLocal(
+        @PathVariable directoryName: String,
+        @PathVariable filename: String,
+        request: HttpServletRequest
+    ): ResponseEntity<StreamingResponseBody>? {
+        // ヘッダー一覧
+        val headerNames = request.headerNames.toList()
+        headerNames.forEach { name ->
+            val value = request.getHeader(name)
+            println("Header: $name = $value")
+        }
+
+        // クエリパラメータ
+        request.parameterMap.forEach { (key, values) ->
+            println("Param: $key = ${values.joinToString()}")
+        }
+
+        // クッキー
+        request.cookies?.forEach {
+            println("Cookie: ${it.name} = ${it.value}")
+        }
+
+        // リモート情報
+        println("RemoteAddr: ${request.remoteAddr}")
+        println("Method: ${request.method}")
+        println("RequestURI: ${request.requestURI}")
+
+        // ボディ（GET では通常空。POST/PUT/…ならこう読む。ただし、一度読むとコントローラ処理で再利用できなくなるので注意）
+        val body = request.inputStream.bufferedReader().use { it.readText() }
+        println("Body: $body")
+        return googleService.getLocationPhotoLocal(directoryName, filename)
+    }
+
+    @Operation(
+        summary = "Google:Google API専用 一括投稿用写真取得API",
+        description = """
+            Google:Google API専用のエンドポイントです。
+            特定のディレクトリ名とファイル名の写真を取得します。
+            ファイルは取得された後も削除されません。
+        """,
+        tags = ["Google:特殊API"]
+    )
+    @GetMapping("/location/photo/bulk/{directoryName}/{filename}")
+    fun getLocationPhotoLocalBulk(
+        @PathVariable directoryName: String,
+        @PathVariable filename: String
+    ): ResponseEntity<StreamingResponseBody>? {
+        return googleService.getLocationPhotoLocalBulk(directoryName, filename)
     }
 
     @Operation(summary = "Google:写真を追加", description = "Google:店舗の写真を追加します", tags = ["Google:POSTメソッド"])
@@ -245,7 +297,7 @@ class GoogleController(val authHelper: AuthHelper,  val googleService: GoogleSer
     }
 
     @Operation(
-        requestBody = RequestBody(
+        requestBody = io.swagger.v3.oas.annotations.parameters.RequestBody(
             content = [
                 Content(
                     mediaType = MediaType.MULTIPART_FORM_DATA_VALUE,
@@ -306,7 +358,7 @@ class GoogleController(val authHelper: AuthHelper,  val googleService: GoogleSer
     }
 
     @Operation(
-        requestBody = RequestBody(
+        requestBody =  io.swagger.v3.oas.annotations.parameters.RequestBody(
             content = [
                 Content(
                     mediaType = MediaType.MULTIPART_FORM_DATA_VALUE,

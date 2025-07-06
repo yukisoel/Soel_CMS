@@ -4,7 +4,7 @@ import {
   GoogleLocationLocalPostModel,
   GoogleLocationPhotoModel,
 } from "@/main/model/LocationModel.ts";
-import {GoogleAccount, GoogleLocation, GoogleLocationCategory, GoogleLocationDate, GoogleLocationAttributeSnsLinkRequest, GoogleLocationAttributesModel, GoogleLocationStoreFrontAddressRequest, GoogleLocationBusinessHoursRequest, GooglePlacesAutoCompleteResponse, GoogleLocationLocalPostRequest, GoogleLocationReviewModel } from "@/types/apiModel.ts";
+import {GoogleAccount, GoogleLocation, GoogleLocationCategory, GoogleLocationDate, GoogleLocationAttributeSnsLinkRequest, GoogleLocationAttributesModel, GoogleLocationStoreFrontAddressRequest, GoogleLocationBusinessHoursRequest, GooglePlacesAutoCompleteResponse, GoogleLocationLocalPostRequest, GoogleLocationReviewModel, BrandWithStoresListResponse, PrefectureListWithBrandListWithStoreListResponse } from "@/types/apiModel.ts";
 import {GoogleLocationProfileModel} from "@/types/apiModel.ts";
 export interface GoogleService {
   getAccounts(): Promise<GoogleAccount[]>
@@ -17,6 +17,8 @@ export interface GoogleService {
   getLocationAttributes(locationId: string): Promise<GoogleLocationAttributesModel>
   getCategories(): Promise<GoogleLocationCategory[]>
   getLocationReviews(accountId: string, locationId: string): Promise<GoogleLocationReviewModel[]>
+  getBrandList(): Promise<BrandWithStoresListResponse>
+  getStoreListByPrefecture(): Promise<PrefectureListWithBrandListWithStoreListResponse>
   postLocationPhoto(accountId:string, locationId:string, photos:FileList): Promise<void>
   updateLocationProfile(locationId:string, updateMask:string, locationProfile:GoogleLocationProfileModel): Promise<GoogleLocationProfileModel>
   updateLocationProfileTitle(locationId:string, title:string): Promise<GoogleLocationProfileModel>
@@ -34,6 +36,7 @@ export interface GoogleService {
   updateLocationProfileBusinessHours(locationId: string, businessHours: GoogleLocationBusinessHoursRequest): Promise<GoogleLocationProfileModel>
   postPlacesAutoComplete(input: string): Promise<GooglePlacesAutoCompleteResponse>
   postLocationLocalPosts(accountId: string, locationId: string, localPost: GoogleLocationLocalPostRequest, photos: FileList): Promise<void>
+  postLocationLocalPostBulk(accountId: string, locationIdList: string[], localPost: GoogleLocationLocalPostRequest, photos: FileList): Promise<void>
   postLocationReviewReply(accountId: string, locationId: string, reviewId: string, content: string): Promise<void>
   deleteLocationReviewReply(accountId: string, locationId: string, reviewId: string): Promise<void>
 }
@@ -87,6 +90,14 @@ export class GoogleServiceImpl implements GoogleService {
 
   async getLocationReviews(accountId: string, locationId: string): Promise<GoogleLocationReviewModel[]> {
     return this.googleRepository.getLocationReviews(accountId, locationId)
+  }
+
+  async getBrandList(): Promise<BrandWithStoresListResponse> {
+    return this.googleRepository.getBrandList()
+  }
+
+  async getStoreListByPrefecture(): Promise<PrefectureListWithBrandListWithStoreListResponse> {
+    return this.googleRepository.getStoreListByPrefecture()
   }
 
   async postLocationPhoto(accountId:string, locationId:string, photos:FileList): Promise<void> {
@@ -155,6 +166,10 @@ export class GoogleServiceImpl implements GoogleService {
 
   async postLocationLocalPosts(accountId: string, locationId: string, localPost: GoogleLocationLocalPostRequest, photos: FileList): Promise<void> {
     return this.googleRepository.postLocationLocalPosts(accountId, locationId, localPost, photos)
+  }
+
+  async postLocationLocalPostBulk(accountId: string, locationIdList: string[], localPost: GoogleLocationLocalPostRequest, photos: FileList): Promise<void> {
+    return this.googleRepository.postLocationLocalPostBulk(accountId, locationIdList, localPost, photos)
   }
 
   async postLocationReviewReply(accountId: string, locationId: string, reviewId: string, content: string): Promise<void> {

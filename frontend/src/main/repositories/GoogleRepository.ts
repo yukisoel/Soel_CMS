@@ -5,7 +5,7 @@ import {
   GoogleLocationLocalPostModel,
   GoogleLocationPhotoModel,
 } from "@/main/model/LocationModel.ts";
-import {GoogleAccount, GoogleLocation, GoogleLocationProfileModel, GoogleLocationDate, GoogleLocationCategory, GoogleLocationAttributeSnsLinkRequest, GoogleLocationAttributesModel, GoogleLocationStoreFrontAddressRequest, GoogleLocationBusinessHoursRequest, GooglePlacesAutoCompleteResponse, GoogleLocationLocalPostRequest, GoogleLocationReviewModel } from "@/types/apiModel.ts";
+import {GoogleAccount, GoogleLocation, GoogleLocationProfileModel, GoogleLocationDate, GoogleLocationCategory, GoogleLocationAttributeSnsLinkRequest, GoogleLocationAttributesModel, GoogleLocationStoreFrontAddressRequest, GoogleLocationBusinessHoursRequest, GooglePlacesAutoCompleteResponse, GoogleLocationLocalPostRequest, GoogleLocationReviewModel, BrandWithStoresListResponse, PrefectureListWithBrandListWithStoreListResponse } from "@/types/apiModel.ts";
 
 export interface GoogleRepository {
   getAccounts(): Promise<GoogleAccount[]>
@@ -27,6 +27,10 @@ export interface GoogleRepository {
   getCategories(): Promise<GoogleLocationCategory[]>
 
   getLocationReviews(accountId: string, locationId: string): Promise<GoogleLocationReviewModel[]>
+
+  getBrandList(): Promise<BrandWithStoresListResponse>
+
+  getStoreListByPrefecture(): Promise<PrefectureListWithBrandListWithStoreListResponse>
 
   postLocationPhoto(accountId: string, locationId: string, photos: FileList): Promise<void>
 
@@ -61,6 +65,8 @@ export interface GoogleRepository {
   postPlacesAutoComplete(input: string): Promise<GooglePlacesAutoCompleteResponse>
 
   postLocationLocalPosts(accountId: string, locationId: string, localPost: GoogleLocationLocalPostRequest, photos: FileList): Promise<void>
+
+  postLocationLocalPostBulk(accountId: string, locationIdList: string[], localPost: GoogleLocationLocalPostRequest, photos: FileList): Promise<void>
 
   postLocationReviewReply(accountId: string, locationId: string, reviewId: string, content: string): Promise<void>
 
@@ -229,6 +235,27 @@ export class GoogleRepositoryImpl implements GoogleRepository {
     } catch (error) {
       console.error(error)
       throw new Error("google get location reviews failed")
+    }
+  }
+
+  async getBrandList(): Promise<BrandWithStoresListResponse> {
+    try {
+      const response: AxiosResponse<BrandWithStoresListResponse> = await axiosApiClient.get('brand/list')
+      return response.data
+    } catch (error) {
+      console.error(error)
+      throw new Error("google get brand list failed")
+    }
+  }
+
+  async getStoreListByPrefecture(): Promise<PrefectureListWithBrandListWithStoreListResponse> {
+
+    try {
+      const response: AxiosResponse<PrefectureListWithBrandListWithStoreListResponse> = await axiosApiClient.get('store/list/prefecture')
+      return response.data
+    } catch (error) {
+      console.error(error)
+      throw new Error("google get store list by prefecture failed")
     }
   }
 
@@ -591,6 +618,28 @@ export class GoogleRepositoryImpl implements GoogleRepository {
         params: {
           accountId: accountId,
           locationId: locationId
+        },
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      })
+    } catch (error) {
+      console.error('Error posting location local post:', error)
+      throw error
+    }
+  }
+
+  async postLocationLocalPostBulk(accountId: string, locationIdList: string[], localPost: GoogleLocationLocalPostRequest, photos: FileList): Promise<void> {
+    try {
+      const formData = new FormData()
+      Array.from(photos).forEach((file) => {
+        formData.append('files', file)
+      })
+      formData.append('localPost', new Blob([JSON.stringify(localPost)], {type: 'application/json'}))
+      await axiosApiClient.post('google/location/local_post/bulk', formData, {
+        params: {
+          accountId: accountId,
+          locationIdList: locationIdList.join(',')  // カンマ区切りの文字列として送信
         },
         headers: {
           'Content-Type': 'multipart/form-data',

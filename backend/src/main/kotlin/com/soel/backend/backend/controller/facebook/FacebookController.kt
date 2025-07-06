@@ -1,6 +1,6 @@
 package com.soel.backend.backend.controller.facebook
 
-import com.soel.backend.backend.service.FacebookService
+import com.soel.backend.backend.service.facebook.FacebookService
 //import org.springframework.security.oauth2.client.OAuth2AuthorizedClient
 //import org.springframework.security.oauth2.client.annotation.RegisteredOAuth2AuthorizedClient
 import org.springframework.web.bind.annotation.RestController
