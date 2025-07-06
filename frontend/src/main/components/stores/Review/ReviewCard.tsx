@@ -13,6 +13,10 @@ export type Review = {
     date: string;
     content: string;
     replied: boolean;
+    reviewReply?: {
+        comment: string;
+        updateTime: string;
+    };
 };
 
 type Props = {

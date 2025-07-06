@@ -13,12 +13,13 @@ import { Review } from "../ReviewCard";
 
 type Props = {
     isOpen: boolean;
-    handleReply: (replyContent: string  ) => void;
+    handleReply: (replyContent: string) => void;
+    handleDeleteReply: () => Promise<void>;
     onClose: () => void;
     review: Review
 };
 
-export default function ReviewDetailModal({ isOpen, handleReply, onClose, review }: Props) {
+export default function ReviewDetailModal({ isOpen, handleReply, handleDeleteReply, onClose, review }: Props) {
     const [replyContent, setReplyContent] = useState<string>("");
 
     const handleSubmit = () => {
@@ -57,15 +58,31 @@ export default function ReviewDetailModal({ isOpen, handleReply, onClose, review
                     </Wrapper>
                 </Wrapper>
                 <LayoutLabeledFormItem label="返信">
-                    <Textarea placeholder="返信を入力" value={replyContent} onChange={(e) => setReplyContent(e.target.value)} width="100%" />
+                    {review.reviewReply ? (
+                        <Wrapper direction="col" gap="1rem">
+                            <Wrapper direction="col" gap="1rem" padding="1.5rem" className={styles.reply_container}>
+                                <Typography content={review.reviewReply.comment} color="primary" size="normal" weight="normal" />
+                                <Typography content={`返信日時: ${new Date(review.reviewReply.updateTime).toLocaleString('ja-JP')}`} color="secondary" size="xsmall" weight="normal" />
+                            </Wrapper>
+                            <Wrapper justify="justify-end" padding="1rem 0 0 0">
+                                <Button bgColor="secondary" padding="7px 20px" onClick={handleDeleteReply}>
+                                    <Typography content="返信を削除" color="error" size="normal" weight="normal" />
+                                </Button>
+                            </Wrapper>
+                        </Wrapper>
+                    ) : (
+                        <Textarea placeholder="返信を入力" value={replyContent} onChange={(e) => setReplyContent(e.target.value)} width="100%" />
+                    )}
                 </LayoutLabeledFormItem>
                 <Wrapper justify="justify-end" gap="4rem">
                     <Button bgColor="secondary" padding="7px 20px" onClick={handleClose}>
                         <Typography content="戻る" color="primary" size="normal" weight="normal" />
                     </Button>
-                    <Button bgColor="primary" padding="7px 10px" onClick={handleSubmit}>
-                        <Typography content="返信する" color="primary" size="normal" weight="normal" />
-                    </Button>
+                    {!review.reviewReply && (
+                        <Button bgColor="primary" padding="7px 10px" onClick={handleSubmit}>
+                            <Typography content="返信する" color="primary" size="normal" weight="normal" />
+                        </Button>
+                    )}
                 </Wrapper>
             </Wrapper>
         )}/>

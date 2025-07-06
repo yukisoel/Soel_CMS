@@ -73,7 +73,11 @@ export default function ReviewPage({ googleService }: Props) {
                             rating: ratingValue,
                             date: reviewDate,
                             content: review.comment || '',
-                            replied: !!review.reviewReply
+                            replied: !!review.reviewReply,
+                            reviewReply: review.reviewReply ? {
+                                comment: review.reviewReply.comment || '',
+                                updateTime: review.reviewReply.updateTime || ''
+                            } : undefined
                         };
                     });
 
@@ -97,6 +101,24 @@ export default function ReviewPage({ googleService }: Props) {
     const handleReply = (replyContent: string) => {
         if (accountId && locationId && selectedReview) {
             googleService.postLocationReviewReply(accountId, locationId, selectedReview.id, replyContent);
+        }
+    };
+
+    const handleDeleteReply = async () => {
+        if (accountId && locationId && selectedReview) {
+            try {
+                await googleService.deleteLocationReviewReply(accountId, locationId, selectedReview.id.toString());
+                // Refresh the reviews after deletion
+                const updatedReviews = reviews.map(review =>
+                    review.id === selectedReview.id
+                        ? { ...review, replied: false, reviewReply: undefined }
+                        : review
+                );
+                setReviews(updatedReviews);
+                closeReviewDetailModal();
+            } catch (error) {
+                console.error('Failed to delete review reply:', error);
+            }
         }
     };
 
@@ -143,7 +165,13 @@ export default function ReviewPage({ googleService }: Props) {
             </Wrapper>
             <SearchDetailModal isOpen={isSearchModalOpen} onClose={closeSearchModal} />
             {selectedReview && (
-                <ReviewDetailModal isOpen={isReviewDetailModalOpen} onClose={closeReviewDetailModal} review={selectedReview} handleReply={handleReply} />
+                <ReviewDetailModal
+                    isOpen={isReviewDetailModalOpen}
+                    onClose={closeReviewDetailModal}
+                    review={selectedReview}
+                    handleReply={handleReply}
+                    handleDeleteReply={handleDeleteReply}
+                />
             )}
         </Wrapper>
     );
