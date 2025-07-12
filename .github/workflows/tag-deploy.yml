@@ -1,0 +1,67 @@
+name: Deploy to ECS via CodeDeploy on Tag
+
+on:
+  push:
+    tags:
+      - 'prd-*'
+      - 'dev-*'
+
+env:
+  AWS_REGION: ap-northeast-1
+  PROJECT: cmssoel
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Extract tag and determine environment
+        id: parse_tag
+        run: |
+          TAG_NAME="${GITHUB_REF#refs/tags/}"
+          echo "🔖 タグ名: $TAG_NAME"
+
+          if [[ "$TAG_NAME" == prd-* ]]; then
+            ENV="prd"
+          elif [[ "$TAG_NAME" == dev-* ]]; then
+            ENV="dev"
+          else
+            echo "❌ タグが 'prd-' または 'dev-' で始まっていません"
+            exit 1
+          fi
+
+          echo "ENV=$ENV" >> "$GITHUB_OUTPUT"
+          echo "TAG=$TAG_NAME" >> "$GITHUB_OUTPUT"
+
+      - name: Login to ECR
+        run: |
+          REPO_URI=${{ steps.ecr_uri.outputs.REPO_URI }}
+          REGISTRY_URI=$(echo "$REPO_URI" | cut -d'/' -f1)
+
+          echo "Logging into $REGISTRY_URI"
+          aws ecr get-login-password --region $AWS_REGION \
+            | docker login --username AWS --password-stdin "$REGISTRY_URI"
+
+      - name: Build & Push Docker image
+        run: |
+          docker buildx create --use
+          cd infra
+          chmod +x ./scripts/push-image.sh
+          ./scripts/push-image.sh "${{ steps.parse_tag.outputs.ENV }}" "${{ steps.parse_tag.outputs.TAG }}"
+
+
+      - name: Run Blue/Green Deploy
+        run: |
+          cd infra
+          chmod +x ./scripts/deploy-app.sh
+          ./scripts/deploy-app.sh "${{ steps.parse_tag.outputs.ENV }}" "${{ steps.parse_tag.outputs.TAG }}"
