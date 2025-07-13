@@ -237,6 +237,7 @@ export default function OverviewTab({
                 onSave={handlePrimaryCategoriesSave}
                 categories={[profile?.categories?.primaryCategory ?? {name: '', displayName: ''}]}
                 googleService={googleService}
+                isSingleSelect={true}
             />
             <EditBusinessCategoriesModal
                 isOpen={isAdditionalCategoriesModalOpen}
@@ -244,6 +245,7 @@ export default function OverviewTab({
                 onSave={handleAdditionalCategoriesSave}
                 categories={profile?.categories?.additionalCategories ?? []}
                 googleService={googleService}
+                isSingleSelect={false}
             />
             <EditOpeningDateModal
                 isOpen={isOpeningDateModalOpen}

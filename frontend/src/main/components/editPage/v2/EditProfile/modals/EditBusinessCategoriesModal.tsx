@@ -17,6 +17,7 @@ type Props = {
   categories: GoogleLocationCategory[];
   onSave: (categories: GoogleLocationCategory[]) => Promise<void>;
   googleService: GoogleService;
+  isSingleSelect?: boolean;
 };
 
 export default function EditBusinessCategoriesModal({
@@ -25,6 +26,7 @@ export default function EditBusinessCategoriesModal({
   categories,
   onSave,
   googleService,
+  isSingleSelect = false,
 }: Props) {
   const [selectedCategories, setSelectedCategories] = useState<GoogleLocationCategory[]>(categories);
   const [searchQuery, setSearchQuery] = useState('');
@@ -133,6 +135,7 @@ export default function EditBusinessCategoriesModal({
           bgColor="primary"
           padding="0.5rem 1.8rem"
           onClick={handleSave}
+          disabled={isSingleSelect && selectedCategories.length !== 1}
         >
           <Typography content="保存する" color="primary" size="normal" />
         </Button>
