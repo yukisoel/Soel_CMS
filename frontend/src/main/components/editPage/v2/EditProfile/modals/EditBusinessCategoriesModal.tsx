@@ -122,6 +122,14 @@ export default function EditBusinessCategoriesModal({
         </Scroll>
       </Wrapper>
 
+      {/* エラーメッセージ */}
+      {isSingleSelect && selectedCategories.length === 0 && (
+        <Typography content="※ビジネスカテゴリを1つ選択してください" color="error" size="small" />
+      )}
+      {isSingleSelect && selectedCategories.length > 1 && (
+        <Typography content="※ビジネスカテゴリは1つのみ選択可能です" color="error" size="small" />
+      )}
+
       {/* アクションボタン */}
       <Wrapper gap="1rem" justify="justify-end">
         <Button
