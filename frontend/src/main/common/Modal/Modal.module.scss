@@ -38,4 +38,10 @@
 .close_button {
     background: none;
     padding: 0;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 0;
 }
