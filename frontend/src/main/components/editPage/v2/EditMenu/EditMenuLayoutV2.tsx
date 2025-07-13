@@ -433,8 +433,24 @@ export const EditMenuLayoutV2: React.FC<Props> = ({ googleService }) => {
                         className={styles.menuItemPrice}
                       />
                     </Wrapper>
+                    {item.labels[0]?.description && (
+                      <Typography
+                        content={item.labels[0].description}
+                        size="xsmall"
+                        color="secondary"
+                        className={styles.menuItemDescription}
+                      />
+                    )}
                   </Wrapper>
                   <Wrapper align="align-center" gap="2rem">
+                    {item.attributes.mediaKeys && item.attributes.mediaKeys.length > 0 && (
+                      <Wrapper className={styles.menuItemImage}>
+                        <img 
+                          src={`https://lh3.googleusercontent.com/p/${item.attributes.mediaKeys[0]}=s0`}
+                          alt={item.labels[0]?.displayName || ''}
+                        />
+                      </Wrapper>
+                    )}
                     <Button
                       bgColor="primary"
                       padding="0 1rem"
