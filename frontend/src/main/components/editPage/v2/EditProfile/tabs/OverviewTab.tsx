@@ -235,7 +235,7 @@ export default function OverviewTab({
                 isOpen={isPrimaryCategoriesModalOpen}
                 onClose={closePrimaryCategoriesModalBase}
                 onSave={handlePrimaryCategoriesSave}
-                categories={[profile?.categories?.primaryCategory ?? {name: '', displayName: ''}]}
+                categories={profile?.categories?.primaryCategory ? [profile.categories.primaryCategory] : []}
                 googleService={googleService}
                 isSingleSelect={true}
             />
