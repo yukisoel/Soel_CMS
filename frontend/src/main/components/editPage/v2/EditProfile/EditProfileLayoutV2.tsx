@@ -20,16 +20,30 @@ export default function EditProfileLayoutV2({
 }: Props) {
     const {locationId} = useParams()
     const [profile, setProfile] = useState<GoogleLocationProfileModel | null>(null);
+    const [isLoadingProfile, setIsLoadingProfile] = useState(false);
+    const [isLoadingAttributes, setIsLoadingAttributes] = useState(false);
+    
     const fetchProfile = useCallback(async () => {
         if (!locationId) return;
-        const profile = await googleService.getLocationProfile(locationId);
-        setProfile(profile);
+        setIsLoadingProfile(true);
+        try {
+            const profile = await googleService.getLocationProfile(locationId);
+            setProfile(profile);
+        } finally {
+            setIsLoadingProfile(false);
+        }
     }, [googleService, locationId]);
+    
     const [attributes, setAttributes] = useState<GoogleLocationAttributesModel | null>(null);
     const fetchAttributes = useCallback(async () => {
         if (!locationId) return;
-        const attributes = await googleService.getLocationAttributes(locationId);
-        setAttributes(attributes);
+        setIsLoadingAttributes(true);
+        try {
+            const attributes = await googleService.getLocationAttributes(locationId);
+            setAttributes(attributes);
+        } finally {
+            setIsLoadingAttributes(false);
+        }
     }, [googleService, locationId]);
 
     const { selectedTab, tabsRender } = useAdvancedTabs([
@@ -43,7 +57,7 @@ export default function EditProfileLayoutV2({
     useEffect(() => {
         fetchProfile();
         fetchAttributes();
-    }, []);
+    }, [fetchProfile, fetchAttributes]);
 
     const renderContent = () => {
         switch (selectedTab) {
@@ -53,6 +67,7 @@ export default function EditProfileLayoutV2({
                         profile={profile ?? null}
                         fetchProfile={fetchProfile}
                         googleService={googleService}
+                        isLoading={isLoadingProfile}
                     />
                 );
             case 'contact':
@@ -63,6 +78,7 @@ export default function EditProfileLayoutV2({
                         fetchProfile={fetchProfile}
                         fetchAttributes={fetchAttributes}
                         googleService={googleService}
+                        isLoading={isLoadingProfile || isLoadingAttributes}
                     />
                 );
             case 'location':
@@ -71,6 +87,7 @@ export default function EditProfileLayoutV2({
                         profile={profile ?? null}
                         fetchProfile={fetchProfile}
                         googleService={googleService}
+                        isLoading={isLoadingProfile}
                     />
                 );
             case 'hours':
@@ -79,6 +96,7 @@ export default function EditProfileLayoutV2({
                         profile={profile ?? null}
                         googleService={googleService}
                         fetchProfile={fetchProfile}
+                        isLoading={isLoadingProfile}
                     />
                 );
             // case 'other':

@@ -1,6 +1,7 @@
 import Wrapper from "@/main/common/Wrapper";
 import Typography from "@/main/common/Typography";
 import Button from "@/main/common/Button";
+import Loading from "@/main/common/Loading";
 import AddIcon from "@/main/assets/AddIcon.svg";
 import styles from "../EditProfileLayoutV2.module.scss";
 import EditBusinessHoursModal from "../modals/EditBusinessHoursModal";
@@ -17,6 +18,7 @@ type Props = {
     profile: GoogleLocationProfileModel | null;
     googleService: GoogleService;
     fetchProfile: () => Promise<void>;
+    isLoading?: boolean;
 };
 
 export const dayMap: { [key: string]: string } = {
@@ -82,6 +84,7 @@ export default function HoursTab({
     profile,
     googleService,
     fetchProfile,
+    isLoading = false,
 }: Props) {
     const { locationId } = useParams();
     const { isOpen: isHoursModalOpen, openModal: openHoursModal, closeModal: closeHoursModalBase } = useModal();
@@ -127,6 +130,10 @@ export default function HoursTab({
             return !profile?.moreHours?.some(moreHour => moreHour.hoursTypeId === hoursType) && hoursType !== "REGULAR";
         });
     }, [profile]);
+
+    if (isLoading) {
+        return <Loading message="営業時間を更新中..." size="small" minHeight="200px" />;
+    }
 
     return (
         <Wrapper direction="col" gap="3rem" className={styles.main_content}>

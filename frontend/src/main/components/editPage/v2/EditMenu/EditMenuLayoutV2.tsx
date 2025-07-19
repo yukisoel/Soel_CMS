@@ -4,6 +4,7 @@ import Button from '@/main/common/Button';
 import SearchBox from '@/main/common/SearchBox';
 import Typography from '@/main/common/Typography';
 import Separator from '@/main/common/Separator';
+import Loading from '@/main/common/Loading';
 import styles from './EditMenuLayoutV2.module.scss';
 import AddIcon from '@/main/assets/AddIcon.svg';
 import { EditMenuModal } from './modals/EditMenuModal';
@@ -355,11 +356,7 @@ export const EditMenuLayoutV2: React.FC<Props> = ({ googleService }) => {
   };
 
   if (isLoading) {
-    return (
-      <Wrapper direction="col" padding="5rem" gap="4rem" justify="justify-center" align="align-center" style={{ minHeight: '400px' }}>
-        <Typography content="メニューを読み込み中..." size="medium" color="secondary" />
-      </Wrapper>
-    );
+    return <Loading message="メニューを読み込み中..." />;
   }
 
   if (!foodMenu) return null;
