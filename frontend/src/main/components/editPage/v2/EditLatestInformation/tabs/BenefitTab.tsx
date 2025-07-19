@@ -26,9 +26,10 @@ type FormData = z.infer<typeof schema>;
 
 interface Props {
   googleService: GoogleService;
+  setIsSubmitting?: (value: boolean) => void;
 }
 
-export const BenefitTab: React.FC<Props> = ({ googleService }) => {
+export const BenefitTab: React.FC<Props> = ({ googleService, setIsSubmitting }) => {
   const { accountId, locationId } = useParams();
   const {
     register,
@@ -48,18 +49,24 @@ export const BenefitTab: React.FC<Props> = ({ googleService }) => {
   const onSubmit = async (data: FormData) => {
     if (!uploadedPhotoFileList) return;
     console.log(data);
-    await googleService.postLocationLocalPosts(accountId ?? '', locationId ?? '', {
-      summary: data.benefitTitle,
-      callToAction: {
-        actionType: Object.keys(LocationButtonName).find(key => LocationButtonName[key as keyof typeof LocationButtonName] === data.selectedButton) as LocationButtonName,
-        url: data.buttonTitle,
-      },
-      topicType: LocalPostTopicType.OFFER,
-      offer: {
-        couponCode: data.benefitTitle,
-        termsConditions: `期間: ${data.startDate?.toLocaleDateString() ?? ''} 〜 ${data.endDate?.toLocaleDateString() ?? ''}`
-      }
-    }, uploadedPhotoFileList)
+    
+    setIsSubmitting?.(true);
+    try {
+      await googleService.postLocationLocalPosts(accountId ?? '', locationId ?? '', {
+        summary: data.benefitTitle,
+        callToAction: {
+          actionType: Object.keys(LocationButtonName).find(key => LocationButtonName[key as keyof typeof LocationButtonName] === data.selectedButton) as LocationButtonName,
+          url: data.buttonTitle,
+        },
+        topicType: LocalPostTopicType.OFFER,
+        offer: {
+          couponCode: data.benefitTitle,
+          termsConditions: `期間: ${data.startDate?.toLocaleDateString() ?? ''} 〜 ${data.endDate?.toLocaleDateString() ?? ''}`
+        }
+      }, uploadedPhotoFileList);
+    } finally {
+      setIsSubmitting?.(false);
+    }
   };
 
   const selectedButton = watch('selectedButton') ?? '';
