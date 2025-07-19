@@ -1,6 +1,7 @@
 import styles from "@/main/components/stores/Review/ReviewPage.module.scss";
 import Wrapper from "@/main/common/Wrapper";
 import Typography from "@/main/common/Typography";
+import Loading from "@/main/common/Loading";
 import SearchBox from "@/main/common/SearchBox";
 import Separator from "@/main/common/Separator";
 import Button from "@/main/common/Button";
@@ -24,6 +25,7 @@ export default function ReviewPage({ googleService }: Props) {
     const [selectedReview, setSelectedReview] = useState<Review | null>(null);
     const [reviews, setReviews] = useState<Review[]>([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [isReplying, setIsReplying] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
 
     const { accountId, locationId } = useParams();
@@ -98,9 +100,24 @@ export default function ReviewPage({ googleService }: Props) {
         openReviewDetailModal();
     };
 
-    const handleReply = (replyContent: string) => {
+    const handleReply = async (replyContent: string) => {
         if (accountId && locationId && selectedReview) {
-            googleService.postLocationReviewReply(accountId, locationId, selectedReview.id, replyContent);
+            setIsReplying(true);
+            try {
+                await googleService.postLocationReviewReply(accountId, locationId, selectedReview.id, replyContent);
+                // Refresh the reviews after replying
+                const updatedReviews = reviews.map(review =>
+                    review.id === selectedReview.id
+                        ? { ...review, replied: true, reviewReply: { comment: replyContent, updateTime: new Date().toISOString() } }
+                        : review
+                );
+                setReviews(updatedReviews);
+                closeReviewDetailModal();
+            } catch (error) {
+                console.error('Failed to post review reply:', error);
+            } finally {
+                setIsReplying(false);
+            }
         }
     };
 
@@ -148,9 +165,7 @@ export default function ReviewPage({ googleService }: Props) {
             </Wrapper>
             <Wrapper direction="col" gap="2rem" align="align-start" padding="4rem 0 0 0">
                 {isLoading ? (
-                    <Wrapper justify="justify-center" align="align-center" style={{ width: '100%', minHeight: '200px' }}>
-                        <Typography content="レビューを読み込み中..." size="normal" color="secondary" />
-                    </Wrapper>
+                    <Loading message="レビューを読み込み中..." size="small" minHeight="200px" />
                 ) : filteredReviews.length === 0 ? (
                     <Typography content={searchQuery ? "検索結果が見つかりません" : "レビューがありません"} color="gray" size="normal" />
                 ) : (
@@ -171,6 +186,7 @@ export default function ReviewPage({ googleService }: Props) {
                     review={selectedReview}
                     handleReply={handleReply}
                     handleDeleteReply={handleDeleteReply}
+                    isReplying={isReplying}
                 />
             )}
         </Wrapper>
