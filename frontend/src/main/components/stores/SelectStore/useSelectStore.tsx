@@ -146,6 +146,7 @@ export const useSelectStore = ({googleService, onNextClick, onBackClick}: Props)
             onBackClick={onBackClick}
             isNextButtonDisabled={selectedBranches.length === 0}
             mode={mode as 'brand' | 'area'}
+            isLoading={isLoading}
         />
     )
 
