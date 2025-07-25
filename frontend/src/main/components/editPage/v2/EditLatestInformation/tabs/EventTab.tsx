@@ -141,7 +141,7 @@ export const EventTab: React.FC<Props> = ({ googleService, setIsSubmitting }) =>
           />
           <DatePicker
             defaultValue={watch('startDate')}
-            onChange={(date) => setValue('startDate', date)}
+            onChange={(date) => setValue('startDate', date, { shouldValidate: true })}
           />
           {errors.startDate && (
             <Typography content={errors.startDate.message || ''} size="xsmall" color="error" />
@@ -157,7 +157,7 @@ export const EventTab: React.FC<Props> = ({ googleService, setIsSubmitting }) =>
           />
           <TimePicker
             defaultValue={watch('startTime')}
-            onChange={(time) => setValue('startTime', time)}
+            onChange={(time) => setValue('startTime', time, { shouldValidate: true })}
           />
           {errors.startTime && (
             <Typography content={errors.startTime.message || ''} size="xsmall" color="error" />
@@ -173,7 +173,7 @@ export const EventTab: React.FC<Props> = ({ googleService, setIsSubmitting }) =>
           />
           <DatePicker
             defaultValue={watch('endDate')}
-            onChange={(date) => setValue('endDate', date)}
+            onChange={(date) => setValue('endDate', date, { shouldValidate: true })}
           />
           {errors.endDate && (
             <Typography content={errors.endDate.message || ''} size="xsmall" color="error" />
@@ -189,7 +189,7 @@ export const EventTab: React.FC<Props> = ({ googleService, setIsSubmitting }) =>
           />
           <TimePicker
             defaultValue={watch('endTime')}
-            onChange={(time) => setValue('endTime', time)}
+            onChange={(time) => setValue('endTime', time, { shouldValidate: true })}
           />
           {errors.endTime && (
             <Typography content={errors.endTime.message || ''} size="xsmall" color="error" />
@@ -223,7 +223,7 @@ export const EventTab: React.FC<Props> = ({ googleService, setIsSubmitting }) =>
           <PhotoPullDownMenu
             placeholder="ボタンの種類を選択"
             selectedContent={selectedButton}
-            setSelectedContent={(value) => setValue('selectedButton', value)}
+            setSelectedContent={(value) => setValue('selectedButton', value, { shouldValidate: true })}
             options={Object.values(LocationButtonName).map(value => value.toString())}
           />
           {errors.selectedButton && (
