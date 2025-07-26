@@ -44,6 +44,9 @@ export type GoogleLocationAttributesModel = components['schemas']['GoogleLocatio
 export type GoogleLocationAttribute = components['schemas']['GoogleLocationAttribute']
 export type GoogleLocationAttributeService = components['schemas']['GoogleLocationAttributeService']
 export type GoogleLocationAttributeServiceOption = components['schemas']['GoogleLocationAttributeServiceOption']
+
+// ビジネス所有者情報の型定義（バックエンドAPIに合わせてisOwnedByWomenのみ）
+export type GoogleLocationBusinessOwnerInfo = boolean;
 export type GoogleLocationAttributeUriValue = components['schemas']['GoogleLocationAttributeUriValue']
 export type GoogleLocationStoreFrontAddressRequest = components['schemas']['GoogleLocationStoreFrontAddressRequest']
 export type GoogleLocationBusinessHoursRequest = components['schemas']['GoogleLocationBusinessHoursRequest']

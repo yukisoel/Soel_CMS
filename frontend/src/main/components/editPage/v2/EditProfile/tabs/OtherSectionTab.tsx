@@ -4,10 +4,10 @@ import Typography from "@/main/common/Typography";
 import Button from "@/main/common/Button";
 import Loading from "@/main/common/Loading";
 import styles from "../EditProfileLayoutV2.module.scss";
-import EditOtherModal from "../modals/EditOtherModal";
+import EditBusinessOwnerModal from "../modals/EditBusinessOwnerModal";
 import EditServicesModal from '../modals/EditServicesModal';
 import EditServiceOptionsModal from '../modals/EditServiceOptionsModal';
-import { GoogleLocationAttributesModel, GoogleLocationProfileModel, SERVICE_ATTRIBUTE_MAPPING, SERVICE_OPTION_ATTRIBUTE_MAPPING } from "@/types/apiModel.ts";
+import { GoogleLocationAttributesModel, GoogleLocationProfileModel, SERVICE_ATTRIBUTE_MAPPING, SERVICE_OPTION_ATTRIBUTE_MAPPING, GoogleLocationBusinessOwnerInfo } from "@/types/apiModel.ts";
 import { GoogleLocationAttributeServiceType as ApiServiceType, GoogleLocationAttributeServiceOptionType as ApiServiceOptionType } from "@/types/api.ts";
 import { GoogleService } from "@/main/service/GoogleService";
 import { useModal } from "@/main/common/Modal/useModal";
@@ -25,7 +25,7 @@ type ServiceOption = {
   isAvailable: boolean;
 };
 
-type EditModalType = 'businessOwner' | 'serviceOption' | null;
+// ビジネス所有者情報はboolean値のisOwnedByWomenのみ
 
 type Props = {
   profile: GoogleLocationProfileModel | null;
@@ -45,20 +45,22 @@ export default function OtherSectionTab({
   isLoading = false,
 }: Props) {
   const { locationId } = useParams();
-  const [editModalType, setEditModalType] = useState<EditModalType>(null);
+  const { isOpen: isBusinessOwnerModalOpen, openModal: openBusinessOwnerModal, closeModal: closeBusinessOwnerModal } = useModal();
   const { isOpen: isServicesModalOpen, openModal: openServicesModal, closeModal: closeServicesModal } = useModal();
   const { isOpen: isServiceOptionsModalOpen, openModal: openServiceOptionsModal, closeModal: closeServiceOptionsModal } = useModal();
 
-  const handleSave = async (value: string) => {
+  const handleBusinessOwnerSave = async (isOwnedByWomen: boolean) => {
     if (!locationId) return false;
     try {
-      // TODO: Implement API calls for updating business owner info and service options
-      console.log('Saving:', editModalType, value);
+      // APIを呼び出してビジネス所有者情報を更新
+      await googleService.updateLocationBusinessOwnerInfo(locationId, isOwnedByWomen);
+      
+      // 属性データを再取得
       await fetchAttributes();
-      setEditModalType(null);
+      closeBusinessOwnerModal();
       return true;
     } catch (error) {
-      console.error('Failed to save:', error);
+      console.error('Failed to save business owner info:', error);
       return false;
     }
   };
@@ -147,7 +149,7 @@ export default function OtherSectionTab({
           <Button
             bgColor="primary"
             padding="0.5rem 1.8rem"
-            onClick={() => setEditModalType('businessOwner')}
+            onClick={openBusinessOwnerModal}
           >
             <Typography
               content="編集"
@@ -216,20 +218,13 @@ export default function OtherSectionTab({
         </Wrapper>
       </Wrapper>
 
-      {/* 編集モーダル */}
-      {editModalType && (
-        <EditOtherModal
-          isOpen={true}
-          onClose={() => setEditModalType(null)}
-          title={
-            editModalType === 'businessOwner' ? 'ビジネス所有者情報' :
-            'サービスオプション'
-          }
-          content={
-            editModalType === 'businessOwner' ? formatBusinessOwnerInfo(attributes) :
-            formatServiceOptions(attributes?.attributes || [])
-          }
-          onSave={handleSave}
+      {/* ビジネス所有者情報編集モーダル */}
+      {isBusinessOwnerModalOpen && (
+        <EditBusinessOwnerModal
+          isOpen={isBusinessOwnerModalOpen}
+          onClose={closeBusinessOwnerModal}
+          isOwnedByWomen={formatBusinessOwnerInfoForModal(attributes)}
+          onSave={handleBusinessOwnerSave}
           error={undefined}
         />
       )}
@@ -263,6 +258,17 @@ const formatBusinessOwnerInfo = (attributes: GoogleLocationAttributesModel | nul
   if (!attributes) return 'ビジネス所有者情報が設定されていません';
   // TODO: Extract business owner info from attributes
   return 'ビジネス所有者情報が設定されていません';
+};
+
+const formatBusinessOwnerInfoForModal = (attributes: GoogleLocationAttributesModel | null): boolean => {
+  // TODO: Extract isOwnedByWomen from attributes
+  if (!attributes) {
+    return false;
+  }
+  
+  // 将来的に attributes から実際の isOwnedByWomen 値を抽出する
+  // 現在はデフォルトでfalseを返す
+  return false;
 };
 
 const formatServices = (attributes: GoogleLocationAttributesModel['attributes']): string => {

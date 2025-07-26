@@ -5,7 +5,7 @@ import {
   GoogleLocationLocalPostModel,
   GoogleLocationPhotoModel,
 } from "@/main/model/LocationModel.ts";
-import {GoogleAccount, GoogleLocation, GoogleLocationProfileModel, GoogleLocationDate, GoogleLocationCategory, GoogleLocationAttributeSnsLinkRequest, GoogleLocationAttributesModel, GoogleLocationStoreFrontAddressRequest, GoogleLocationBusinessHoursRequest, GooglePlacesAutoCompleteResponse, GoogleLocationLocalPostRequest, GoogleLocationReviewModel, BrandWithStoresListResponse, PrefectureListWithBrandListWithStoreListResponse, GoogleLocationAttributeService, GoogleLocationAttributeServiceOption } from "@/types/apiModel.ts";
+import {GoogleAccount, GoogleLocation, GoogleLocationProfileModel, GoogleLocationDate, GoogleLocationCategory, GoogleLocationAttributeSnsLinkRequest, GoogleLocationAttributesModel, GoogleLocationStoreFrontAddressRequest, GoogleLocationBusinessHoursRequest, GooglePlacesAutoCompleteResponse, GoogleLocationLocalPostRequest, GoogleLocationReviewModel, BrandWithStoresListResponse, PrefectureListWithBrandListWithStoreListResponse, GoogleLocationAttributeService, GoogleLocationAttributeServiceOption, GoogleLocationBusinessOwnerInfo } from "@/types/apiModel.ts";
 
 export interface GoogleRepository {
   getAccounts(): Promise<GoogleAccount[]>
@@ -63,6 +63,8 @@ export interface GoogleRepository {
   updateLocationAttributesServices(locationId: string, services: GoogleLocationAttributeService[]): Promise<GoogleLocationAttributesModel>
 
   updateLocationAttributesServiceOptions(locationId: string, serviceOptions: GoogleLocationAttributeServiceOption[]): Promise<GoogleLocationAttributesModel>
+
+  updateLocationBusinessOwnerInfo(locationId: string, isOwnedByWomen: GoogleLocationBusinessOwnerInfo): Promise<GoogleLocationAttributesModel>
 
   updateLocationFoodMenus(accountId: string, locationId: string, foodMenus: GoogleLocationFoodMenusModel): Promise<void>
 
@@ -600,6 +602,28 @@ export class GoogleRepositoryImpl implements GoogleRepository {
     } catch (error) {
       console.error(error)
       throw new Error("google update location attributes service options failed")
+    }
+  }
+
+  async updateLocationBusinessOwnerInfo(locationId: string, isOwnedByWomen: GoogleLocationBusinessOwnerInfo): Promise<GoogleLocationAttributesModel> {
+    try {
+      const response: AxiosResponse<GoogleLocationAttributesModel> = await axiosApiClient.patch(
+        'google/location/attributes/business_owner_info',
+        isOwnedByWomen,
+        {
+          params: {
+            locationId: locationId,
+          },
+          headers: {
+            'Accept': 'application/json; charset=utf-8',
+            'Content-Type': 'application/json',
+          },
+        }
+      )
+      return response.data
+    } catch (error) {
+      console.error(error)
+      throw new Error("google update location business owner info failed")
     }
   }
 

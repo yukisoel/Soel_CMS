@@ -4,7 +4,7 @@ import {
   GoogleLocationLocalPostModel,
   GoogleLocationPhotoModel,
 } from "@/main/model/LocationModel.ts";
-import {GoogleAccount, GoogleLocation, GoogleLocationCategory, GoogleLocationDate, GoogleLocationAttributeSnsLinkRequest, GoogleLocationAttributesModel, GoogleLocationStoreFrontAddressRequest, GoogleLocationBusinessHoursRequest, GooglePlacesAutoCompleteResponse, GoogleLocationLocalPostRequest, GoogleLocationReviewModel, BrandWithStoresListResponse, PrefectureListWithBrandListWithStoreListResponse, GoogleLocationAttributeService, GoogleLocationAttributeServiceOption } from "@/types/apiModel.ts";
+import {GoogleAccount, GoogleLocation, GoogleLocationCategory, GoogleLocationDate, GoogleLocationAttributeSnsLinkRequest, GoogleLocationAttributesModel, GoogleLocationStoreFrontAddressRequest, GoogleLocationBusinessHoursRequest, GooglePlacesAutoCompleteResponse, GoogleLocationLocalPostRequest, GoogleLocationReviewModel, BrandWithStoresListResponse, PrefectureListWithBrandListWithStoreListResponse, GoogleLocationAttributeService, GoogleLocationAttributeServiceOption, GoogleLocationBusinessOwnerInfo } from "@/types/apiModel.ts";
 import {GoogleLocationProfileModel} from "@/types/apiModel.ts";
 export interface GoogleService {
   getAccounts(): Promise<GoogleAccount[]>
@@ -35,6 +35,7 @@ export interface GoogleService {
   updateLocationAttributeSnsLink(locationId: string, snsLink: GoogleLocationAttributeSnsLinkRequest): Promise<GoogleLocationProfileModel>
   updateLocationAttributesServices(locationId: string, services: GoogleLocationAttributeService[]): Promise<GoogleLocationAttributesModel>
   updateLocationAttributesServiceOptions(locationId: string, serviceOptions: GoogleLocationAttributeServiceOption[]): Promise<GoogleLocationAttributesModel>
+  updateLocationBusinessOwnerInfo(locationId: string, isOwnedByWomen: GoogleLocationBusinessOwnerInfo): Promise<GoogleLocationAttributesModel>
   updateLocationFoodMenus(accountId: string, locationId: string, foodMenus: GoogleLocationFoodMenusModel): Promise<void>
   updateLocationProfileStorefrontAddress(locationId: string, storefrontAddress: GoogleLocationStoreFrontAddressRequest): Promise<GoogleLocationProfileModel>
   updateLocationProfileServiceArea(locationId: string, serviceArea: string[]): Promise<GoogleLocationProfileModel>
@@ -171,6 +172,10 @@ export class GoogleServiceImpl implements GoogleService {
 
   async updateLocationAttributesServiceOptions(locationId: string, serviceOptions: GoogleLocationAttributeServiceOption[]): Promise<GoogleLocationAttributesModel> {
     return this.googleRepository.updateLocationAttributesServiceOptions(locationId, serviceOptions)
+  }
+
+  async updateLocationBusinessOwnerInfo(locationId: string, isOwnedByWomen: GoogleLocationBusinessOwnerInfo): Promise<GoogleLocationAttributesModel> {
+    return this.googleRepository.updateLocationBusinessOwnerInfo(locationId, isOwnedByWomen)
   }
 
   async updateLocationProfileStorefrontAddress(locationId: string, storefrontAddress: GoogleLocationStoreFrontAddressRequest): Promise<GoogleLocationProfileModel> {
