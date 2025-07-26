@@ -6,13 +6,20 @@ import Loading from "@/main/common/Loading";
 import styles from "../EditProfileLayoutV2.module.scss";
 import EditOtherModal from "../modals/EditOtherModal";
 import EditServicesModal from '../modals/EditServicesModal';
-import { GoogleLocationAttributesModel, GoogleLocationProfileModel, SERVICE_ATTRIBUTE_MAPPING } from "@/types/apiModel.ts";
-import { GoogleLocationAttributeServiceType as ApiServiceType } from "@/types/api.ts";
+import EditServiceOptionsModal from '../modals/EditServiceOptionsModal';
+import { GoogleLocationAttributesModel, GoogleLocationProfileModel, SERVICE_ATTRIBUTE_MAPPING, SERVICE_OPTION_ATTRIBUTE_MAPPING } from "@/types/apiModel.ts";
+import { GoogleLocationAttributeServiceType as ApiServiceType, GoogleLocationAttributeServiceOptionType as ApiServiceOptionType } from "@/types/api.ts";
 import { GoogleService } from "@/main/service/GoogleService";
 import { useModal } from "@/main/common/Modal/useModal";
 import { useParams } from "react-router-dom";
 
 type Service = {
+  id: string;
+  name: string;
+  isAvailable: boolean;
+};
+
+type ServiceOption = {
   id: string;
   name: string;
   isAvailable: boolean;
@@ -40,6 +47,7 @@ export default function OtherSectionTab({
   const { locationId } = useParams();
   const [editModalType, setEditModalType] = useState<EditModalType>(null);
   const { isOpen: isServicesModalOpen, openModal: openServicesModal, closeModal: closeServicesModal } = useModal();
+  const { isOpen: isServiceOptionsModalOpen, openModal: openServiceOptionsModal, closeModal: closeServiceOptionsModal } = useModal();
 
   const handleSave = async (value: string) => {
     if (!locationId) return false;
@@ -81,6 +89,36 @@ export default function OtherSectionTab({
       return true;
     } catch (error) {
       console.error('Failed to save services:', error);
+      return false;
+    }
+  };
+
+  const handleServiceOptionsChange = async (serviceOptions: ServiceOption[]) => {
+    if (!locationId) return false;
+    try {
+      // ServiceOption[]をGoogleLocationAttributeServiceOption[]に変換
+      // マッピングを使用して属性名に変換
+      const attributeServiceOptions = serviceOptions.map(serviceOption => {
+        const attributeName = SERVICE_OPTION_ATTRIBUTE_MAPPING[serviceOption.id];
+        if (!attributeName) {
+          console.warn(`Unknown service option id: ${serviceOption.id}`);
+          return null;
+        }
+        return {
+          type: attributeName as ApiServiceOptionType,
+          value: serviceOption.isAvailable
+        };
+      }).filter((item): item is { type: ApiServiceOptionType; value: boolean } => item !== null);
+      
+      // APIを呼び出してサービスオプション属性を更新
+      await googleService.updateLocationAttributesServiceOptions(locationId, attributeServiceOptions);
+      
+      // 属性データを再取得
+      await fetchAttributes();
+      closeServiceOptionsModal();
+      return true;
+    } catch (error) {
+      console.error('Failed to save service options:', error);
       return false;
     }
   };
@@ -167,7 +205,7 @@ export default function OtherSectionTab({
           <Button
             bgColor="primary"
             padding="0.5rem 1.8rem"
-            onClick={() => setEditModalType('serviceOption')}
+            onClick={openServiceOptionsModal}
           >
             <Typography
               content="編集"
@@ -206,6 +244,17 @@ export default function OtherSectionTab({
           error={undefined}
         />
       )}
+
+      {/* サービスオプション編集モーダル */}
+      {isServiceOptionsModalOpen && (
+        <EditServiceOptionsModal
+          isOpen={isServiceOptionsModalOpen}
+          onClose={closeServiceOptionsModal}
+          serviceOptions={formatServiceOptionsForModal(attributes?.attributes || [])}
+          onSave={handleServiceOptionsChange}
+          error={undefined}
+        />
+      )}
     </Wrapper>
   );
 }
@@ -235,6 +284,16 @@ const formatServiceOptions = (attributes: GoogleLocationAttributesModel['attribu
 const formatServicesForModal = (attributes: GoogleLocationAttributesModel['attributes']): Service[] => {
   if (!attributes || attributes.length === 0) return [];
   // TODO: Convert attributes to Service[] format for modal
+  return attributes.map((attr, index) => ({
+    id: index.toString(),
+    name: attr.name || '',
+    isAvailable: Boolean(attr.values && attr.values.length > 0)
+  }));
+};
+
+const formatServiceOptionsForModal = (attributes: GoogleLocationAttributesModel['attributes']): ServiceOption[] => {
+  if (!attributes || attributes.length === 0) return [];
+  // TODO: Convert attributes to ServiceOption[] format for modal
   return attributes.map((attr, index) => ({
     id: index.toString(),
     name: attr.name || '',

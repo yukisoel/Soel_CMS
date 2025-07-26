@@ -42,6 +42,8 @@ export type GoogleLocationMoney = components['schemas']['GoogleLocationMoney']
 export type GoogleLocationAttributeSnsLinkRequest = components['schemas']['GoogleLocationAttributeSnsLinkRequest']
 export type GoogleLocationAttributesModel = components['schemas']['GoogleLocationAttributesModel']
 export type GoogleLocationAttribute = components['schemas']['GoogleLocationAttribute']
+export type GoogleLocationAttributeService = components['schemas']['GoogleLocationAttributeService']
+export type GoogleLocationAttributeServiceOption = components['schemas']['GoogleLocationAttributeServiceOption']
 export type GoogleLocationAttributeUriValue = components['schemas']['GoogleLocationAttributeUriValue']
 export type GoogleLocationStoreFrontAddressRequest = components['schemas']['GoogleLocationStoreFrontAddressRequest']
 export type GoogleLocationBusinessHoursRequest = components['schemas']['GoogleLocationBusinessHoursRequest']
@@ -137,4 +139,16 @@ export const SERVICE_ATTRIBUTE_MAPPING: Record<string, string> = {
     ALL_YOU_CAN_EAT: 'HAS_ALL_YOU_CAN_EAT_ALWAYS',
     LATE_NIGHT_DINING: 'SERVES_LATE_NIGHT_FOOD',
     BRAILLE_MENU: 'HAS_BRAILLE_MENU'
+}
+
+// サービスオプション属性名のマッピング（フロントエンドのenumキーからバックエンドのenumキーへ）
+export const SERVICE_OPTION_ATTRIBUTE_MAPPING: Record<string, string> = {
+    OUTDOOR_SEATING: 'HAS_SEATING_OUTDOORS',
+    CURBSIDE_PICKUP: 'HAS_CURBSIDE_PICKUP',
+    NO_CONTACT_DELIVERY: 'HAS_NO_CONTACT_DELIVERY',
+    DELIVERY: 'HAS_DELIVERY',
+    DRIVE_THROUGH: 'HAS_DRIVE_THROUGH',
+    DINE_IN: 'HAS_ONSITE_SERVICES',
+    TAKEOUT: 'HAS_TAKEOUT',
+    EAT_IN: 'SERVES_DINE_IN'
 }

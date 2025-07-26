@@ -5,10 +5,7 @@ import {
   GoogleLocationLocalPostModel,
   GoogleLocationPhotoModel,
 } from "@/main/model/LocationModel.ts";
-import {GoogleAccount, GoogleLocation, GoogleLocationProfileModel, GoogleLocationDate, GoogleLocationCategory, GoogleLocationAttributeSnsLinkRequest, GoogleLocationAttributesModel, GoogleLocationStoreFrontAddressRequest, GoogleLocationBusinessHoursRequest, GooglePlacesAutoCompleteResponse, GoogleLocationLocalPostRequest, GoogleLocationReviewModel, BrandWithStoresListResponse, PrefectureListWithBrandListWithStoreListResponse } from "@/types/apiModel.ts";
-import { components } from "@/types/api.ts";
-
-type GoogleLocationAttributeService = components["schemas"]["GoogleLocationAttributeService"];
+import {GoogleAccount, GoogleLocation, GoogleLocationProfileModel, GoogleLocationDate, GoogleLocationCategory, GoogleLocationAttributeSnsLinkRequest, GoogleLocationAttributesModel, GoogleLocationStoreFrontAddressRequest, GoogleLocationBusinessHoursRequest, GooglePlacesAutoCompleteResponse, GoogleLocationLocalPostRequest, GoogleLocationReviewModel, BrandWithStoresListResponse, PrefectureListWithBrandListWithStoreListResponse, GoogleLocationAttributeService, GoogleLocationAttributeServiceOption } from "@/types/apiModel.ts";
 
 export interface GoogleRepository {
   getAccounts(): Promise<GoogleAccount[]>
@@ -64,6 +61,8 @@ export interface GoogleRepository {
   updateLocationAttributeSnsLink(locationId: string, snsLink: GoogleLocationAttributeSnsLinkRequest): Promise<GoogleLocationProfileModel>
 
   updateLocationAttributesServices(locationId: string, services: GoogleLocationAttributeService[]): Promise<GoogleLocationAttributesModel>
+
+  updateLocationAttributesServiceOptions(locationId: string, serviceOptions: GoogleLocationAttributeServiceOption[]): Promise<GoogleLocationAttributesModel>
 
   updateLocationFoodMenus(accountId: string, locationId: string, foodMenus: GoogleLocationFoodMenusModel): Promise<void>
 
@@ -582,6 +581,27 @@ export class GoogleRepositoryImpl implements GoogleRepository {
     }
   }
 
+  async updateLocationAttributesServiceOptions(locationId: string, serviceOptions: GoogleLocationAttributeServiceOption[]): Promise<GoogleLocationAttributesModel> {
+    try {
+      const response: AxiosResponse<GoogleLocationAttributesModel> = await axiosApiClient.patch(
+        'google/location/attributes/serviceOptions',
+        serviceOptions,
+        {
+          params: {
+            locationId: locationId,
+          },
+          headers: {
+            'Accept': 'application/json; charset=utf-8',
+            'Content-Type': 'application/json',
+          },
+        }
+      )
+      return response.data
+    } catch (error) {
+      console.error(error)
+      throw new Error("google update location attributes service options failed")
+    }
+  }
 
   async updateLocationFoodMenus(accountId: string, locationId: string, foodMenus: GoogleLocationFoodMenusModel): Promise<void> {
     try {
