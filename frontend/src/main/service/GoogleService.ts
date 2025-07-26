@@ -6,6 +6,9 @@ import {
 } from "@/main/model/LocationModel.ts";
 import {GoogleAccount, GoogleLocation, GoogleLocationCategory, GoogleLocationDate, GoogleLocationAttributeSnsLinkRequest, GoogleLocationAttributesModel, GoogleLocationStoreFrontAddressRequest, GoogleLocationBusinessHoursRequest, GooglePlacesAutoCompleteResponse, GoogleLocationLocalPostRequest, GoogleLocationReviewModel, BrandWithStoresListResponse, PrefectureListWithBrandListWithStoreListResponse } from "@/types/apiModel.ts";
 import {GoogleLocationProfileModel} from "@/types/apiModel.ts";
+import { components } from "@/types/api.ts";
+
+type GoogleLocationAttributeService = components["schemas"]["GoogleLocationAttributeService"];
 export interface GoogleService {
   getAccounts(): Promise<GoogleAccount[]>
   getAccount(accountId:string): Promise<GoogleAccount>
@@ -15,6 +18,9 @@ export interface GoogleService {
   getLocationPhotos(accountId:string, locationId:string): Promise<GoogleLocationPhotoModel[]>
   getLocationFoodMenus(accountId: string,locationId: string): Promise<GoogleLocationFoodMenusModel>
   getLocationAttributes(locationId: string): Promise<GoogleLocationAttributesModel>
+  getLocationAttributesServices(locationId: string): Promise<GoogleLocationAttributesModel>
+  getLocationAttributesServicesOptions(): Promise<GoogleLocationAttributesModel>
+  getLocationBusinessOwnerInfo(locationId: string): Promise<GoogleLocationAttributesModel>
   getCategories(): Promise<GoogleLocationCategory[]>
   getLocationReviews(accountId: string, locationId: string): Promise<GoogleLocationReviewModel[]>
   getBrandList(): Promise<BrandWithStoresListResponse>
@@ -30,6 +36,7 @@ export interface GoogleService {
   updateLocationProfileWebsiteUri(locationId:string, websiteUri: string): Promise<GoogleLocationProfileModel>
   updateLocationAttributeMenuLink(locationId: string, menuLink: string): Promise<GoogleLocationProfileModel>
   updateLocationAttributeSnsLink(locationId: string, snsLink: GoogleLocationAttributeSnsLinkRequest): Promise<GoogleLocationProfileModel>
+  updateLocationAttributesServices(locationId: string, services: GoogleLocationAttributeService[]): Promise<GoogleLocationAttributesModel>
   updateLocationFoodMenus(accountId: string, locationId: string, foodMenus: GoogleLocationFoodMenusModel): Promise<void>
   updateLocationProfileStorefrontAddress(locationId: string, storefrontAddress: GoogleLocationStoreFrontAddressRequest): Promise<GoogleLocationProfileModel>
   updateLocationProfileServiceArea(locationId: string, serviceArea: string[]): Promise<GoogleLocationProfileModel>
@@ -82,6 +89,18 @@ export class GoogleServiceImpl implements GoogleService {
 
   async getLocationAttributes(locationId: string): Promise<GoogleLocationAttributesModel> {
     return this.googleRepository.getLocationAttributes(locationId)
+  }
+
+  async getLocationAttributesServices(locationId: string): Promise<GoogleLocationAttributesModel> {
+    return this.googleRepository.getLocationAttributesServices(locationId)
+  }
+
+  async getLocationAttributesServicesOptions(): Promise<GoogleLocationAttributesModel> {
+    return this.googleRepository.getLocationAttributesServicesOptions()
+  }
+
+  async getLocationBusinessOwnerInfo(locationId: string): Promise<GoogleLocationAttributesModel> {
+    return this.googleRepository.getLocationBusinessOwnerInfo(locationId)
   }
 
   async getCategories(): Promise<GoogleLocationCategory[]> {
@@ -146,6 +165,10 @@ export class GoogleServiceImpl implements GoogleService {
 
   async updateLocationAttributeSnsLink(locationId: string, snsLink: GoogleLocationAttributeSnsLinkRequest): Promise<GoogleLocationProfileModel> {
     return this.googleRepository.updateLocationAttributeSnsLink(locationId, snsLink)
+  }
+
+  async updateLocationAttributesServices(locationId: string, services: GoogleLocationAttributeService[]): Promise<GoogleLocationAttributesModel> {
+    return this.googleRepository.updateLocationAttributesServices(locationId, services)
   }
 
   async updateLocationProfileStorefrontAddress(locationId: string, storefrontAddress: GoogleLocationStoreFrontAddressRequest): Promise<GoogleLocationProfileModel> {

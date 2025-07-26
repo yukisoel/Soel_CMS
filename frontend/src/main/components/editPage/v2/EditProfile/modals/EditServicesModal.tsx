@@ -1,10 +1,11 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Modal from '@/main/common/Modal/Modal';
 import Wrapper from '@/main/common/Wrapper';
 import Typography from '@/main/common/Typography';
 import Button from '@/main/common/Button';
 import RadioButton from '@/main/common/RadioButton';
 import styles from '../EditProfileLayoutV2.module.scss';
+import { GoogleLocationAttributeServiceType } from '@/types/apiModel';
 
 type Service = {
   id: string;
@@ -20,12 +21,14 @@ type Props = {
   error?: string;
 };
 
-const INITIAL_SERVICES = [
-  { id: 'alcohol', name: 'アルコール飲料あり', isAvailable: false },
-  { id: 'cocktail', name: 'カクテルあり', isAvailable: false },
-  { id: 'coffee', name: 'コーヒーあり', isAvailable: false },
-  { id: 'drinkService', name: 'ドリンクのサービスタイムあり', isAvailable: false },
-];
+// GoogleLocationAttributeServiceTypeのenumから初期値を生成
+const createInitialServices = (): Service[] => {
+  return Object.entries(GoogleLocationAttributeServiceType).map(([key, value]) => ({
+    id: key,
+    name: value,
+    isAvailable: false
+  }));
+};
 
 export default function EditServicesModal({
   isOpen,
@@ -34,9 +37,26 @@ export default function EditServicesModal({
   onSave,
   error
 }: Props) {
-  const [serviceList, setServiceList] = useState<Service[]>(
-    services.length > 0 ? services : INITIAL_SERVICES
-  );
+  const [serviceList, setServiceList] = useState<Service[]>(createInitialServices());
+
+  // 受け取った値で該当するkeyのstatusを上書き
+  useEffect(() => {
+    if (services && services.length > 0) {
+      setServiceList(prevList => {
+        const updatedList = [...prevList];
+        services.forEach(receivedService => {
+          const index = updatedList.findIndex(item => item.id === receivedService.id);
+          if (index !== -1) {
+            updatedList[index] = {
+              ...updatedList[index],
+              isAvailable: receivedService.isAvailable
+            };
+          }
+        });
+        return updatedList;
+      });
+    }
+  }, [services]);
 
   const handleToggleService = (id: string, value: string) => {
     setServiceList(prev =>

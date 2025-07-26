@@ -2,11 +2,15 @@ import { useState } from 'react';
 import Wrapper from "@/main/common/Wrapper";
 import Typography from "@/main/common/Typography";
 import Button from "@/main/common/Button";
+import Loading from "@/main/common/Loading";
 import styles from "../EditProfileLayoutV2.module.scss";
 import EditOtherModal from "../modals/EditOtherModal";
 import EditServicesModal from '../modals/EditServicesModal';
-import { UseFormRegister, FieldErrors, Path } from "react-hook-form";
-import { ProfileFormData } from "@/main/schemas/profileSchema";
+import { GoogleLocationAttributesModel, GoogleLocationProfileModel, SERVICE_ATTRIBUTE_MAPPING } from "@/types/apiModel.ts";
+import { GoogleLocationAttributeServiceType as ApiServiceType } from "@/types/api.ts";
+import { GoogleService } from "@/main/service/GoogleService";
+import { useModal } from "@/main/common/Modal/useModal";
+import { useParams } from "react-router-dom";
 
 type Service = {
   id: string;
@@ -17,56 +21,73 @@ type Service = {
 type EditModalType = 'businessOwner' | 'serviceOption' | null;
 
 type Props = {
-  register: UseFormRegister<ProfileFormData>;
-  errors: FieldErrors<ProfileFormData>;
-  values: {
-    businessOwnerInfo?: string;
-    serviceOptionInfo?: string;
-    services: Service[];
-  };
-  setValueAndValidate: (name: Path<ProfileFormData>, value: ProfileFormData[keyof ProfileFormData] | string[] | { [key: string]: unknown }) => Promise<boolean>;
-  isUpdating: boolean;
-  validationErrors: {
-    businessOwnerInfo?: string;
-    serviceOptionInfo?: string;
-    services?: string;
-  };
+  profile: GoogleLocationProfileModel | null;
+  attributes: GoogleLocationAttributesModel | null;
+  fetchProfile: () => Promise<void>;
+  fetchAttributes: () => Promise<void>;
+  googleService: GoogleService;
+  isLoading?: boolean;
 };
 
 export default function OtherSectionTab({
-  values,
-  setValueAndValidate,
-  isUpdating,
-  validationErrors
+  profile,
+  attributes,
+  fetchProfile,
+  fetchAttributes,
+  googleService,
+  isLoading = false,
 }: Props) {
+  const { locationId } = useParams();
   const [editModalType, setEditModalType] = useState<EditModalType>(null);
-  const [isServicesModalOpen, setIsServicesModalOpen] = useState(false);
+  const { isOpen: isServicesModalOpen, openModal: openServicesModal, closeModal: closeServicesModal } = useModal();
 
   const handleSave = async (value: string) => {
-    let isValid = false;
-    switch (editModalType) {
-      case 'businessOwner': {
-        isValid = await setValueAndValidate('businessOwnerInfo', value);
-        break;
-      }
-      case 'serviceOption': {
-        isValid = await setValueAndValidate('serviceOptionInfo', value);
-        break;
-      }
-    }
-    if (isValid) {
+    if (!locationId) return false;
+    try {
+      // TODO: Implement API calls for updating business owner info and service options
+      console.log('Saving:', editModalType, value);
+      await fetchAttributes();
       setEditModalType(null);
+      return true;
+    } catch (error) {
+      console.error('Failed to save:', error);
+      return false;
     }
-    return isValid;
   };
 
   const handleServicesChange = async (services: Service[]) => {
-    const isValid = await setValueAndValidate('services', services);
-    if (isValid) {
-      setIsServicesModalOpen(false);
+    if (!locationId) return false;
+    try {
+      // Service[]をGoogleLocationAttributeService[]に変換
+      // マッピングを使用して属性名に変換
+      const attributeServices = services.map(service => {
+        const attributeName = SERVICE_ATTRIBUTE_MAPPING[service.id];
+        if (!attributeName) {
+          console.warn(`Unknown service id: ${service.id}`);
+          return null;
+        }
+        return {
+          type: attributeName as ApiServiceType,
+          value: service.isAvailable
+        };
+      }).filter((item): item is { type: ApiServiceType; value: boolean } => item !== null);
+      
+      // APIを呼び出してサービス属性を更新
+      await googleService.updateLocationAttributesServices(locationId, attributeServices);
+      
+      // 属性データを再取得
+      await fetchAttributes();
+      closeServicesModal();
+      return true;
+    } catch (error) {
+      console.error('Failed to save services:', error);
+      return false;
     }
-    return isValid;
   };
+
+  if (isLoading) {
+    return <Loading message="その他情報を読み込み中..." size="small" minHeight="200px" />;
+  }
 
   return (
     <Wrapper direction="col" gap="3rem" className={styles.main_content}>
@@ -80,7 +101,7 @@ export default function OtherSectionTab({
         <Wrapper className={styles.field_row}>
           <Wrapper className={styles.field_container}>
             <Typography
-              content={values.businessOwnerInfo || ''}
+              content={formatBusinessOwnerInfo(attributes)}
               color="secondary"
               size="normal"
             />
@@ -89,7 +110,6 @@ export default function OtherSectionTab({
             bgColor="primary"
             padding="0.5rem 1.8rem"
             onClick={() => setEditModalType('businessOwner')}
-            disabled={isUpdating}
           >
             <Typography
               content="編集"
@@ -110,7 +130,7 @@ export default function OtherSectionTab({
         <Wrapper className={styles.field_row}>
           <Wrapper className={styles.field_container}>
             <Typography
-              content={formatServices(values.services)}
+              content={formatServices(attributes?.attributes || [])}
               color="secondary"
               size="normal"
             />
@@ -118,8 +138,7 @@ export default function OtherSectionTab({
           <Button
             bgColor="primary"
             padding="0.5rem 1.8rem"
-            onClick={() => setIsServicesModalOpen(true)}
-            disabled={isUpdating}
+            onClick={openServicesModal}
           >
             <Typography
               content="編集"
@@ -140,7 +159,7 @@ export default function OtherSectionTab({
         <Wrapper className={styles.field_row}>
           <Wrapper className={styles.field_container}>
             <Typography
-              content={values.serviceOptionInfo || ''}
+              content={formatServiceOptions(attributes?.attributes || [])}
               color="secondary"
               size="normal"
             />
@@ -149,7 +168,6 @@ export default function OtherSectionTab({
             bgColor="primary"
             padding="0.5rem 1.8rem"
             onClick={() => setEditModalType('serviceOption')}
-            disabled={isUpdating}
           >
             <Typography
               content="編集"
@@ -170,33 +188,56 @@ export default function OtherSectionTab({
             'サービスオプション'
           }
           content={
-            editModalType === 'businessOwner' ? values.businessOwnerInfo || '' :
-            values.serviceOptionInfo || ''
+            editModalType === 'businessOwner' ? formatBusinessOwnerInfo(attributes) :
+            formatServiceOptions(attributes?.attributes || [])
           }
           onSave={handleSave}
-          error={
-            editModalType === 'businessOwner' ? validationErrors.businessOwnerInfo :
-            validationErrors.serviceOptionInfo
-          }
+          error={undefined}
         />
       )}
 
       {/* サービス編集モーダル */}
       {isServicesModalOpen && (
         <EditServicesModal
-          isOpen={true}
-          onClose={() => setIsServicesModalOpen(false)}
-          services={values.services}
+          isOpen={isServicesModalOpen}
+          onClose={closeServicesModal}
+          services={formatServicesForModal(attributes?.attributes || [])}
           onSave={handleServicesChange}
-          error={validationErrors.services}
+          error={undefined}
         />
       )}
     </Wrapper>
   );
 }
 
-const formatServices = (services: Service[]): string => {
-  const availableServices = services.filter(service => service.isAvailable);
-  if (availableServices.length === 0) return 'なし';
-  return availableServices.map(service => service.name).join('、');
+const formatBusinessOwnerInfo = (attributes: GoogleLocationAttributesModel | null): string => {
+  if (!attributes) return 'ビジネス所有者情報が設定されていません';
+  // TODO: Extract business owner info from attributes
+  return 'ビジネス所有者情報が設定されていません';
+};
+
+const formatServices = (attributes: GoogleLocationAttributesModel['attributes']): string => {
+  if (!attributes || attributes.length === 0) return 'サービスが設定されていません';
+  // TODO: Format services based on actual attributes structure
+  const serviceAttributes = attributes.filter(attr => attr.name?.includes('service') || attr.name?.includes('サービス'));
+  if (serviceAttributes.length === 0) return 'サービスが設定されていません';
+  return serviceAttributes.map(attr => attr.name).filter(Boolean).join('、');
+};
+
+const formatServiceOptions = (attributes: GoogleLocationAttributesModel['attributes']): string => {
+  if (!attributes || attributes.length === 0) return 'サービスオプションが設定されていません';
+  // TODO: Format service options based on actual attributes structure
+  const optionAttributes = attributes.filter(attr => attr.name?.includes('option') || attr.name?.includes('オプション'));
+  if (optionAttributes.length === 0) return 'サービスオプションが設定されていません';
+  return optionAttributes.map(attr => attr.name).filter(Boolean).join('、');
+};
+
+const formatServicesForModal = (attributes: GoogleLocationAttributesModel['attributes']): Service[] => {
+  if (!attributes || attributes.length === 0) return [];
+  // TODO: Convert attributes to Service[] format for modal
+  return attributes.map((attr, index) => ({
+    id: index.toString(),
+    name: attr.name || '',
+    isAvailable: Boolean(attr.values && attr.values.length > 0)
+  }));
 };

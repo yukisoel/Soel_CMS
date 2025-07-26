@@ -84,3 +84,57 @@ export enum LocalPostTopicType {
     OFFER = 'OFFER',
     ALERT = 'ALERT',
 }
+
+export enum GoogleLocationAttributeServiceType {
+    ALCOHOL = "アルコール飲料あり",
+    ORGANIC_FOOD = "オーガニック料理あり",
+    COCKTAILS = "カクテルあり",
+    COFFEE = "コーヒーあり",
+    SALAD_BAR = "サラダバーあり",
+    HAPPY_HOUR_DRINKS = "ドリンクのハッピーアワーあり",
+    HARD_LIQUOR = "ハードリカーあり",
+    HALAL_MENU = "ハラルメニューあり",
+    VEGAN_MENU = "ビーガンメニューあり",
+    BEER = "ビールあり",
+    VEGETARIAN_MENU = "ベジタリアンメニューあり",
+    WINE = "ワインあり",
+    PRIVATE_ROOMS = "個室あり",
+    SMALL_PLATES = "小皿料理を提供するお店",
+    HAPPY_HOUR_FOOD = "食べ物のハッピーアワーあり",
+    ALL_YOU_CAN_EAT = "食べ放題あり",
+    LATE_NIGHT_DINING = "深夜の食事可",
+    BRAILLE_MENU = "点字メニューあり"
+}
+
+export enum GoogleLocationAttributeServiceOptionType {
+    OUTDOOR_SEATING = "テラス席あり",
+    CURBSIDE_PICKUP = "店先受取可",
+    NO_CONTACT_DELIVERY = "非接触宅配可",
+    DELIVERY = "宅配可",
+    DRIVE_THROUGH = "ドライブスルーあり",
+    DINE_IN = "実店舗の営業あり",
+    TAKEOUT = "テイクアウト可",
+    EAT_IN = "イートイン利用可"
+}
+
+// サービス属性名のマッピング（フロントエンドのenumキーからバックエンドのenumキーへ）
+export const SERVICE_ATTRIBUTE_MAPPING: Record<string, string> = {
+    ALCOHOL: 'SERVICE_ALCOHOL',
+    ORGANIC_FOOD: 'SERVES_ORGANIC',
+    COCKTAILS: 'SERVES_COCKTAILS',
+    COFFEE: 'SERVES_COFFEE',
+    SALAD_BAR: 'HAS_SALAD_BAR',
+    HAPPY_HOUR_DRINKS: 'SERVES_HAPPY_HOUR_DRINKS',
+    HARD_LIQUOR: 'SERVES_LIQUOR',
+    HALAL_MENU: 'SERVES_HALAL_FOOD',
+    VEGAN_MENU: 'SERVES_VEGAN',
+    BEER: 'SERVES_BEER',
+    VEGETARIAN_MENU: 'SERVES_VEGETARIAN',
+    WINE: 'SERVES_WINE',
+    PRIVATE_ROOMS: 'HAS_PRIVATE_DINING_ROOM',
+    SMALL_PLATES: 'SERVES_SMALL_PLATES',
+    HAPPY_HOUR_FOOD: 'SERVES_HAPPY_HOUR_FOOD',
+    ALL_YOU_CAN_EAT: 'HAS_ALL_YOU_CAN_EAT_ALWAYS',
+    LATE_NIGHT_DINING: 'SERVES_LATE_NIGHT_FOOD',
+    BRAILLE_MENU: 'HAS_BRAILLE_MENU'
+}

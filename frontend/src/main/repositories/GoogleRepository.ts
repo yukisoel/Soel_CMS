@@ -6,6 +6,9 @@ import {
   GoogleLocationPhotoModel,
 } from "@/main/model/LocationModel.ts";
 import {GoogleAccount, GoogleLocation, GoogleLocationProfileModel, GoogleLocationDate, GoogleLocationCategory, GoogleLocationAttributeSnsLinkRequest, GoogleLocationAttributesModel, GoogleLocationStoreFrontAddressRequest, GoogleLocationBusinessHoursRequest, GooglePlacesAutoCompleteResponse, GoogleLocationLocalPostRequest, GoogleLocationReviewModel, BrandWithStoresListResponse, PrefectureListWithBrandListWithStoreListResponse } from "@/types/apiModel.ts";
+import { components } from "@/types/api.ts";
+
+type GoogleLocationAttributeService = components["schemas"]["GoogleLocationAttributeService"];
 
 export interface GoogleRepository {
   getAccounts(): Promise<GoogleAccount[]>
@@ -23,6 +26,12 @@ export interface GoogleRepository {
   getLocationFoodMenus(accountId: string,locationId: string): Promise<GoogleLocationFoodMenusModel>
 
   getLocationAttributes(locationId: string): Promise<GoogleLocationAttributesModel>
+
+  getLocationAttributesServices(locationId: string): Promise<GoogleLocationAttributesModel>
+
+  getLocationAttributesServicesOptions(): Promise<GoogleLocationAttributesModel>
+
+  getLocationBusinessOwnerInfo(locationId: string): Promise<GoogleLocationAttributesModel>
 
   getCategories(): Promise<GoogleLocationCategory[]>
 
@@ -53,6 +62,8 @@ export interface GoogleRepository {
   updateLocationAttributeMenuLink(locationId: string, menuLink: string): Promise<GoogleLocationProfileModel>
 
   updateLocationAttributeSnsLink(locationId: string, snsLink: GoogleLocationAttributeSnsLinkRequest): Promise<GoogleLocationProfileModel>
+
+  updateLocationAttributesServices(locationId: string, services: GoogleLocationAttributeService[]): Promise<GoogleLocationAttributesModel>
 
   updateLocationFoodMenus(accountId: string, locationId: string, foodMenus: GoogleLocationFoodMenusModel): Promise<void>
 
@@ -209,6 +220,54 @@ export class GoogleRepositoryImpl implements GoogleRepository {
     } catch (error) {
       console.error(error)
       throw new Error("google get location attributes failed")
+    }
+  }
+
+  async getLocationAttributesServices(locationId: string): Promise<GoogleLocationAttributesModel> {
+    try {
+      const response: AxiosResponse<GoogleLocationAttributesModel> = await axiosApiClient.get('google/location/attributes/services', {
+        params: {
+          locationId: locationId
+        },
+        headers: {
+          'Accept': 'application/json; charset=utf-8',
+        },
+      })
+      return response.data
+    } catch (error) {
+      console.error(error)
+      throw new Error("google get location attributes services failed")
+    }
+  }
+
+  async getLocationAttributesServicesOptions(): Promise<GoogleLocationAttributesModel> {
+    try {
+      const response: AxiosResponse<GoogleLocationAttributesModel> = await axiosApiClient.get('google/location/attributes/servicesOptions', {
+        headers: {
+          'Accept': 'application/json; charset=utf-8',
+        },
+      })
+      return response.data
+    } catch (error) {
+      console.error(error)
+      throw new Error("google get location attributes services options failed")
+    }
+  }
+
+  async getLocationBusinessOwnerInfo(locationId: string): Promise<GoogleLocationAttributesModel> {
+    try {
+      const response: AxiosResponse<GoogleLocationAttributesModel> = await axiosApiClient.get('google/location/business_owner_info', {
+        params: {
+          locationId: locationId
+        },
+        headers: {
+          'Accept': 'application/json; charset=utf-8',
+        },
+      })
+      return response.data
+    } catch (error) {
+      console.error(error)
+      throw new Error("google get location business owner info failed")
     }
   }
 
@@ -498,6 +557,28 @@ export class GoogleRepositoryImpl implements GoogleRepository {
     } catch (error) {
       console.error(error)
       throw new Error("google update location profile sns link failed")
+    }
+  }
+
+  async updateLocationAttributesServices(locationId: string, services: GoogleLocationAttributeService[]): Promise<GoogleLocationAttributesModel> {
+    try {
+      const response: AxiosResponse<GoogleLocationAttributesModel> = await axiosApiClient.patch(
+        'google/location/attributes/services',
+        services,
+        {
+          params: {
+            locationId: locationId,
+          },
+          headers: {
+            'Accept': 'application/json; charset=utf-8',
+            'Content-Type': 'application/json',
+          },
+        }
+      )
+      return response.data
+    } catch (error) {
+      console.error(error)
+      throw new Error("google update location attributes services failed")
     }
   }
 
