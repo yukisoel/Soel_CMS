@@ -25,8 +25,8 @@ export default function SearchStoreV2({ googleService }: Props) {
   const [locationList, setLocationList] = useState<GoogleLocation[]>([]);
   const navigate = useNavigate();
 
-  const { selectedAccount, setSelectedAccount } = useContext(GoogleAccountsContext);
-  const { googleSelectedLocation, setGoogleSelectedLocation } = useContext(GoogleSelectedLocationContext);
+  const { selectedAccount, setSelectedAccount } = useContext(GoogleAccountsContext)!;
+  const { googleSelectedLocation, setGoogleSelectedLocation } = useContext(GoogleSelectedLocationContext)!;
   const { setPankuzuItemList } = useContext(PankuzuItemListContext);
 
   useEffect(() => {

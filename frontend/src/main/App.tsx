@@ -28,26 +28,19 @@ const googleService = new GoogleServiceImpl({googleRepository})
 
 function App() {
 
-  axiosApiClient.get('google/me')
-    .then(_res => {
-    })
-    .catch(_ => {
-      window.location.href = '/oauth2/authorization/cognito'
-    })
+  axiosApiClient.get('cognito/me')
 
   return (
-    <Routes>
-      <Route path="/edit"
-             element={
-               <GoogleAccountsContextProvider>
-                 <GoogleSelectedLocationContextProvider>
+    <GoogleAccountsContextProvider>
+      <GoogleSelectedLocationContextProvider>
+        <Routes>
+          <Route path="/edit"
+                 element={
                    <PankuzuListContextProvider>
                      <EditPageAdvanced />
                    </PankuzuListContextProvider>
-                 </GoogleSelectedLocationContextProvider>
-               </GoogleAccountsContextProvider>
-             }
-      >
+                 }
+          >
         <Route path={''} element={<SearchStoreV2 googleService={googleService}/>}></Route>
         <Route path={"gbp"}>
           <Route path={"accounts/:accountId/location/:locationId"}
@@ -67,31 +60,24 @@ function App() {
           <Route path={"accounts/:accountId/location/:locationId/qa"}
                   element={<EditQaLayout googleService={googleService}/>}/>
         </Route>
-      </Route>
-      <Route path={'/basic'}
-        element={
-          <GoogleAccountsContextProvider>
-            <GoogleSelectedLocationContextProvider>
-                    <EditPageAdvanced />
-            </GoogleSelectedLocationContextProvider>
-          </GoogleAccountsContextProvider>
-        }>
-          <Route path={'bulk/schedule-post'}
-            element={<SchedulePost googleService={googleService} />} />
-          <Route path={'bulk/schedule-post-list'}
-            element={<SchedulePostList />} />
-          <Route path={'bulk/history-post-list'}
-            element={<HistoryPostList />} />
-          <Route path={'bulk/photo'}
-            element={<BlukPhoto googleService={googleService} />} />
-          <Route path={'bulk/special'}
-            element={<BulkSpecialOpeningHours googleService={googleService} />} />
-          <Route path={'store'}
-            element={<SelectStoreSingleRender googleService={googleService} />} />
-          <Route path={'review'}
-            element={<ReviewPage />} />
-      </Route>
-    </Routes>
+        <Route path={'bulk/schedule-post'}
+          element={<SchedulePost googleService={googleService} />} />
+        <Route path={'bulk/schedule-post-list'}
+          element={<SchedulePostList />} />
+        <Route path={'bulk/history-post-list'}
+          element={<HistoryPostList />} />
+        <Route path={'bulk/photo'}
+          element={<BlukPhoto googleService={googleService} />} />
+        <Route path={'bulk/special'}
+          element={<BulkSpecialOpeningHours googleService={googleService} />} />
+        <Route path={'store'}
+          element={<SelectStoreSingleRender googleService={googleService} />} />
+        <Route path={'accounts/:accountId/location/:locationId/review'}
+          element={<ReviewPage googleService={googleService} />} />
+          </Route>
+        </Routes>
+      </GoogleSelectedLocationContextProvider>
+    </GoogleAccountsContextProvider>
   )
 }
 

@@ -2,56 +2,81 @@ import Wrapper from "@/main/common/Wrapper";
 import Typography from "@/main/common/Typography";
 import Button from "@/main/common/Button";
 import styles from "../EditProfileLayoutV2.module.scss";
-import EditOtherModal from "../modals/EditOtherModal";
-import { useState } from "react";
-import { UseFormRegister, FieldErrors, Path } from "react-hook-form";
-import { ProfileFormData } from "@/main/schemas/profileSchema";
+import { GoogleLocationProfileModel, GoogleLocationAttributesModel, GoogleLocationAttributeSnsLinkRequest, GoogleLocationAttribute } from "@/types/apiModel";
+import { GoogleService } from "@/main/service/GoogleService";
+import { useParams } from "react-router-dom";
+import { useModal } from "@/main/common/Modal/useModal";
+import { EditPhoneModal } from "../modals/EditPhoneModal";
+import { EditWebSiteUrlModal } from "../modals/EditWebSiteUrlModal";
+import { EditMenuLinkModal } from "../modals/EditMenuLinkModal";
+import { EditSnsLinkModal } from "../modals/EditSnsLinkModal";
+import { useMemo, useState } from "react";
 
 type Props = {
-    register: UseFormRegister<ProfileFormData>;
-    errors: FieldErrors<ProfileFormData>;
-    values: {
-        phoneNumber?: string;
-        website?: string;
-        menuLink?: string;
-    };
-    setValueAndValidate: (name: Path<ProfileFormData>, value: ProfileFormData[keyof ProfileFormData] | string[] | { [key: string]: unknown }) => Promise<boolean>;
-    isUpdating: boolean;
-    validationErrors: {
-        phoneNumber?: string;
-        website?: string;
-        menuLink?: string;
-    };
+    profile: GoogleLocationProfileModel | null;
+    attributes: GoogleLocationAttributesModel | null;
+    fetchProfile: () => Promise<void>;
+    fetchAttributes: () => Promise<void>;
+    googleService: GoogleService;
 };
 
-type EditModalType = 'phoneNumber' | 'website' | 'menuLink' | null;
+const SNS_TYPE_LABEL_MAP = {
+    FACEBOOK: 'Facebookリンク',
+    INSTAGRAM: 'Instagramリンク',
+    TWITTER: 'X（旧Twitter）リンク',
+    TIKTOK: 'TikTokリンク',
+    YOUTUBE: 'YouTubeリンク',
+    LINKEDIN: 'LinkedInリンク',
+    PINTEREST: 'Pinterestリンク',
+};
 
 export default function ContactTab({
-    values,
-    setValueAndValidate,
-    isUpdating,
-    validationErrors
+    profile,
+    attributes: attributesModel,
+    fetchProfile,
+    fetchAttributes,
+    googleService,
 }: Props) {
-    const [editModalType, setEditModalType] = useState<EditModalType>(null);
-
-    const handleSave = async (value: string) => {
-        let isValid = false;
-        switch (editModalType) {
-            case 'phoneNumber':
-                isValid = await setValueAndValidate('phoneNumbers.primaryPhone', value);
-                break;
-            case 'website':
-                isValid = await setValueAndValidate('websiteUri', value);
-                break;
-            case 'menuLink':
-                isValid = await setValueAndValidate('menuUri', value);
-                break;
-        }
-        if (isValid) {
-            setEditModalType(null);
-        }
-        return isValid;
+    const { locationId } = useParams();
+    const { isOpen: isPhoneNumberModalOpen, openModal: openPhoneNumberModal, closeModal: closePhoneNumberModalBase } = useModal();
+    const handlePhoneNumberSave = async (data: {phone: string}) => {
+        await googleService.updateLocationProfilePhoneNumber(locationId ?? '', data.phone);
+        await fetchProfile();
+        closePhoneNumberModalBase();
     };
+    const { isOpen: isWebsiteModalOpen, openModal: openWebsiteModal, closeModal: closeWebsiteModalBase } = useModal();
+    const handleWebsiteSave = async (data: {webSiteUri: string}) => {
+        await googleService.updateLocationProfileWebsiteUri(locationId ?? '', data.webSiteUri);
+        await fetchProfile();
+        closeWebsiteModalBase();
+    };
+    const { isOpen: isMenuLinkModalOpen, openModal: openMenuLinkModal, closeModal: closeMenuLinkModalBase } = useModal();
+    const handleMenuLinkSave = async (data: {menuLink: string}) => {
+        await googleService.updateLocationAttributeMenuLink(locationId ?? '', data.menuLink);
+        await fetchAttributes();
+        closeMenuLinkModalBase();
+    };
+    const menuLink = useMemo(() => {
+        const uriValues = attributesModel?.attributes?.find(attribute => attribute.name === 'attributes/url_menu')?.uriValues;
+        return uriValues?.[0]?.uri || '';
+    }, [attributesModel]);
+
+    const { isOpen: isSnsLinkModalOpen, openModal: openSnsLinkModal, closeModal: closeSnsLinkModalBase } = useModal();
+    const handleSnsLinkSave = async (data: {snsLink: string}) => {
+        if (!selectedSnsLink) return;
+        const snsType = selectedSnsLink.name?.replace('attributes/url_', '').toUpperCase() as GoogleLocationAttributeSnsLinkRequest['snsType'] || '';
+        await googleService.updateLocationAttributeSnsLink(locationId ?? '', { snsType, snsUrl: data.snsLink });
+        await fetchAttributes();
+        closeSnsLinkModalBase();
+    };
+
+    const snsLinks = useMemo(() => {
+        const snsLinks = attributesModel?.attributes?.filter(attribute => attribute.valueType === "URL")?.filter(attribute => attribute.name !== 'attributes/url_menu');
+        return snsLinks;
+    }, [attributesModel]);
+
+    const [selectedSnsLink, setSelectedSnsLink] = useState<GoogleLocationAttribute | null>(null);
+
 
     return (
         <Wrapper direction="col" gap="3rem" className={styles.main_content}>
@@ -65,7 +90,7 @@ export default function ContactTab({
                 <Wrapper className={styles.field_row}>
                     <Wrapper className={styles.field_container}>
                         <Typography
-                            content={values.phoneNumber || ''}
+                            content={profile?.phoneNumbers?.primaryPhone || ''}
                             color="secondary"
                             size="normal"
                         />
@@ -73,8 +98,8 @@ export default function ContactTab({
                     <Button
                         bgColor="primary"
                         padding="0.5rem 1.8rem"
-                        onClick={() => setEditModalType('phoneNumber')}
-                        disabled={isUpdating}
+                        onClick={openPhoneNumberModal}
+                        // disabled={isUpdating}
                     >
                         <Typography
                             content="編集"
@@ -95,7 +120,7 @@ export default function ContactTab({
                 <Wrapper className={styles.field_row}>
                     <Wrapper className={styles.field_container}>
                         <Typography
-                            content={values.website || ''}
+                            content={profile?.websiteUri || ''}
                             color="secondary"
                             size="normal"
                         />
@@ -103,8 +128,8 @@ export default function ContactTab({
                     <Button
                         bgColor="primary"
                         padding="0.5rem 1.8rem"
-                        onClick={() => setEditModalType('website')}
-                        disabled={isUpdating}
+                        onClick={openWebsiteModal}
+                        // disabled={isUpdating}
                     >
                         <Typography
                             content="編集"
@@ -114,6 +139,38 @@ export default function ContactTab({
                     </Button>
                 </Wrapper>
             </Wrapper>
+
+            {/* SNSリンクセクション */}
+            {snsLinks?.map((attribute, idx) => (
+                <Wrapper direction="col" gap="1rem" key={attribute.name || idx}>
+                    <Typography
+                        content={attribute.name ? (SNS_TYPE_LABEL_MAP[attribute.name.replace('attributes/url_', '').toUpperCase() as keyof typeof SNS_TYPE_LABEL_MAP] || 'SNSリンク') : 'SNSリンク'}
+                        color="primary"
+                        size="normal"
+                    />
+                    <Wrapper className={styles.field_row}>
+                        <Wrapper className={styles.field_container}>
+                            <Typography
+                                content={attribute.uriValues?.[0]?.uri || ''}
+                                color="secondary"
+                                size="normal"
+                            />
+                        </Wrapper>
+                        <Button
+                            bgColor="primary"
+                            padding="0.5rem 1.8rem"
+                            onClick={() => { setSelectedSnsLink(attribute); openSnsLinkModal(); }}
+                        >
+                            <Typography
+                                content="編集"
+                                color="primary"
+                                size="normal"
+                            />
+                        </Button>
+                    </Wrapper>
+                </Wrapper>
+            ))}
+
 
             {/* メニューリンクセクション */}
             <Wrapper direction="col" gap="1rem">
@@ -125,7 +182,7 @@ export default function ContactTab({
                 <Wrapper className={styles.field_row}>
                     <Wrapper className={styles.field_container}>
                         <Typography
-                            content={values.menuLink || ''}
+                            content={menuLink}
                             color="secondary"
                             size="normal"
                         />
@@ -133,8 +190,8 @@ export default function ContactTab({
                     <Button
                         bgColor="primary"
                         padding="0.5rem 1.8rem"
-                        onClick={() => setEditModalType('menuLink')}
-                        disabled={isUpdating}
+                        onClick={openMenuLinkModal}
+                        // disabled={isUpdating}
                     >
                         <Typography
                             content="編集"
@@ -145,29 +202,31 @@ export default function ContactTab({
                 </Wrapper>
             </Wrapper>
 
-            {/* 編集モーダル */}
-            {editModalType && (
-                <EditOtherModal
-                    isOpen={true}
-                    onClose={() => setEditModalType(null)}
-                    title={
-                        editModalType === 'phoneNumber' ? '電話番号' :
-                        editModalType === 'website' ? 'ウェブサイト' :
-                        'メニューリンク'
-                    }
-                    content={
-                        editModalType === 'phoneNumber' ? values.phoneNumber || '' :
-                        editModalType === 'website' ? values.website || '' :
-                        values.menuLink || ''
-                    }
-                    onSave={handleSave}
-                    error={
-                        editModalType === 'phoneNumber' ? validationErrors.phoneNumber :
-                        editModalType === 'website' ? validationErrors.website :
-                        validationErrors.menuLink
-                    }
-                />
-            )}
+            <EditPhoneModal
+                isOpen={isPhoneNumberModalOpen}
+                onClose={closePhoneNumberModalBase}
+                onSubmit={handlePhoneNumberSave}
+                initialValues={{phone: profile?.phoneNumbers?.primaryPhone || ''}}
+            />
+            <EditWebSiteUrlModal
+                isOpen={isWebsiteModalOpen}
+                onClose={closeWebsiteModalBase}
+                onSubmit={handleWebsiteSave}
+                initialValues={{webSiteUri: profile?.websiteUri || ''}}
+            />
+            <EditMenuLinkModal
+                isOpen={isMenuLinkModalOpen}
+                onClose={closeMenuLinkModalBase}
+                onSubmit={handleMenuLinkSave}
+                initialValues={{menuLink: menuLink}}
+            />
+            <EditSnsLinkModal
+                isOpen={isSnsLinkModalOpen}
+                onClose={closeSnsLinkModalBase}
+                onSubmit={handleSnsLinkSave}
+                type={selectedSnsLink ? selectedSnsLink.name?.replace('attributes/url_', '').toUpperCase() as GoogleLocationAttributeSnsLinkRequest['snsType'] : 'TWITTER' as GoogleLocationAttributeSnsLinkRequest['snsType']}
+                initialValues={{ snsLink: selectedSnsLink?.uriValues?.[0]?.uri || '' }}
+            />
         </Wrapper>
     );
 }

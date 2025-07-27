@@ -6,10 +6,10 @@ import { LatestInformationTab } from './tabs/LatestInformationTab';
 import { BenefitTab } from './tabs/BenefitTab';
 import { EventTab } from './tabs/EventTab';
 import styles from './EditLatestInformation.module.scss';
-import { GoogleServiceImpl } from '@/main/service/GoogleService';
+import { GoogleService } from '@/main/service/GoogleService';
 
 interface Props {
-  googleService: GoogleServiceImpl;
+  googleService: GoogleService;
 }
 
 export const EditLatestInformationV2: React.FC<Props> = ({ googleService }) => {
@@ -22,11 +22,11 @@ export const EditLatestInformationV2: React.FC<Props> = ({ googleService }) => {
   const renderTabContent = () => {
     switch (selectedTab) {
       case 'latest_information':
-        return <LatestInformationTab />;
+        return <LatestInformationTab googleService={googleService} />;
       case 'benefit':
-        return <BenefitTab />;
+        return <BenefitTab googleService={googleService} />;
       case 'event':
-        return <EventTab />;
+        return <EventTab googleService={googleService} />;
       default:
         return null;
     }

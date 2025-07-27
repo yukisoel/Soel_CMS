@@ -7,12 +7,16 @@ import SearchBox from '@/main/common/SearchBox';
 import Scroll from '@/main/common/Scroll';
 import styles from '../EditProfileLayoutV2.module.scss';
 import CloseSymbolYellow from '@/main/assets/CloseSymbolYellow.svg';
+import { GoogleService } from '@/main/service/GoogleService';
+import { GoogleLocationCategory } from '@/types/apiModel';
+import { useEffect } from 'react';
 
 type Props = {
   isOpen: boolean;
   onClose: () => void;
-  categories: string[];
-  onSave: (categories: string[]) => void;
+  categories: GoogleLocationCategory[];
+  onSave: (categories: GoogleLocationCategory[]) => Promise<void>;
+  googleService: GoogleService;
 };
 
 export default function EditBusinessCategoriesModal({
@@ -20,28 +24,29 @@ export default function EditBusinessCategoriesModal({
   onClose,
   categories,
   onSave,
+  googleService,
 }: Props) {
-  const [selectedCategories, setSelectedCategories] = useState<string[]>(categories);
+  const [selectedCategories, setSelectedCategories] = useState<GoogleLocationCategory[]>(categories);
   const [searchQuery, setSearchQuery] = useState('');
-  const [availableCategories] = useState([
-    '寿司店',
-    '回転寿司店',
-    'テイクアウト寿司店',
-    'シーフード・海鮮料理店',
-    '和食店',
-    'レストラン',
-    'カフェ',
-    'バー',
-    '居酒屋',
-  ]);
+  const [availableCategories, setAvailableCategories] = useState<GoogleLocationCategory[]>([]);
 
-  const handleAddCategory = (category: string) => {
+  useEffect(() => {
+    googleService.getCategories().then(categories => {
+      setAvailableCategories(categories)
+    })
+  }, [googleService])
+
+  useEffect(() => {
+    setSelectedCategories(categories)
+  }, [categories])
+
+  const handleAddCategory = (category: GoogleLocationCategory) => {
     if (!selectedCategories.includes(category)) {
       setSelectedCategories([...selectedCategories, category]);
     }
   };
 
-  const handleRemoveCategory = (category: string) => {
+  const handleRemoveCategory = (category: GoogleLocationCategory) => {
     setSelectedCategories(selectedCategories.filter(c => c !== category));
   };
 
@@ -51,9 +56,9 @@ export default function EditBusinessCategoriesModal({
   };
 
   const filteredCategories = availableCategories
-    .filter(category => !selectedCategories.includes(category))
+    .filter(category => !selectedCategories.some(s => s.name === category.name))
     .filter(category =>
-      category.toLowerCase().includes(searchQuery.toLowerCase())
+      (category?.displayName || '').toLowerCase().includes(searchQuery.toLowerCase())
     );
 
   const renderContent = () => (
@@ -71,7 +76,7 @@ export default function EditBusinessCategoriesModal({
                 gap="2rem"
                 align="align-center"
               >
-                <Typography content={`# ${category}`} color="primary" size="normal" />
+                <Typography content={`# ${category?.displayName || ''}`} color="primary" size="normal" />
                 <img
                   src={CloseSymbolYellow}
                   alt="削除"
@@ -105,7 +110,7 @@ export default function EditBusinessCategoriesModal({
                 onClick={() => handleAddCategory(category)}
               >
                 <Typography
-                  content={category}
+                  content={category?.displayName || ''}
                   color="primary"
                   size="normal"
                 />

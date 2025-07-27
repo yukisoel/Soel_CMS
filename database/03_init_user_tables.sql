@@ -32,10 +32,10 @@ CREATE TABLE IF NOT EXISTS stores (
     name        TEXT      NOT NULL,
     google_account_id VARCHAR(128) NULL,   -- GBP の accountId
     google_location_id VARCHAR(128) NULL,  -- GBP の locationId
-    linked_at      TIMESTAMPTZ NULL DEFAULT now(),
-    created_at  TIMESTAMPTZ NOT NULL DEFAULT now()
+    google_linked_at      TIMESTAMPTZ NULL,
+    created_at  TIMESTAMPTZ NOT NULL DEFAULT now(),
+    prefecture VARCHAR(16) NULL  -- 都道府県
 );
 -- 検索を速くするためのインデックス
 CREATE INDEX idx_stores_user_id  ON stores(user_id);
 CREATE INDEX idx_stores_brand_id ON stores(brand_id);
-

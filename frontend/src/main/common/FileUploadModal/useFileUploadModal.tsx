@@ -18,18 +18,23 @@ export default function useFileUploadModal({
     onUploadSuccess
 }: Props) {
     const [isOpen, setIsOpen] = useState<boolean>(false);
-    const [uploadedPhotoFileList, setUploadedPhotoFileList] = useState<FileList | null>(null);
+    const [uploadedPhotoFiles, setUploadedPhotoFiles] = useState<File[]>([]);
 
     const openModal = () => setIsOpen(true);
     const closeModal = () => {
         setIsOpen(false);
-        setUploadedPhotoFileList(null);
+        setUploadedPhotoFiles([]);
     };
 
     const handleUpload = async () => {
-        if (accountId && locationId && uploadedPhotoFileList && uploadedPhotoFileList.length > 0) {
+        if (accountId && locationId && uploadedPhotoFiles.length > 0) {
             try {
-                await googleService.postLocationPhoto(accountId, locationId, uploadedPhotoFileList);
+                // Convert File[] to FileList-like object for the API
+                const dataTransfer = new DataTransfer();
+                uploadedPhotoFiles.forEach(file => {
+                    dataTransfer.items.add(file);
+                });
+                await googleService.postLocationPhoto(accountId, locationId, dataTransfer.files);
                 onUploadSuccess?.();
                 closeModal();
             } catch (error) {
@@ -38,13 +43,23 @@ export default function useFileUploadModal({
         }
     };
 
+    const handleAddFiles = (fileList: FileList) => {
+        const newFiles = Array.from(fileList);
+        setUploadedPhotoFiles(prevFiles => [...prevFiles, ...newFiles]);
+    };
+
+    const handleRemoveFile = (index: number) => {
+        setUploadedPhotoFiles(prevFiles => prevFiles.filter((_, i) => i !== index));
+    };
+
     const render = () => (
         <FileUploadModal
             isOpen={isOpen}
             onClose={closeModal}
             size={size}
-            uploadedPhotoFileList={uploadedPhotoFileList}
-            setUploadedPhotoFileList={setUploadedPhotoFileList}
+            uploadedPhotoFiles={uploadedPhotoFiles}
+            onAddFiles={handleAddFiles}
+            onRemoveFile={handleRemoveFile}
             onUpload={handleUpload}
         />
     );
@@ -53,6 +68,6 @@ export default function useFileUploadModal({
         render,
         openModal,
         closeModal,
-        uploadedPhotoFileList
+        uploadedPhotoFiles
     }
 }

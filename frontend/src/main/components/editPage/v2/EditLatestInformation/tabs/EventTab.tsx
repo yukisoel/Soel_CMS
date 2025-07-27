@@ -13,6 +13,9 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import styles from '../EditLatestInformation.module.scss';
 import LayoutLabeledFormItem from '@/main/common/LayoutLabeledFormItem';
+import { GoogleService } from '@/main/service/GoogleService';
+import { useParams } from 'react-router-dom';
+import { LocalPostTopicType, LocationButtonName } from '@/types/apiModel';
 
 const schema = z.object({
   eventTitle: z.string().min(1, 'イベントのタイトルは必須です'),
@@ -27,7 +30,12 @@ const schema = z.object({
 
 type FormData = z.infer<typeof schema>;
 
-export const EventTab: React.FC = () => {
+interface Props {
+  googleService: GoogleService;
+}
+
+export const EventTab: React.FC<Props> = ({ googleService }) => {
+  const { accountId, locationId } = useParams();
   const {
     register,
     handleSubmit,
@@ -41,15 +49,50 @@ export const EventTab: React.FC = () => {
     },
   });
 
-  const buttonOptions = ['なし', '予約', 'オンライン注文', '購入', '詳細', '登録', '今すぐ電話'];
-  const { render: renderFileUpload } = useFileUpload({ size: 'regular' });
+  const { render: renderFileUpload, uploadedPhotoFileList } = useFileUpload({ size: 'regular' });
 
   const onSubmit = async (data: FormData) => {
+    if (!uploadedPhotoFileList) return;
     console.log(data);
-    // TODO: API呼び出しなどの処理を実装
+    await googleService.postLocationLocalPosts(accountId ?? '', locationId ?? '', {
+      summary: data.eventDetail,
+      callToAction: {
+        actionType: Object.keys(LocationButtonName).find(key => LocationButtonName[key as keyof typeof LocationButtonName] === data.selectedButton) as LocationButtonName,
+        url: data.buttonTitle,
+      },
+      topicType: LocalPostTopicType.EVENT,
+      event: {
+        title: data.eventTitle,
+        schedule: {
+          startDate: data.startDate ? {
+            year: data.startDate.getFullYear(),
+            month: data.startDate.getMonth() + 1,
+            day: data.startDate.getDate(),
+          } : undefined,
+          endDate: data.endDate ? {
+            year: data.endDate.getFullYear(),
+            month: data.endDate.getMonth() + 1,
+            day: data.endDate.getDate(),
+          } : undefined,
+          startTime: data.startTime ? {
+            hours: data.startTime.getHours(),
+            minutes: data.startTime.getMinutes(),
+            seconds: 0,
+            nanos: 0
+          } : undefined,
+          endTime: data.endTime ? {
+            hours: data.endTime.getHours(),
+            minutes: data.endTime.getMinutes(),
+            seconds: 0,
+            nanos: 0
+          } : undefined
+        }
+      }
+    }, uploadedPhotoFileList)
   };
 
   const eventDetailValue = watch('eventDetail') || '';
+  const selectedButton = watch('selectedButton') ?? '';
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -165,24 +208,6 @@ export const EventTab: React.FC = () => {
 
         <Wrapper direction="col" gap="16px">
           <Typography
-            content="追加ボタンのタイトル"
-            size="normal"
-            color="black"
-            className={styles.sectionTitle}
-          />
-          <Input
-            {...register('buttonTitle')}
-            placeholder="リンクの入力"
-            padding="10px 20px"
-            className={styles.input}
-          />
-          {errors.buttonTitle && (
-            <Typography content={errors.buttonTitle.message || ''} size="xsmall" color="error" />
-          )}
-        </Wrapper>
-
-        <Wrapper direction="col" gap="16px">
-          <Typography
             content="ボタンの追加（省略可）"
             size="normal"
             color="black"
@@ -190,14 +215,34 @@ export const EventTab: React.FC = () => {
           />
           <PhotoPullDownMenu
             placeholder="ボタンの種類を選択"
-            selectedContent={watch('selectedButton')}
+            selectedContent={selectedButton}
             setSelectedContent={(value) => setValue('selectedButton', value)}
-            options={buttonOptions}
+            options={Object.values(LocationButtonName).map(value => value.toString())}
           />
           {errors.selectedButton && (
             <Typography content={errors.selectedButton.message || ''} size="xsmall" color="error" />
           )}
         </Wrapper>
+
+        {selectedButton !== '' && (
+          <Wrapper direction="col" gap="16px">
+            <Typography
+              content={selectedButton}
+              size="normal"
+              color="black"
+              className={styles.sectionTitle}
+            />
+            <Input
+              {...register('buttonTitle')}
+              placeholder="リンクの入力"
+              padding="10px 20px"
+              className={styles.input}
+            />
+            {errors.buttonTitle && (
+              <Typography content={errors.buttonTitle.message || ''} size="xsmall" color="error" />
+            )}
+          </Wrapper>
+        )}
 
         <Wrapper justify="justify-start">
           <Button

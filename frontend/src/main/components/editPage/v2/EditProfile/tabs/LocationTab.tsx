@@ -1,71 +1,52 @@
-import { useState } from 'react';
 import Wrapper from "@/main/common/Wrapper";
 import Typography from "@/main/common/Typography";
 import Button from "@/main/common/Button";
 import styles from "../EditProfileLayoutV2.module.scss";
-import EditOtherModal from '../modals/EditOtherModal';
-import { ServiceAreaInfo } from '@/main/model/LocationModel';
-import { UseFormRegister, FieldErrors, Path } from "react-hook-form";
-import { ProfileFormData } from "@/main/schemas/profileSchema";
-
-type EditModalType = 'address' | 'serviceArea' | null;
-
+import { GoogleLocationProfileModel } from "@/types/apiModel.ts";
+import { GoogleService } from "@/main/service/GoogleService";
+import { useModal } from "@/main/common/Modal/useModal";
+import { useParams } from "react-router-dom";
+import { useMemo } from 'react';
+import { EditStorefrontAddressModal } from '../modals/EditStorefrontAddresModal';
+import { GoogleLocationStoreFrontAddressRequestAdministrativeArea } from '@/types/api.ts';
+import { EditServiceAreaModal } from "../modals/EditServiceAreaModal";
 type Props = {
-    register: UseFormRegister<ProfileFormData>;
-    errors: FieldErrors<ProfileFormData>;
-    values: {
-        address: string;
-        serviceArea: ServiceAreaInfo;
-    };
-    setValueAndValidate: (name: Path<ProfileFormData>, value: ProfileFormData[keyof ProfileFormData] | string[] | { [key: string]: unknown }) => Promise<boolean>;
-    isUpdating: boolean;
-    validationErrors: {
-        address?: string;
-        serviceArea?: string;
-    };
+    profile: GoogleLocationProfileModel | null;
+    fetchProfile: () => Promise<void>;
+    googleService: GoogleService;
 };
 
 export default function LocationTab({
-    values,
-    setValueAndValidate,
-    isUpdating,
-    validationErrors
+    profile,
+    fetchProfile,
+    googleService,
 }: Props) {
-    const [editModalType, setEditModalType] = useState<EditModalType>(null);
-
-    const handleSave = async (value: string) => {
-        let isValid = false;
-        switch (editModalType) {
-            case 'address': {
-                const [addressLine, locality, administrativeArea, postalCode] = value.split(',').map(s => s.trim());
-
-                // すべてのフィールドを更新し、最後のバリデーション結果を使用
-                await setValueAndValidate('storefrontAddress.addressLines' as Path<ProfileFormData>, [addressLine]);
-                await setValueAndValidate('storefrontAddress.locality' as Path<ProfileFormData>, locality);
-                await setValueAndValidate('storefrontAddress.administrativeArea' as Path<ProfileFormData>, administrativeArea);
-                await setValueAndValidate('storefrontAddress.postalCode' as Path<ProfileFormData>, postalCode);
-                isValid = await setValueAndValidate('storefrontAddress.regionCode' as Path<ProfileFormData>, 'JP');
-                break;
-            }
-            case 'serviceArea': {
-                const placeInfos = value.split('、')
-                    .filter(area => area.trim() !== '')
-                    .map(area => ({
-                        placeId: '',
-                        displayName: area,
-                        placeName: area
-                    }));
-
-                isValid = await setValueAndValidate('serviceArea.places' as Path<ProfileFormData>, { placeInfos });
-                break;
-            }
-        }
-        if (isValid) {
-            setEditModalType(null);
-        }
-        return isValid;
+    const { locationId } = useParams();
+    const { isOpen: isAddressModal, openModal: openAddressModal, closeModal: closeAddressModal } = useModal();
+    const { isOpen: isServiceAreaModal, openModal: openServiceAreaModal, closeModal: closeServiceAreaModal } = useModal();
+    const handleAddressSave = async (data: { postalCode: string, prefecture: string, address: string }) => {
+        await googleService.updateLocationProfileStorefrontAddress(locationId ?? '', {
+            postalCode: data.postalCode,
+            administrativeArea: data.prefecture as GoogleLocationStoreFrontAddressRequestAdministrativeArea,
+            addressLines: data.address.split(' '),
+        });
+        await fetchProfile();
+        closeAddressModal();
     };
 
+    const handleServiceAreaSave = async (data: { serviceArea?: string, placeId?: string }) => {
+        await googleService.updateLocationProfileServiceArea(locationId ?? '', [data.placeId ?? '']);
+        await fetchProfile();
+        closeServiceAreaModal();
+    };
+
+    const address = useMemo(() => {
+        if (!profile) return '';
+        const postalCode = profile?.storefrontAddress?.postalCode;
+        const administrativeArea = profile?.storefrontAddress?.administrativeArea;
+        const addressLines = profile?.storefrontAddress?.addressLines;
+        return `${postalCode} ${administrativeArea} ${addressLines?.join(' ')}`;
+    }, [profile])
     return (
         <Wrapper direction="col" gap="3rem" className={styles.main_content}>
             {/* 店舗の住所 */}
@@ -78,7 +59,7 @@ export default function LocationTab({
                 <Wrapper className={styles.field_row}>
                     <Wrapper className={styles.field_container}>
                         <Typography
-                            content={values.address}
+                            content={address}
                             color="secondary"
                             size="normal"
                         />
@@ -86,8 +67,7 @@ export default function LocationTab({
                     <Button
                         bgColor="primary"
                         padding="0.5rem 1.8rem"
-                        onClick={() => setEditModalType('address')}
-                        disabled={isUpdating}
+                        onClick={openAddressModal}
                     >
                         <Typography
                             content="編集"
@@ -108,7 +88,7 @@ export default function LocationTab({
                 <Wrapper className={styles.field_row}>
                     <Wrapper className={styles.field_container}>
                         <Typography
-                            content={values.serviceArea.places?.placeInfos.map(place => place.displayName).join('、') || ''}
+                            content={profile?.serviceArea?.places?.placeInfos?.map(place => place.placeName).join('、') || ''}
                             color="secondary"
                             size="normal"
                         />
@@ -116,8 +96,7 @@ export default function LocationTab({
                     <Button
                         bgColor="primary"
                         padding="0.5rem 1.8rem"
-                        onClick={() => setEditModalType('serviceArea')}
-                        disabled={isUpdating}
+                        onClick={openServiceAreaModal}
                     >
                         <Typography
                             content="編集"
@@ -129,24 +108,26 @@ export default function LocationTab({
             </Wrapper>
 
             {/* 編集モーダル */}
-            {editModalType && (
-                <EditOtherModal
-                    isOpen={true}
-                    onClose={() => setEditModalType(null)}
-                    title={editModalType === 'address' ? '住所' : 'サービス提供地域'}
-                    content={
-                        editModalType === 'address'
-                            ? values.address
-                            : values.serviceArea.places?.placeInfos.map(place => place.displayName).join('、') || ''
-                    }
-                    onSave={handleSave}
-                    error={
-                        editModalType === 'address'
-                            ? validationErrors.address
-                            : validationErrors.serviceArea
-                    }
-                />
-            )}
+            <EditStorefrontAddressModal
+                isOpen={isAddressModal}
+                onClose={closeAddressModal}
+                onSubmit={handleAddressSave}
+                initialValues={{
+                    postalCode: profile?.storefrontAddress?.postalCode ?? '',
+                    prefecture: profile?.storefrontAddress?.administrativeArea ?? '',
+                    address: profile?.storefrontAddress?.addressLines?.join(' ') ?? '',
+                }}
+            />
+            <EditServiceAreaModal
+                isOpen={isServiceAreaModal}
+                onClose={closeServiceAreaModal}
+                onSubmit={handleServiceAreaSave}
+                initialValues={{
+                    serviceArea: profile?.serviceArea?.places?.placeInfos?.[0]?.placeName ?? '',
+                    placeId: profile?.serviceArea?.places?.placeInfos?.[0]?.placeId ?? '',
+                }}
+                googleService={googleService}
+            />
         </Wrapper>
     );
 }
