@@ -52,7 +52,7 @@ Resources:
     Properties:
       ClientName: !Ref UserPoolClientName
       UserPoolId: !If [UseExistingUserPool, !Ref ExistingUserPoolId, !Ref MyUserPool]
-      GenerateSecret: false
+      GenerateSecret: true
       ExplicitAuthFlows:
         - ALLOW_USER_PASSWORD_AUTH
         - ALLOW_REFRESH_TOKEN_AUTH
