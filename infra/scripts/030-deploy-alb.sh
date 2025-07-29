@@ -59,6 +59,7 @@ aws cloudformation deploy \
     AlbSecurityGroup=$ALB_SG \
     TargetPort=$CONTAINER_PORT \
     ACMCertificateArn="$ACM_CERT_ARN" \
-  --region $REGION
+  --region $REGION \
+  --role-arn ${CF_EXEC_ROLE}
 
 echo "✅ ALBスタック作成完了"

@@ -1,0 +1,76 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Create or reuse a Cognito User Pool
+
+Parameters:
+  Environment:
+    Type: String
+    AllowedValues: [dev, prd]
+
+  ProjectName:
+    Type: String
+
+  UserPoolName:
+    Type: String
+
+  UserPoolClientName:
+    Type: String
+
+  ExistingUserPoolId:
+    Type: String
+    Default: ""
+    Description: If provided, reuse this existing Cognito User Pool instead of creating a new one
+
+Conditions:
+  UseExistingUserPool: !Not [!Equals [!Ref ExistingUserPoolId, ""]]
+  CreateUserPool: !Equals [!Ref ExistingUserPoolId, ""]
+
+Resources:
+  MyUserPool:
+    Condition: CreateUserPool
+    Type: AWS::Cognito::UserPool
+    DeletionPolicy: Retain
+    Properties:
+      UserPoolName: !Ref UserPoolName
+      AutoVerifiedAttributes:
+        - email
+      UsernameAttributes:
+        - email
+      Policies:
+        PasswordPolicy:
+          MinimumLength: 8
+          RequireUppercase: true
+          RequireLowercase: true
+          RequireNumbers: true
+          RequireSymbols: true
+      AccountRecoverySetting:
+        RecoveryMechanisms:
+          - Name: verified_email
+            Priority: 1
+
+  MyUserPoolClient:
+    Type: AWS::Cognito::UserPoolClient
+    Properties:
+      ClientName: !Ref UserPoolClientName
+      UserPoolId: !If [UseExistingUserPool, !Ref ExistingUserPoolId, !Ref MyUserPool]
+      GenerateSecret: false
+      ExplicitAuthFlows:
+        - ALLOW_USER_PASSWORD_AUTH
+        - ALLOW_REFRESH_TOKEN_AUTH
+        - ALLOW_USER_SRP_AUTH
+        - ALLOW_CUSTOM_AUTH
+
+Outputs:
+  UserPoolId:
+    Description: Cognito User Pool ID
+    Value: !If [UseExistingUserPool, !Ref ExistingUserPoolId, !Ref MyUserPool]
+
+  UserPoolArn:
+    Description: Cognito User Pool ARN
+    Value: !If [UseExistingUserPool,
+      !Sub "arn:aws:cognito-idp:${AWS::Region}:${AWS::AccountId}:userpool/${ExistingUserPoolId}",
+      !GetAtt MyUserPool.Arn
+    ]
+
+  UserPoolClientId:
+    Description: Cognito User Pool App Client ID
+    Value: !Ref MyUserPoolClient

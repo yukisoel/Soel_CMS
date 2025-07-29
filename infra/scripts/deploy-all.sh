@@ -20,11 +20,12 @@ SCRIPTS=(
   "030-deploy-alb.sh"
   "040-create-route53-alias.sh"
   "050-deploy-ecr.sh"
-  "060-deploy-rds-bastion.sh"
+  "060-deploy-rds.sh"
   "070-push-dummy-image.sh"
   "080-deploy-ecs.sh"
   "090-deploy-codedeploy.sh"
-  "100-deploy-app.sh"
+  "100-create-user-pool.sh"
+  # "900-deploy-app.sh"
 )
 
 echo "🚀 全スタックを順番にデプロイします"

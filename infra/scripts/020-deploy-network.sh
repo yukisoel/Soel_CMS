@@ -26,7 +26,8 @@ aws cloudformation deploy \
   --template-file ${TEMPLATE_DIR}/vpc.yml \
   --stack-name ${ENV}-${PROJECT}-vpc \
   --parameter-overrides Environment=$ENV ProjectName=$PROJECT \
-  --region $REGION
+  --region $REGION \
+  --role-arn ${CF_EXEC_ROLE}
 
 echo "⏳ VPC スタック完了待ち..."
 aws cloudformation wait stack-create-complete \
@@ -50,7 +51,8 @@ aws cloudformation deploy \
     ProjectName=$PROJECT \
     VpcId=$VPC_ID \
     SubnetPublic1Id=$PUB1_ID \
-  --region $REGION
+  --region $REGION \
+  --role-arn ${CF_EXEC_ROLE}
 
 echo "⏳ IGW/NAT スタック完了待ち..."
 aws cloudformation wait stack-create-complete \
@@ -75,7 +77,8 @@ aws cloudformation deploy \
     SubnetPublic2Id=$PUB2_ID \
     SubnetPrivate1Id=$PRV1_ID \
     SubnetPrivate2Id=$PRV2_ID \
-  --region $REGION
+  --region $REGION \
+  --role-arn ${CF_EXEC_ROLE}
 
 echo "▶️ 4. Security Group スタック作成"
 aws cloudformation deploy \
@@ -86,7 +89,8 @@ aws cloudformation deploy \
     ProjectName=$PROJECT \
     VpcId=$VPC_ID \
     VpcCidrBlock=$VPC_CIDR \
-  --region $REGION
+  --region $REGION \
+  --role-arn ${CF_EXEC_ROLE}
 
 echo "✅ ネットワーク関連のスタック作成が完了しました"
 
@@ -107,6 +111,7 @@ aws cloudformation deploy \
     SubnetPublic2Id=$PUB2_ID \
     PrivateRouteTableId=$PRIVATE_RT_ID \
     VpcEndpointSG=$VPCE_SG_ID \
-  --region $REGION
+  --region $REGION \
+  --role-arn ${CF_EXEC_ROLE}
 
 echo "✅ VPCエンドポイントスタックの作成が完了しました"

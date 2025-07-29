@@ -34,7 +34,8 @@ echo "▶️ CodeDeploy スタックの作成中..."
 aws cloudformation deploy \
   --template-file "$TEMPLATE_PATH" \
   --stack-name "$STACK_NAME" \
-  --region "$REGION" \
+  --region $REGION \
+  --role-arn ${CF_EXEC_ROLE} \
   --parameter-overrides \
     Environment=$ENV \
     ProjectName=$PROJECT \
