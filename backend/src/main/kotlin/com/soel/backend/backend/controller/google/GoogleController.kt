@@ -90,6 +90,11 @@ class GoogleController(val authHelper: AuthHelper,  val googleService: GoogleSer
         return googleService.getLocationAttributes(accessToken, locationId)
     }
 
+    @Operation(
+        summary = "Google:店舗の利用可能な属性情報を全て取得",
+        description = "Google:店舗の利用可能な属性情報を全て取得します",
+        tags = ["Google:GETメソッド"]
+    )
     @GetMapping("/location/attributes/available")
     fun getLocationAvailableAttributes(
         request: HttpServletRequest,
