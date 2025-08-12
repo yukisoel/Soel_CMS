@@ -40,6 +40,26 @@ data class GoogleLocation (
     val title: String
 )
 
+data class GoogleLocationAvailableAttributesResponse(
+    val attributeMetadata: List<GoogleAttributeMetadata>? = null,
+    val nextPageToken: String? = null,
+)
+
+data class GoogleAttributeMetadata(
+    val parent: String? = null,
+    val displayName: String? = null,
+    val groupDisplayName: String? = null,
+    val repeatable: Boolean? = null,
+    val deprecated: Boolean? = null,
+    val valueType: GoogleLocationAttributeValueType? = null,
+    val valueMetadata: List<GoogleAttributeValueMetadata>? = null,
+)
+
+data class GoogleAttributeValueMetadata(
+    val displayName: String? = null,
+    val values: List<JsonNode>? = null,
+)
+
 data class GoogleLocationAttributesModel(
     val name: String? = null,
     val attributes: List<GoogleLocationAttribute?>? = null,

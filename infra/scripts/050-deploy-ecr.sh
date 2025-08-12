@@ -20,6 +20,7 @@ aws cloudformation deploy \
     Environment=$ENV \
     ProjectName=$PROJECT \
     ECRName="$ECR_REPO_NAME" \
-  --region $REGION
+  --region $REGION \
+  --role-arn ${CF_EXEC_ROLE}
 
 echo "✅ ECR リポジトリ作成完了"
