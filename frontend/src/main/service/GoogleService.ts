@@ -1,11 +1,10 @@
 import {GoogleRepository} from "@/main/repositories/GoogleRepository.ts";
 import {
   GoogleLocationFoodMenusModel,
-  GoogleLocationLocalPostModel,
   GoogleLocationPhotoModel,
 } from "@/main/model/LocationModel.ts";
-import {GoogleAccount, GoogleLocation, GoogleLocationCategory, GoogleLocationDate, GoogleLocationAttributeSnsLinkRequest, GoogleLocationAttributesModel, GoogleLocationStoreFrontAddressRequest, GoogleLocationBusinessHoursRequest, GooglePlacesAutoCompleteResponse, GoogleLocationLocalPostRequest, GoogleLocationReviewModel, BrandWithStoresListResponse, PrefectureListWithBrandListWithStoreListResponse, GoogleLocationAttributeService, GoogleLocationAttributeServiceOption, GoogleLocationBusinessOwnerInfo } from "@/types/apiModel.ts";
-import {GoogleLocationProfileModel} from "@/types/apiModel.ts";
+import {GoogleAccount, GoogleLocation, GoogleLocationCategory, GoogleLocationDate, GoogleLocationAttributeSnsLinkRequest, GoogleLocationAttributesModel, GoogleLocationStoreFrontAddressRequest, GoogleLocationBusinessHoursRequest, GooglePlacesAutoCompleteResponse, GoogleLocationLocalPostRequest, GoogleLocationReviewModel, BrandWithStoresListResponse, PrefectureListWithBrandListWithStoreListResponse, GoogleLocationAttributeService, GoogleLocationAttributeServiceOption, GoogleLocationBusinessOwnerInfo, GoogleAttributeMetadata, GoogleLocationProfileModel } from "@/types/apiModel.ts";
+
 export interface GoogleService {
   getAccounts(): Promise<GoogleAccount[]>
   getAccount(accountId:string): Promise<GoogleAccount>
@@ -18,6 +17,8 @@ export interface GoogleService {
   getLocationAttributesServices(locationId: string): Promise<GoogleLocationAttributesModel>
   getLocationAttributesServicesOptions(): Promise<GoogleLocationAttributesModel>
   getLocationBusinessOwnerInfo(locationId: string): Promise<GoogleLocationAttributesModel>
+
+  getAvailableAttributes(locationId: string): Promise<GoogleAttributeMetadata[]>
   getCategories(): Promise<GoogleLocationCategory[]>
   getLocationReviews(accountId: string, locationId: string): Promise<GoogleLocationReviewModel[]>
   getBrandList(): Promise<BrandWithStoresListResponse>
@@ -100,6 +101,10 @@ export class GoogleServiceImpl implements GoogleService {
 
   async getLocationBusinessOwnerInfo(locationId: string): Promise<GoogleLocationAttributesModel> {
     return this.googleRepository.getLocationBusinessOwnerInfo(locationId)
+  }
+
+  async getAvailableAttributes(locationId: string): Promise<GoogleAttributeMetadata[]> {
+    return this.googleRepository.getAvailableAttributes(locationId)
   }
 
   async getCategories(): Promise<GoogleLocationCategory[]> {

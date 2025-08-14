@@ -5,7 +5,7 @@ import {
   GoogleLocationLocalPostModel,
   GoogleLocationPhotoModel,
 } from "@/main/model/LocationModel.ts";
-import {GoogleAccount, GoogleLocation, GoogleLocationProfileModel, GoogleLocationDate, GoogleLocationCategory, GoogleLocationAttributeSnsLinkRequest, GoogleLocationAttributesModel, GoogleLocationStoreFrontAddressRequest, GoogleLocationBusinessHoursRequest, GooglePlacesAutoCompleteResponse, GoogleLocationLocalPostRequest, GoogleLocationReviewModel, BrandWithStoresListResponse, PrefectureListWithBrandListWithStoreListResponse, GoogleLocationAttributeService, GoogleLocationAttributeServiceOption, GoogleLocationBusinessOwnerInfo } from "@/types/apiModel.ts";
+import {GoogleAccount, GoogleLocation, GoogleLocationProfileModel, GoogleLocationDate, GoogleLocationCategory, GoogleLocationAttributeSnsLinkRequest, GoogleLocationAttributesModel, GoogleLocationStoreFrontAddressRequest, GoogleLocationBusinessHoursRequest, GooglePlacesAutoCompleteResponse, GoogleLocationLocalPostRequest, GoogleLocationReviewModel, BrandWithStoresListResponse, PrefectureListWithBrandListWithStoreListResponse, GoogleLocationAttributeService, GoogleLocationAttributeServiceOption, GoogleLocationBusinessOwnerInfo, GoogleAttributeMetadata } from "@/types/apiModel.ts";
 
 export interface GoogleRepository {
   getAccounts(): Promise<GoogleAccount[]>
@@ -29,6 +29,8 @@ export interface GoogleRepository {
   getLocationAttributesServicesOptions(): Promise<GoogleLocationAttributesModel>
 
   getLocationBusinessOwnerInfo(locationId: string): Promise<GoogleLocationAttributesModel>
+
+  getAvailableAttributes(locationId: string): Promise<GoogleAttributeMetadata[]>
 
   getCategories(): Promise<GoogleLocationCategory[]>
 
@@ -269,6 +271,23 @@ export class GoogleRepositoryImpl implements GoogleRepository {
     } catch (error) {
       console.error(error)
       throw new Error("google get location business owner info failed")
+    }
+  }
+
+  async getAvailableAttributes(locationId: string): Promise<GoogleAttributeMetadata[]> {
+    try {
+      const response: AxiosResponse<GoogleAttributeMetadata[]> = await axiosApiClient.get('google/location/attributes/available', {
+        params: {
+          locationId: locationId
+        },
+        headers: {
+          'Accept': 'application/json; charset=utf-8',
+        },
+      })
+      return response.data
+    } catch (error) {
+      console.error(error)
+      throw new Error("google get available attributes failed")
     }
   }
 

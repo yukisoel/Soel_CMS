@@ -63,6 +63,7 @@ export type PrefectureListWithBrandListWithStoreListResponse = components['schem
 export type PrefectureWithBrandListWithStoreListResponse = components['schemas']['PrefectureWithBrandListWithStoreListResponse']
 export type BrandWithStoresResponse = components['schemas']['BrandWithStoresResponse']
 export type StoreResponse = components['schemas']['StoreResponse']
+export type GoogleAttributeMetadata = components['schemas']['GoogleAttributeMetadata']
 // export type GoogleLocationBusinessHours = paths['/api/google/location/profile']['get']['responses']['200']['content']['*/*']['regularHours']
 // export type GoogleLocationTimePeriod = paths['/api/google/location/profile']['get']['responses']['200']['content']['*/*']['regularHours']['periods'][0]
 // export type GoogleLocationTimeOfDay = paths['/api/google/location/profile']['get']['responses']['200']['content']['*/*']['regularHours']['periods'][0]['openTime']
@@ -108,7 +109,8 @@ export enum GoogleLocationAttributeServiceType {
     HAPPY_HOUR_FOOD = "食べ物のハッピーアワーあり",
     ALL_YOU_CAN_EAT = "食べ放題あり",
     LATE_NIGHT_DINING = "深夜の食事可",
-    BRAILLE_MENU = "点字メニューあり"
+    BRAILLE_MENU = "点字メニューあり",
+    BREAKFAST = "朝食"
 }
 
 export enum GoogleLocationAttributeServiceOptionType {
@@ -119,39 +121,94 @@ export enum GoogleLocationAttributeServiceOptionType {
     DRIVE_THROUGH = "ドライブスルーあり",
     DINE_IN = "実店舗の営業あり",
     TAKEOUT = "テイクアウト可",
-    EAT_IN = "イートイン利用可"
+    EAT_IN = "イートイン利用可",
+    // バリアフリー
+    AURACAST_BROADCAST_AUDIO = "Auracast ブロードキャスト オーディオ",
+    WHEELCHAIR_ACCESSIBLE_RESTROOM = "車椅子対応のトイレ",
+    WHEELCHAIR_ACCESSIBLE_SEATING = "車椅子対応の座席",
+    WHEELCHAIR_ACCESSIBLE_PARKING = "車椅子対応の駐車場",
+    HEARING_LOOP = "集団補聴用のヒアリングループ",
+    // 設備
+    RESTROOM_UNISEX = "男女共用トイレ",
+    // 客層
+    TRANSGENDER_SAFESPACE = "トランスジェンダー対応",
+    LGBTQ_FRIENDLY = "LGBTQ フレンドリー",
+    // 駐車場
+    ONSITE_PARKING = "敷地内駐車場",
+    PARKING_GARAGE_FREE = "無料の屋内駐車場",
+    PARKING_STREET_FREE = "無料の路上駐車場",
+    PARKING_LOT_FREE = "無料駐車場",
+    PARKING_GARAGE_PAID = "有料の屋内駐車場",
+    PARKING_STREET_PAID = "有料の路上駐車場",
+    PARKING_LOT_PAID = "有料駐車場",
+    // プラン
+    REQUIRES_APPOINTMENTS = "要予約",
+    // 決済方法
+    NFC_MOBILE_PAYMENT = "NFC モバイル決済",
+    CREDIT_CARD = "クレジットカード",
+    DEBIT_CARD = "デビットカード",
+    CASH_ONLY = "現金のみ",
+    CHECK_PAYMENT = "小切手"
 }
 
 // サービス属性名のマッピング（フロントエンドのenumキーからバックエンドのenumキーへ）
 export const SERVICE_ATTRIBUTE_MAPPING: Record<string, string> = {
-    ALCOHOL: 'SERVICE_ALCOHOL',
-    ORGANIC_FOOD: 'SERVES_ORGANIC',
-    COCKTAILS: 'SERVES_COCKTAILS',
-    COFFEE: 'SERVES_COFFEE',
-    SALAD_BAR: 'HAS_SALAD_BAR',
-    HAPPY_HOUR_DRINKS: 'SERVES_HAPPY_HOUR_DRINKS',
-    HARD_LIQUOR: 'SERVES_LIQUOR',
-    HALAL_MENU: 'SERVES_HALAL_FOOD',
-    VEGAN_MENU: 'SERVES_VEGAN',
-    BEER: 'SERVES_BEER',
-    VEGETARIAN_MENU: 'SERVES_VEGETARIAN',
-    WINE: 'SERVES_WINE',
-    PRIVATE_ROOMS: 'HAS_PRIVATE_DINING_ROOM',
-    SMALL_PLATES: 'SERVES_SMALL_PLATES',
-    HAPPY_HOUR_FOOD: 'SERVES_HAPPY_HOUR_FOOD',
-    ALL_YOU_CAN_EAT: 'HAS_ALL_YOU_CAN_EAT_ALWAYS',
-    LATE_NIGHT_DINING: 'SERVES_LATE_NIGHT_FOOD',
-    BRAILLE_MENU: 'HAS_BRAILLE_MENU'
+    ALCOHOL: 'attributes/serves_alcohol',
+    ORGANIC_FOOD: 'attributes/serves_organic',
+    COCKTAILS: 'attributes/serves_cocktails',
+    COFFEE: 'attributes/serves_coffee',
+    SALAD_BAR: 'attributes/has_salad_bar',
+    HAPPY_HOUR_DRINKS: 'attributes/serves_happy_hour_drinks',
+    HARD_LIQUOR: 'attributes/serves_liquor',
+    HALAL_MENU: 'attributes/serves_halal_food',
+    VEGAN_MENU: 'attributes/serves_vegan',
+    BEER: 'attributes/serves_beer',
+    VEGETARIAN_MENU: 'attributes/serves_vegetarian',
+    WINE: 'attributes/serves_wine',
+    PRIVATE_ROOMS: 'attributes/has_private_dining_room',
+    SMALL_PLATES: 'attributes/serves_small_plates',
+    HAPPY_HOUR_FOOD: 'attributes/serves_happy_hour_food',
+    ALL_YOU_CAN_EAT: 'attributes/has_all_you_can_eat_always',
+    LATE_NIGHT_DINING: 'attributes/serves_late_night_food',
+    BRAILLE_MENU: 'attributes/has_braille_menu',
+    BREAKFAST: 'attributes/serves_breakfast'
 }
 
 // サービスオプション属性名のマッピング（フロントエンドのenumキーからバックエンドのenumキーへ）
 export const SERVICE_OPTION_ATTRIBUTE_MAPPING: Record<string, string> = {
-    OUTDOOR_SEATING: 'HAS_SEATING_OUTDOORS',
-    CURBSIDE_PICKUP: 'HAS_CURBSIDE_PICKUP',
-    NO_CONTACT_DELIVERY: 'HAS_NO_CONTACT_DELIVERY',
-    DELIVERY: 'HAS_DELIVERY',
-    DRIVE_THROUGH: 'HAS_DRIVE_THROUGH',
-    DINE_IN: 'HAS_ONSITE_SERVICES',
-    TAKEOUT: 'HAS_TAKEOUT',
-    EAT_IN: 'SERVES_DINE_IN'
+    OUTDOOR_SEATING: 'attributes/has_seating_outdoors',
+    CURBSIDE_PICKUP: 'attributes/has_curbside_pickup',
+    NO_CONTACT_DELIVERY: 'attributes/has_no_contact_delivery',
+    DELIVERY: 'attributes/has_delivery',
+    DRIVE_THROUGH: 'attributes/has_drive_through',
+    DINE_IN: 'attributes/has_onsite_services',
+    TAKEOUT: 'attributes/has_takeout',
+    EAT_IN: 'attributes/serves_dine_in',
+    // バリアフリー
+    AURACAST_BROADCAST_AUDIO: 'attributes/has_auracast_broadcast_audio',
+    WHEELCHAIR_ACCESSIBLE_RESTROOM: 'attributes/has_wheelchair_accessible_restroom',
+    WHEELCHAIR_ACCESSIBLE_SEATING: 'attributes/has_wheelchair_accessible_seating',
+    WHEELCHAIR_ACCESSIBLE_PARKING: 'attributes/has_wheelchair_accessible_parking',
+    HEARING_LOOP: 'attributes/has_hearing_loop',
+    // 設備
+    RESTROOM_UNISEX: 'attributes/has_restroom_unisex',
+    // 客層
+    TRANSGENDER_SAFESPACE: 'attributes/is_transgender_safespace',
+    LGBTQ_FRIENDLY: 'attributes/welcomes_lgbtq',
+    // 駐車場
+    ONSITE_PARKING: 'attributes/has_onsite_parking',
+    PARKING_GARAGE_FREE: 'attributes/has_parking_garage_free',
+    PARKING_STREET_FREE: 'attributes/has_parking_street_free',
+    PARKING_LOT_FREE: 'attributes/has_parking_lot_free',
+    PARKING_GARAGE_PAID: 'attributes/has_parking_garage_paid',
+    PARKING_STREET_PAID: 'attributes/has_parking_street_paid',
+    PARKING_LOT_PAID: 'attributes/has_parking_lot_paid',
+    // プラン
+    REQUIRES_APPOINTMENTS: 'attributes/requires_appointments',
+    // 決済方法
+    NFC_MOBILE_PAYMENT: 'attributes/pay_mobile_nfc',
+    CREDIT_CARD: 'attributes/pay_credit_card',
+    DEBIT_CARD: 'attributes/pay_debit_card',
+    CASH_ONLY: 'attributes/requires_cash_only',
+    CHECK_PAYMENT: 'attributes/pay_check'
 }
