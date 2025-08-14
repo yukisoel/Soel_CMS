@@ -34,6 +34,7 @@ interface GoogleService {
     fun getLocation(accessToken: String, locationId: String): ResponseEntity<GoogleLocation>?
     fun getLocationProfile(accessToken: String, locationId: String): ResponseEntity<GoogleLocationProfileModel>?
     fun getLocationAttributes(accessToken: String, locationId: String): ResponseEntity<GoogleLocationAttributesModel>?
+    fun getLocationAvailableAttributes(accessToken: String, locationId: String): ResponseEntity<List<GoogleAttributeMetadata>>?
     fun getLocationPhotos(accessToken: String, accountId: String, locationId: String): ResponseEntity<List<GoogleLocationPhotoModel>>?
     fun getLocationLocalPosts(accessToken: String, accountId: String, locationId: String): ResponseEntity<List<GoogleLocationLocalPostModel>>?
     fun getLocationFoodMenus(accessToken: String, accountId: String, locationId: String): ResponseEntity<GoogleLocationFoodMenusModel>?
@@ -220,6 +221,35 @@ class GoogleServiceImpl(
             )
         } catch (e: Exception) {
             logger.error("Error getting location attributes", e)
+            return ResponseEntity
+                .badRequest()
+                .body(null)
+        }
+    }
+
+    override fun getLocationAvailableAttributes(accessToken: String, locationId: String): ResponseEntity<List<GoogleAttributeMetadata>>? {
+        try {
+            val googleAttributeMetadataList: MutableList<GoogleAttributeMetadata> = mutableListOf()
+            var nextPageToken: String? = null
+            do {
+                val googleLocationAttributesResponse = googleRepository.getLocationAvailableAttributes(accessToken, locationId, nextPageToken)
+                val googleAttributeMetadata = googleLocationAttributesResponse?.attributeMetadata?.map { attributeMetadata ->
+                    GoogleAttributeMetadata(
+                        attributeMetadata.parent,
+                        attributeMetadata.displayName,
+                        attributeMetadata.groupDisplayName,
+                        attributeMetadata.repeatable,
+                        attributeMetadata.deprecated,
+                        attributeMetadata.valueType,
+                        attributeMetadata.valueMetadata,
+                    )
+                }
+                nextPageToken = googleLocationAttributesResponse?.nextPageToken
+                googleAttributeMetadataList.addAll(googleAttributeMetadata!!.toMutableList())
+            } while (nextPageToken != null)
+            return ResponseEntity.ok(googleAttributeMetadataList)
+        } catch (e: Exception) {
+            logger.error("Error getting location available attributes", e)
             return ResponseEntity
                 .badRequest()
                 .body(null)

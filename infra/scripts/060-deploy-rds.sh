@@ -11,8 +11,8 @@ fi
 # === 環境変数読み込み ===
 source ./env/${ENV}.env
 
-STACK_NAME="${ENV}-${PROJECT}-rds-bastion"
-TEMPLATE_FILE="cloudformation/rds/rds-bastion.yml"
+STACK_NAME="${ENV}-${PROJECT}-rds"
+TEMPLATE_FILE="cloudformation/rds/rds.yml"
 
 # === 依存スタックの出力を取得 ===
 VPC_STACK_NAME="${ENV}-${PROJECT}-vpc"
@@ -35,7 +35,7 @@ PRI_SUBNET_ID_2=$(aws cloudformation describe-stacks \
 
 RDS_SG_ID=$(aws cloudformation describe-stacks \
   --stack-name "$SG_STACK_NAME" \
-  --query "Stacks[0].Outputs[?OutputKey=='RDSSecurityGroupId'].OutputValue" \
+  --query "Stacks[0].Outputs[?OutputKey=='RdsSecurityGroup'].OutputValue" \
   --output text \
   --region "$REGION")
 
@@ -46,12 +46,13 @@ SECRET_ARN=$(aws secretsmanager describe-secret \
   --output text)
 
 # === RDSと踏み台の作成 ===
-echo "🚀 Deploying RDS and Bastion host..."
+echo "🚀 Deploying RDS ..."
 
 aws cloudformation deploy \
   --template-file "$TEMPLATE_FILE" \
   --stack-name "$STACK_NAME" \
-  --region "$REGION" \
+  --region $REGION \
+  --role-arn ${CF_EXEC_ROLE} \
   --capabilities CAPABILITY_NAMED_IAM \
   --parameter-overrides \
     Environment="$ENV" \
@@ -60,8 +61,7 @@ aws cloudformation deploy \
     SubnetPrivate2="$PRI_SUBNET_ID_2" \
     RDSSecurityGroupId="$RDS_SG_ID" \
     RDSCredentialsSecretArn="$SECRET_ARN" \
-    RDSInstanceClass="$DB_INSTANCE_CLASS" \
-    BastionInstanceClass="$BASTION_INSTANCE_CLASS"
+    RDSInstanceClass="$DB_INSTANCE_CLASS"
 
 # === RDS エンドポイント取得 & シークレット更新 ===
 echo "🔍 Fetching RDS endpoint to update secret..."
@@ -85,4 +85,4 @@ aws secretsmanager put-secret-value \
   --region "$REGION" \
   --secret-string "$UPDATED_SECRET"
 
-echo "✅ RDS & Bastion stack deployed: $STACK_NAME"
+echo "✅ RDS stack deployed: $STACK_NAME"
