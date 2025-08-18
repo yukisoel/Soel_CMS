@@ -17,6 +17,7 @@ interface GoogleRepository {
     fun getLocation(accessToken: String, locationId: String): GoogleLocation?
     fun getLocationProfile(accessToken: String, locationId: String): GoogleLocationProfileModel?
     fun getLocationAttributes(accessToken: String, locationId: String): GoogleLocationAttributesModel?
+    fun getLocationAvailableAttributes(accessToken: String, locationId: String, nextPageToken: String?): GoogleLocationAvailableAttributesResponse?
     fun getLocationPhotos(accessToken: String, accountId: String, locationId: String, nextPageToken: String?): GoogleLocationPhotosResponse?
     fun getLocationLocalPosts(accessToken: String, accountId: String, locationId: String, nextPageToken: String?): GoogleLocationLocalPostsResponse?
     fun getLocationFoodMenus(accessToken: String, accountId: String, locationId: String): GoogleLocationFoodMenusModel?
@@ -222,6 +223,29 @@ class GoogleRepositoryImpl(val restTemplate: RestTemplate) : GoogleRepository {
             HttpMethod.GET,
             entity,
             GoogleLocationAttributesModel::class.java
+        ).body
+    }
+
+    override fun getLocationAvailableAttributes(accessToken: String, locationId: String, nextPageToken: String?): GoogleLocationAvailableAttributesResponse? {
+        val requestUrl = "https://mybusinessbusinessinformation.googleapis.com/v1/attributes?parent=locations/$locationId"
+        val uri = UriComponentsBuilder.fromHttpUrl(requestUrl)
+            .queryParam("pageToken", nextPageToken)
+            .build()
+            .toUri()
+
+        val headers = HttpHeaders()
+
+        headers.apply {
+            setBearerAuth(accessToken)
+        }
+
+        val entity = HttpEntity<String>(headers)
+
+        return restTemplate.exchange(
+            uri,
+            HttpMethod.GET,
+            entity,
+            GoogleLocationAvailableAttributesResponse::class.java
         ).body
     }
 
