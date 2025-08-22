@@ -4,16 +4,14 @@ import {useContext, useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {PankuzuItemListContext} from "@/main/contexts/PankuzuItemListContext.tsx";
 import {ServiceName} from "@/main/model/ServiceName.ts";
-import {GoogleService} from "@/main/service/GoogleService.ts";
 import {GoogleAccountsContext} from "@/main/contexts/GoogleAccountsContext.tsx";
 import {GoogleSelectedLocationContext} from "@/main/contexts/GoogleSelectedLocationContext.tsx";
 import {GoogleAccount, GoogleLocation} from "@/types/apiModel.ts";
+import { useGoogleRepository } from "@/main/contexts/GoogleRepositoryContext";
 
-type Props = {
-  googleService: GoogleService
-}
 
-export default function SearchStore({googleService}: Props) {
+export default function SearchStore() {
+  const googleRepository = useGoogleRepository();
   const [selectedService, setSelectedService] = useState<string>("")
   const [selectedAccountName, setSelectedAccountName] = useState<string>("")
   const [selectedLocationTitle, setSelectedLocationTitle] = useState<string>("")
@@ -54,13 +52,13 @@ export default function SearchStore({googleService}: Props) {
   }, [selectedLocationTitle])
 
   const createAccountList = () => {
-    googleService.getAccounts().then(accounts => {
+    googleRepository.getAccounts().then(accounts => {
       setAccountList(accounts)
     })
   }
 
   const createLocationList = (googleAccount:GoogleAccount) => {
-    googleService.getLocations(googleAccount).then(locations => {
+    googleRepository.getLocations(googleAccount).then(locations => {
       setLocationList(locations)
     })
   }

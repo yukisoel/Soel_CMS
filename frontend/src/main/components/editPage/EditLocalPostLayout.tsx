@@ -1,11 +1,11 @@
 import styles from "@/main/components/editPage/EditLocalPostLayout.module.scss";
-import {GoogleService} from "@/main/service/GoogleService.ts";
 import {useContext, useEffect, useRef, useState} from "react";
 import {useParams} from "react-router-dom";
 import {PankuzuItemListContext} from "@/main/contexts/PankuzuItemListContext.tsx";
 import {GoogleSelectedLocationContext} from "@/main/contexts/GoogleSelectedLocationContext.tsx";
 import LocalPostButtonPullDownMenu from "@/main/components/editPage/LocalPostButtonPullDownMenu.tsx";
 import {LocationButtonName} from "@/main/model/LocationButtonName.ts";
+import { useGoogleRepository } from "@/main/contexts/GoogleRepositoryContext";
 
 enum Tabs {
   STANDARD = "最新情報の追加",
@@ -13,11 +13,9 @@ enum Tabs {
   EVENT = "イベントの追加",
 }
 
-type Props = {
-  googleService: GoogleService
-}
 
-export default function EditLocalPostLayout({googleService}: Props) {
+export default function EditLocalPostLayout() {
+  const googleRepository = useGoogleRepository();
   const [selectedTab, setSelectedTab] = useState<Tabs>(Tabs.STANDARD)
   const [selectedContent, setSelectedContent] = useState<string>('')
   const fileUploadInputRef = useRef<HTMLInputElement>(null)
@@ -35,7 +33,7 @@ export default function EditLocalPostLayout({googleService}: Props) {
       {name: '最新情報の追加', path: '/edit/local_post'}
     ])
     if (googleSelectedLocation.name === "" && locationId) {
-      googleService.getLocation(locationId).then(location => {
+      googleRepository.getLocation(locationId).then(location => {
         setGoogleSelectedLocation(location)
       })
     }

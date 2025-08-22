@@ -7,17 +7,14 @@ import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { PankuzuItemListContext } from "@/main/contexts/PankuzuItemListContext";
 import { ServiceName } from "@/main/model/ServiceName";
-import { GoogleService } from "@/main/service/GoogleService";
+import { useGoogleRepository } from "@/main/contexts/GoogleRepositoryContext";
 import { GoogleAccountsContext } from "@/main/contexts/GoogleAccountsContext";
 import { GoogleSelectedLocationContext } from "@/main/contexts/GoogleSelectedLocationContext";
 import { GoogleAccount, GoogleLocation } from "@/types/apiModel";
 import Typography from "@/main/common/Typography";
-// props型
-type Props = {
-  googleService: GoogleService;
-};
 
-export default function SearchStoreV2({ googleService }: Props) {
+export default function SearchStoreV2() {
+  const googleRepository = useGoogleRepository();
   const [selectedService, setSelectedService] = useState<string>("");
   const [selectedAccountName, setSelectedAccountName] = useState<string>("");
   const [selectedLocationTitle, setSelectedLocationTitle] = useState<string>("");
@@ -31,11 +28,11 @@ export default function SearchStoreV2({ googleService }: Props) {
 
   useEffect(() => {
     setPankuzuItemList([{ name: "ページ編集", path: "/edit" }]);
-  }, []);
+  }, [setPankuzuItemList]);
 
   useEffect(() => {
     if (selectedService === ServiceName.GBP) {
-      googleService.getAccounts().then(setAccountList);
+      googleRepository.getAccounts().then(setAccountList);
     }
   }, [selectedService]);
 
@@ -44,7 +41,7 @@ export default function SearchStoreV2({ googleService }: Props) {
       const googleAccount = accountList.find(account => account.accountName === selectedAccountName);
       if (googleAccount) {
         setSelectedAccount(googleAccount);
-        googleService.getLocations(googleAccount).then(setLocationList);
+        googleRepository.getLocations(googleAccount).then(setLocationList);
       }
     }
   }, [selectedAccountName]);

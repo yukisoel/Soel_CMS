@@ -7,7 +7,7 @@ import styles from "../EditProfileLayoutV2.module.scss";
 import EditBusinessHoursModal from "../modals/EditBusinessHoursModal";
 import { useState } from "react";
 import { GoogleLocationProfileModel } from "@/types/apiModel";
-import { GoogleService } from "@/main/service/GoogleService";
+import { GoogleRepository } from "@/main/repositories/GoogleRepository";
 import { useParams } from "react-router-dom";
 import { useModal } from "@/main/common/Modal/useModal";
 import { useMemo } from "react";
@@ -16,7 +16,7 @@ import { GoogleLocationTimePeriod } from "@/types/apiModel";
 
 type Props = {
     profile: GoogleLocationProfileModel | null;
-    googleService: GoogleService;
+    googleRepository: GoogleRepository;
     fetchProfile: () => Promise<void>;
     isLoading?: boolean;
 };
@@ -82,14 +82,14 @@ const createPeriods = (periods: GoogleLocationTimePeriod[]): string => {
 
 export default function HoursTab({
     profile,
-    googleService,
+    googleRepository,
     fetchProfile,
     isLoading = false,
 }: Props) {
     const { locationId } = useParams();
     const { isOpen: isHoursModalOpen, openModal: openHoursModal, closeModal: closeHoursModalBase } = useModal();
     const handleBusinessHoursSave = async (periods: GoogleLocationTimePeriod[]) => {
-        await googleService.updateLocationProfileBusinessHours(locationId ?? '', {
+        await googleRepository.updateLocationProfileBusinessHours(locationId ?? '', {
             hoursTypeId: editTarget?.hoursType as GoogleLocationBusinessHoursRequestHoursTypeId,
             periods: periods
         });

@@ -8,17 +8,12 @@ import ContactTab from "./tabs/ContactTab";
 import LocationTab from "./tabs/LocationTab";
 import HoursTab from "./tabs/HoursTab";
 import OtherSectionTab from "./tabs/OtherSectionTab";
-import { GoogleService } from "@/main/service/GoogleService";
+import { useGoogleRepository } from "@/main/contexts/GoogleRepositoryContext";
 import { useParams } from "react-router-dom";
 import {GoogleLocationProfileModel, GoogleLocationAttributesModel} from "@/types/apiModel.ts";
 
-type Props = {
-    googleService: GoogleService;
-};
-
-export default function EditProfileLayoutV2({
-    googleService
-}: Props) {
+export default function EditProfileLayoutV2() {
+    const googleRepository = useGoogleRepository();
     const {locationId} = useParams()
     const [profile, setProfile] = useState<GoogleLocationProfileModel | null>(null);
     const [isLoadingProfile, setIsLoadingProfile] = useState(false);
@@ -28,24 +23,24 @@ export default function EditProfileLayoutV2({
         if (!locationId) return;
         setIsLoadingProfile(true);
         try {
-            const profile = await googleService.getLocationProfile(locationId);
+            const profile = await googleRepository.getLocationProfile(locationId);
             setProfile(profile);
         } finally {
             setIsLoadingProfile(false);
         }
-    }, [googleService, locationId]);
+    }, [googleRepository, locationId]);
     
     const [attributes, setAttributes] = useState<GoogleLocationAttributesModel | null>(null);
     const fetchAttributes = useCallback(async () => {
         if (!locationId) return;
         setIsLoadingAttributes(true);
         try {
-            const attributes = await googleService.getLocationAttributes(locationId);
+            const attributes = await googleRepository.getLocationAttributes(locationId);
             setAttributes(attributes);
         } finally {
             setIsLoadingAttributes(false);
         }
-    }, [googleService, locationId]);
+    }, [googleRepository, locationId]);
 
     const { selectedTab, tabsRender } = useAdvancedTabs([
         { tabKey: 'overview', content: '概要' },
@@ -67,7 +62,7 @@ export default function EditProfileLayoutV2({
                     <OverviewTab
                         profile={profile ?? null}
                         fetchProfile={fetchProfile}
-                        googleService={googleService}
+                        googleRepository={googleRepository}
                         isLoading={isLoadingProfile}
                     />
                 );
@@ -78,7 +73,7 @@ export default function EditProfileLayoutV2({
                         attributes={attributes ?? null}
                         fetchProfile={fetchProfile}
                         fetchAttributes={fetchAttributes}
-                        googleService={googleService}
+                        googleRepository={googleRepository}
                         isLoading={isLoadingProfile || isLoadingAttributes}
                     />
                 );
@@ -87,7 +82,7 @@ export default function EditProfileLayoutV2({
                     <LocationTab
                         profile={profile ?? null}
                         fetchProfile={fetchProfile}
-                        googleService={googleService}
+                        googleRepository={googleRepository}
                         isLoading={isLoadingProfile}
                     />
                 );
@@ -95,7 +90,7 @@ export default function EditProfileLayoutV2({
                 return (
                     <HoursTab
                         profile={profile ?? null}
-                        googleService={googleService}
+                        googleRepository={googleRepository}
                         fetchProfile={fetchProfile}
                         isLoading={isLoadingProfile}
                     />
@@ -107,7 +102,7 @@ export default function EditProfileLayoutV2({
                         attributes={attributes ?? null}
                         fetchProfile={fetchProfile}
                         fetchAttributes={fetchAttributes}
-                        googleService={googleService}
+                        googleRepository={googleRepository}
                         isLoading={isLoadingProfile || isLoadingAttributes}
                     />
                 );

@@ -1,11 +1,10 @@
-import { GoogleService } from "@/main/service/GoogleService";
 import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import SelectStore, { Branch, Region, Store, Prefecture } from "./SelectStore";
 import { initializeRegionMapForStores, regionOrder, getBrandMapByPrefecture } from "@/main/utils/prefectureToRegion";
+import { useGoogleRepository } from "@/main/contexts/GoogleRepositoryContext";
 
 type Props = {
-    googleService: GoogleService
     onNextClick: () => void
     onBackClick: () => void
 }
@@ -14,7 +13,8 @@ type Props = {
 const defaultBrandSelectorProps: Store[] = []
 const defaultAreaSelectorProps: Region[] = []
 
-export const useSelectStore = ({googleService, onNextClick, onBackClick}: Props) => {
+export const useSelectStore = ({onNextClick, onBackClick}: Props) => {
+    const googleRepository = useGoogleRepository();
     const [selectedBranches, setSelectedBranches] = useState<Array<Omit<Branch, 'checked'>>>([]);
     const [brandSelectorProps, setBrandSelectorProps] = useState<Store[]>(defaultBrandSelectorProps);
     const [areaSelectorProps, setAreaSelectorProps] = useState<Region[]>(defaultAreaSelectorProps);
@@ -26,7 +26,7 @@ export const useSelectStore = ({googleService, onNextClick, onBackClick}: Props)
         // Brand data fetching function
         const fetchBrandData = async () => {
             try {
-                const response = await googleService.getBrandList();
+                const response = await googleRepository.getBrandList();
 
                 const transformedData: Store[] = response.brands.map(brand => ({
                     name: brand.name,
@@ -48,7 +48,7 @@ export const useSelectStore = ({googleService, onNextClick, onBackClick}: Props)
         // Area data fetching function
         const fetchAreaData = async () => {
             try {
-                const response = await googleService.getStoreListByPrefecture();
+                const response = await googleRepository.getStoreListByPrefecture();
 
                 // Step 1: すべての地域・都道府県を含むMapを初期化
                 // 構造: { 地域名: { 都道府県名: { ブランド名: Branch[] } } }
@@ -131,7 +131,7 @@ export const useSelectStore = ({googleService, onNextClick, onBackClick}: Props)
         };
 
         fetchData();
-    }, [googleService, mode]);
+    }, [googleRepository, mode]);
 
     const onChangeSelectedBranches = (stores: Branch[]) => {
         setSelectedBranches(stores)

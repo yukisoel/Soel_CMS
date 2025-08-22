@@ -10,16 +10,14 @@ import SearchDetailModal from "./Modal/SearchDetailModal";
 import { useModal } from "@/main/common/Modal/useModal";
 import ReviewDetailModal from "./Modal/ReviewDetailModal";
 import { useState, useEffect } from "react";
-import { GoogleService } from "@/main/service/GoogleService";
 import { GoogleLocationReviewModel } from "@/types/apiModel";
 import { GoogleLocationReviewCustomStarRating } from "@/types/api";
 import { useParams } from "react-router-dom";
+import { useGoogleRepository } from "@/main/contexts/GoogleRepositoryContext";
 
-type Props = {
-    googleService: GoogleService;
-};
 
-export default function ReviewPage({ googleService }: Props) {
+export default function ReviewPage() {
+    const googleRepository = useGoogleRepository();
     const { isOpen: isSearchModalOpen, openModal: openSearchModal, closeModal: closeSearchModal } = useModal();
     const { isOpen: isReviewDetailModalOpen, openModal: openReviewDetailModal, closeModal: closeReviewDetailModal } = useModal();
     const [selectedReview, setSelectedReview] = useState<Review | null>(null);
@@ -36,7 +34,7 @@ export default function ReviewPage({ googleService }: Props) {
             try {
                 // Contextの値が設定されている場合のみAPIを呼び出し
                 if (accountId && locationId) {
-                    const locationReviews = await googleService.getLocationReviews(
+                    const locationReviews = await googleRepository.getLocationReviews(
                         accountId,
                         locationId
                     );
@@ -93,7 +91,7 @@ export default function ReviewPage({ googleService }: Props) {
         };
 
         fetchReviews();
-    }, [googleService, accountId, locationId]);
+    }, [googleRepository, accountId, locationId]);
 
     const handleReviewClick = (review: Review) => {
         setSelectedReview(review);
@@ -104,7 +102,7 @@ export default function ReviewPage({ googleService }: Props) {
         if (accountId && locationId && selectedReview) {
             setIsReplying(true);
             try {
-                await googleService.postLocationReviewReply(accountId, locationId, selectedReview.id, replyContent);
+                await googleRepository.postLocationReviewReply(accountId, locationId, selectedReview.id, replyContent);
                 // Refresh the reviews after replying
                 const updatedReviews = reviews.map(review =>
                     review.id === selectedReview.id
@@ -124,7 +122,7 @@ export default function ReviewPage({ googleService }: Props) {
     const handleDeleteReply = async () => {
         if (accountId && locationId && selectedReview) {
             try {
-                await googleService.deleteLocationReviewReply(accountId, locationId, selectedReview.id.toString());
+                await googleRepository.deleteLocationReviewReply(accountId, locationId, selectedReview.id.toString());
                 // Refresh the reviews after deletion
                 const updatedReviews = reviews.map(review =>
                     review.id === selectedReview.id

@@ -1,8 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import EditServiceOptionsModalPresenter from './EditServiceOptionsModalPresenter';
 import { useModal } from '@/main/common/Modal/useModal';
-import { GoogleServiceImpl } from '@/main/service/GoogleService';
-import { GoogleRepositoryImpl } from '@/main/repositories/GoogleRepository';
+import { useGoogleRepository } from '@/main/contexts/GoogleRepositoryContext';
 import { GoogleLocationAttributesModel, SERVICE_OPTION_ATTRIBUTE_MAPPING, GoogleLocationAttributeServiceOptionType, GoogleAttributeMetadata } from '@/types/apiModel';
 import { GoogleLocationAttributeServiceOptionType as ApiServiceOptionType } from '@/types/api';
 
@@ -23,7 +22,7 @@ export const useEditServiceOptionsModalContainer = (
   const [availableAttributes, setAvailableAttributes] = useState<GoogleAttributeMetadata[]>([]);
   const [serviceOptionList, setServiceOptionList] = useState<ServiceOption[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [googleService] = useState(() => new GoogleServiceImpl({ googleRepository: new GoogleRepositoryImpl() }));
+  const googleRepository = useGoogleRepository();
 
   // availableAttributesを取得
   useEffect(() => {
@@ -31,7 +30,7 @@ export const useEditServiceOptionsModalContainer = (
       if (!locationId) return;
 
       try {
-        const availableAttrs = await googleService.getAvailableAttributes(locationId);
+        const availableAttrs = await googleRepository.getAvailableAttributes(locationId);
         setAvailableAttributes(availableAttrs);
       } catch (error) {
         console.error('Failed to fetch available attributes:', error);
@@ -39,7 +38,7 @@ export const useEditServiceOptionsModalContainer = (
     };
 
     fetchAvailableAttributes();
-  }, [locationId, googleService]);
+  }, [locationId, googleRepository]);
 
   // availableAttributesとattributes更新時のserviceOptionList更新
   useEffect(() => {
@@ -115,7 +114,7 @@ export const useEditServiceOptionsModalContainer = (
           };
         }).filter((item): item is { type: ApiServiceOptionType; value: boolean } => item !== null);
 
-      await googleService.updateLocationAttributesServiceOptions(locationId, attributeServiceOptions);
+      await googleRepository.updateLocationAttributesServiceOptions(locationId, attributeServiceOptions);
 
       // 親コンポーネントのattributesを更新
       await fetchAttributes();

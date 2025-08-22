@@ -10,14 +10,10 @@ import AddIcon from '@/main/assets/AddIcon.svg';
 import { EditMenuModal } from './modals/EditMenuModal';
 import { EditSectionModal } from './modals/EditSectionModal';
 import { useModal } from '@/main/common/Modal/useModal';
-import { GoogleService } from '@/main/service/GoogleService';
+import { useGoogleRepository } from '@/main/contexts/GoogleRepositoryContext';
 import { GoogleLocationFoodMenuSection, GoogleLocationFoodMenusModel, GoogleLocationFoodMenuItem, GoogleLocationPhotoModel } from '@/main/model/LocationModel';
 import { useParams } from 'react-router-dom';
 import { useMenuFood } from '@/main/hooks/EditMenu/useFoodMenu';
-
-type Props = {
-  googleService: GoogleService;
-};
 
 type FilteredMenuItem = Omit<GoogleLocationFoodMenuItem, 'items'> & {
   originalSectionIndex: number;
@@ -29,14 +25,15 @@ type FilteredSection = Omit<GoogleLocationFoodMenuSection, 'items'> & {
   items: FilteredMenuItem[];
 };
 
-export const EditMenuLayoutV2: React.FC<Props> = ({ googleService }) => {
+export const EditMenuLayoutV2: React.FC = () => {
   const { isOpen: isMenuModalOpen, openModal: openMenuModal, closeModal: closeMenuModalBase } = useModal();
   const { isOpen: isSectionModalOpen, openModal: openSectionModal, closeModal: closeSectionModalBase } = useModal();
   const [selectedSection, setSelectedSection] = React.useState<string | null>(null);
   const [selectedMenuItem, setSelectedMenuItem] = React.useState<string | null>(null);
   const [searchQuery, setSearchQuery] = React.useState('');
+  const googleRepository = useGoogleRepository();
   const { accountId, locationId } = useParams();
-  const { foodMenu, updateFoodMenus, isLoading } = useMenuFood(googleService, accountId ?? '', locationId ?? '');
+  const { foodMenu, updateFoodMenus, isLoading } = useMenuFood(googleRepository, accountId ?? '', locationId ?? '');
   const [menuInitialValues, setMenuInitialValues] = React.useState<{
     title: string;
     price: string;
@@ -470,7 +467,6 @@ export const EditMenuLayoutV2: React.FC<Props> = ({ googleService }) => {
         title={selectedMenuItem ? 'メニュー項目の編集' : 'メニュー項目の追加'}
         onSubmit={handleSaveMenuItem}
         onDelete={selectedMenuItem && selectedSection ? () => handleDeleteMenuItem(selectedSection, selectedMenuItem) : undefined}
-        googleService={googleService}
         initialValues={menuInitialValues}
       />
       <EditSectionModal

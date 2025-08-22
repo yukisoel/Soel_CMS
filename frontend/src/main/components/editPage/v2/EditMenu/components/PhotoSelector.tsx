@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { GoogleService } from '@/main/service/GoogleService';
+import { useGoogleRepository } from '@/main/contexts/GoogleRepositoryContext';
 import { GoogleLocationPhotoModel } from '@/main/model/LocationModel';
 import { LocationAssociationName } from '@/main/model/LocationAssociationName';
 import { useParams } from 'react-router-dom';
@@ -10,13 +10,11 @@ import styles from './PhotoSelector.module.scss';
 type PhotoSelectorProps = {
   onPhotoSelect: (photo: GoogleLocationPhotoModel) => void;
   selectedPhoto?: GoogleLocationPhotoModel;
-  googleService: GoogleService;
 };
 
 export const PhotoSelector: React.FC<PhotoSelectorProps> = ({
   onPhotoSelect,
-  selectedPhoto,
-  googleService
+  selectedPhoto
 }) => {
   const [photoList, setPhotoList] = useState<GoogleLocationPhotoModel[]>([]);
   const [loading, setLoading] = useState(true);
@@ -24,11 +22,12 @@ export const PhotoSelector: React.FC<PhotoSelectorProps> = ({
   const [selectedCategory, setSelectedCategory] = useState<string>(LocationAssociationName.CATEGORY_UNSPECIFIED);
 
   const { accountId, locationId } = useParams();
+  const googleRepository = useGoogleRepository();
 
   useEffect(() => {
     if (accountId && locationId) {
       setLoading(true);
-      googleService.getLocationPhotos(accountId, locationId)
+      googleRepository.getLocationPhotos(accountId, locationId)
         .then(photos => {
           setPhotoList(photos);
           setError(null);
@@ -41,7 +40,7 @@ export const PhotoSelector: React.FC<PhotoSelectorProps> = ({
           setLoading(false);
         });
     }
-  }, [accountId, locationId, googleService]);
+  }, [accountId, locationId, googleRepository]);
 
   const filteredPhotos = photoList.filter(photo => {
     if (selectedCategory === LocationAssociationName.CATEGORY_UNSPECIFIED) {

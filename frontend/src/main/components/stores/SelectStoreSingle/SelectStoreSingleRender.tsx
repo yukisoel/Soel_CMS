@@ -1,14 +1,9 @@
 import React from 'react';
-import { GoogleService } from "@/main/service/GoogleService";
 import { useSelectStoreSingle } from "./useSelectStoreSingle";
 
-type Props = {
-    googleService: GoogleService;
-};
 
-const SelectStoreSingleRender: React.FC<Props> = ({ googleService }) => {
+const SelectStoreSingleRender: React.FC = () => {
     const { selectStoreRender } = useSelectStoreSingle({
-        googleService,
         onNextClick: () => {
             console.log("Next button clicked");
         },

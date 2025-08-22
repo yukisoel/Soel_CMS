@@ -4,13 +4,9 @@ import Wrapper from '@/main/common/Wrapper';
 import Typography from '@/main/common/Typography';
 import Button from '@/main/common/Button';
 import SearchBox from '@/main/common/SearchBox';
-import { GoogleService } from '@/main/service/GoogleService';
 import Separator from '@/main/common/Separator';
 import { ProductModal } from './modals/CreateProductModal';
 
-type Props = {
-  googleService: GoogleService;
-};
 
 type Product = {
   id: string;
@@ -22,8 +18,7 @@ type Product = {
   productUrl?: string;
 };
 
-export default function EditProductV2({ googleService }: Props) {
-  console.log(googleService);
+export default function EditProductV2() {
   const [searchQuery, setSearchQuery] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);

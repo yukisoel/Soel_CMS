@@ -4,7 +4,7 @@ import Button from "@/main/common/Button";
 import Loading from "@/main/common/Loading";
 import styles from "../EditProfileLayoutV2.module.scss";
 import { GoogleLocationProfileModel, GoogleLocationAttributesModel, GoogleLocationAttributeSnsLinkRequest, GoogleLocationAttribute } from "@/types/apiModel";
-import { GoogleService } from "@/main/service/GoogleService";
+import { GoogleRepository } from "@/main/repositories/GoogleRepository";
 import { useParams } from "react-router-dom";
 import { useModal } from "@/main/common/Modal/useModal";
 import { EditPhoneModal } from "../modals/EditPhoneModal";
@@ -18,7 +18,7 @@ type Props = {
     attributes: GoogleLocationAttributesModel | null;
     fetchProfile: () => Promise<void>;
     fetchAttributes: () => Promise<void>;
-    googleService: GoogleService;
+    googleRepository: GoogleRepository;
     isLoading?: boolean;
 };
 
@@ -37,25 +37,25 @@ export default function ContactTab({
     attributes: attributesModel,
     fetchProfile,
     fetchAttributes,
-    googleService,
+    googleRepository,
     isLoading = false,
 }: Props) {
     const { locationId } = useParams();
     const { isOpen: isPhoneNumberModalOpen, openModal: openPhoneNumberModal, closeModal: closePhoneNumberModalBase } = useModal();
     const handlePhoneNumberSave = async (data: {phone: string}) => {
-        await googleService.updateLocationProfilePhoneNumber(locationId ?? '', data.phone);
+        await googleRepository.updateLocationProfilePhoneNumber(locationId ?? '', data.phone);
         await fetchProfile();
         closePhoneNumberModalBase();
     };
     const { isOpen: isWebsiteModalOpen, openModal: openWebsiteModal, closeModal: closeWebsiteModalBase } = useModal();
     const handleWebsiteSave = async (data: {webSiteUri: string}) => {
-        await googleService.updateLocationProfileWebsiteUri(locationId ?? '', data.webSiteUri);
+        await googleRepository.updateLocationProfileWebsiteUri(locationId ?? '', data.webSiteUri);
         await fetchProfile();
         closeWebsiteModalBase();
     };
     const { isOpen: isMenuLinkModalOpen, openModal: openMenuLinkModal, closeModal: closeMenuLinkModalBase } = useModal();
     const handleMenuLinkSave = async (data: {menuLink: string}) => {
-        await googleService.updateLocationAttributeMenuLink(locationId ?? '', data.menuLink);
+        await googleRepository.updateLocationAttributeMenuLink(locationId ?? '', data.menuLink);
         await fetchAttributes();
         closeMenuLinkModalBase();
     };
@@ -68,7 +68,7 @@ export default function ContactTab({
     const handleSnsLinkSave = async (data: {snsLink: string}) => {
         if (!selectedSnsLink) return;
         const snsType = selectedSnsLink.name?.replace('attributes/url_', '').toUpperCase() as GoogleLocationAttributeSnsLinkRequest['snsType'] || '';
-        await googleService.updateLocationAttributeSnsLink(locationId ?? '', { snsType, snsUrl: data.snsLink });
+        await googleRepository.updateLocationAttributeSnsLink(locationId ?? '', { snsType, snsUrl: data.snsLink });
         await fetchAttributes();
         closeSnsLinkModalBase();
     };

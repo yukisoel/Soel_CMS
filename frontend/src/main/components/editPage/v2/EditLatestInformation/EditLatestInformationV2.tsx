@@ -7,13 +7,7 @@ import { LatestInformationTab } from './tabs/LatestInformationTab';
 import { BenefitTab } from './tabs/BenefitTab';
 import { EventTab } from './tabs/EventTab';
 import styles from './EditLatestInformation.module.scss';
-import { GoogleService } from '@/main/service/GoogleService';
-
-interface Props {
-  googleService: GoogleService;
-}
-
-export const EditLatestInformationV2: React.FC<Props> = ({ googleService }) => {
+export const EditLatestInformationV2: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { selectedTab, tabsRender } = useAdvancedTabs([
     { tabKey: 'latest_information', content: '最新情報の追加' },
@@ -24,11 +18,11 @@ export const EditLatestInformationV2: React.FC<Props> = ({ googleService }) => {
   const renderTabContent = () => {
     switch (selectedTab) {
       case 'latest_information':
-        return <LatestInformationTab googleService={googleService} setIsSubmitting={setIsSubmitting} />;
+        return <LatestInformationTab setIsSubmitting={setIsSubmitting} />;
       case 'benefit':
-        return <BenefitTab googleService={googleService} setIsSubmitting={setIsSubmitting} />;
+        return <BenefitTab setIsSubmitting={setIsSubmitting} />;
       case 'event':
-        return <EventTab googleService={googleService} setIsSubmitting={setIsSubmitting} />;
+        return <EventTab setIsSubmitting={setIsSubmitting} />;
       default:
         return null;
     }

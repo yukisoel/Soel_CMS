@@ -7,7 +7,7 @@ import SearchBox from '@/main/common/SearchBox';
 import Scroll from '@/main/common/Scroll';
 import styles from '../EditProfileLayoutV2.module.scss';
 import CloseSymbolYellow from '@/main/assets/CloseSymbolYellow.svg';
-import { GoogleService } from '@/main/service/GoogleService';
+import { GoogleRepository } from '@/main/repositories/GoogleRepository';
 import { GoogleLocationCategory } from '@/types/apiModel';
 import { useEffect } from 'react';
 
@@ -16,7 +16,7 @@ type Props = {
   onClose: () => void;
   categories: GoogleLocationCategory[];
   onSave: (categories: GoogleLocationCategory[]) => Promise<void>;
-  googleService: GoogleService;
+  googleRepository: GoogleRepository;
   isSingleSelect?: boolean;
 };
 
@@ -25,7 +25,7 @@ export default function EditBusinessCategoriesModal({
   onClose,
   categories,
   onSave,
-  googleService,
+  googleRepository,
   isSingleSelect = false,
 }: Props) {
   const [selectedCategories, setSelectedCategories] = useState<GoogleLocationCategory[]>(categories);
@@ -33,10 +33,10 @@ export default function EditBusinessCategoriesModal({
   const [availableCategories, setAvailableCategories] = useState<GoogleLocationCategory[]>([]);
 
   useEffect(() => {
-    googleService.getCategories().then(categories => {
+    googleRepository.getCategories().then(categories => {
       setAvailableCategories(categories)
     })
-  }, [googleService])
+  }, [googleRepository])
 
   useEffect(() => {
     setSelectedCategories(categories)

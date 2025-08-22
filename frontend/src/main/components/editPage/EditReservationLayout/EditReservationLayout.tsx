@@ -4,16 +4,14 @@ import { PankuzuItemListContext } from '@/main/contexts/PankuzuItemListContext.t
 import { GoogleSelectedLocationContext } from '@/main/contexts/GoogleSelectedLocationContext.tsx';
 import Wrapper from '@/main/common/Wrapper';
 import styles from '@/main/components/editPage/EditReservationLayout/EditReservationLayout.module.scss';
-import { GoogleService } from '@/main/service/GoogleService';
 import { useTabs } from '@/main/common/Tabs/useTabs';
 import EditReservationRecommend from './EditReservationRecommend';
 import EditReservationOnlineToolLink from './EditReservationOnlineToolLink';
+import { useGoogleRepository } from '@/main/contexts/GoogleRepositoryContext';
 
-type Props = {
-  googleService: GoogleService;
-};
 
-export default function EditReservationLayout({ googleService }: Props) {
+export default function EditReservationLayout() {
+  const googleRepository = useGoogleRepository();
   const { setPankuzuItemList } = useContext(PankuzuItemListContext);
   const { googleSelectedLocation, setGoogleSelectedLocation } = useContext(GoogleSelectedLocationContext);
 
@@ -39,7 +37,7 @@ export default function EditReservationLayout({ googleService }: Props) {
       { name: '予約', path: '/edit/reservation' },
     ]);
     if (googleSelectedLocation.name === '' && locationId) {
-      googleService.getLocation(locationId).then((location) => {
+      googleRepository.getLocation(locationId).then((location) => {
         setGoogleSelectedLocation(location);
       });
     }

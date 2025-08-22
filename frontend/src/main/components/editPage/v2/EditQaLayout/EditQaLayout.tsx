@@ -3,7 +3,6 @@ import Wrapper from '@/main/common/Wrapper';
 import Typography from '@/main/common/Typography';
 import Button from '@/main/common/Button';
 import SearchBox from '@/main/common/SearchBox';
-import { GoogleService } from '@/main/service/GoogleService';
 import { useState } from 'react';
 import Separator from '@/main/common/Separator';
 import UserIcon from '@/main/assets/UserIcon.svg'
@@ -54,11 +53,8 @@ const dummyQuestions = [
   },
 ];
 
-type Props = {
-  googleService: GoogleService;
-};
 
-export default function EditQaLayout({ googleService }: Props) {
+export default function EditQaLayout() {
   const [search, setSearch] = useState('');
   const [faqModalOpen, setFaqModalOpen] = useState(false);
   const [faqModalInitialValues, setFaqModalInitialValues] = useState<{ question: string } | undefined>(undefined);

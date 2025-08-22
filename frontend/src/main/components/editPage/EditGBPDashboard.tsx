@@ -12,14 +12,12 @@ import {useContext, useEffect} from "react";
 import {PankuzuItemListContext} from "@/main/contexts/PankuzuItemListContext.tsx";
 import {useParams} from "react-router-dom";
 import {GoogleSelectedLocationContext} from "@/main/contexts/GoogleSelectedLocationContext.tsx";
-import {GoogleService} from "@/main/service/GoogleService.ts";
 import {GoogleAccountsContext} from "@/main/contexts/GoogleAccountsContext.tsx";
+import { useGoogleRepository } from "@/main/contexts/GoogleRepositoryContext";
 
-type Props = {
-  googleService: GoogleService
-}
 
-export default function EditGBPDashboard({googleService}: Props) {
+export default function EditGBPDashboard() {
+  const googleRepository = useGoogleRepository();
   const {setPankuzuItemList} = useContext(PankuzuItemListContext)
   const {setSelectedAccount} = useContext(GoogleAccountsContext)
   const {googleSelectedLocation, setGoogleSelectedLocation} = useContext(GoogleSelectedLocationContext)
@@ -28,10 +26,10 @@ export default function EditGBPDashboard({googleService}: Props) {
   useEffect(() => {
     setPankuzuItemList([{name: 'ページ編集', path: '/edit'}, {name: 'GBP', path: '/edit/gbp'}])
     if(googleSelectedLocation.name === "" && accountId && locationId) {
-      googleService.getAccount(accountId).then(account => {
+      googleRepository.getAccount(accountId).then(account => {
         setSelectedAccount(account)
       })
-      googleService.getLocation(locationId).then(location => {
+      googleRepository.getLocation(locationId).then(location => {
         setGoogleSelectedLocation(location)
       })
     }

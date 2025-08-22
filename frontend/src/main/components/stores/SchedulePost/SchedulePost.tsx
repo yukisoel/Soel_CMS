@@ -1,4 +1,3 @@
-import { GoogleService } from "@/main/service/GoogleService"
 import { useSelectStore } from "../SelectStore/useSelectStore"
 import { useSelectService } from "../SelectService/useSelectService";
 import { useContext, useMemo, useState } from "react";
@@ -6,17 +5,15 @@ import PostContentConfirm from "./PostContentConfirm";
 import usePostContentForm from "./usePostContentForm";
 import { GoogleLocationLocalPostRequest } from "@/types/apiModel";
 import { GoogleAccountsContext } from "@/main/contexts/GoogleAccountsContext";
+import { useGoogleRepository } from "@/main/contexts/GoogleRepositoryContext";
 
-type Props = {
-    googleService: GoogleService
-}
 
-export default function SchedulePost({googleService}: Props) {
+export default function SchedulePost() {
+    const googleRepository = useGoogleRepository();
     const {selectedAccount} = useContext(GoogleAccountsContext)
     const [mode, setMode] = useState<'selectStore' | 'selectService' | 'schedulePost' | 'confirmPost'>('selectStore');
 
     const { selectedBranches, selectStoreRender } = useSelectStore({
-        googleService,
         onNextClick: () => setMode('selectService'),
         onBackClick: () => {}
     })
@@ -24,7 +21,6 @@ export default function SchedulePost({googleService}: Props) {
     const selectedStores = useMemo(() => selectedBranches.map((branch) => branch.name), [selectedBranches])
 
     const {selectedServiceForms, selectServiceRender} = useSelectService({
-        googleService,
         selectedStores,
         onNextClick: () => setMode('schedulePost'),
         onBackClick: () => setMode('selectStore')
@@ -75,7 +71,7 @@ export default function SchedulePost({googleService}: Props) {
                             }
 
                             // 一度のAPI呼び出しで全ての店舗に投稿
-                            await googleService.postLocationLocalPostBulk(
+                            await googleRepository.postLocationLocalPostBulk(
                                 accountId,
                                 locationIdList,
                                 localPost,

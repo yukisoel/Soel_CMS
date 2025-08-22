@@ -5,7 +5,7 @@ import Loading from "@/main/common/Loading";
 import styles from "../EditProfileLayoutV2.module.scss";
 import EditBusinessCategoriesModal from "../modals/EditBusinessCategoriesModal";
 import { GoogleLocationProfileModel, GoogleLocationCategory } from "@/types/apiModel.ts";
-import { GoogleService } from "@/main/service/GoogleService";
+import { GoogleRepository } from "@/main/repositories/GoogleRepository";
 import { useModal } from "@/main/common/Modal/useModal";
 import { useParams } from "react-router-dom";
 import { EditTitleModal } from "../modals/EditTitleModal";
@@ -15,46 +15,46 @@ import { useMemo } from "react";
 type Props = {
     profile: GoogleLocationProfileModel | null;
     fetchProfile: () => Promise<void>;
-    googleService: GoogleService;
+    googleRepository: GoogleRepository;
     isLoading?: boolean;
 };
 
 export default function OverviewTab({
     profile,
     fetchProfile,
-    googleService,
+    googleRepository,
     isLoading = false,
 }: Props) {
     const { locationId } = useParams();
     const { isOpen: isTitleModalOpen, openModal: openTitleModal, closeModal: closeTitleModalBase } = useModal();
     const handleTitleSave = async (data: {title: string}) => {
-        await googleService.updateLocationProfileTitle(locationId ?? '', data.title);
+        await googleRepository.updateLocationProfileTitle(locationId ?? '', data.title);
         await fetchProfile();
         closeTitleModalBase();
     };
     const { isOpen: isDescriptionModalOpen, openModal: openDescriptionModal, closeModal: closeDescriptionModalBase } = useModal();
     const handleDescriptionSave = async (data: {description: string}) => {
-        await googleService.updateLocationProfileDescription(locationId ?? '', data.description);
+        await googleRepository.updateLocationProfileDescription(locationId ?? '', data.description);
         await fetchProfile();
         closeDescriptionModalBase();
     };
     const { isOpen: isPrimaryCategoriesModalOpen, openModal: openPrimaryCategoriesModal, closeModal: closePrimaryCategoriesModalBase } = useModal();
     const handlePrimaryCategoriesSave = async (categories: GoogleLocationCategory[]) => {
         const primaryCategory = categories[0];
-        await googleService.updateLocationProfilePrimaryCategories(locationId ?? '', primaryCategory);
+        await googleRepository.updateLocationProfilePrimaryCategories(locationId ?? '', primaryCategory);
         await fetchProfile();
         closePrimaryCategoriesModalBase();
     };
     const { isOpen: isAdditionalCategoriesModalOpen, openModal: openAdditionalCategoriesModal, closeModal: closeAdditionalCategoriesModalBase } = useModal();
     const handleAdditionalCategoriesSave = async (categories: GoogleLocationCategory[]) => {
-        await googleService.updateLocationProfileAdditionalCategories(locationId ?? '', categories);
+        await googleRepository.updateLocationProfileAdditionalCategories(locationId ?? '', categories);
         await fetchProfile();
         closeAdditionalCategoriesModalBase();
     };
     const { isOpen: isOpeningDateModalOpen, openModal: openOpeningDateModal, closeModal: closeOpeningDateModalBase } = useModal();
     const handleOpeningDateSave = async (data: {openingDate: Date | null}) => {
         if (!data.openingDate) return;
-        await googleService.updateLocationProfileOpeningDate(locationId ?? '', {year: data.openingDate.getFullYear(), month: data.openingDate.getMonth() + 1, day: data.openingDate.getDate()});
+        await googleRepository.updateLocationProfileOpeningDate(locationId ?? '', {year: data.openingDate.getFullYear(), month: data.openingDate.getMonth() + 1, day: data.openingDate.getDate()});
         await fetchProfile();
         closeOpeningDateModalBase();
     };
@@ -243,7 +243,7 @@ export default function OverviewTab({
                 onClose={closePrimaryCategoriesModalBase}
                 onSave={handlePrimaryCategoriesSave}
                 categories={profile?.categories?.primaryCategory ? [profile.categories.primaryCategory] : []}
-                googleService={googleService}
+                googleRepository={googleRepository}
                 isSingleSelect={true}
             />
             <EditBusinessCategoriesModal
@@ -251,7 +251,7 @@ export default function OverviewTab({
                 onClose={closeAdditionalCategoriesModalBase}
                 onSave={handleAdditionalCategoriesSave}
                 categories={profile?.categories?.additionalCategories ?? []}
-                googleService={googleService}
+                googleRepository={googleRepository}
                 isSingleSelect={false}
             />
             <EditOpeningDateModal

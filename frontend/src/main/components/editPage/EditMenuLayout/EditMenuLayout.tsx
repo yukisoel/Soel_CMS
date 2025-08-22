@@ -1,4 +1,3 @@
-import {GoogleService} from "@/main/service/GoogleService.ts";
 import {useContext, useEffect, useState} from "react";
 import {PankuzuItemListContext} from "@/main/contexts/PankuzuItemListContext.tsx";
 import {GoogleSelectedLocationContext} from "@/main/contexts/GoogleSelectedLocationContext.tsx";
@@ -8,17 +7,16 @@ import EditMenuUpdate from "./EditMenuUpdate";
 import { GoogleLocationFoodMenuSection } from "@/main/model/LocationModel";
 import { useMenuFood } from "@/main/hooks/EditMenu/useFoodMenu";
 import cloneDeep from 'lodash.clonedeep';
+import { useGoogleRepository } from "@/main/contexts/GoogleRepositoryContext";
 
-type Props = {
-  googleService: GoogleService
-}
 
 export type MenuSectionItem = {
   sectionTitle: string
   items: {title: string, price: string}[]
 }
 
-export default function EditMenuLayout({googleService}: Props) {
+export default function EditMenuLayout() {
+  const googleRepository = useGoogleRepository();
   const {setPankuzuItemList} = useContext(PankuzuItemListContext)
   const {googleSelectedLocation, setGoogleSelectedLocation} = useContext(GoogleSelectedLocationContext)
 
@@ -27,7 +25,7 @@ export default function EditMenuLayout({googleService}: Props) {
   const [mode, setMode] = useState<'list' | 'edit' | 'create'>('list');
   const [selectedMenuSectionItem, setSelectedMenuSectionItem] = useState<GoogleLocationFoodMenuSection & { index: number} | null>(null);
 
-  const {foodMenu, updateFoodMenus} = useMenuFood(googleService, accountId ?? '', locationId ?? '')
+  const {foodMenu, updateFoodMenus} = useMenuFood(googleRepository, accountId ?? '', locationId ?? '')
 
   useEffect(() => {
     setPankuzuItemList([
@@ -35,7 +33,7 @@ export default function EditMenuLayout({googleService}: Props) {
       {name: 'GBP', path: '/edit/gbp'},
       {name: '編集メニュー', path: '/edit/menu'}])
     if (googleSelectedLocation.name === "" && locationId) {
-      googleService.getLocation(locationId).then(location => {
+      googleRepository.getLocation(locationId).then(location => {
         setGoogleSelectedLocation(location)
       })
     }

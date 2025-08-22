@@ -8,7 +8,7 @@ import EditBusinessOwnerModal from "../modals/EditBusinessOwnerModal";
 import { useEditServicesModalContainer } from '../modals/EditServicesModal/useEditServicesModalContainer';
 import { useEditServiceOptionsModalContainer } from '../modals/EditServiceOptionsModal/useEditServiceOptionsModalContainer';
 import { GoogleLocationAttributesModel, GoogleLocationProfileModel, SERVICE_ATTRIBUTE_MAPPING, SERVICE_OPTION_ATTRIBUTE_MAPPING, GoogleLocationAttributeServiceType, GoogleLocationAttributeServiceOptionType } from "@/types/apiModel.ts";
-import { GoogleService } from "@/main/service/GoogleService";
+import { GoogleRepository } from "@/main/repositories/GoogleRepository";
 import { useModal } from "@/main/common/Modal/useModal";
 import { useParams } from "react-router-dom";
 
@@ -19,7 +19,7 @@ type Props = {
   attributes: GoogleLocationAttributesModel | null;
   fetchProfile: () => Promise<void>;
   fetchAttributes: () => Promise<void>;
-  googleService: GoogleService;
+  googleRepository: GoogleRepository;
   isLoading?: boolean;
 };
 
@@ -28,7 +28,7 @@ export default function OtherSectionTab({
   attributes,
   fetchProfile,
   fetchAttributes,
-  googleService,
+  googleRepository,
   isLoading = false,
 }: Props) {
   const { locationId } = useParams();
@@ -43,7 +43,7 @@ export default function OtherSectionTab({
     if (!locationId) return false;
     try {
       // APIを呼び出してビジネス所有者情報を更新
-      await googleService.updateLocationBusinessOwnerInfo(locationId, isOwnedByWomen);
+      await googleRepository.updateLocationBusinessOwnerInfo(locationId, isOwnedByWomen);
       
       // 属性データを再取得
       await fetchAttributes();

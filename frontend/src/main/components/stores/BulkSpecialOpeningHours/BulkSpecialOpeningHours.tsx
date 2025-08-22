@@ -1,4 +1,3 @@
-import { GoogleService } from "@/main/service/GoogleService";
 import { useSelectStore } from "../SelectStore/useSelectStore";
 import { useMemo, useState } from "react";
 import { format } from 'date-fns';
@@ -6,15 +5,11 @@ import SpecialOpeningHourList from "./SpecialOpeningHourList";
 import { useSpecialOpeningHoursSettings } from "./useSpecialOpeningHoursSettings";
 import SpecialOpeningHourConfirm from "./SpecialOpeningHourConfirm";
 
-type Props = {
-    googleService: GoogleService;
-};
 
-export default function BulkSpecialOpeningHours({ googleService }: Props) {
+export default function BulkSpecialOpeningHours() {
     const [mode, setMode] = useState<'list' | 'selectStore' | 'selectHours' | 'confirm'>('list');
 
     const { selectedBranches, selectStoreRender } = useSelectStore({
-        googleService,
         onNextClick: () => setMode('selectHours'),
         onBackClick: () => setMode('list')
     });

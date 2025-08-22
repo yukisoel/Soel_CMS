@@ -10,16 +10,13 @@ import Ellipsis from "@/main/assets/Ellipsis.svg";
 import classNames from "classnames";
 import useFileUploadModal from "@/main/common/FileUploadModal/useFileUploadModal";
 import { useParams } from "react-router-dom";
-import { GoogleService } from "@/main/service/GoogleService";
+import { useGoogleRepository } from "@/main/contexts/GoogleRepositoryContext";
 import { GoogleLocationPhotoModel } from "@/main/model/LocationModel";
 import { LocationAssociationName } from "@/main/model/LocationAssociationName";
 import PhotoPullDownMenu from "@/main/components/editPage/PhotoPullDownMenu";
 
-type Props = {
-    googleService: GoogleService;
-};
-
-export default function EditPhotoLayoutV2({ googleService }: Props) {
+export default function EditPhotoLayoutV2() {
+    const googleRepository = useGoogleRepository();
     const { accountId, locationId } = useParams();
     const [selectedPhotoIndices, setSelectedPhotoIndices] = useState<number[]>([]);
     const [selectedCategory, setSelectedCategory] = useState<string>('');
@@ -30,7 +27,7 @@ export default function EditPhotoLayoutV2({ googleService }: Props) {
         if (accountId && locationId) {
             setIsLoading(true);
             try {
-                const photos = await googleService.getLocationPhotos(
+                const photos = await googleRepository.getLocationPhotos(
                     accountId,
                     locationId
                 );
@@ -43,13 +40,13 @@ export default function EditPhotoLayoutV2({ googleService }: Props) {
         }
     };
 
-    const { openModal, render } = useFileUploadModal({ googleService, accountId, locationId, onUploadSuccess: () => {
+    const { openModal, render } = useFileUploadModal({ googleRepository, accountId, locationId, onUploadSuccess: () => {
         fetchPhotos();
     } });
 
     useEffect(() => {
         fetchPhotos();
-    }, [accountId, locationId, googleService]);
+    }, [accountId, locationId, googleRepository]);
 
     const handlePhotoClick = (index: number) => {
         if (selectedPhotoIndices.includes(index)) {

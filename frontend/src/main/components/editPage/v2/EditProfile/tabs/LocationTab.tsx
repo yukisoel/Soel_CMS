@@ -4,7 +4,7 @@ import Button from "@/main/common/Button";
 import Loading from "@/main/common/Loading";
 import styles from "../EditProfileLayoutV2.module.scss";
 import { GoogleLocationProfileModel } from "@/types/apiModel.ts";
-import { GoogleService } from "@/main/service/GoogleService";
+import { GoogleRepository } from "@/main/repositories/GoogleRepository";
 import { useModal } from "@/main/common/Modal/useModal";
 import { useParams } from "react-router-dom";
 import { useMemo } from 'react';
@@ -14,21 +14,21 @@ import { EditServiceAreaModal } from "../modals/EditServiceAreaModal";
 type Props = {
     profile: GoogleLocationProfileModel | null;
     fetchProfile: () => Promise<void>;
-    googleService: GoogleService;
+    googleRepository: GoogleRepository;
     isLoading?: boolean;
 };
 
 export default function LocationTab({
     profile,
     fetchProfile,
-    googleService,
+    googleRepository,
     isLoading = false,
 }: Props) {
     const { locationId } = useParams();
     const { isOpen: isAddressModal, openModal: openAddressModal, closeModal: closeAddressModal } = useModal();
     const { isOpen: isServiceAreaModal, openModal: openServiceAreaModal, closeModal: closeServiceAreaModal } = useModal();
     const handleAddressSave = async (data: { postalCode: string, prefecture: string, address: string }) => {
-        await googleService.updateLocationProfileStorefrontAddress(locationId ?? '', {
+        await googleRepository.updateLocationProfileStorefrontAddress(locationId ?? '', {
             postalCode: data.postalCode,
             administrativeArea: data.prefecture as GoogleLocationStoreFrontAddressRequestAdministrativeArea,
             addressLines: data.address.split(' '),
@@ -38,7 +38,7 @@ export default function LocationTab({
     };
 
     const handleServiceAreaSave = async (data: { serviceArea?: string, placeId?: string }) => {
-        await googleService.updateLocationProfileServiceArea(locationId ?? '', [data.placeId ?? '']);
+        await googleRepository.updateLocationProfileServiceArea(locationId ?? '', [data.placeId ?? '']);
         await fetchProfile();
         closeServiceAreaModal();
     };
@@ -134,7 +134,7 @@ export default function LocationTab({
                     serviceArea: profile?.serviceArea?.places?.placeInfos?.[0]?.placeName ?? '',
                     placeId: profile?.serviceArea?.places?.placeInfos?.[0]?.placeId ?? '',
                 }}
-                googleService={googleService}
+                googleRepository={googleRepository}
             />
         </Wrapper>
     );

@@ -1,10 +1,8 @@
 import { useState } from "react";
 import SelectStoreSingle from "./SelectStoreSingle";
-import { GoogleService } from "@/main/service/GoogleService";
 import { Branch, Region, Store } from "../SelectStoreSingle/SelectStoreSingle";
 
 type Props = {
-    googleService: GoogleService;
     onNextClick: () => void;
     onBackClick: () => void;
 };

@@ -1,5 +1,4 @@
 import styles from "@/main/components/editPage/EditPhotoLayout.module.scss";
-import {GoogleService} from "@/main/service/GoogleService.ts";
 import {useContext, useEffect, useRef, useState} from "react";
 import {PankuzuItemListContext} from "@/main/contexts/PankuzuItemListContext.tsx";
 import {GoogleSelectedLocationContext} from "@/main/contexts/GoogleSelectedLocationContext.tsx";
@@ -7,12 +6,11 @@ import {useParams} from "react-router-dom";
 import PhotoPullDownMenu from "@/main/components/editPage/PhotoPullDownMenu.tsx";
 import {GoogleLocationPhotoModel} from "@/main/model/LocationModel.ts";
 import {LocationAssociationName} from "@/main/model/LocationAssociationName.ts";
+import { useGoogleRepository } from "@/main/contexts/GoogleRepositoryContext";
 
-type Props = {
-  googleService: GoogleService
-}
 
-export default function EditPhotoLayout({googleService}: Props) {
+export default function EditPhotoLayout() {
+  const googleRepository = useGoogleRepository();
   const [selectedCategory, setSelectedCategory] = useState<string>(LocationAssociationName.CATEGORY_UNSPECIFIED)
   const [photoList, setPhotoList] = useState<GoogleLocationPhotoModel[]>([])
   const [uploadedPhotoFileList, setUploadedPhotoFileList] = useState<FileList | null>(null)
@@ -32,14 +30,14 @@ export default function EditPhotoLayout({googleService}: Props) {
       {name: 'GBP', path: '/edit/gbp'},
       {name: '写真', path: '/edit/photo'}])
     if (googleSelectedLocation.name === "" && locationId) {
-      googleService.getLocation(locationId).then(location => {
+      googleRepository.getLocation(locationId).then(location => {
         console.log({locationId})
         console.log({location})
         setGoogleSelectedLocation(location)
       })
     }
     if (accountId && locationId) {
-      googleService.getLocationPhotos(accountId, locationId).then(photos => {
+      googleRepository.getLocationPhotos(accountId, locationId).then(photos => {
         console.log({photos})
         setPhotoList(photos)
       })
@@ -74,7 +72,7 @@ export default function EditPhotoLayout({googleService}: Props) {
     setShowAddPhotoPage(!showAddPhotoPage)
     setShowAddPhotoListPage(false)
     if (accountId && locationId && uploadedPhotoFileList && uploadedPhotoFileList.length > 0) {
-      googleService.postLocationPhoto(accountId, locationId, uploadedPhotoFileList)
+      googleRepository.postLocationPhoto(accountId, locationId, uploadedPhotoFileList)
     }
   }
 

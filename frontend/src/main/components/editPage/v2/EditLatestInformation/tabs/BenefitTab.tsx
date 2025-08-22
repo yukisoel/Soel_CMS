@@ -10,7 +10,7 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import styles from '../EditLatestInformation.module.scss';
-import { GoogleService } from '@/main/service/GoogleService';
+import { useGoogleRepository } from '@/main/contexts/GoogleRepositoryContext';
 import { useParams } from 'react-router-dom';
 import { LocalPostTopicType, LocationButtonName } from '@/types/apiModel';
 
@@ -25,12 +25,12 @@ const schema = z.object({
 type FormData = z.infer<typeof schema>;
 
 interface Props {
-  googleService: GoogleService;
   setIsSubmitting?: (value: boolean) => void;
 }
 
-export const BenefitTab: React.FC<Props> = ({ googleService, setIsSubmitting }) => {
+export const BenefitTab: React.FC<Props> = ({ setIsSubmitting }) => {
   const { accountId, locationId } = useParams();
+  const googleRepository = useGoogleRepository();
   const {
     register,
     handleSubmit,
@@ -52,7 +52,7 @@ export const BenefitTab: React.FC<Props> = ({ googleService, setIsSubmitting }) 
     
     setIsSubmitting?.(true);
     try {
-      await googleService.postLocationLocalPosts(accountId ?? '', locationId ?? '', {
+      await googleRepository.postLocationLocalPosts(accountId ?? '', locationId ?? '', {
         summary: data.benefitTitle,
         callToAction: {
           actionType: Object.keys(LocationButtonName).find(key => LocationButtonName[key as keyof typeof LocationButtonName] === data.selectedButton) as LocationButtonName,

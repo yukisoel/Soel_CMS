@@ -10,7 +10,6 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import LayoutLabeledFormItem from '@/main/common/LayoutLabeledFormItem';
 import { PhotoSelector } from '../components/PhotoSelector';
-import { GoogleService } from '@/main/service/GoogleService';
 import { GoogleLocationPhotoModel } from '@/main/model/LocationModel';
 import styles from './EditMenuModal.module.scss';
 
@@ -31,7 +30,6 @@ type EditMenuModalProps = {
   title: string;
   onSubmit: (data: FormData & { selectedPhoto?: GoogleLocationPhotoModel }) => Promise<void>;
   onDelete?: () => Promise<void>;
-  googleService: GoogleService;
   initialValues?: {
     title: string;
     price: string;
@@ -46,7 +44,6 @@ export const EditMenuModal: React.FC<EditMenuModalProps> = ({
   title,
   onSubmit,
   onDelete,
-  googleService,
   initialValues,
 }) => {
   const {
@@ -85,13 +82,13 @@ export const EditMenuModal: React.FC<EditMenuModalProps> = ({
   // 既存の写真がある場合のプレビューURL取得
   const getPhotoUrl = (photo: GoogleLocationPhotoModel | undefined) => {
     if (!photo) return null;
-    
+
     // mediaKeyがある場合はGoogle CDNから取得
     if (photo.name && photo.name.includes('media/')) {
       const mediaKey = photo.name.split('media/')[1];
       return `https://lh3.googleusercontent.com/p/${mediaKey}=s0`;
     }
-    
+
     // それ以外は通常のURL
     return photo.googleUrl || photo.thumbnailUrl;
   };
@@ -154,7 +151,6 @@ export const EditMenuModal: React.FC<EditMenuModalProps> = ({
             </Wrapper>
           ) : (
             <PhotoSelector
-              googleService={googleService}
               onPhotoSelect={handlePhotoSelect}
               selectedPhoto={selectedPhoto}
             />

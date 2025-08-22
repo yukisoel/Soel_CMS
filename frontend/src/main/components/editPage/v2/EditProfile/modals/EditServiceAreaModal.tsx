@@ -8,7 +8,7 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import LayoutLabeledFormItem from '@/main/common/LayoutLabeledFormItem';
 import SearchPulldownMenu from '@/main/components/editPage/SearchPullDownMenu';
-import { GoogleService } from '@/main/service/GoogleService';
+import { GoogleRepository } from '@/main/repositories/GoogleRepository';
 
 const schema = z.object({
   serviceArea: z.string()
@@ -27,7 +27,7 @@ type EditServiceAreaModalProps = {
     serviceArea: string;
     placeId?: string;
   };
-  googleService: GoogleService;
+  googleRepository: GoogleRepository;
 };
 
 export const EditServiceAreaModal: React.FC<EditServiceAreaModalProps> = ({
@@ -35,7 +35,7 @@ export const EditServiceAreaModal: React.FC<EditServiceAreaModalProps> = ({
   onClose,
   onSubmit,
   initialValues,
-  googleService,
+  googleRepository,
 }) => {
   const {
     register,
@@ -62,7 +62,7 @@ export const EditServiceAreaModal: React.FC<EditServiceAreaModalProps> = ({
   }, [isOpen, reset, initialValues]);
 
   const handleSearch = async (query: string): Promise<void> => {
-    const results = await googleService.postPlacesAutoComplete(query);
+    const results = await googleRepository.postPlacesAutoComplete(query);
     const placeList = results.placeSetList ?? [];
     const newOptions = placeList.map(place => place.text ?? '');
     const newPlaceIdMap = placeList.reduce((acc, place) => ({

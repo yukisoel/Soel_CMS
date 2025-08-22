@@ -1,10 +1,10 @@
 import { useState } from "react";
 import FileUploadModal from './FileUploadModal';
-import { GoogleService } from "@/main/service/GoogleService";
+import { GoogleRepository } from "@/main/repositories/GoogleRepository";
 
 type Props = {
     size?: 'regular' | 'large';
-    googleService: GoogleService;
+    googleRepository: GoogleRepository;
     accountId?: string;
     locationId?: string;
     onUploadSuccess?: () => void;
@@ -12,7 +12,7 @@ type Props = {
 
 export default function useFileUploadModal({
     size = 'regular',
-    googleService,
+    googleRepository,
     accountId,
     locationId,
     onUploadSuccess
@@ -34,7 +34,7 @@ export default function useFileUploadModal({
                 uploadedPhotoFiles.forEach(file => {
                     dataTransfer.items.add(file);
                 });
-                await googleService.postLocationPhoto(accountId, locationId, dataTransfer.files);
+                await googleRepository.postLocationPhoto(accountId, locationId, dataTransfer.files);
                 onUploadSuccess?.();
                 closeModal();
             } catch (error) {

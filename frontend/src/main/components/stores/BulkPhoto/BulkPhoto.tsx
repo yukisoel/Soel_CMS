@@ -1,5 +1,4 @@
 import styles from "@/main/components/stores/BulkPhoto/BulkPhoto.module.scss";
-import { GoogleService } from "@/main/service/GoogleService";
 import { useSelectStore } from "../SelectStore/useSelectStore";
 import { useMemo, useState } from "react";
 import Wrapper from "@/main/common/Wrapper";
@@ -9,15 +8,11 @@ import useSelectPhoto from "./useSelectPhoto";
 import SelectedPhotoList from "./SelectedPhotoList";
 import Button from "@/main/common/Button";
 
-type Props = {
-    googleService: GoogleService;
-};
 
-export default function BulkPhoto({ googleService }: Props) {
+export default function BulkPhoto() {
     const [mode, setMode] = useState<'selectStore' | 'selectPhoto' | 'confirm'>('selectStore');
 
     const { selectedBranches, selectStoreRender } = useSelectStore({
-        googleService,
         onNextClick: () => setMode('selectPhoto'),
         onBackClick: () => {}
     });

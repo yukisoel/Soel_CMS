@@ -1,9 +1,7 @@
 import { useMemo, useState } from "react";
 import SelectService from "./SelectService";
-import { GoogleService } from "@/main/service/GoogleService";
 
 type Props = {
-    googleService: GoogleService;
     selectedStores: string[];
     onNextClick: () => void;
     onBackClick: () => void;
