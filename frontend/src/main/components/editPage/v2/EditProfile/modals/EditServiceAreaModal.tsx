@@ -1,21 +1,21 @@
-import React from 'react';
-import Modal from '@/main/common/Modal/Modal';
-import Wrapper from '@/main/common/Wrapper';
-import Typography from '@/main/common/Typography';
-import Button from '@/main/common/Button';
-import { useForm } from 'react-hook-form';
-import { z } from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
-import LayoutLabeledFormItem from '@/main/common/LayoutLabeledFormItem';
-import SearchPulldownMenu from '@/main/components/editPage/SearchPullDownMenu';
-import { GoogleRepository } from '@/main/repositories/GoogleRepository';
+import React from 'react'
+import { useForm } from 'react-hook-form'
+import { z } from 'zod'
+import { zodResolver } from '@hookform/resolvers/zod'
+import Modal from '@/main/common/Modal/Modal'
+import Wrapper from '@/main/common/Wrapper'
+import Typography from '@/main/common/Typography'
+import Button from '@/main/common/Button'
+import LayoutLabeledFormItem from '@/main/common/LayoutLabeledFormItem'
+import SearchPulldownMenu from '@/main/components/editPage/SearchPullDownMenu'
+import { GoogleRepository } from '@/main/repositories/GoogleRepository'
 
 const schema = z.object({
   serviceArea: z.string()
     .min(1, 'サービスエリアは必須です')
     .max(140, 'サービスエリアは140文字以内で入力してください'),
-  placeId: z.string().optional(),
-});
+  placeId: z.string().optional()
+})
 
 type FormData = z.infer<typeof schema>;
 
@@ -35,49 +35,48 @@ export const EditServiceAreaModal: React.FC<EditServiceAreaModalProps> = ({
   onClose,
   onSubmit,
   initialValues,
-  googleRepository,
+  googleRepository
 }) => {
   const {
-    register,
     handleSubmit,
     formState: { errors },
     reset,
     watch,
     setValue
   } = useForm<FormData>({
-    resolver: zodResolver(schema),
-  });
+    resolver: zodResolver(schema)
+  })
 
-  const serviceAreaValue = watch('serviceArea') || '';
-  const [options, setOptions] = React.useState<string[]>([]);
-  const [placeIdMap, setPlaceIdMap] = React.useState<Record<string, string>>({});
+  const serviceAreaValue = watch('serviceArea') || ''
+  const [options, setOptions] = React.useState<string[]>([])
+  const [placeIdMap, setPlaceIdMap] = React.useState<Record<string, string>>({})
 
   React.useEffect(() => {
     if (isOpen) {
       reset(initialValues || {
         serviceArea: '',
-        placeId: '',
-      });
+        placeId: ''
+      })
     }
-  }, [isOpen, reset, initialValues]);
+  }, [isOpen, reset, initialValues])
 
   const handleSearch = async (query: string): Promise<void> => {
-    const results = await googleRepository.postPlacesAutoComplete(query);
-    const placeList = results.placeSetList ?? [];
-    const newOptions = placeList.map(place => place.text ?? '');
+    const results = await googleRepository.postPlacesAutoComplete(query)
+    const placeList = results.placeSetList ?? []
+    const newOptions = placeList.map(place => place.text ?? '')
     const newPlaceIdMap = placeList.reduce((acc, place) => ({
       ...acc,
-      [place.text ?? '']: place.placeId ?? '',
-    }), {} as Record<string, string>);
+      [place.text ?? '']: place.placeId ?? ''
+    }), {} as Record<string, string>)
 
-    setOptions(newOptions);
-    setPlaceIdMap(newPlaceIdMap);
-  };
+    setOptions(newOptions)
+    setPlaceIdMap(newPlaceIdMap)
+  }
 
   const handleSelect = (selected: string) => {
-    setValue('serviceArea', selected);
-    setValue('placeId', placeIdMap[selected] ?? '');
-  };
+    setValue('serviceArea', selected)
+    setValue('placeId', placeIdMap[selected] ?? '')
+  }
 
   const contentRender = () => (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -114,7 +113,7 @@ export const EditServiceAreaModal: React.FC<EditServiceAreaModalProps> = ({
         </Wrapper>
       </Wrapper>
     </form>
-  );
+  )
 
   return (
     <Modal
@@ -123,7 +122,7 @@ export const EditServiceAreaModal: React.FC<EditServiceAreaModalProps> = ({
       headerContent="サービスエリアを編集"
       contentRender={contentRender}
     />
-  );
-};
+  )
+}
 
-export default EditServiceAreaModal;
+export default EditServiceAreaModal

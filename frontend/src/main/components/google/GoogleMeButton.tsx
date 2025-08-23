@@ -1,4 +1,4 @@
-import {axiosApiClient} from "@/main/client/axiosClient.ts";
+import { axiosApiClient } from '@/main/client/axiosClient.ts'
 
 type Props = {
   setInstagramInfo:(str:string) => void
@@ -6,22 +6,22 @@ type Props = {
   endpoint: string
 }
 
-export default function GoogleMeButton({setInstagramInfo, text, endpoint}:Props) {
+export default function GoogleMeButton({ setInstagramInfo, text, endpoint }:Props) {
 
   const getInfo = async () => {
     try{
       const res = await axiosApiClient.get(
         endpoint,
         {
-          withCredentials:true,
+          withCredentials:true
         }
       )
       console.log(res)
       setInstagramInfo(JSON.stringify(res.data))
 
     }catch(e) {
-      console.log("catch")
-      location.href = "http://localhost:8080/oauth2/authorization/google"
+      console.log('catch')
+      location.href = 'http://localhost:8080/oauth2/authorization/google'
     }
   }
   return (

@@ -1,15 +1,15 @@
-import { useState } from 'react';
-import Modal from '@/main/common/Modal/Modal';
-import Wrapper from '@/main/common/Wrapper';
-import Typography from '@/main/common/Typography';
-import Button from '@/main/common/Button';
-import SearchBox from '@/main/common/SearchBox';
-import Scroll from '@/main/common/Scroll';
-import styles from '../EditProfileLayoutV2.module.scss';
-import CloseSymbolYellow from '@/main/assets/CloseSymbolYellow.svg';
-import { GoogleRepository } from '@/main/repositories/GoogleRepository';
-import { GoogleLocationCategory } from '@/types/apiModel';
-import { useEffect } from 'react';
+import { useState } from 'react'
+import { useEffect } from 'react'
+import styles from '../EditProfileLayoutV2.module.scss'
+import Modal from '@/main/common/Modal/Modal'
+import Wrapper from '@/main/common/Wrapper'
+import Typography from '@/main/common/Typography'
+import Button from '@/main/common/Button'
+import SearchBox from '@/main/common/SearchBox'
+import Scroll from '@/main/common/Scroll'
+import CloseSymbolYellow from '@/main/assets/CloseSymbolYellow.svg'
+import { GoogleRepository } from '@/main/repositories/GoogleRepository'
+import { GoogleLocationCategory } from '@/types/apiModel'
 
 type Props = {
   isOpen: boolean;
@@ -26,11 +26,11 @@ export default function EditBusinessCategoriesModal({
   categories,
   onSave,
   googleRepository,
-  isSingleSelect = false,
+  isSingleSelect = false
 }: Props) {
-  const [selectedCategories, setSelectedCategories] = useState<GoogleLocationCategory[]>(categories);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [availableCategories, setAvailableCategories] = useState<GoogleLocationCategory[]>([]);
+  const [selectedCategories, setSelectedCategories] = useState<GoogleLocationCategory[]>(categories)
+  const [searchQuery, setSearchQuery] = useState('')
+  const [availableCategories, setAvailableCategories] = useState<GoogleLocationCategory[]>([])
 
   useEffect(() => {
     googleRepository.getCategories().then(categories => {
@@ -44,24 +44,24 @@ export default function EditBusinessCategoriesModal({
 
   const handleAddCategory = (category: GoogleLocationCategory) => {
     if (!selectedCategories.includes(category)) {
-      setSelectedCategories([...selectedCategories, category]);
+      setSelectedCategories([...selectedCategories, category])
     }
-  };
+  }
 
   const handleRemoveCategory = (category: GoogleLocationCategory) => {
-    setSelectedCategories(selectedCategories.filter(c => c !== category));
-  };
+    setSelectedCategories(selectedCategories.filter(c => c !== category))
+  }
 
   const handleSave = () => {
-    onSave(selectedCategories);
-    onClose();
-  };
+    onSave(selectedCategories)
+    onClose()
+  }
 
   const filteredCategories = availableCategories
     .filter(category => !selectedCategories.some(s => s.name === category.name))
     .filter(category =>
       (category?.displayName || '').toLowerCase().includes(searchQuery.toLowerCase())
-    );
+    )
 
   const renderContent = () => (
     <Wrapper direction="col" gap="3rem">
@@ -149,7 +149,7 @@ export default function EditBusinessCategoriesModal({
         </Button>
       </Wrapper>
     </Wrapper>
-  );
+  )
 
   return (
     <Modal
@@ -158,5 +158,5 @@ export default function EditBusinessCategoriesModal({
       onClose={onClose}
       contentRender={renderContent}
     />
-  );
+  )
 }

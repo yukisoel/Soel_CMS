@@ -1,10 +1,10 @@
-import {describe} from "vitest";
-import axios from "axios";
-import MockAdapter from "axios-mock-adapter";
-import {GoogleRepositoryImpl} from "@/main/repositories/GoogleRepository.ts";
-import {GoogleAccount} from "@/types/apiModel.ts";
+import { describe } from 'vitest'
+import axios from 'axios'
+import MockAdapter from 'axios-mock-adapter'
+import { GoogleRepositoryImpl } from '@/main/repositories/GoogleRepository.ts'
+import { GoogleAccount } from '@/types/apiModel.ts'
 
-describe("GoogleRepository", () => {
+describe('GoogleRepository', () => {
   describe('getAccounts', () => {
     it('/api/google/accountsにリクエストしている', async () => {
       const mockAxios = new MockAdapter(axios)
@@ -22,9 +22,9 @@ describe("GoogleRepository", () => {
 
     it('リクエストが成功したとき、レスポンスの結果を返す', async () => {
       const testAccountList:GoogleAccount[] = [
-        {name: 'testName1', accountName: 'testAccountName1'},
+        { name: 'testName1', accountName: 'testAccountName1' }
       ]
-      const testAxiosResponse = {accountList: testAccountList}
+      const testAxiosResponse = { accountList: testAccountList }
       const mockAxios = new MockAdapter(axios)
       mockAxios.onGet('/api/google/accounts').reply(200, testAxiosResponse)
       const googleRepository = new GoogleRepositoryImpl()

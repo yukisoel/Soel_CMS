@@ -1,11 +1,10 @@
-import {AxiosResponse} from "axios";
-import {axiosApiClient} from "@/main/client/axiosClient.ts";
+import { AxiosResponse } from 'axios'
+import { axiosApiClient } from '@/main/client/axiosClient.ts'
 import {
   GoogleLocationFoodMenusModel,
-  GoogleLocationLocalPostModel,
-  GoogleLocationPhotoModel,
-} from "@/main/model/LocationModel.ts";
-import {GoogleAccount, GoogleLocation, GoogleLocationProfileModel, GoogleLocationDate, GoogleLocationCategory, GoogleLocationAttributeSnsLinkRequest, GoogleLocationAttributesModel, GoogleLocationStoreFrontAddressRequest, GoogleLocationBusinessHoursRequest, GooglePlacesAutoCompleteResponse, GoogleLocationLocalPostRequest, GoogleLocationReviewModel, BrandWithStoresListResponse, PrefectureListWithBrandListWithStoreListResponse, GoogleLocationAttributeService, GoogleLocationAttributeServiceOption, GoogleLocationBusinessOwnerInfo, GoogleAttributeMetadata } from "@/types/apiModel.ts";
+  GoogleLocationPhotoModel
+} from '@/main/model/LocationModel.ts'
+import { GoogleAccount, GoogleLocation, GoogleLocationProfileModel, GoogleLocationDate, GoogleLocationCategory, GoogleLocationAttributeSnsLinkRequest, GoogleLocationAttributesModel, GoogleLocationStoreFrontAddressRequest, GoogleLocationBusinessHoursRequest, GooglePlacesAutoCompleteResponse, GoogleLocationLocalPostRequest, GoogleLocationReviewModel, BrandWithStoresListResponse, PrefectureListWithBrandListWithStoreListResponse, GoogleLocationAttributeService, GoogleLocationAttributeServiceOption, GoogleLocationBusinessOwnerInfo, GoogleAttributeMetadata } from '@/types/apiModel.ts'
 
 export interface GoogleRepository {
   getAccounts(): Promise<GoogleAccount[]>
@@ -97,13 +96,13 @@ export class GoogleRepositoryImpl implements GoogleRepository {
     try {
       const response: AxiosResponse<AccountListResponse> = await axiosApiClient.get('google/accounts', {
         headers: {
-          'Accept': 'application/json; charset=utf-8',
-        },
+          'Accept': 'application/json; charset=utf-8'
+        }
       })
       return response.data
     } catch (error) {
       console.error(error)
-      throw new Error("google get accounts failed")
+      throw new Error('google get accounts failed')
     }
   }
 
@@ -114,13 +113,13 @@ export class GoogleRepositoryImpl implements GoogleRepository {
           accountId: accountId
         },
         headers: {
-          'Accept': 'application/json; charset=utf-8',
-        },
+          'Accept': 'application/json; charset=utf-8'
+        }
       })
       return response.data
     } catch (error) {
       console.error(error)
-      throw new Error("google get account failed")
+      throw new Error('google get account failed')
     }
   }
 
@@ -131,13 +130,13 @@ export class GoogleRepositoryImpl implements GoogleRepository {
           accountId: googleAccount.name
         },
         headers: {
-          'Accept': 'application/json; charset=utf-8',
-        },
+          'Accept': 'application/json; charset=utf-8'
+        }
       })
       return response.data
     } catch (error) {
       console.error(error)
-      throw new Error("google get locations failed")
+      throw new Error('google get locations failed')
     }
   }
 
@@ -148,13 +147,13 @@ export class GoogleRepositoryImpl implements GoogleRepository {
           locationId: locationId
         },
         headers: {
-          'Accept': 'application/json; charset=utf-8',
-        },
+          'Accept': 'application/json; charset=utf-8'
+        }
       })
       return response.data
     } catch (error) {
       console.error(error)
-      throw new Error("google get location failed")
+      throw new Error('google get location failed')
     }
   }
 
@@ -165,13 +164,13 @@ export class GoogleRepositoryImpl implements GoogleRepository {
           locationId: locationId
         },
         headers: {
-          'Accept': 'application/json; charset=utf-8',
-        },
+          'Accept': 'application/json; charset=utf-8'
+        }
       })
       return response.data
     } catch (error) {
       console.error(error)
-      throw new Error("google get location profile failed")
+      throw new Error('google get location profile failed')
     }
   }
 
@@ -183,32 +182,32 @@ export class GoogleRepositoryImpl implements GoogleRepository {
           locationId: locationId
         },
         headers: {
-          'Accept': 'application/json; charset=utf-8',
-        },
+          'Accept': 'application/json; charset=utf-8'
+        }
       })
       return response.data
     } catch (error) {
       console.error(error)
-      throw new Error("google get location photos failed")
+      throw new Error('google get location photos failed')
     }
   }
 
   async getLocationFoodMenus(accountId: string, locationId: string): Promise<GoogleLocationFoodMenusModel> {
     try {
       const response: AxiosResponse<GoogleLocationFoodMenusModel> =
-        await axiosApiClient.get("google/location/food_menus", {
+        await axiosApiClient.get('google/location/food_menus', {
           params: {
             accountId: accountId,
-            locationId: locationId,
+            locationId: locationId
           },
           headers: {
-            Accept: "application/json; charset=utf-8",
-          },
+            Accept: 'application/json; charset=utf-8'
+          }
         })
-      return response.data;
+      return response.data
     } catch (error) {
       console.error(error)
-      throw new Error("google get location food menus failed")
+      throw new Error('google get location food menus failed')
     }
   }
 
@@ -217,12 +216,12 @@ export class GoogleRepositoryImpl implements GoogleRepository {
       const response: AxiosResponse<GoogleLocationAttributesModel> = await axiosApiClient.get('google/location/attributes', {
         params: {
           locationId: locationId
-        },
+        }
       })
       return response.data
     } catch (error) {
       console.error(error)
-      throw new Error("google get location attributes failed")
+      throw new Error('google get location attributes failed')
     }
   }
 
@@ -233,13 +232,13 @@ export class GoogleRepositoryImpl implements GoogleRepository {
           locationId: locationId
         },
         headers: {
-          'Accept': 'application/json; charset=utf-8',
-        },
+          'Accept': 'application/json; charset=utf-8'
+        }
       })
       return response.data
     } catch (error) {
       console.error(error)
-      throw new Error("google get location attributes services failed")
+      throw new Error('google get location attributes services failed')
     }
   }
 
@@ -247,13 +246,13 @@ export class GoogleRepositoryImpl implements GoogleRepository {
     try {
       const response: AxiosResponse<GoogleLocationAttributesModel> = await axiosApiClient.get('google/location/attributes/servicesOptions', {
         headers: {
-          'Accept': 'application/json; charset=utf-8',
-        },
+          'Accept': 'application/json; charset=utf-8'
+        }
       })
       return response.data
     } catch (error) {
       console.error(error)
-      throw new Error("google get location attributes services options failed")
+      throw new Error('google get location attributes services options failed')
     }
   }
 
@@ -264,13 +263,13 @@ export class GoogleRepositoryImpl implements GoogleRepository {
           locationId: locationId
         },
         headers: {
-          'Accept': 'application/json; charset=utf-8',
-        },
+          'Accept': 'application/json; charset=utf-8'
+        }
       })
       return response.data
     } catch (error) {
       console.error(error)
-      throw new Error("google get location business owner info failed")
+      throw new Error('google get location business owner info failed')
     }
   }
 
@@ -281,13 +280,13 @@ export class GoogleRepositoryImpl implements GoogleRepository {
           locationId: locationId
         },
         headers: {
-          'Accept': 'application/json; charset=utf-8',
-        },
+          'Accept': 'application/json; charset=utf-8'
+        }
       })
       return response.data
     } catch (error) {
       console.error(error)
-      throw new Error("google get available attributes failed")
+      throw new Error('google get available attributes failed')
     }
   }
 
@@ -297,7 +296,7 @@ export class GoogleRepositoryImpl implements GoogleRepository {
       return response.data
     } catch (error) {
       console.error(error)
-      throw new Error("google get categories failed")
+      throw new Error('google get categories failed')
     }
   }
 
@@ -308,12 +307,12 @@ export class GoogleRepositoryImpl implements GoogleRepository {
         params: {
           accountId: accountId,
           locationId: locationId
-        },
+        }
       })
       return response.data
     } catch (error) {
       console.error(error)
-      throw new Error("google get location reviews failed")
+      throw new Error('google get location reviews failed')
     }
   }
 
@@ -323,7 +322,7 @@ export class GoogleRepositoryImpl implements GoogleRepository {
       return response.data
     } catch (error) {
       console.error(error)
-      throw new Error("google get brand list failed")
+      throw new Error('google get brand list failed')
     }
   }
 
@@ -334,7 +333,7 @@ export class GoogleRepositoryImpl implements GoogleRepository {
       return response.data
     } catch (error) {
       console.error(error)
-      throw new Error("google get store list by prefecture failed")
+      throw new Error('google get store list by prefecture failed')
     }
   }
 
@@ -354,13 +353,13 @@ export class GoogleRepositoryImpl implements GoogleRepository {
             locationId: locationId
           },
           headers: {
-            'Content-Type': 'multipart/form-data',
-          },
+            'Content-Type': 'multipart/form-data'
+          }
         })
       console.log(response)
     } catch (error) {
       console.error(error)
-      throw new Error("google post location photo failed")
+      throw new Error('google post location photo failed')
     }
   }
 
@@ -376,13 +375,13 @@ export class GoogleRepositoryImpl implements GoogleRepository {
           },
           headers: {
             'Accept': 'application/json; charset=utf-8',
-            'Content-Type': 'application/json',
-          },
+            'Content-Type': 'application/json'
+          }
         })
       return response.data
     } catch (error) {
       console.error(error)
-      throw new Error("google update location profile failed")
+      throw new Error('google update location profile failed')
     }
   }
 
@@ -393,17 +392,17 @@ export class GoogleRepositoryImpl implements GoogleRepository {
         title,
         {
           params: {
-            locationId: locationId,
+            locationId: locationId
           },
           headers: {
-            'Content-Type': 'text/plain',
-          },
+            'Content-Type': 'text/plain'
+          }
         }
       )
       return response.data
     } catch (error) {
       console.error(error)
-      throw new Error("google update location profile title failed")
+      throw new Error('google update location profile title failed')
     }
   }
 
@@ -414,17 +413,17 @@ export class GoogleRepositoryImpl implements GoogleRepository {
         description,
         {
           params: {
-            locationId: locationId,
+            locationId: locationId
           },
           headers: {
-            'Content-Type': 'text/plain',
-          },
+            'Content-Type': 'text/plain'
+          }
         }
       )
       return response.data
     } catch (error) {
       console.error(error)
-      throw new Error("google update location profile description failed")
+      throw new Error('google update location profile description failed')
     }
   }
 
@@ -435,18 +434,18 @@ export class GoogleRepositoryImpl implements GoogleRepository {
         category,
         {
           params: {
-            locationId: locationId,
+            locationId: locationId
           },
           headers: {
             'Accept': 'application/json; charset=utf-8',
-            'Content-Type': 'application/json',
-          },
+            'Content-Type': 'application/json'
+          }
         }
       )
       return response.data
     } catch (error) {
       console.error(error)
-      throw new Error("google update location profile categories failed")
+      throw new Error('google update location profile categories failed')
     }
   }
 
@@ -457,18 +456,18 @@ export class GoogleRepositoryImpl implements GoogleRepository {
         categories,
         {
           params: {
-            locationId: locationId,
+            locationId: locationId
           },
           headers: {
             'Accept': 'application/json; charset=utf-8',
-            'Content-Type': 'application/json',
-          },
+            'Content-Type': 'application/json'
+          }
         }
       )
       return response.data
     } catch (error) {
       console.error(error)
-      throw new Error("google update location profile categories failed")
+      throw new Error('google update location profile categories failed')
     }
   }
 
@@ -479,18 +478,18 @@ export class GoogleRepositoryImpl implements GoogleRepository {
         openingDate,
         {
           params: {
-            locationId: locationId,
+            locationId: locationId
           },
           headers: {
             'Accept': 'application/json; charset=utf-8',
-            'Content-Type': 'application/json',
-          },
+            'Content-Type': 'application/json'
+          }
         }
       )
       return response.data
     } catch (error) {
       console.error(error)
-      throw new Error("google update location profile opening date failed")
+      throw new Error('google update location profile opening date failed')
     }
   }
 
@@ -498,21 +497,21 @@ export class GoogleRepositoryImpl implements GoogleRepository {
     try {
       const response: AxiosResponse<GoogleLocationProfileModel> = await axiosApiClient.patch(
         'google/location/profile/phone_number',
-        {phoneNumber},
+        { phoneNumber },
         {
           params: {
-            locationId: locationId,
+            locationId: locationId
           },
           headers: {
             'Accept': 'application/json; charset=utf-8',
-            'Content-Type': 'application/json',
-          },
+            'Content-Type': 'application/json'
+          }
         }
       )
       return response.data
     } catch (error) {
       console.error(error)
-      throw new Error("google update location profile phone number failed")
+      throw new Error('google update location profile phone number failed')
     }
   }
 
@@ -523,17 +522,17 @@ export class GoogleRepositoryImpl implements GoogleRepository {
         websiteUri,
         {
           params: {
-            locationId: locationId,
+            locationId: locationId
           },
           headers: {
-            'Content-Type': 'text/plain',
-          },
+            'Content-Type': 'text/plain'
+          }
         }
       )
       return response.data
     } catch (error) {
       console.error(error)
-      throw new Error("google update location profile website failed")
+      throw new Error('google update location profile website failed')
     }
   }
 
@@ -544,17 +543,17 @@ export class GoogleRepositoryImpl implements GoogleRepository {
         menuLink,
         {
           params: {
-            locationId: locationId,
+            locationId: locationId
           },
           headers: {
-            'Content-Type': 'text/plain',
-          },
+            'Content-Type': 'text/plain'
+          }
         }
       )
       return response.data
     } catch (error) {
       console.error(error)
-      throw new Error("google update location profile menu link failed")
+      throw new Error('google update location profile menu link failed')
     }
   }
 
@@ -565,18 +564,18 @@ export class GoogleRepositoryImpl implements GoogleRepository {
         snsLink,
         {
           params: {
-            locationId: locationId,
+            locationId: locationId
           },
           headers: {
             'Accept': 'application/json; charset=utf-8',
-            'Content-Type': 'application/json',
-          },
+            'Content-Type': 'application/json'
+          }
         }
       )
       return response.data
     } catch (error) {
       console.error(error)
-      throw new Error("google update location profile sns link failed")
+      throw new Error('google update location profile sns link failed')
     }
   }
 
@@ -587,18 +586,18 @@ export class GoogleRepositoryImpl implements GoogleRepository {
         services,
         {
           params: {
-            locationId: locationId,
+            locationId: locationId
           },
           headers: {
             'Accept': 'application/json; charset=utf-8',
-            'Content-Type': 'application/json',
-          },
+            'Content-Type': 'application/json'
+          }
         }
       )
       return response.data
     } catch (error) {
       console.error(error)
-      throw new Error("google update location attributes services failed")
+      throw new Error('google update location attributes services failed')
     }
   }
 
@@ -609,18 +608,18 @@ export class GoogleRepositoryImpl implements GoogleRepository {
         serviceOptions,
         {
           params: {
-            locationId: locationId,
+            locationId: locationId
           },
           headers: {
             'Accept': 'application/json; charset=utf-8',
-            'Content-Type': 'application/json',
-          },
+            'Content-Type': 'application/json'
+          }
         }
       )
       return response.data
     } catch (error) {
       console.error(error)
-      throw new Error("google update location attributes service options failed")
+      throw new Error('google update location attributes service options failed')
     }
   }
 
@@ -631,18 +630,18 @@ export class GoogleRepositoryImpl implements GoogleRepository {
         isOwnedByWomen,
         {
           params: {
-            locationId: locationId,
+            locationId: locationId
           },
           headers: {
             'Accept': 'application/json; charset=utf-8',
-            'Content-Type': 'application/json',
-          },
+            'Content-Type': 'application/json'
+          }
         }
       )
       return response.data
     } catch (error) {
       console.error(error)
-      throw new Error("google update location business owner info failed")
+      throw new Error('google update location business owner info failed')
     }
   }
 
@@ -654,16 +653,16 @@ export class GoogleRepositoryImpl implements GoogleRepository {
         {
           params: {
             accountId: accountId,
-            locationId: locationId,
+            locationId: locationId
           },
           headers: {
             'Accept': 'application/json; charset=utf-8',
-            'Content-Type': 'application/json',
-          },
+            'Content-Type': 'application/json'
+          }
         })
-        return response.data
+      return response.data
     } catch (error) {
-      throw new Error("google update location food menus failed")
+      throw new Error('google update location food menus failed')
     }
   }
 
@@ -674,18 +673,18 @@ export class GoogleRepositoryImpl implements GoogleRepository {
         storefrontAddress,
         {
           params: {
-            locationId: locationId,
+            locationId: locationId
           },
           headers: {
             'Accept': 'application/json; charset=utf-8',
-            'Content-Type': 'application/json',
-          },
+            'Content-Type': 'application/json'
+          }
         }
       )
       return response.data
     } catch (error) {
       console.error(error)
-      throw new Error("google update location profile storefront address failed")
+      throw new Error('google update location profile storefront address failed')
     }
   }
 
@@ -696,18 +695,18 @@ export class GoogleRepositoryImpl implements GoogleRepository {
         serviceArea,
         {
           params: {
-            locationId: locationId,
+            locationId: locationId
           },
           headers: {
             'Accept': 'application/json; charset=utf-8',
-            'Content-Type': 'application/json',
-          },
+            'Content-Type': 'application/json'
+          }
         }
       )
       return response.data
     } catch (error) {
       console.error(error)
-      throw new Error("google update location profile service area failed")
+      throw new Error('google update location profile service area failed')
     }
   }
 
@@ -718,18 +717,18 @@ export class GoogleRepositoryImpl implements GoogleRepository {
         businessHours,
         {
           params: {
-            locationId: locationId,
+            locationId: locationId
           },
           headers: {
             'Accept': 'application/json; charset=utf-8',
-            'Content-Type': 'application/json',
-          },
+            'Content-Type': 'application/json'
+          }
         }
       )
       return response.data
     } catch (error) {
       console.error(error)
-      throw new Error("google update location profile business hours failed")
+      throw new Error('google update location profile business hours failed')
     }
   }
 
@@ -737,17 +736,17 @@ export class GoogleRepositoryImpl implements GoogleRepository {
     try {
       const response: AxiosResponse<GooglePlacesAutoCompleteResponse> = await axiosApiClient.post(
         'google/places/autocomplete',
-        {input},
+        { input },
         {
           headers: {
             'Accept': 'application/json; charset=utf-8',
-            'Content-Type': 'application/json',
-          },
-      })
+            'Content-Type': 'application/json'
+          }
+        })
       return response.data
     } catch (error) {
       console.error(error)
-      throw new Error("google post places auto complete failed")
+      throw new Error('google post places auto complete failed')
     }
   }
 
@@ -757,15 +756,15 @@ export class GoogleRepositoryImpl implements GoogleRepository {
       Array.from(photos).forEach((file) => {
         formData.append('files', file)
       })
-      formData.append('localPost', new Blob([JSON.stringify(localPost)], {type: 'application/json'}))
+      formData.append('localPost', new Blob([JSON.stringify(localPost)], { type: 'application/json' }))
       await axiosApiClient.post('google/location/local_post', formData, {
         params: {
           accountId: accountId,
           locationId: locationId
         },
         headers: {
-          'Content-Type': 'multipart/form-data',
-        },
+          'Content-Type': 'multipart/form-data'
+        }
       })
     } catch (error) {
       console.error('Error posting location local post:', error)
@@ -779,15 +778,15 @@ export class GoogleRepositoryImpl implements GoogleRepository {
       Array.from(photos).forEach((file) => {
         formData.append('files', file)
       })
-      formData.append('localPost', new Blob([JSON.stringify(localPost)], {type: 'application/json'}))
+      formData.append('localPost', new Blob([JSON.stringify(localPost)], { type: 'application/json' }))
       await axiosApiClient.post('google/location/local_post/bulk', formData, {
         params: {
           accountId: accountId,
           locationIdList: locationIdList.join(',')  // カンマ区切りの文字列として送信
         },
         headers: {
-          'Content-Type': 'multipart/form-data',
-        },
+          'Content-Type': 'multipart/form-data'
+        }
       })
     } catch (error) {
       console.error('Error posting location local post:', error)
@@ -803,18 +802,18 @@ export class GoogleRepositoryImpl implements GoogleRepository {
           params: {
             accountId: accountId,
             locationId: locationId,
-            reviewId: reviewId,
+            reviewId: reviewId
           },
           headers: {
             'Accept': 'application/json; charset=utf-8',
-            'Content-Type': 'application/json',
-          },
+            'Content-Type': 'application/json'
+          }
         }
       )
       return response.data
     } catch (error) {
       console.error(error)
-      throw new Error("google post location reviews failed")
+      throw new Error('google post location reviews failed')
     }
   }
 
@@ -830,7 +829,7 @@ export class GoogleRepositoryImpl implements GoogleRepository {
       return response.data
     } catch (error) {
       console.error(error)
-      throw new Error("google delete location review reply failed")
+      throw new Error('google delete location review reply failed')
     }
   }
 }

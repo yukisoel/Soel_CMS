@@ -107,12 +107,12 @@ export const prefectureToRegion: Record<string, string> = {
   '鹿児島県': '九州',
   '鹿児島': '九州',
   '沖縄県': '九州',
-  '沖縄': '九州',
-};
+  '沖縄': '九州'
+}
 
 export const getRegionFromPrefecture = (prefecture: string): string => {
-  return prefectureToRegion[prefecture] || '不明';
-};
+  return prefectureToRegion[prefecture] || '不明'
+}
 
 export const regionOrder = [
   '北海道',
@@ -122,8 +122,8 @@ export const regionOrder = [
   '関西',
   '中国',
   '四国',
-  '九州',
-];
+  '九州'
+]
 
 // Create a map of regions to their prefectures
 export const regionToPrefectures: Record<string, string[]> = {
@@ -134,8 +134,8 @@ export const regionToPrefectures: Record<string, string[]> = {
   '関西': ['三重県', '滋賀県', '京都府', '大阪府', '兵庫県', '奈良県', '和歌山県'],
   '中国': ['鳥取県', '島根県', '岡山県', '広島県', '山口県'],
   '四国': ['徳島県', '香川県', '愛媛県', '高知県'],
-  '九州': ['福岡県', '佐賀県', '長崎県', '熊本県', '大分県', '宮崎県', '鹿児島県', '沖縄県'],
-};
+  '九州': ['福岡県', '佐賀県', '長崎県', '熊本県', '大分県', '宮崎県', '鹿児島県', '沖縄県']
+}
 
 // Branch type from SelectStore component
 type Branch = {
@@ -146,24 +146,24 @@ type Branch = {
 
 // Initialize regionMap with all regions and prefectures for store selector
 export const initializeRegionMapForStores = (): Map<string, Map<string, Map<string, Branch[]>>> => {
-  const regionMap = new Map<string, Map<string, Map<string, Branch[]>>>();
+  const regionMap = new Map<string, Map<string, Map<string, Branch[]>>>()
   
   regionOrder.forEach(region => {
-    const prefectureMap = new Map<string, Map<string, Branch[]>>();
-    const prefectures = regionToPrefectures[region];
+    const prefectureMap = new Map<string, Map<string, Branch[]>>()
+    const prefectures = regionToPrefectures[region]
     
     if (prefectures) {
       prefectures.forEach(prefecture => {
         // 各都道府県に対して、ブランド名をキーとするMapを初期化
-        prefectureMap.set(prefecture, new Map<string, Branch[]>());
-      });
+        prefectureMap.set(prefecture, new Map<string, Branch[]>())
+      })
     }
     
-    regionMap.set(region, prefectureMap);
-  });
+    regionMap.set(region, prefectureMap)
+  })
   
-  return regionMap;
-};
+  return regionMap
+}
 
 // Get brandMap for a specific prefecture from regionMap
 export const getBrandMapByPrefecture = (
@@ -172,8 +172,8 @@ export const getBrandMapByPrefecture = (
 ): Map<string, Branch[]> | undefined => {
   for (const [, prefectureMap] of regionMap) {
     if (prefectureMap.has(prefectureName)) {
-      return prefectureMap.get(prefectureName);
+      return prefectureMap.get(prefectureName)
     }
   }
-  return undefined;
-};
+  return undefined
+}

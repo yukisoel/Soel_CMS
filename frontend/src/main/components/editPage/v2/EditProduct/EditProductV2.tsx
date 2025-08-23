@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
-import styles from './EditProductV2.module.scss';
-import Wrapper from '@/main/common/Wrapper';
-import Typography from '@/main/common/Typography';
-import Button from '@/main/common/Button';
-import SearchBox from '@/main/common/SearchBox';
-import Separator from '@/main/common/Separator';
-import { ProductModal } from './modals/CreateProductModal';
+import React, { useState } from 'react'
+import styles from './EditProductV2.module.scss'
+import { ProductModal } from './modals/CreateProductModal'
+import Wrapper from '@/main/common/Wrapper'
+import Typography from '@/main/common/Typography'
+import Button from '@/main/common/Button'
+import SearchBox from '@/main/common/SearchBox'
+import Separator from '@/main/common/Separator'
 
 
 type Product = {
@@ -19,9 +19,9 @@ type Product = {
 };
 
 export default function EditProductV2() {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [searchQuery, setSearchQuery] = useState('')
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
   const [products] = useState<Product[]>([
     {
       id: '1',
@@ -93,21 +93,21 @@ export default function EditProductV2() {
       price: 880,
       imageUrl: '/images/chicken-burger.jpg'
     }
-  ]);
+  ])
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(e.target.value);
-  };
+    setSearchQuery(e.target.value)
+  }
 
   const handleAddProduct = () => {
-    setSelectedProduct(null);
-    setIsModalOpen(true);
-  };
+    setSelectedProduct(null)
+    setIsModalOpen(true)
+  }
 
   const handleEditProduct = (product: Product) => {
-    setSelectedProduct(product);
-    setIsModalOpen(true);
-  };
+    setSelectedProduct(product)
+    setIsModalOpen(true)
+  }
 
   const handleSubmitProduct = async (data: {
     name: string;
@@ -118,28 +118,28 @@ export default function EditProductV2() {
   }) => {
     if (selectedProduct) {
       // TODO: 商品更新の処理を実装
-      console.log('Updated product:', { ...selectedProduct, ...data });
+      console.log('Updated product:', { ...selectedProduct, ...data })
     } else {
       // TODO: 商品作成の処理を実装
-      console.log('Created product:', data);
+      console.log('Created product:', data)
     }
-    setIsModalOpen(false);
-    setSelectedProduct(null);
-  };
+    setIsModalOpen(false)
+    setSelectedProduct(null)
+  }
 
   const handleDeleteProduct = async () => {
     if (selectedProduct) {
       // TODO: 商品削除の処理を実装
-      console.log('Deleted product:', selectedProduct);
+      console.log('Deleted product:', selectedProduct)
     }
-    setIsModalOpen(false);
-    setSelectedProduct(null);
-  };
+    setIsModalOpen(false)
+    setSelectedProduct(null)
+  }
 
   const filteredProducts = products.filter(product =>
     product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     product.category.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  )
 
   return (
     <Wrapper direction="col" gap="2rem" padding="5rem 4.3rem 5.9rem 5rem" className={styles.content_container}>
@@ -202,20 +202,20 @@ export default function EditProductV2() {
               </Wrapper>
             </Wrapper>
             <Wrapper direction="col" gap="4px">
-            <Typography
-              content={product.name}
-              color="black"
-              size="normal"
-              weight="normal"
-              className={styles.product_name}
-            />
-            <Typography
-              content={`¥${product.price.toLocaleString()}`}
-              color="gray"
-              size="normal"
-              weight="normal"
-              className={styles.product_price}
-            />
+              <Typography
+                content={product.name}
+                color="black"
+                size="normal"
+                weight="normal"
+                className={styles.product_name}
+              />
+              <Typography
+                content={`¥${product.price.toLocaleString()}`}
+                color="gray"
+                size="normal"
+                weight="normal"
+                className={styles.product_price}
+              />
             </Wrapper>
           </Wrapper>
         ))}
@@ -224,8 +224,8 @@ export default function EditProductV2() {
       <ProductModal
         isOpen={isModalOpen}
         onClose={() => {
-          setIsModalOpen(false);
-          setSelectedProduct(null);
+          setIsModalOpen(false)
+          setSelectedProduct(null)
         }}
         onSubmit={handleSubmitProduct}
         onDelete={selectedProduct ? handleDeleteProduct : undefined}
@@ -236,9 +236,9 @@ export default function EditProductV2() {
           price: selectedProduct.price.toString(),
           description: selectedProduct.description,
           productUrl: selectedProduct.productUrl,
-          imageUrl: selectedProduct.imageUrl,
+          imageUrl: selectedProduct.imageUrl
         } : undefined}
       />
     </Wrapper>
-  );
+  )
 }

@@ -1,5 +1,5 @@
-import {PankuzuItem} from "@/main/common/Pankuzu.tsx";
-import {createContext, useState} from "react";
+import { createContext, useState } from 'react'
+import { PankuzuItem } from '@/main/common/Pankuzu.tsx'
 
 interface PankuzuItemListContextState {
   pankuzuItemList: PankuzuItem[]
@@ -15,11 +15,11 @@ export const PankuzuItemListContext = createContext<PankuzuItemListContextState>
   setPankuzuItemList: () => {}
 })
 
-export const PankuzuListContextProvider = ({children}: Props) => {
+export const PankuzuListContextProvider = ({ children }: Props) => {
   const [pankuzuItemList, setPankuzuItemList] = useState<PankuzuItem[]>([])
 
   return (
-    <PankuzuItemListContext.Provider value={{pankuzuItemList: pankuzuItemList, setPankuzuItemList: setPankuzuItemList}}>
+    <PankuzuItemListContext.Provider value={{ pankuzuItemList: pankuzuItemList, setPankuzuItemList: setPankuzuItemList }}>
       {children}
     </PankuzuItemListContext.Provider>
   )

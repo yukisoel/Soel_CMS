@@ -1,5 +1,5 @@
-import axios from "axios"
-import { useRef } from "react"
+import axios from 'axios'
+import { useRef } from 'react'
 
 type Props = {
   setInstagramInfo:(str:string) => void
@@ -7,7 +7,7 @@ type Props = {
   endpoint: string
 }
 
-export default function FacebookIdButton({setInstagramInfo, text, endpoint}:Props) {
+export default function FacebookIdButton({ setInstagramInfo, text, endpoint }:Props) {
   const inputRef = useRef<HTMLInputElement>(null)
 
   const getInfo = async () => {
@@ -25,16 +25,16 @@ export default function FacebookIdButton({setInstagramInfo, text, endpoint}:Prop
       setInstagramInfo(JSON.stringify(res.data))
 
     }catch(e) {
-      console.log("catch")
-      location.href = "http://localhost:8080/oauth2/authorization/facebook"
+      console.log('catch')
+      location.href = 'http://localhost:8080/oauth2/authorization/facebook'
     }
   }
   return (
     <div>
       <div></div>
       <input 
-      type="text" 
-      ref={inputRef}
+        type="text" 
+        ref={inputRef}
       />
       <button onClick={getInfo}>{text}</button>
     </div>

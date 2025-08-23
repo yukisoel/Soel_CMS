@@ -1,7 +1,7 @@
-import styles from "@/main/common/Checkbox.module.scss";
-import Typography from "@/main/common/Typography";
-import classNames from "classnames";
-import { useId, useEffect, useRef } from "react";
+import classNames from 'classnames'
+import { useId, useEffect, useRef } from 'react'
+import styles from '@/main/common/Checkbox.module.scss'
+import Typography from '@/main/common/Typography'
 
 type Props = {
     label?: string;
@@ -14,34 +14,34 @@ type Props = {
 };
 
 export default function Checkbox({ label, supplementaryText, checked, indeterminate = false, reverse = false, readOnly = false, onChange }: Props) {
-    const id = useId();
-    const checkboxRef = useRef<HTMLInputElement>(null);
+  const id = useId()
+  const checkboxRef = useRef<HTMLInputElement>(null)
 
-    useEffect(() => {
-        if (checkboxRef.current) {
-            checkboxRef.current.indeterminate = indeterminate;
-        }
-    }, [indeterminate]);
+  useEffect(() => {
+    if (checkboxRef.current) {
+      checkboxRef.current.indeterminate = indeterminate
+    }
+  }, [indeterminate])
 
-    return (
-        <>
-            <input
-                type="checkbox"
-                id={id}
-                className={styles.custom_checkbox}
-                checked={checked}
-                ref={checkboxRef}
-                onChange={readOnly ? undefined : onChange}
-                disabled={readOnly}
-            />
-            <label htmlFor={id} className={classNames(styles.custom_checkbox_label, reverse && styles.reverse)}>
-                {label && (
-                    <Typography content={label} color="primary" size="normal" />
-                )}
-                {supplementaryText && (
-                    <Typography content={supplementaryText} color="secondary" size="normal" className={styles.supplementary_text} />
-                )}
-            </label>
-        </>
-    );
+  return (
+    <>
+      <input
+        type="checkbox"
+        id={id}
+        className={styles.custom_checkbox}
+        checked={checked}
+        ref={checkboxRef}
+        onChange={readOnly ? undefined : onChange}
+        disabled={readOnly}
+      />
+      <label htmlFor={id} className={classNames(styles.custom_checkbox_label, reverse && styles.reverse)}>
+        {label && (
+          <Typography content={label} color="primary" size="normal" />
+        )}
+        {supplementaryText && (
+          <Typography content={supplementaryText} color="secondary" size="normal" className={styles.supplementary_text} />
+        )}
+      </label>
+    </>
+  )
 }

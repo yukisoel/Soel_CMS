@@ -1,20 +1,20 @@
-import React from 'react';
-import Modal from '@/main/common/Modal/Modal';
-import Wrapper from '@/main/common/Wrapper';
-import Typography from '@/main/common/Typography';
-import Button from '@/main/common/Button';
-import Input from '@/main/common/Input';
-import { useForm } from 'react-hook-form';
-import { z } from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
-import LayoutLabeledFormItem from '@/main/common/LayoutLabeledFormItem';
+import React from 'react'
+import { useForm } from 'react-hook-form'
+import { z } from 'zod'
+import { zodResolver } from '@hookform/resolvers/zod'
+import Modal from '@/main/common/Modal/Modal'
+import Wrapper from '@/main/common/Wrapper'
+import Typography from '@/main/common/Typography'
+import Button from '@/main/common/Button'
+import Input from '@/main/common/Input'
+import LayoutLabeledFormItem from '@/main/common/LayoutLabeledFormItem'
 
 const schema = z.object({
   menuLink: z.string()
     .min(1, 'メニューリンクは必須です')
     .max(200, 'メニューリンクは200文字以内で入力してください')
-    .url('正しいURL形式で入力してください'),
-});
+    .url('正しいURL形式で入力してください')
+})
 
 type FormData = z.infer<typeof schema>;
 
@@ -31,7 +31,7 @@ export const EditMenuLinkModal: React.FC<EditMenuLinkModalProps> = ({
   isOpen,
   onClose,
   onSubmit,
-  initialValues,
+  initialValues
 }) => {
   const {
     register,
@@ -40,18 +40,18 @@ export const EditMenuLinkModal: React.FC<EditMenuLinkModalProps> = ({
     reset,
     watch
   } = useForm<FormData>({
-    resolver: zodResolver(schema),
-  });
+    resolver: zodResolver(schema)
+  })
 
-  const linkValue = watch('menuLink') || '';
+  const linkValue = watch('menuLink') || ''
 
   React.useEffect(() => {
     if (isOpen) {
       reset(initialValues || {
-        menuLink: '',
-      });
+        menuLink: ''
+      })
     }
-  }, [isOpen, reset, initialValues]);
+  }, [isOpen, reset, initialValues])
 
   const contentRender = () => (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -85,7 +85,7 @@ export const EditMenuLinkModal: React.FC<EditMenuLinkModalProps> = ({
         </Wrapper>
       </Wrapper>
     </form>
-  );
+  )
 
   return (
     <Modal
@@ -94,5 +94,5 @@ export const EditMenuLinkModal: React.FC<EditMenuLinkModalProps> = ({
       headerContent="メニューリンクを編集"
       contentRender={contentRender}
     />
-  );
-};
+  )
+}

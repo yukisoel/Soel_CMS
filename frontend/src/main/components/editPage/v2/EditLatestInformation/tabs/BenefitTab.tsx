@@ -1,26 +1,26 @@
-import React from 'react';
-import Wrapper from '@/main/common/Wrapper';
-import Typography from '@/main/common/Typography';
-import Button from '@/main/common/Button';
-import Input from '@/main/common/Input';
-import DatePicker from '@/main/common/DatePicker/DatePicker';
-import PhotoPullDownMenu from '@/main/components/editPage/PhotoPullDownMenu';
-import useFileUpload from '@/main/common/FileUpload/useFileUpload';
-import { useForm } from 'react-hook-form';
-import { z } from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
-import styles from '../EditLatestInformation.module.scss';
-import { useGoogleRepository } from '@/main/contexts/GoogleRepositoryContext';
-import { useParams } from 'react-router-dom';
-import { LocalPostTopicType, LocationButtonName } from '@/types/apiModel';
+import React from 'react'
+import { useForm } from 'react-hook-form'
+import { z } from 'zod'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useParams } from 'react-router-dom'
+import styles from '../EditLatestInformation.module.scss'
+import Wrapper from '@/main/common/Wrapper'
+import Typography from '@/main/common/Typography'
+import Button from '@/main/common/Button'
+import Input from '@/main/common/Input'
+import DatePicker from '@/main/common/DatePicker/DatePicker'
+import PhotoPullDownMenu from '@/main/components/editPage/PhotoPullDownMenu'
+import useFileUpload from '@/main/common/FileUpload/useFileUpload'
+import { useGoogleRepository } from '@/main/contexts/GoogleRepositoryContext'
+import { LocalPostTopicType, LocationButtonName } from '@/types/apiModel'
 
 const schema = z.object({
   benefitTitle: z.string().min(1, '特典のタイトルは必須です'),
   startDate: z.date().nullable(),
   endDate: z.date().nullable(),
   buttonTitle: z.string(),
-  selectedButton: z.string(),
-});
+  selectedButton: z.string()
+})
 
 type FormData = z.infer<typeof schema>;
 
@@ -29,47 +29,47 @@ interface Props {
 }
 
 export const BenefitTab: React.FC<Props> = ({ setIsSubmitting }) => {
-  const { accountId, locationId } = useParams();
-  const googleRepository = useGoogleRepository();
+  const { accountId, locationId } = useParams()
+  const googleRepository = useGoogleRepository()
   const {
     register,
     handleSubmit,
     formState: { errors },
     setValue,
-    watch,
+    watch
   } = useForm<FormData>({
     resolver: zodResolver(schema),
     defaultValues: {
-      selectedButton: '',
-    },
-  });
+      selectedButton: ''
+    }
+  })
 
-  const { render: renderFileUpload, uploadedPhotoFileList } = useFileUpload({ size: 'regular' });
+  const { render: renderFileUpload, uploadedPhotoFileList } = useFileUpload({ size: 'regular' })
 
   const onSubmit = async (data: FormData) => {
-    if (!uploadedPhotoFileList) return;
-    console.log(data);
+    if (!uploadedPhotoFileList) return
+    console.log(data)
     
-    setIsSubmitting?.(true);
+    setIsSubmitting?.(true)
     try {
       await googleRepository.postLocationLocalPosts(accountId ?? '', locationId ?? '', {
         summary: data.benefitTitle,
         callToAction: {
           actionType: Object.keys(LocationButtonName).find(key => LocationButtonName[key as keyof typeof LocationButtonName] === data.selectedButton) as LocationButtonName,
-          url: data.buttonTitle,
+          url: data.buttonTitle
         },
         topicType: LocalPostTopicType.OFFER,
         offer: {
           couponCode: data.benefitTitle,
           termsConditions: `期間: ${data.startDate?.toLocaleDateString() ?? ''} 〜 ${data.endDate?.toLocaleDateString() ?? ''}`
         }
-      }, uploadedPhotoFileList);
+      }, uploadedPhotoFileList)
     } finally {
-      setIsSubmitting?.(false);
+      setIsSubmitting?.(false)
     }
-  };
+  }
 
-  const selectedButton = watch('selectedButton') ?? '';
+  const selectedButton = watch('selectedButton') ?? ''
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -183,5 +183,5 @@ export const BenefitTab: React.FC<Props> = ({ setIsSubmitting }) => {
         </Wrapper>
       </Wrapper>
     </form>
-  );
-};
+  )
+}

@@ -1,19 +1,19 @@
-import React from 'react';
-import Modal from '@/main/common/Modal/Modal';
-import Wrapper from '@/main/common/Wrapper';
-import Typography from '@/main/common/Typography';
-import Button from '@/main/common/Button';
-import Input from '@/main/common/Input';
-import { useForm } from 'react-hook-form';
-import { z } from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
-import LayoutLabeledFormItem from '@/main/common/LayoutLabeledFormItem';
+import React from 'react'
+import { useForm } from 'react-hook-form'
+import { z } from 'zod'
+import { zodResolver } from '@hookform/resolvers/zod'
+import Modal from '@/main/common/Modal/Modal'
+import Wrapper from '@/main/common/Wrapper'
+import Typography from '@/main/common/Typography'
+import Button from '@/main/common/Button'
+import Input from '@/main/common/Input'
+import LayoutLabeledFormItem from '@/main/common/LayoutLabeledFormItem'
 
 const schema = z.object({
   title: z.string()
     .min(1, 'タイトルは必須です')
-    .max(140, 'タイトルは140文字以内で入力してください'),
-});
+    .max(140, 'タイトルは140文字以内で入力してください')
+})
 
 type FormData = z.infer<typeof schema>;
 
@@ -30,7 +30,7 @@ export const EditTitleModal: React.FC<EditTitleModalProps> = ({
   isOpen,
   onClose,
   onSubmit,
-  initialValues,
+  initialValues
 }) => {
   const {
     register,
@@ -39,18 +39,18 @@ export const EditTitleModal: React.FC<EditTitleModalProps> = ({
     reset,
     watch
   } = useForm<FormData>({
-    resolver: zodResolver(schema),
-  });
+    resolver: zodResolver(schema)
+  })
 
-  const titleValue = watch('title') || '';
+  const titleValue = watch('title') || ''
 
   React.useEffect(() => {
     if (isOpen) {
       reset(initialValues || {
-        title: '',
-      });
+        title: ''
+      })
     }
-  }, [isOpen, reset, initialValues]);
+  }, [isOpen, reset, initialValues])
 
   const contentRender = () => (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -84,7 +84,7 @@ export const EditTitleModal: React.FC<EditTitleModalProps> = ({
         </Wrapper>
       </Wrapper>
     </form>
-  );
+  )
 
   return (
     <Modal
@@ -93,7 +93,7 @@ export const EditTitleModal: React.FC<EditTitleModalProps> = ({
       headerContent="ビジネス名を編集"
       contentRender={contentRender}
     />
-  );
-};
+  )
+}
 
-export default EditTitleModal;
+export default EditTitleModal

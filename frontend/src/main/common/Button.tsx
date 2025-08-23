@@ -1,5 +1,5 @@
+import classNames from 'classnames'
 import styles from '@/main/common/Button.module.scss'
-import classNames from "classnames"
 
 interface Props extends React.ButtonHTMLAttributes<HTMLButtonElement> {
     children: React.ReactNode
@@ -8,13 +8,13 @@ interface Props extends React.ButtonHTMLAttributes<HTMLButtonElement> {
     className?: string
 }
 
-export default function Button({children, padding, bgColor, className, disabled, ...props}: Props) {
-    return (
-        <button className={classNames(
-            className,
-            styles.button,
-            styles[bgColor],
-            { [styles.disabled]: disabled }
-        )} style={{padding: padding}} disabled={disabled} {...props}>{children}</button>
-    )
+export default function Button({ children, padding, bgColor, className, disabled, ...props }: Props) {
+  return (
+    <button className={classNames(
+      className,
+      styles.button,
+      styles[bgColor],
+      { [styles.disabled]: disabled }
+    )} style={{ padding: padding }} disabled={disabled} {...props}>{children}</button>
+  )
 }

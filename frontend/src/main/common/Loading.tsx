@@ -1,7 +1,7 @@
-import React from 'react';
-import Wrapper from './Wrapper';
-import Typography from './Typography';
-import styles from './Loading.module.scss';
+import React from 'react'
+import Wrapper from './Wrapper'
+import Typography from './Typography'
+import styles from './Loading.module.scss'
 
 interface LoadingProps {
   message?: string;
@@ -18,7 +18,7 @@ export const Loading: React.FC<LoadingProps> = ({
 }) => {
   const containerStyles = fullScreen 
     ? { position: 'fixed' as const, top: 0, left: 0, right: 0, bottom: 0, zIndex: 9999 }
-    : { minHeight };
+    : { minHeight }
 
   return (
     <Wrapper 
@@ -38,7 +38,7 @@ export const Loading: React.FC<LoadingProps> = ({
         className={styles.message}
       />
     </Wrapper>
-  );
-};
+  )
+}
 
-export default Loading;
+export default Loading

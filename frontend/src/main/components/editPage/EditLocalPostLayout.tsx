@@ -1,46 +1,46 @@
-import styles from "@/main/components/editPage/EditLocalPostLayout.module.scss";
-import {useContext, useEffect, useRef, useState} from "react";
-import {useParams} from "react-router-dom";
-import {PankuzuItemListContext} from "@/main/contexts/PankuzuItemListContext.tsx";
-import {GoogleSelectedLocationContext} from "@/main/contexts/GoogleSelectedLocationContext.tsx";
-import LocalPostButtonPullDownMenu from "@/main/components/editPage/LocalPostButtonPullDownMenu.tsx";
-import {LocationButtonName} from "@/main/model/LocationButtonName.ts";
-import { useGoogleRepository } from "@/main/contexts/GoogleRepositoryContext";
+import { useContext, useEffect, useRef, useState } from 'react'
+import { useParams } from 'react-router-dom'
+import styles from '@/main/components/editPage/EditLocalPostLayout.module.scss'
+import { PankuzuItemListContext } from '@/main/contexts/PankuzuItemListContext.tsx'
+import { GoogleSelectedLocationContext } from '@/main/contexts/GoogleSelectedLocationContext.tsx'
+import LocalPostButtonPullDownMenu from '@/main/components/editPage/LocalPostButtonPullDownMenu.tsx'
+import { LocationButtonName } from '@/main/model/LocationButtonName.ts'
+import { useGoogleRepository } from '@/main/contexts/GoogleRepositoryContext'
 
 enum Tabs {
-  STANDARD = "最新情報の追加",
-  OFFER = "特典の追加",
-  EVENT = "イベントの追加",
+  STANDARD = '最新情報の追加',
+  OFFER = '特典の追加',
+  EVENT = 'イベントの追加',
 }
 
 
 export default function EditLocalPostLayout() {
-  const googleRepository = useGoogleRepository();
+  const googleRepository = useGoogleRepository()
   const [selectedTab, setSelectedTab] = useState<Tabs>(Tabs.STANDARD)
   const [selectedContent, setSelectedContent] = useState<string>('')
   const fileUploadInputRef = useRef<HTMLInputElement>(null)
 
-  const {setPankuzuItemList} = useContext(PankuzuItemListContext)
-  const {googleSelectedLocation, setGoogleSelectedLocation} = useContext(GoogleSelectedLocationContext)
+  const { setPankuzuItemList } = useContext(PankuzuItemListContext)
+  const { googleSelectedLocation, setGoogleSelectedLocation } = useContext(GoogleSelectedLocationContext)
 
 
-  const {accountId, locationId} = useParams()
+  const { accountId, locationId } = useParams()
 
   useEffect(() => {
     setPankuzuItemList([
-      {name: 'ページ編集', path: '/edit'},
-      {name: 'GBP', path: '/edit/gbp'},
-      {name: '最新情報の追加', path: '/edit/local_post'}
+      { name: 'ページ編集', path: '/edit' },
+      { name: 'GBP', path: '/edit/gbp' },
+      { name: '最新情報の追加', path: '/edit/local_post' }
     ])
-    if (googleSelectedLocation.name === "" && locationId) {
+    if (googleSelectedLocation.name === '' && locationId) {
       googleRepository.getLocation(locationId).then(location => {
         setGoogleSelectedLocation(location)
       })
     }
     if (accountId && locationId) {
-      console.log({accountId})
+      console.log({ accountId })
     }
-  }, []);
+  }, [])
 
 
   const getTabClassName = (tab: Tabs) => {
@@ -56,12 +56,12 @@ export default function EditLocalPostLayout() {
   }
 
   const onDivDragOver = (event: React.DragEvent<HTMLDivElement>) => {
-    console.log("onDivDragOver")
+    console.log('onDivDragOver')
     event.preventDefault()
   }
 
   const onDivDrop = (event: React.DragEvent<HTMLDivElement>) => {
-    console.log("onDivDrop")
+    console.log('onDivDrop')
     event.preventDefault()
     event.stopPropagation()
     if (event.dataTransfer.files.length > 0) {
@@ -97,9 +97,9 @@ export default function EditLocalPostLayout() {
         {selectedTab === Tabs.STANDARD &&
           <>
             <div className={styles.file_upload_area}
-                 onDragEnter={onDivDragOver}
-                 onDragOver={onDivDragOver}
-                 onDrop={onDivDrop}
+              onDragEnter={onDivDragOver}
+              onDragOver={onDivDragOver}
+              onDrop={onDivDrop}
             >
               <input
                 type="file"
@@ -112,21 +112,21 @@ export default function EditLocalPostLayout() {
                 <div>写真をドラッグアンドドロップ または</div>
               </div>
               <button className={styles.select_file_button}
-                      onClick={clickSelectFileButton}
+                onClick={clickSelectFileButton}
               >
                 ファイルを選択
               </button>
             </div>
             <div className={styles.description_area}>
               <div className={styles.description_text}>説明を追加</div>
-              <textarea className={styles.description_text_area} placeholder={"最新の情報を入力"}/>
+              <textarea className={styles.description_text_area} placeholder={'最新の情報を入力'}/>
             </div>
             <div className={styles.select_button_area}>
               <div className={styles.select_button_text}>ボタンの追加（省略可）</div>
               <div className={styles.button__container}>
                 <div className={styles.pull_down_menu_container}>
-                <LocalPostButtonPullDownMenu selectedContent={selectedContent} setSelectedContent={setSelectedContent}
-                                             options={Object.values(LocationButtonName)}/>
+                  <LocalPostButtonPullDownMenu selectedContent={selectedContent} setSelectedContent={setSelectedContent}
+                    options={Object.values(LocationButtonName)}/>
                 </div>
                 <div className={styles.submit_button_container}>
                   <button className={styles.submit_button}>投稿</button>

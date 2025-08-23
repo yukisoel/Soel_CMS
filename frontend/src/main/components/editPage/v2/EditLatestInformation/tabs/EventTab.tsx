@@ -1,21 +1,21 @@
-import React from 'react';
-import Wrapper from '@/main/common/Wrapper';
-import Typography from '@/main/common/Typography';
-import Button from '@/main/common/Button';
-import Input from '@/main/common/Input';
-import Textarea from '@/main/common/Textarea';
-import DatePicker from '@/main/common/DatePicker/DatePicker';
-import TimePicker from '@/main/common/TimePicker/TimePicker';
-import PhotoPullDownMenu from '@/main/components/editPage/PhotoPullDownMenu';
-import useFileUpload from '@/main/common/FileUpload/useFileUpload';
-import { useForm } from 'react-hook-form';
-import { z } from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
-import styles from '../EditLatestInformation.module.scss';
-import LayoutLabeledFormItem from '@/main/common/LayoutLabeledFormItem';
-import { useGoogleRepository } from '@/main/contexts/GoogleRepositoryContext';
-import { useParams } from 'react-router-dom';
-import { LocalPostTopicType, LocationButtonName } from '@/types/apiModel';
+import React from 'react'
+import { useForm } from 'react-hook-form'
+import { z } from 'zod'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useParams } from 'react-router-dom'
+import styles from '../EditLatestInformation.module.scss'
+import Wrapper from '@/main/common/Wrapper'
+import Typography from '@/main/common/Typography'
+import Button from '@/main/common/Button'
+import Input from '@/main/common/Input'
+import Textarea from '@/main/common/Textarea'
+import DatePicker from '@/main/common/DatePicker/DatePicker'
+import TimePicker from '@/main/common/TimePicker/TimePicker'
+import PhotoPullDownMenu from '@/main/components/editPage/PhotoPullDownMenu'
+import useFileUpload from '@/main/common/FileUpload/useFileUpload'
+import LayoutLabeledFormItem from '@/main/common/LayoutLabeledFormItem'
+import { useGoogleRepository } from '@/main/contexts/GoogleRepositoryContext'
+import { LocalPostTopicType, LocationButtonName } from '@/types/apiModel'
 
 const schema = z.object({
   eventTitle: z.string().min(1, 'イベントのタイトルは必須です'),
@@ -25,8 +25,8 @@ const schema = z.object({
   endTime: z.date().nullable(),
   eventDetail: z.string().max(1500, 'イベントの詳細は1500文字以内で入力してください'),
   buttonTitle: z.string(),
-  selectedButton: z.string(),
-});
+  selectedButton: z.string()
+})
 
 type FormData = z.infer<typeof schema>;
 
@@ -35,34 +35,34 @@ interface Props {
 }
 
 export const EventTab: React.FC<Props> = ({ setIsSubmitting }) => {
-  const { accountId, locationId } = useParams();
-  const googleRepository = useGoogleRepository();
+  const { accountId, locationId } = useParams()
+  const googleRepository = useGoogleRepository()
   const {
     register,
     handleSubmit,
     formState: { errors },
     setValue,
-    watch,
+    watch
   } = useForm<FormData>({
     resolver: zodResolver(schema),
     defaultValues: {
-      selectedButton: '',
-    },
-  });
+      selectedButton: ''
+    }
+  })
 
-  const { render: renderFileUpload, uploadedPhotoFileList } = useFileUpload({ size: 'regular' });
+  const { render: renderFileUpload, uploadedPhotoFileList } = useFileUpload({ size: 'regular' })
 
   const onSubmit = async (data: FormData) => {
-    if (!uploadedPhotoFileList) return;
-    console.log(data);
+    if (!uploadedPhotoFileList) return
+    console.log(data)
     
-    setIsSubmitting?.(true);
+    setIsSubmitting?.(true)
     try {
       await googleRepository.postLocationLocalPosts(accountId ?? '', locationId ?? '', {
         summary: data.eventDetail,
         callToAction: {
           actionType: Object.keys(LocationButtonName).find(key => LocationButtonName[key as keyof typeof LocationButtonName] === data.selectedButton) as LocationButtonName,
-          url: data.buttonTitle,
+          url: data.buttonTitle
         },
         topicType: LocalPostTopicType.EVENT,
         event: {
@@ -71,12 +71,12 @@ export const EventTab: React.FC<Props> = ({ setIsSubmitting }) => {
             startDate: data.startDate ? {
               year: data.startDate.getFullYear(),
               month: data.startDate.getMonth() + 1,
-              day: data.startDate.getDate(),
+              day: data.startDate.getDate()
             } : undefined,
             endDate: data.endDate ? {
               year: data.endDate.getFullYear(),
               month: data.endDate.getMonth() + 1,
-              day: data.endDate.getDate(),
+              day: data.endDate.getDate()
             } : undefined,
             startTime: data.startTime ? {
               hours: data.startTime.getHours(),
@@ -92,14 +92,14 @@ export const EventTab: React.FC<Props> = ({ setIsSubmitting }) => {
             } : undefined
           }
         }
-      }, uploadedPhotoFileList);
+      }, uploadedPhotoFileList)
     } finally {
-      setIsSubmitting?.(false);
+      setIsSubmitting?.(false)
     }
-  };
+  }
 
-  const eventDetailValue = watch('eventDetail') || '';
-  const selectedButton = watch('selectedButton') ?? '';
+  const eventDetailValue = watch('eventDetail') || ''
+  const selectedButton = watch('selectedButton') ?? ''
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -262,5 +262,5 @@ export const EventTab: React.FC<Props> = ({ setIsSubmitting }) => {
         </Wrapper>
       </Wrapper>
     </form>
-  );
-};
+  )
+}

@@ -1,19 +1,19 @@
-import React from 'react';
-import Modal from '@/main/common/Modal/Modal';
-import Wrapper from '@/main/common/Wrapper';
-import Typography from '@/main/common/Typography';
-import Button from '@/main/common/Button';
-import Textarea from '@/main/common/Textarea';
-import { useForm } from 'react-hook-form';
-import { z } from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
-import LayoutLabeledFormItem from '@/main/common/LayoutLabeledFormItem';
+import React from 'react'
+import { useForm } from 'react-hook-form'
+import { z } from 'zod'
+import { zodResolver } from '@hookform/resolvers/zod'
+import Modal from '@/main/common/Modal/Modal'
+import Wrapper from '@/main/common/Wrapper'
+import Typography from '@/main/common/Typography'
+import Button from '@/main/common/Button'
+import Textarea from '@/main/common/Textarea'
+import LayoutLabeledFormItem from '@/main/common/LayoutLabeledFormItem'
 
 const schema = z.object({
   answer: z.string()
     .min(1, '回答は必須です')
-    .max(1000, '回答は1000文字以内で入力してください'),
-});
+    .max(1000, '回答は1000文字以内で入力してください')
+})
 
 type FormData = z.infer<typeof schema>;
 
@@ -32,7 +32,7 @@ const EditAnswerModal: React.FC<EditAnswerModalProps> = ({
   onClose,
   title,
   onSubmit,
-  initialValues,
+  initialValues
 }) => {
   const {
     register,
@@ -42,18 +42,18 @@ const EditAnswerModal: React.FC<EditAnswerModalProps> = ({
     watch
   } = useForm<FormData>({
     resolver: zodResolver(schema),
-    defaultValues: initialValues,
-  });
+    defaultValues: initialValues
+  })
 
-  const answerValue = watch('answer') || '';
+  const answerValue = watch('answer') || ''
 
   React.useEffect(() => {
     if (isOpen) {
       reset(initialValues || {
-        answer: '',
-      });
+        answer: ''
+      })
     }
-  }, [isOpen, initialValues, reset]);
+  }, [isOpen, initialValues, reset])
 
   const contentRender = () => (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -83,7 +83,7 @@ const EditAnswerModal: React.FC<EditAnswerModalProps> = ({
         </Wrapper>
       </Wrapper>
     </form>
-  );
+  )
 
   return (
     <Modal
@@ -92,7 +92,7 @@ const EditAnswerModal: React.FC<EditAnswerModalProps> = ({
       headerContent={title}
       contentRender={contentRender}
     />
-  );
-};
+  )
+}
 
-export default EditAnswerModal;
+export default EditAnswerModal

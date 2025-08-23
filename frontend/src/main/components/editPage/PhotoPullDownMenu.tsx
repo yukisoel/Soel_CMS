@@ -1,7 +1,7 @@
+import { ChangeEvent, useState } from 'react'
+import classNames from 'classnames'
 import styles from '@/main/components/editPage/PhotoPullDownMenu.module.scss'
-import {ChangeEvent, useState} from "react";
-import classNames from "classnames";
-import ArrowIcon from "@/main/assets/ArrowIcon.svg";
+import ArrowIcon from '@/main/assets/ArrowIcon.svg'
 
 export type Props = {
   placeholder?: string

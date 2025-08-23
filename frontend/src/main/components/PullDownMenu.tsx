@@ -1,7 +1,7 @@
+import { ChangeEvent, useState } from 'react'
+import classNames from 'classnames'
 import styles from '@/main/components/PullDownMenu.module.scss'
-import {ChangeEvent, useState} from "react";
-import classNames from "classnames";
-import TriangleIcon from "@/main/assets/PullDownMenuTriangle.svg";
+import TriangleIcon from '@/main/assets/PullDownMenuTriangle.svg'
 
 export type Props = {
   title: string
@@ -14,14 +14,14 @@ export type Props = {
 }
 
 export default function PullDownMenu({
-                                       title,
-                                       placeholder,
-                                       selectedContent,
-                                       setSelectedContent,
-                                       selectedPullDownMenu,
-                                       setSelectedPullDownMenu,
-                                       options
-                                     }: Props) {
+  title,
+  placeholder,
+  selectedContent,
+  setSelectedContent,
+  selectedPullDownMenu,
+  setSelectedPullDownMenu,
+  options
+}: Props) {
   const effectivePlaceholder = placeholder ? placeholder : '入力して検索'
 
   const [isOpen, setIsOpen] = useState<boolean>(false)
@@ -30,7 +30,7 @@ export default function PullDownMenu({
     setSearchWord('')
     setIsOpen(!isOpen)
     if (selectedPullDownMenu === title) {
-      setSelectedPullDownMenu("none")
+      setSelectedPullDownMenu('none')
     } else {
       setSelectedPullDownMenu(title)
     }
@@ -78,7 +78,7 @@ export default function PullDownMenu({
                 <input
                   className={`${styles.pull_down_menu_content} ${styles.pull_down_menu_input} ${styles.pull_down_menu_border}`}
 
-                  placeholder={"入力して検索"}
+                  placeholder={'入力して検索'}
                   onChange={handleShowSearchOptions}
                 />
                 <div className={styles.pull_down_menu_option_container}>
@@ -86,11 +86,11 @@ export default function PullDownMenu({
                     if (searchWord.length === 0 || value.includes(searchWord)) {
                       return (
                         <div key={index}
-                             className={`${styles.pull_down_menu_content} ${styles.pull_down_menu_option} ${styles.pull_down_menu_border}`}
-                             onClick={() => {
-                               toggleIsOpen()
-                               setSelectedContent(value)
-                             }}
+                          className={`${styles.pull_down_menu_content} ${styles.pull_down_menu_option} ${styles.pull_down_menu_border}`}
+                          onClick={() => {
+                            toggleIsOpen()
+                            setSelectedContent(value)
+                          }}
                         >
                           {value}
                         </div>

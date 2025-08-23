@@ -1,19 +1,19 @@
-import React from 'react';
-import Modal from '@/main/common/Modal/Modal';
-import Wrapper from '@/main/common/Wrapper';
-import Typography from '@/main/common/Typography';
-import Button from '@/main/common/Button';
-import Textarea from '@/main/common/Textarea';
-import { useForm } from 'react-hook-form';
-import { z } from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
-import LayoutLabeledFormItem from '@/main/common/LayoutLabeledFormItem';
+import React from 'react'
+import { useForm } from 'react-hook-form'
+import { z } from 'zod'
+import { zodResolver } from '@hookform/resolvers/zod'
+import Modal from '@/main/common/Modal/Modal'
+import Wrapper from '@/main/common/Wrapper'
+import Typography from '@/main/common/Typography'
+import Button from '@/main/common/Button'
+import Textarea from '@/main/common/Textarea'
+import LayoutLabeledFormItem from '@/main/common/LayoutLabeledFormItem'
 
 const schema = z.object({
   description: z.string()
     .min(1, '説明は必須です')
-    .max(500, '説明は500文字以内で入力してください'),
-});
+    .max(500, '説明は500文字以内で入力してください')
+})
 
 type FormData = z.infer<typeof schema>;
 
@@ -30,7 +30,7 @@ export const EditDescriptionModal: React.FC<EditDescriptionModalProps> = ({
   isOpen,
   onClose,
   onSubmit,
-  initialValues,
+  initialValues
 }) => {
   const {
     register,
@@ -39,18 +39,18 @@ export const EditDescriptionModal: React.FC<EditDescriptionModalProps> = ({
     reset,
     watch
   } = useForm<FormData>({
-    resolver: zodResolver(schema),
-  });
+    resolver: zodResolver(schema)
+  })
 
-  const descriptionValue = watch('description') || '';
+  const descriptionValue = watch('description') || ''
 
   React.useEffect(() => {
     if (isOpen) {
       reset(initialValues || {
-        description: '',
-      });
+        description: ''
+      })
     }
-  }, [isOpen, reset, initialValues]);
+  }, [isOpen, reset, initialValues])
 
   const contentRender = () => (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -85,7 +85,7 @@ export const EditDescriptionModal: React.FC<EditDescriptionModalProps> = ({
         </Wrapper>
       </Wrapper>
     </form>
-  );
+  )
 
   return (
     <Modal
@@ -94,5 +94,5 @@ export const EditDescriptionModal: React.FC<EditDescriptionModalProps> = ({
       headerContent="説明の編集"
       contentRender={contentRender}
     />
-  );
-};
+  )
+}

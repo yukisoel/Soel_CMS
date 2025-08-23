@@ -1,5 +1,5 @@
+import { Link } from 'react-router-dom'
 import styles from '@/main/components/editPage/DashboardItem.module.scss'
-import {Link} from "react-router-dom";
 
 type Props = {
   navigation: string
@@ -8,7 +8,7 @@ type Props = {
   altText: string
 }
 
-export function DashboardItem({navigation, text, src, altText}: Props) {
+export function DashboardItem({ navigation, text, src, altText }: Props) {
   return (
     <>
       <div className={styles.item_container}>

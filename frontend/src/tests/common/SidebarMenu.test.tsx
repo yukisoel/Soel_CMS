@@ -1,6 +1,6 @@
-import {describe} from "vitest";
-import {render, screen} from "@testing-library/react";
-import SidebarMenu from "@/main/common/SidebarMenu.tsx";
+import { describe } from 'vitest'
+import { render, screen } from '@testing-library/react'
+import SidebarMenu from '@/main/common/SidebarMenu.tsx'
 import LogoIcon from '@/main/assets/Logo.svg'
 import HomeIcon from '@/main/assets/HomeIcon.svg'
 import EditorIcon from '@/main/assets/EditorIcon.svg'
@@ -40,7 +40,6 @@ describe('SidebarMenu', () => {
     render(<SidebarMenu email={dummyEmail}/>)
 
 
-
     expect(screen.getByText('ページ編集')).toBeInTheDocument()
   })
 
@@ -55,7 +54,6 @@ describe('SidebarMenu', () => {
 
   it('広告管理へのリンクが表示される', async() => {
     render(<SidebarMenu email={dummyEmail}/>)
-
 
 
     expect(screen.getByText('広告管理')).toBeInTheDocument()
@@ -74,7 +72,6 @@ describe('SidebarMenu', () => {
     render(<SidebarMenu email={dummyEmail}/>)
 
 
-
     expect(screen.getByText('口コミ管理')).toBeInTheDocument()
   })
 
@@ -91,7 +88,6 @@ describe('SidebarMenu', () => {
     render(<SidebarMenu email={dummyEmail}/>)
 
 
-
     expect(screen.getByText('店舗管理')).toBeInTheDocument
   })
 
@@ -106,7 +102,6 @@ describe('SidebarMenu', () => {
 
   it('お問い合わせボタンが表示される', async() => {
     render(<SidebarMenu email={dummyEmail}/>)
-
 
 
     expect(screen.getByText('お問い合わせ')).toBeInTheDocument()

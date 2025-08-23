@@ -1,4 +1,4 @@
-import styles from "@/main/common/SearchBox.module.scss";
+import styles from '@/main/common/SearchBox.module.scss'
 
 type Props = {
   placeholder?: string
@@ -8,15 +8,15 @@ type Props = {
   className?: string
 }
 
-export default function SearchBox({placeholder, width, value = undefined, onChange}: Props) {
+export default function SearchBox({ placeholder, width, value = undefined, onChange }: Props) {
   return (
     <input
-        type="text"
-        placeholder={placeholder}
-        className={styles.search_box}
-        style={{ width }}
-        value={value}
-        onChange={onChange}
+      type="text"
+      placeholder={placeholder}
+      className={styles.search_box}
+      style={{ width }}
+      value={value}
+      onChange={onChange}
     />
   )
 }

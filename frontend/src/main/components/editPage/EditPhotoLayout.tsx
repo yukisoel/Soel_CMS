@@ -1,16 +1,16 @@
-import styles from "@/main/components/editPage/EditPhotoLayout.module.scss";
-import {useContext, useEffect, useRef, useState} from "react";
-import {PankuzuItemListContext} from "@/main/contexts/PankuzuItemListContext.tsx";
-import {GoogleSelectedLocationContext} from "@/main/contexts/GoogleSelectedLocationContext.tsx";
-import {useParams} from "react-router-dom";
-import PhotoPullDownMenu from "@/main/components/editPage/PhotoPullDownMenu.tsx";
-import {GoogleLocationPhotoModel} from "@/main/model/LocationModel.ts";
-import {LocationAssociationName} from "@/main/model/LocationAssociationName.ts";
-import { useGoogleRepository } from "@/main/contexts/GoogleRepositoryContext";
+import { useContext, useEffect, useRef, useState } from 'react'
+import { useParams } from 'react-router-dom'
+import styles from '@/main/components/editPage/EditPhotoLayout.module.scss'
+import { PankuzuItemListContext } from '@/main/contexts/PankuzuItemListContext.tsx'
+import { GoogleSelectedLocationContext } from '@/main/contexts/GoogleSelectedLocationContext.tsx'
+import PhotoPullDownMenu from '@/main/components/editPage/PhotoPullDownMenu.tsx'
+import { GoogleLocationPhotoModel } from '@/main/model/LocationModel.ts'
+import { LocationAssociationName } from '@/main/model/LocationAssociationName.ts'
+import { useGoogleRepository } from '@/main/contexts/GoogleRepositoryContext'
 
 
 export default function EditPhotoLayout() {
-  const googleRepository = useGoogleRepository();
+  const googleRepository = useGoogleRepository()
   const [selectedCategory, setSelectedCategory] = useState<string>(LocationAssociationName.CATEGORY_UNSPECIFIED)
   const [photoList, setPhotoList] = useState<GoogleLocationPhotoModel[]>([])
   const [uploadedPhotoFileList, setUploadedPhotoFileList] = useState<FileList | null>(null)
@@ -19,38 +19,38 @@ export default function EditPhotoLayout() {
   const [showAddPhotoListPage, setShowAddPhotoListPage] = useState<boolean>(false)
   const fileUploadInputRef = useRef<HTMLInputElement>(null)
 
-  const {setPankuzuItemList} = useContext(PankuzuItemListContext)
-  const {googleSelectedLocation, setGoogleSelectedLocation} = useContext(GoogleSelectedLocationContext)
+  const { setPankuzuItemList } = useContext(PankuzuItemListContext)
+  const { googleSelectedLocation, setGoogleSelectedLocation } = useContext(GoogleSelectedLocationContext)
 
-  const {accountId, locationId} = useParams()
+  const { accountId, locationId } = useParams()
 
   useEffect(() => {
     setPankuzuItemList([
-      {name: 'ページ編集', path: '/edit'},
-      {name: 'GBP', path: '/edit/gbp'},
-      {name: '写真', path: '/edit/photo'}])
-    if (googleSelectedLocation.name === "" && locationId) {
+      { name: 'ページ編集', path: '/edit' },
+      { name: 'GBP', path: '/edit/gbp' },
+      { name: '写真', path: '/edit/photo' }])
+    if (googleSelectedLocation.name === '' && locationId) {
       googleRepository.getLocation(locationId).then(location => {
-        console.log({locationId})
-        console.log({location})
+        console.log({ locationId })
+        console.log({ location })
         setGoogleSelectedLocation(location)
       })
     }
     if (accountId && locationId) {
       googleRepository.getLocationPhotos(accountId, locationId).then(photos => {
-        console.log({photos})
+        console.log({ photos })
         setPhotoList(photos)
       })
     }
   }, [])
 
   const onDivDragOver = (event: React.DragEvent<HTMLDivElement>) => {
-    console.log("onDivDragOver")
+    console.log('onDivDragOver')
     event.preventDefault()
   }
 
   const onDivDrop = (event: React.DragEvent<HTMLDivElement>) => {
-    console.log("onDivDrop")
+    console.log('onDivDrop')
     event.preventDefault()
     event.stopPropagation()
     if (event.dataTransfer.files.length > 0) {
@@ -65,9 +65,9 @@ export default function EditPhotoLayout() {
   }
 
   const clickAddPhotoButton = () => {
-    console.log("clickAddPhotoButton")
-    console.log({accountId})
-    console.log({locationId})
+    console.log('clickAddPhotoButton')
+    console.log({ accountId })
+    console.log({ locationId })
     console.log(uploadedPhotoFileList)
     setShowAddPhotoPage(!showAddPhotoPage)
     setShowAddPhotoListPage(false)
@@ -149,7 +149,7 @@ export default function EditPhotoLayout() {
                   key={index}
                   className={styles.photo}
                   src={photo.googleUrl}
-                  alt={"photo"}
+                  alt={'photo'}
                   hidden={!(selectedCategory === LocationAssociationName.CATEGORY_UNSPECIFIED || selectedCategory === photo.locationAssociation?.category)}
                 />
               )
@@ -160,9 +160,9 @@ export default function EditPhotoLayout() {
           <>
             <div className={styles.file_upload_area_container}>
               <div className={styles.file_upload_area}
-                   onDragEnter={onDivDragOver}
-                   onDragOver={onDivDragOver}
-                   onDrop={onDivDrop}
+                onDragEnter={onDivDragOver}
+                onDragOver={onDivDragOver}
+                onDrop={onDivDrop}
               >
                 <input
                   type="file"
@@ -176,7 +176,7 @@ export default function EditPhotoLayout() {
                   <p>または</p>
                 </div>
                 <button className={styles.select_file_button}
-                        onClick={clickSelectFileButton}
+                  onClick={clickSelectFileButton}
                 >
                   ファイルを選択
                 </button>
@@ -192,7 +192,7 @@ export default function EditPhotoLayout() {
                   key={index}
                   className={styles.photo}
                   src={url}
-                  alt={"photo"}
+                  alt={'photo'}
                 />
               )
             })}

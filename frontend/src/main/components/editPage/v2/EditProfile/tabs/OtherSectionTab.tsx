@@ -1,16 +1,15 @@
-import { useState, useEffect } from 'react';
-import Wrapper from "@/main/common/Wrapper";
-import Typography from "@/main/common/Typography";
-import Button from "@/main/common/Button";
-import Loading from "@/main/common/Loading";
-import styles from "../EditProfileLayoutV2.module.scss";
-import EditBusinessOwnerModal from "../modals/EditBusinessOwnerModal";
-import { useEditServicesModalContainer } from '../modals/EditServicesModal/useEditServicesModalContainer';
-import { useEditServiceOptionsModalContainer } from '../modals/EditServiceOptionsModal/useEditServiceOptionsModalContainer';
-import { GoogleLocationAttributesModel, GoogleLocationProfileModel, SERVICE_ATTRIBUTE_MAPPING, SERVICE_OPTION_ATTRIBUTE_MAPPING, GoogleLocationAttributeServiceType, GoogleLocationAttributeServiceOptionType } from "@/types/apiModel.ts";
-import { GoogleRepository } from "@/main/repositories/GoogleRepository";
-import { useModal } from "@/main/common/Modal/useModal";
-import { useParams } from "react-router-dom";
+import { useParams } from 'react-router-dom'
+import styles from '../EditProfileLayoutV2.module.scss'
+import EditBusinessOwnerModal from '../modals/EditBusinessOwnerModal'
+import { useEditServicesModalContainer } from '../modals/EditServicesModal/useEditServicesModalContainer'
+import { useEditServiceOptionsModalContainer } from '../modals/EditServiceOptionsModal/useEditServiceOptionsModalContainer'
+import Wrapper from '@/main/common/Wrapper'
+import Typography from '@/main/common/Typography'
+import Button from '@/main/common/Button'
+import Loading from '@/main/common/Loading'
+import { GoogleLocationAttributesModel, GoogleLocationProfileModel, SERVICE_ATTRIBUTE_MAPPING, SERVICE_OPTION_ATTRIBUTE_MAPPING, GoogleLocationAttributeServiceType, GoogleLocationAttributeServiceOptionType } from '@/types/apiModel.ts'
+import { GoogleRepository } from '@/main/repositories/GoogleRepository'
+import { useModal } from '@/main/common/Modal/useModal'
 
 // ビジネス所有者情報はboolean値のisOwnedByWomenのみ
 
@@ -24,41 +23,40 @@ type Props = {
 };
 
 export default function OtherSectionTab({
-  profile,
+  profile: _profile,
   attributes,
-  fetchProfile,
+  fetchProfile: _fetchProfile,
   fetchAttributes,
   googleRepository,
-  isLoading = false,
+  isLoading = false
 }: Props) {
-  const { locationId } = useParams();
-  const { isOpen: isBusinessOwnerModalOpen, openModal: openBusinessOwnerModal, closeModal: closeBusinessOwnerModal } = useModal();
+  const { locationId } = useParams()
+  const { isOpen: isBusinessOwnerModalOpen, openModal: openBusinessOwnerModal, closeModal: closeBusinessOwnerModal } = useModal()
   // EditServicesModalのcontainer hook
-  const { openModal: openServicesModal, renderContent: renderServicesModal } = useEditServicesModalContainer(locationId, attributes, fetchAttributes);
-  
+  const { openModal: openServicesModal, renderContent: renderServicesModal } = useEditServicesModalContainer(locationId, attributes, fetchAttributes)
+
   // EditServiceOptionsModalのcontainer hook
-  const { openModal: openServiceOptionsModal, renderContent: renderServiceOptionsModal } = useEditServiceOptionsModalContainer(locationId, attributes, fetchAttributes);
+  const { openModal: openServiceOptionsModal, renderContent: renderServiceOptionsModal } = useEditServiceOptionsModalContainer(locationId, attributes, fetchAttributes)
 
   const handleBusinessOwnerSave = async (isOwnedByWomen: boolean) => {
-    if (!locationId) return false;
+    if (!locationId) return false
     try {
       // APIを呼び出してビジネス所有者情報を更新
-      await googleRepository.updateLocationBusinessOwnerInfo(locationId, isOwnedByWomen);
-      
-      // 属性データを再取得
-      await fetchAttributes();
-      closeBusinessOwnerModal();
-      return true;
-    } catch (error) {
-      console.error('Failed to save business owner info:', error);
-      return false;
-    }
-  };
+      await googleRepository.updateLocationBusinessOwnerInfo(locationId, isOwnedByWomen)
 
+      // 属性データを再取得
+      await fetchAttributes()
+      closeBusinessOwnerModal()
+      return true
+    } catch (error) {
+      console.error('Failed to save business owner info:', error)
+      return false
+    }
+  }
 
 
   if (isLoading) {
-    return <Loading message="その他情報を読み込み中..." size="small" minHeight="200px" />;
+    return <Loading message="その他情報を読み込み中..." size="small" minHeight="200px" />
   }
 
   return (
@@ -167,66 +165,66 @@ export default function OtherSectionTab({
       {/* サービスオプション編集モーダル */}
       {renderServiceOptionsModal()}
     </Wrapper>
-  );
+  )
 }
 
 const formatBusinessOwnerInfo = (attributes: GoogleLocationAttributesModel | null): string => {
-  if (!attributes) return 'ビジネス所有者情報が設定されていません';
+  if (!attributes) return 'ビジネス所有者情報が設定されていません'
   // TODO: Extract business owner info from attributes
-  return 'ビジネス所有者情報が設定されていません';
-};
+  return 'ビジネス所有者情報が設定されていません'
+}
 
 const formatBusinessOwnerInfoForModal = (attributes: GoogleLocationAttributesModel | null): boolean => {
   // TODO: Extract isOwnedByWomen from attributes
   if (!attributes) {
-    return false;
+    return false
   }
-  
+
   // 将来的に attributes から実際の isOwnedByWomen 値を抽出する
   // 現在はデフォルトでfalseを返す
-  return false;
-};
+  return false
+}
 
 const formatServices = (attributes: GoogleLocationAttributesModel['attributes']): string => {
-  if (!attributes || attributes.length === 0) return 'サービスが設定されていません';
-  
+  if (!attributes || attributes.length === 0) return 'サービスが設定されていません'
+
   // SERVICE_ATTRIBUTE_MAPPINGに定義されている属性で、値がtrueのもののみを表示
-  const activeServices: string[] = [];
-  
+  const activeServices: string[] = []
+
   Object.entries(SERVICE_ATTRIBUTE_MAPPING).forEach(([key, attributeName]) => {
-    const attribute = attributes.find(attr => attr.name === attributeName);
+    const attribute = attributes.find(attr => attr.name === attributeName)
     if (attribute?.values && attribute.values.length > 0 && Boolean(attribute.values[0])) {
-      const serviceName = GoogleLocationAttributeServiceType[key as keyof typeof GoogleLocationAttributeServiceType];
+      const serviceName = GoogleLocationAttributeServiceType[key as keyof typeof GoogleLocationAttributeServiceType]
       if (serviceName) {
-        activeServices.push(serviceName);
+        activeServices.push(serviceName)
       }
     }
-  });
-  
-  if (activeServices.length === 0) return 'サービスが設定されていません';
-  
-  return activeServices.join('、');
-};
+  })
+
+  if (activeServices.length === 0) return 'サービスが設定されていません'
+
+  return activeServices.join('、')
+}
 
 const formatServiceOptions = (attributes: GoogleLocationAttributesModel['attributes']): string => {
-  if (!attributes || attributes.length === 0) return 'サービスオプションが設定されていません';
-  
+  if (!attributes || attributes.length === 0) return 'サービスオプションが設定されていません'
+
   // SERVICE_OPTION_ATTRIBUTE_MAPPINGに定義されている属性で、値がtrueのもののみを表示
-  const activeServiceOptions: string[] = [];
-  
+  const activeServiceOptions: string[] = []
+
   Object.entries(SERVICE_OPTION_ATTRIBUTE_MAPPING).forEach(([key, attributeName]) => {
-    const attribute = attributes.find(attr => attr.name === attributeName);
+    const attribute = attributes.find(attr => attr.name === attributeName)
     if (attribute?.values && attribute.values.length > 0 && Boolean(attribute.values[0])) {
-      const serviceOptionName = GoogleLocationAttributeServiceOptionType[key as keyof typeof GoogleLocationAttributeServiceOptionType];
+      const serviceOptionName = GoogleLocationAttributeServiceOptionType[key as keyof typeof GoogleLocationAttributeServiceOptionType]
       if (serviceOptionName) {
-        activeServiceOptions.push(serviceOptionName);
+        activeServiceOptions.push(serviceOptionName)
       }
     }
-  });
-  
-  if (activeServiceOptions.length === 0) return 'サービスオプションが設定されていません';
-  
-  return activeServiceOptions.join('、');
-};
+  })
+
+  if (activeServiceOptions.length === 0) return 'サービスオプションが設定されていません'
+
+  return activeServiceOptions.join('、')
+}
 
 
