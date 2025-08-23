@@ -8,11 +8,12 @@ import Typography from '@/main/common/Typography'
 import Button from '@/main/common/Button'
 import Input from '@/main/common/Input'
 import LayoutLabeledFormItem from '@/main/common/LayoutLabeledFormItem'
+import { MAX_TITLE_LENGTH } from '@/main/constants/validation'
 
 const schema = z.object({
   title: z.string()
     .min(1, 'タイトルは必須です')
-    .max(140, 'タイトルは140文字以内で入力してください')
+    .max(MAX_TITLE_LENGTH, `タイトルは${MAX_TITLE_LENGTH}文字以内で入力してください`)
 })
 
 type FormData = z.infer<typeof schema>;
@@ -59,7 +60,7 @@ export const EditTitleModal: React.FC<EditTitleModalProps> = ({
           label="タイトル"
           counter={{
             current: titleValue.length,
-            max: 140
+            max: MAX_TITLE_LENGTH
           }}
         >
           <Input

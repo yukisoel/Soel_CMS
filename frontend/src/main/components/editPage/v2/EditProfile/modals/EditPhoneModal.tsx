@@ -8,11 +8,12 @@ import Typography from '@/main/common/Typography'
 import Button from '@/main/common/Button'
 import Input from '@/main/common/Input'
 import LayoutLabeledFormItem from '@/main/common/LayoutLabeledFormItem'
+import { MAX_PHONE_LENGTH } from '@/main/constants/validation'
 
 const schema = z.object({
   phone: z.string()
     .min(1, '電話番号は必須です')
-    .max(20, '電話番号は20文字以内で入力してください')
+    .max(MAX_PHONE_LENGTH, `電話番号は${MAX_PHONE_LENGTH}文字以内で入力してください`)
     .regex(/^[0-9-]+$/, '数字とハイフンのみ入力できます')
 })
 

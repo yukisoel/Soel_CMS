@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { MAX_DESCRIPTION_LENGTH, PHONE_NUMBER_LENGTH, MAX_BUSINESS_NAME_LENGTH, MIN_PHONE_LENGTH, MAX_SHORT_DESCRIPTION_LENGTH } from '@/main/constants/validation'
 
 // 営業時間の時間帯のスキーマ
 const timeRangeSchema = z.object({
@@ -13,9 +14,9 @@ export const profileSchema = z.object({
   // 概要タブ
   title: z.string()
     .min(1, 'ビジネス名は必須です')
-    .max(100, '100文字以内で入力してください'),
+    .max(MAX_BUSINESS_NAME_LENGTH, `${MAX_BUSINESS_NAME_LENGTH}文字以内で入力してください`),
   description: z.string()
-    .max(1000, '1000文字以内で入力してください')
+    .max(MAX_DESCRIPTION_LENGTH, `${MAX_DESCRIPTION_LENGTH}文字以内で入力してください`)
     .optional(),
   openingDate: z.date()
     .optional()
@@ -30,8 +31,8 @@ export const profileSchema = z.object({
   phoneNumbers: z.object({
     primaryPhone: z.string()
       .regex(/^[0-9-]+$/, '電話番号の形式が正しくありません')
-      .min(10, '電話番号は10桁以上で入力してください')
-      .max(13, '電話番号は13桁以内で入力してください')
+      .min(MIN_PHONE_LENGTH, `電話番号は${MIN_PHONE_LENGTH}桁以上で入力してください`)
+      .max(PHONE_NUMBER_LENGTH, `電話番号は${PHONE_NUMBER_LENGTH}桁以内で入力してください`)
   }),
   websiteUri: z.string()
     .url('URLの形式が正しくありません')
@@ -71,13 +72,13 @@ export const profileSchema = z.object({
 
   // その他タブ
   businessOwnerInfo: z.string()
-    .max(500, '500文字以内で入力してください')
+    .max(MAX_SHORT_DESCRIPTION_LENGTH, `${MAX_SHORT_DESCRIPTION_LENGTH}文字以内で入力してください`)
     .optional(),
   serviceInfo: z.string()
-    .max(500, '500文字以内で入力してください')
+    .max(MAX_SHORT_DESCRIPTION_LENGTH, `${MAX_SHORT_DESCRIPTION_LENGTH}文字以内で入力してください`)
     .optional(),
   serviceOptionInfo: z.string()
-    .max(500, '500文字以内で入力してください')
+    .max(MAX_SHORT_DESCRIPTION_LENGTH, `${MAX_SHORT_DESCRIPTION_LENGTH}文字以内で入力してください`)
     .optional(),
   services: z.array(z.object({
     id: z.string(),

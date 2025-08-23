@@ -14,9 +14,10 @@ import useFileUpload from '@/main/common/FileUpload/useFileUpload'
 import LayoutLabeledFormItem from '@/main/common/LayoutLabeledFormItem'
 import { useGoogleRepository } from '@/main/contexts/GoogleRepositoryContext'
 import { LocalPostTopicType, LocationButtonName } from '@/types/apiModel'
+import { MAX_LONG_TEXT_LENGTH } from '@/main/constants/validation'
 
 const schema = z.object({
-  description: z.string().max(1500, '説明は1500文字以内で入力してください'),
+  description: z.string().max(MAX_LONG_TEXT_LENGTH, `説明は${MAX_LONG_TEXT_LENGTH}文字以内で入力してください`),
   buttonTitle: z.string(),
   selectedButton: z.string()
 })

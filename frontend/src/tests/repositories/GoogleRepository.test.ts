@@ -3,12 +3,13 @@ import axios from 'axios'
 import MockAdapter from 'axios-mock-adapter'
 import { GoogleRepositoryImpl } from '@/main/repositories/GoogleRepository.ts'
 import { GoogleAccount } from '@/types/apiModel.ts'
+import { HTTP_STATUS } from '@/main/constants/http'
 
 describe('GoogleRepository', () => {
   describe('getAccounts', () => {
     it('/api/google/accountsにリクエストしている', async () => {
       const mockAxios = new MockAdapter(axios)
-      mockAxios.onGet('/api/google/accounts').reply(200, [])
+      mockAxios.onGet('/api/google/accounts').reply(HTTP_STATUS.OK, [])
       const googleRepository = new GoogleRepositoryImpl()
 
 
@@ -26,7 +27,7 @@ describe('GoogleRepository', () => {
       ]
       const testAxiosResponse = { accountList: testAccountList }
       const mockAxios = new MockAdapter(axios)
-      mockAxios.onGet('/api/google/accounts').reply(200, testAxiosResponse)
+      mockAxios.onGet('/api/google/accounts').reply(HTTP_STATUS.OK, testAxiosResponse)
       const googleRepository = new GoogleRepositoryImpl()
 
 
@@ -41,7 +42,7 @@ describe('GoogleRepository', () => {
     it('リクエストが失敗したとき、エラーを投げる', async () => {
       vi.spyOn(console, 'error').mockImplementation(() => {})
       const mockAxios = new MockAdapter(axios)
-      mockAxios.onGet('/api/google/accounts').reply(500)
+      mockAxios.onGet('/api/google/accounts').reply(HTTP_STATUS.INTERNAL_SERVER_ERROR)
       const googleRepository = new GoogleRepositoryImpl()
 
 

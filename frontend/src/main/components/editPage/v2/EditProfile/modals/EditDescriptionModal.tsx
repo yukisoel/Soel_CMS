@@ -8,11 +8,12 @@ import Typography from '@/main/common/Typography'
 import Button from '@/main/common/Button'
 import Textarea from '@/main/common/Textarea'
 import LayoutLabeledFormItem from '@/main/common/LayoutLabeledFormItem'
+import { MAX_SHORT_DESCRIPTION_LENGTH } from '@/main/constants/validation'
 
 const schema = z.object({
   description: z.string()
     .min(1, '説明は必須です')
-    .max(500, '説明は500文字以内で入力してください')
+    .max(MAX_SHORT_DESCRIPTION_LENGTH, `説明は${MAX_SHORT_DESCRIPTION_LENGTH}文字以内で入力してください`)
 })
 
 type FormData = z.infer<typeof schema>;

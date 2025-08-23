@@ -8,11 +8,12 @@ import Typography from '@/main/common/Typography'
 import Button from '@/main/common/Button'
 import Input from '@/main/common/Input'
 import LayoutLabeledFormItem from '@/main/common/LayoutLabeledFormItem'
+import { MAX_TITLE_LENGTH } from '@/main/constants/validation'
 
 const schema = z.object({
   title: z.string()
     .min(1, 'セクション名は必須です')
-    .max(140, 'セクション名は140文字以内で入力してください')
+    .max(MAX_TITLE_LENGTH, `セクション名は${MAX_TITLE_LENGTH}文字以内で入力してください`)
 })
 
 type FormData = z.infer<typeof schema>;

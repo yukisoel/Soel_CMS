@@ -9,11 +9,12 @@ import Button from '@/main/common/Button'
 import LayoutLabeledFormItem from '@/main/common/LayoutLabeledFormItem'
 import SearchPulldownMenu from '@/main/components/editPage/SearchPullDownMenu'
 import { GoogleRepository } from '@/main/repositories/GoogleRepository'
+import { MAX_TITLE_LENGTH } from '@/main/constants/validation'
 
 const schema = z.object({
   serviceArea: z.string()
     .min(1, 'サービスエリアは必須です')
-    .max(140, 'サービスエリアは140文字以内で入力してください'),
+    .max(MAX_TITLE_LENGTH, `サービスエリアは${MAX_TITLE_LENGTH}文字以内で入力してください`),
   placeId: z.string().optional()
 })
 
@@ -85,7 +86,7 @@ export const EditServiceAreaModal: React.FC<EditServiceAreaModalProps> = ({
           label="サービスエリア"
           counter={{
             current: serviceAreaValue.length,
-            max: 140
+            max: MAX_TITLE_LENGTH
           }}
         >
           <SearchPulldownMenu

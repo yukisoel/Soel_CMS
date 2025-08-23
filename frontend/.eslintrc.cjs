@@ -6,7 +6,7 @@ module.exports = {
     'plugin:@typescript-eslint/recommended',
     'plugin:react-hooks/recommended',
   ],
-  ignorePatterns: ['dist', '.eslintrc.cjs'],
+  ignorePatterns: ['dist', '.eslintrc.cjs', 'src/types/api.d.ts', 'src/types/api.ts'],
   parser: '@typescript-eslint/parser',
   plugins: ['react-refresh', 'import'],
   rules: {
@@ -59,6 +59,23 @@ module.exports = {
     // import順序を警告レベルに
     'import/order': 'warn',
     // React refresh警告を無効化
-    'react-refresh/only-export-components': 'warn'
+    'react-refresh/only-export-components': 'warn',
+    // 循環複雑度の制限（新規関数に適用）
+    'complexity': ['warn', { 'max': 20 }],
+    // 関数の最大行数（大規模リファクタリング時の指標として） TODO: 別PRで該当ファイルはリファクタリングする
+    // 'max-lines-per-function': ['warn', { 'max': 300, 'skipBlankLines': true, 'skipComments': true }],
+    // if文のネストレベル制限
+    'max-depth': ['warn', 5],
+    // 関数のパラメータ数制限
+    'max-params': ['warn', 7],
+    // 三項演算子のネスト制限（既存コードで使用されているため無効化）
+    'no-nested-ternary': 'off',
+    // magic numberの使用を警告（基本的な数値と星評価を除外）
+    'no-magic-numbers': ['warn', {
+      'ignore': [-1, 0, 1, 2, 3, 4, 5],
+      'ignoreArrayIndexes': true,
+      'ignoreDefaultValues': true,
+      'enforceConst': false
+    }]
   },
 }

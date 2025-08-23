@@ -12,14 +12,15 @@ import Input from '@/main/common/Input'
 import Textarea from '@/main/common/Textarea'
 import LayoutLabeledFormItem from '@/main/common/LayoutLabeledFormItem'
 import { GoogleLocationPhotoModel } from '@/main/model/LocationModel'
+import { MAX_TITLE_LENGTH, MAX_DESCRIPTION_LENGTH } from '@/main/constants/validation'
 
 const schema = z.object({
   title: z.string()
     .min(1, 'メニュー名は必須です')
-    .max(140, 'メニュー名は140文字以内で入力してください'),
+    .max(MAX_TITLE_LENGTH, `メニュー名は${MAX_TITLE_LENGTH}文字以内で入力してください`),
   price: z.string().min(1, '価格は必須です'),
   description: z.string()
-    .max(1000, '説明は1000文字以内で入力してください')
+    .max(MAX_DESCRIPTION_LENGTH, `説明は${MAX_DESCRIPTION_LENGTH}文字以内で入力してください`)
 })
 
 type FormData = z.infer<typeof schema>;

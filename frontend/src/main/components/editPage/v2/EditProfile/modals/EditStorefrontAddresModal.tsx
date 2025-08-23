@@ -10,16 +10,17 @@ import Input from '@/main/common/Input'
 import LayoutLabeledFormItem from '@/main/common/LayoutLabeledFormItem'
 import { GoogleLocationStoreFrontAddressRequestAdministrativeArea } from '@/types/api.ts'
 import PhotoPullDownMenu from '@/main/components/editPage/PhotoPullDownMenu'
+import { MAX_POSTAL_CODE_LENGTH, MAX_ADDRESS_LENGTH } from '@/main/constants/validation'
 
 const PREFECTURES = Object.keys(GoogleLocationStoreFrontAddressRequestAdministrativeArea) as Array<keyof typeof GoogleLocationStoreFrontAddressRequestAdministrativeArea>
 
 const schema = z.object({
   postalCode: z.string()
     .min(1, '郵便番号は必須です')
-    .max(10, '郵便番号は10文字以内で入力してください')
+    .max(MAX_POSTAL_CODE_LENGTH, `郵便番号は${MAX_POSTAL_CODE_LENGTH}文字以内で入力してください`)
     .regex(/^\d{3}-?\d{4}$/,'正しい郵便番号形式で入力してください'),
   prefecture: z.string().min(1, '都道府県は必須です'),
-  address: z.string().min(1, '住所は必須です').max(200, '住所は200文字以内で入力してください')
+  address: z.string().min(1, '住所は必須です').max(MAX_ADDRESS_LENGTH, `住所は${MAX_ADDRESS_LENGTH}文字以内で入力してください`)
 })
 
 type FormData = z.infer<typeof schema>;

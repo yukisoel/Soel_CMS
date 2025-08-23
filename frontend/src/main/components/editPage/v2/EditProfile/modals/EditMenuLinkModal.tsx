@@ -8,11 +8,12 @@ import Typography from '@/main/common/Typography'
 import Button from '@/main/common/Button'
 import Input from '@/main/common/Input'
 import LayoutLabeledFormItem from '@/main/common/LayoutLabeledFormItem'
+import { MAX_URL_LENGTH } from '@/main/constants/validation'
 
 const schema = z.object({
   menuLink: z.string()
     .min(1, 'メニューリンクは必須です')
-    .max(200, 'メニューリンクは200文字以内で入力してください')
+    .max(MAX_URL_LENGTH, `メニューリンクは${MAX_URL_LENGTH}文字以内で入力してください`)
     .url('正しいURL形式で入力してください')
 })
 

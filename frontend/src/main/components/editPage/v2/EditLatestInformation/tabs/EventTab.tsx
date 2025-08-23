@@ -17,13 +17,15 @@ import LayoutLabeledFormItem from '@/main/common/LayoutLabeledFormItem'
 import { useGoogleRepository } from '@/main/contexts/GoogleRepositoryContext'
 import { LocalPostTopicType, LocationButtonName } from '@/types/apiModel'
 
+const EVENT_DETAIL_MAX_LENGTH = 1500
+
 const schema = z.object({
   eventTitle: z.string().min(1, 'イベントのタイトルは必須です'),
   startDate: z.date().nullable(),
   startTime: z.date().nullable(),
   endDate: z.date().nullable(),
   endTime: z.date().nullable(),
-  eventDetail: z.string().max(1500, 'イベントの詳細は1500文字以内で入力してください'),
+  eventDetail: z.string().max(EVENT_DETAIL_MAX_LENGTH, `イベントの詳細は${EVENT_DETAIL_MAX_LENGTH}文字以内で入力してください`),
   buttonTitle: z.string(),
   selectedButton: z.string()
 })

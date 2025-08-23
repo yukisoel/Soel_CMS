@@ -10,13 +10,14 @@ import Input from '@/main/common/Input'
 import Textarea from '@/main/common/Textarea'
 import useFileUpload from '@/main/common/FileUpload/useFileUpload'
 import LayoutLabeledFormItem from '@/main/common/LayoutLabeledFormItem'
+import { MAX_PRODUCT_NAME_LENGTH, MAX_DESCRIPTION_LENGTH, MAX_LONG_TEXT_LENGTH } from '@/main/constants/validation'
 
 const schema = z.object({
-  name: z.string().min(1, 'アイテム名は必須です').max(58, 'アイテム名は58文字以内で入力してください'),
+  name: z.string().min(1, 'アイテム名は必須です').max(MAX_PRODUCT_NAME_LENGTH, `アイテム名は${MAX_PRODUCT_NAME_LENGTH}文字以内で入力してください`),
   price: z.string().min(1, '価格は必須です'),
   category: z.string().min(1, 'カテゴリは必須です'),
-  description: z.string().max(1000, '説明は1000文字以内で入力してください').optional(),
-  productUrl: z.string().max(1500, '商品URLは1500文字以内で入力してください').optional()
+  description: z.string().max(MAX_DESCRIPTION_LENGTH, `説明は${MAX_DESCRIPTION_LENGTH}文字以内で入力してください`).optional(),
+  productUrl: z.string().max(MAX_LONG_TEXT_LENGTH, `商品URLは${MAX_LONG_TEXT_LENGTH}文字以内で入力してください`).optional()
 })
 
 type FormData = z.infer<typeof schema>;
