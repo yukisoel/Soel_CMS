@@ -108,7 +108,7 @@ export default function HistoryPostList() {
         ))}
       </Wrapper>
       {selectedPost && (
-        <PostDetailModal isOpen={!!selectedPost} onClose={handleCloseModal} post={selectedPost} onNextClick={handleNextPost} onPrevClick={handlePrevPost} isEditDisabled />
+        <PostDetailModal isOpen={!!selectedPost} onClose={handleCloseModal} post={selectedPost} onNextClick={handleNextPost} onPrevClick={handlePrevPost} isHistory />
       )}
     </Wrapper>
   )

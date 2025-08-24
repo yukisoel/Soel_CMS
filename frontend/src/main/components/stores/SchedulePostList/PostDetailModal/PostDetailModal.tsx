@@ -9,6 +9,7 @@ import ModalNavIcon from '@/main/assets/ModalNavIcon.svg'
 import Scroll from '@/main/common/Scroll'
 
 export type Post = {
+    id?: string;
     title: string;
     date: string;
     time: string;
@@ -25,10 +26,10 @@ type Props = {
     post: Post;
     onNextClick: () => void;
     onPrevClick: () => void;
-    isEditDisabled?: boolean; // 修正するボタンを無効にするためのプロパティ
+    isHistory?: boolean; // 過去投稿一覧からの表示かどうか
 };
 
-const PostDetailModal = ({ isOpen, onClose, post, onPrevClick, onNextClick, isEditDisabled = false }: Props) => {
+const PostDetailModal = ({ isOpen, onClose, post, onPrevClick, onNextClick, isHistory = false }: Props) => {
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden'
@@ -88,7 +89,7 @@ const PostDetailModal = ({ isOpen, onClose, post, onPrevClick, onNextClick, isEd
                 <Wrapper direction="col" gap="4rem">
                   <Wrapper gap="3.3rem">
                     <Wrapper direction="col" gap="1.8rem">
-                      <Typography content="投稿予定店舗" color="primary" size="normal" />
+                      <Typography content={isHistory ? '投稿済み店舗' : '投稿予定店舗'} color="primary" size="normal" />
                       <Scroll height="154px" width="495px">
                         <Typography content={post.shopList} color="primary" size="normal" weight="normal" />
                       </Scroll>
@@ -118,7 +119,7 @@ const PostDetailModal = ({ isOpen, onClose, post, onPrevClick, onNextClick, isEd
                 <Button bgColor="secondary" padding="7px 10px" onClick={() => { }}>
                   <Typography content="複製して新規投稿を作成" color="primary" size="normal" weight="normal" />
                 </Button>
-                <Button bgColor="primary" padding="7px 10px" onClick={() => { }} disabled={isEditDisabled}>
+                <Button bgColor="primary" padding="7px 10px" onClick={() => { }} disabled={isHistory}>
                   <Typography content="修正する" color="primary" size="normal" weight="normal" />
                 </Button>
               </Wrapper>
