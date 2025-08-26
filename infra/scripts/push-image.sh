@@ -22,7 +22,9 @@ aws ecr get-login-password --region $REGION \
   | docker login --username AWS --password-stdin ${REPO_URI%%/*}
 
 echo "🚀 Docker イメージをビルド中..."
-cd ../backend
+cd ..
+make build_for_actions
+cd backend
 docker buildx build --platform linux/amd64 \
   -f Dockerfile-gitops \
   -t ${REPO_URI}:${IMAGE_TAG} \
