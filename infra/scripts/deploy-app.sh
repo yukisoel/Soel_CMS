@@ -13,6 +13,37 @@ source ./env/${ENV}.env
 IMAGE_TAG="${2:-init}"
 S3_KEY="${ENV}-${PROJECT}/${IMAGE_TAG}/bundle.zip"
 
+# 置換用関数定義
+replace_vars() {
+  local template_file="$1"
+  local output_file="$2"
+  cp "$template_file" "$output_file"
+
+  local vars_to_replace=(
+    TASK_NAME TASK_EXEC_ROLE CONTAINER_NAME ECR_REPO IMAGE_TAG
+    CONTAINER_CPU CONTAINER_MEMORY CONTAINER_PORT
+    ENV LOG_GROUP REGION
+    SECRET_ARN RDS_SECRET_ARN
+  )
+
+  # OSを判定してオプションを変更
+  if [[ "$(uname)" == "Darwin" ]]; then
+    SED_INPLACE=("sed" "-i" "")
+  else
+    SED_INPLACE=("sed" "-i")
+  fi
+
+  for var in "${vars_to_replace[@]}"; do
+    if [[ -z "${!var:-}" ]]; then
+      echo "❌ 変数 '$var' が未定義です。envファイルやスクリプト内で定義されているか確認してください。"
+      exit 1
+    fi
+
+    value=$(printf '%s\n' "${!var}" | sed 's/[&/\]/\\&/g')
+    "${SED_INPLACE[@]}" "s|\${$var}|$value|g" "$output_file"
+  done
+}
+
 mkdir -p "$WORK_DIR"
 
 echo "🔍 CloudFormation Output から各種リソースを取得中..."
@@ -39,70 +70,8 @@ RDS_SECRET_ARN=$(aws cloudformation describe-stacks \
   --output text)
 
 # === 1. taskdef.json を生成 ===
-echo "📄 taskdef.json を生成中..."
-cat > "$WORK_DIR/taskdef.json" <<EOF
-{
-  "family": "${TASK_NAME}",
-  "executionRoleArn": "${TASK_EXEC_ROLE}",
-  "networkMode": "awsvpc",
-  "containerDefinitions": [
-    {
-      "name": "${CONTAINER_NAME}",
-      "image": "${ECR_REPO}:${IMAGE_TAG}",
-      "portMappings": [
-        {
-          "containerPort": ${CONTAINER_PORT},
-          "protocol": "tcp"
-        }
-      ],
-      "environment": [
-          {
-              "name": "ENV",
-              "value": "${ENV}"
-          },
-          {
-              "name": "APP_VERSION",
-              "value": "${IMAGE_TAG}"
-          }
-      ],
-      "secrets": [
-          {
-              "name": "POSTGRES_HOST",
-              "valueFrom": "${SECRET_ARN}:POSTGRES_HOST::"
-          },
-          {
-              "name": "POSTGRES_PORT",
-              "valueFrom": "${SECRET_ARN}:POSTGRES_PORT::"
-          },
-          {
-              "name": "POSTGRES_USER",
-              "valueFrom": "${RDS_SECRET_ARN}:username::"
-          },
-          {
-              "name": "POSTGRES_PASSWORD",
-              "valueFrom": "${RDS_SECRET_ARN}:password::"
-          },
-          {
-              "name": "POSTGRES_DB",
-              "valueFrom": "${SECRET_ARN}:POSTGRES_DB::"
-          }
-      ],
-      "logConfiguration": {
-        "logDriver": "awslogs",
-        "options": {
-          "awslogs-group": "${LOG_GROUP}",
-          "awslogs-region": "${REGION}",
-          "awslogs-stream-prefix": "ecs"
-        }
-      },
-      "essential": true
-    }
-  ],
-  "requiresCompatibilities": ["FARGATE"],
-  "cpu": "${CONTAINER_CPU}",
-  "memory": "${CONTAINER_MEMORY}"
-}
-EOF
+echo "📄 taskdef.json をテンプレートから生成中..."
+replace_vars "./cloudformation/ecs/taskdef.json" "$WORK_DIR/taskdef.json"
 
 # === 2. タスク定義を ECS に登録 ===
 echo "📤 タスク定義を ECS に登録中..."
