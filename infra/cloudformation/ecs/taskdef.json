@@ -1,0 +1,93 @@
+{
+    "family": "${TASK_NAME}",
+    "executionRoleArn": "${TASK_EXEC_ROLE}",
+    "networkMode": "awsvpc",
+    "containerDefinitions": [
+        {
+            "name": "${CONTAINER_NAME}",
+            "image": "${ECR_REPO}:${IMAGE_TAG}",
+            "cpu": ${CONTAINER_CPU},
+            "memory": ${CONTAINER_MEMORY},
+            "portMappings": [
+                {
+                    "containerPort": ${CONTAINER_PORT},
+                    "protocol": "tcp"
+                }
+            ],
+            "environment": [
+                {
+                    "name": "ENV",
+                    "value": "${ENV}"
+                },
+                {
+                    "name": "APP_VERSION",
+                    "value": "${IMAGE_TAG}"
+                }
+            ],
+            "secrets": [
+                {
+                    "name": "GOOGLE_CLIENT_ID",
+                    "valueFrom": "${SECRET_ARN}:GOOGLE_CLIENT_ID::"
+                },
+                {
+                    "name": "GOOGLE_CLIENT_SECRET",
+                    "valueFrom": "${SECRET_ARN}:GOOGLE_CLIENT_SECRET::"
+                },
+                {
+                    "name": "GOOGLE_SCOPE",
+                    "valueFrom": "${SECRET_ARN}:GOOGLE_SCOPE::"
+                },
+                {
+                    "name": "COGNITO_USER_POOL_ID",
+                    "valueFrom": "${SECRET_ARN}:COGNITO_USER_POOL_ID::"
+                },
+                {
+                    "name": "COGNITO_CLIENT_ID",
+                    "valueFrom": "${SECRET_ARN}:COGNITO_CLIENT_ID::"
+                },
+                {
+                    "name": "COGNITO_CLIENT_SECRET",
+                    "valueFrom": "${SECRET_ARN}:COGNITO_CLIENT_SECRET::"
+                },
+                {
+                    "name": "COGNITO_USER_POOL_DOMAIN",
+                    "valueFrom": "${SECRET_ARN}:COGNITO_USER_POOL_DOMAIN::"
+                },
+                {
+                    "name": "POSTGRES_HOST",
+                    "valueFrom": "${SECRET_ARN}:POSTGRES_HOST::"
+                },
+                {
+                    "name": "POSTGRES_PORT",
+                    "valueFrom": "${SECRET_ARN}:POSTGRES_PORT::"
+                },
+                {
+                    "name": "POSTGRES_USER",
+                    "valueFrom": "${RDS_SECRET_ARN}:username::"
+                },
+                {
+                    "name": "POSTGRES_PASSWORD",
+                    "valueFrom": "${RDS_SECRET_ARN}:password::"
+                },
+                {
+                    "name": "POSTGRES_DB",
+                    "valueFrom": "${SECRET_ARN}:POSTGRES_DB::"
+                }
+            ],
+            "logConfiguration": {
+                "logDriver": "awslogs",
+                "options": {
+                    "awslogs-group": "${LOG_GROUP}",
+                    "awslogs-region": "${REGION}",
+                    "awslogs-stream-prefix": "ecs"
+                }
+            },
+            "essential": true
+        }
+    ],
+    "requiresCompatibilities": [
+        "FARGATE"
+    ],
+    "cpu": "${CONTAINER_CPU}",
+    "memory": "${CONTAINER_MEMORY}"
+}
