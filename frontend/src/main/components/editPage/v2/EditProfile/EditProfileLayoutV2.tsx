@@ -7,6 +7,7 @@ import OverviewTab from "./tabs/OverviewTab";
 import ContactTab from "./tabs/ContactTab";
 import LocationTab from "./tabs/LocationTab";
 import HoursTab from "./tabs/HoursTab";
+import OtherSectionTab from "./tabs/OtherSectionTab";
 import { GoogleService } from "@/main/service/GoogleService";
 import { useParams } from "react-router-dom";
 import {GoogleLocationProfileModel, GoogleLocationAttributesModel} from "@/types/apiModel.ts";
@@ -99,25 +100,17 @@ export default function EditProfileLayoutV2({
                         isLoading={isLoadingProfile}
                     />
                 );
-            // case 'other':
-            //     return (
-            //         <OtherSectionTab
-            //             register={register}
-            //             errors={errors}
-            //             values={{
-            //                 businessOwnerInfo: formValues.businessOwnerInfo || '',
-            //                 serviceOptionInfo: formValues.serviceOptionInfo || '',
-            //                 services: formValues.services || []
-            //             }}
-            //             setValueAndValidate={setValueAndValidate}
-            //             isUpdating={isSubmitting}
-            //             validationErrors={{
-            //                 businessOwnerInfo: errors.businessOwnerInfo?.message,
-            //                 serviceOptionInfo: errors.serviceOptionInfo?.message,
-            //                 services: errors.services?.message
-            //             }}
-            //         />
-            //     );
+            case 'other':
+                return (
+                    <OtherSectionTab
+                        profile={profile ?? null}
+                        attributes={attributes ?? null}
+                        fetchProfile={fetchProfile}
+                        fetchAttributes={fetchAttributes}
+                        googleService={googleService}
+                        isLoading={isLoadingProfile || isLoadingAttributes}
+                    />
+                );
             default:
                 return null;
         }
