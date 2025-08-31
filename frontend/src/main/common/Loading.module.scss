@@ -1,0 +1,49 @@
+// @import '../assets/styles/mixins';
+
+.loading {
+  background-color: rgba(255, 255, 255, 0.95);
+}
+
+.spinner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+
+  &.small {
+    width: 24px;
+    height: 24px;
+  }
+
+  &.medium {
+    width: 40px;
+    height: 40px;
+  }
+
+  &.large {
+    width: 56px;
+    height: 56px;
+  }
+}
+
+.spinnerRing {
+  width: 100%;
+  height: 100%;
+  border: 3px solid #f3f3f3;
+  border-top: 3px solid #0082FF;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.message {
+  margin-top: 0.5rem;
+}

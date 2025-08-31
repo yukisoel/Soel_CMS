@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Wrapper from '@/main/common/Wrapper';
 import Typography from '@/main/common/Typography';
+import Loading from '@/main/common/Loading';
 import { useAdvancedTabs } from '@/main/common/AdvancedTabs/useAdvancedTabs';
 import { LatestInformationTab } from './tabs/LatestInformationTab';
 import { BenefitTab } from './tabs/BenefitTab';
@@ -13,6 +14,7 @@ interface Props {
 }
 
 export const EditLatestInformationV2: React.FC<Props> = ({ googleService }) => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { selectedTab, tabsRender } = useAdvancedTabs([
     { tabKey: 'latest_information', content: '最新情報の追加' },
     { tabKey: 'benefit', content: '特典の追加' },
@@ -22,15 +24,19 @@ export const EditLatestInformationV2: React.FC<Props> = ({ googleService }) => {
   const renderTabContent = () => {
     switch (selectedTab) {
       case 'latest_information':
-        return <LatestInformationTab googleService={googleService} />;
+        return <LatestInformationTab googleService={googleService} setIsSubmitting={setIsSubmitting} />;
       case 'benefit':
-        return <BenefitTab googleService={googleService} />;
+        return <BenefitTab googleService={googleService} setIsSubmitting={setIsSubmitting} />;
       case 'event':
-        return <EventTab googleService={googleService} />;
+        return <EventTab googleService={googleService} setIsSubmitting={setIsSubmitting} />;
       default:
         return null;
     }
   };
+
+  if (isSubmitting) {
+    return <Loading message="投稿中..." />;
+  }
 
   return (
     <Wrapper direction="col" gap="32px" padding="50px">

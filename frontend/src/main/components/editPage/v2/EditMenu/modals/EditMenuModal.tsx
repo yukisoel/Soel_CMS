@@ -12,6 +12,7 @@ import LayoutLabeledFormItem from '@/main/common/LayoutLabeledFormItem';
 import { PhotoSelector } from '../components/PhotoSelector';
 import { GoogleService } from '@/main/service/GoogleService';
 import { GoogleLocationPhotoModel } from '@/main/model/LocationModel';
+import styles from './EditMenuModal.module.scss';
 
 const schema = z.object({
   title: z.string()
@@ -62,6 +63,7 @@ export const EditMenuModal: React.FC<EditMenuModalProps> = ({
   const titleValue = watch('title') || '';
   const descriptionValue = watch('description') || '';
   const [selectedPhoto, setSelectedPhoto] = useState<GoogleLocationPhotoModel | undefined>(initialValues?.selectedPhoto);
+  const [showPhotoSelector, setShowPhotoSelector] = useState(false);
 
   React.useEffect(() => {
     if (isOpen) {
@@ -71,11 +73,27 @@ export const EditMenuModal: React.FC<EditMenuModalProps> = ({
         description: '',
       });
       setSelectedPhoto(initialValues?.selectedPhoto);
+      setShowPhotoSelector(false);
     }
   }, [isOpen, initialValues, reset]);
 
   const handlePhotoSelect = (photo: GoogleLocationPhotoModel) => {
     setSelectedPhoto(photo);
+    setShowPhotoSelector(false);
+  };
+
+  // 既存の写真がある場合のプレビューURL取得
+  const getPhotoUrl = (photo: GoogleLocationPhotoModel | undefined) => {
+    if (!photo) return null;
+    
+    // mediaKeyがある場合はGoogle CDNから取得
+    if (photo.name && photo.name.includes('media/')) {
+      const mediaKey = photo.name.split('media/')[1];
+      return `https://lh3.googleusercontent.com/p/${mediaKey}=s0`;
+    }
+    
+    // それ以外は通常のURL
+    return photo.googleUrl || photo.thumbnailUrl;
   };
 
   const handleFormSubmit = (data: FormData) => {
@@ -114,11 +132,33 @@ export const EditMenuModal: React.FC<EditMenuModalProps> = ({
           )}
         </LayoutLabeledFormItem>
         <LayoutLabeledFormItem label="写真を選択">
-          <PhotoSelector
-            googleService={googleService}
-            onPhotoSelect={handlePhotoSelect}
-            selectedPhoto={selectedPhoto}
-          />
+          {selectedPhoto && !showPhotoSelector ? (
+            <Wrapper direction="col" gap="1rem">
+              <Wrapper className={styles.previewContainer}>
+                <img
+                  src={getPhotoUrl(selectedPhoto) || ''}
+                  alt="選択された写真"
+                  className={styles.previewImage}
+                />
+              </Wrapper>
+              <Wrapper justify="justify-center">
+                <Button
+                  bgColor="secondary"
+                  padding="0.5rem 1.5rem"
+                  onClick={() => setShowPhotoSelector(true)}
+                  type="button"
+                >
+                  <Typography content="写真を変更" size="small" color="primary" />
+                </Button>
+              </Wrapper>
+            </Wrapper>
+          ) : (
+            <PhotoSelector
+              googleService={googleService}
+              onPhotoSelect={handlePhotoSelect}
+              selectedPhoto={selectedPhoto}
+            />
+          )}
         </LayoutLabeledFormItem>
         <LayoutLabeledFormItem
           label="説明"

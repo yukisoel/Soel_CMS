@@ -32,9 +32,10 @@ type FormData = z.infer<typeof schema>;
 
 interface Props {
   googleService: GoogleService;
+  setIsSubmitting?: (value: boolean) => void;
 }
 
-export const EventTab: React.FC<Props> = ({ googleService }) => {
+export const EventTab: React.FC<Props> = ({ googleService, setIsSubmitting }) => {
   const { accountId, locationId } = useParams();
   const {
     register,
@@ -54,41 +55,47 @@ export const EventTab: React.FC<Props> = ({ googleService }) => {
   const onSubmit = async (data: FormData) => {
     if (!uploadedPhotoFileList) return;
     console.log(data);
-    await googleService.postLocationLocalPosts(accountId ?? '', locationId ?? '', {
-      summary: data.eventDetail,
-      callToAction: {
-        actionType: Object.keys(LocationButtonName).find(key => LocationButtonName[key as keyof typeof LocationButtonName] === data.selectedButton) as LocationButtonName,
-        url: data.buttonTitle,
-      },
-      topicType: LocalPostTopicType.EVENT,
-      event: {
-        title: data.eventTitle,
-        schedule: {
-          startDate: data.startDate ? {
-            year: data.startDate.getFullYear(),
-            month: data.startDate.getMonth() + 1,
-            day: data.startDate.getDate(),
-          } : undefined,
-          endDate: data.endDate ? {
-            year: data.endDate.getFullYear(),
-            month: data.endDate.getMonth() + 1,
-            day: data.endDate.getDate(),
-          } : undefined,
-          startTime: data.startTime ? {
-            hours: data.startTime.getHours(),
-            minutes: data.startTime.getMinutes(),
-            seconds: 0,
-            nanos: 0
-          } : undefined,
-          endTime: data.endTime ? {
-            hours: data.endTime.getHours(),
-            minutes: data.endTime.getMinutes(),
-            seconds: 0,
-            nanos: 0
-          } : undefined
+    
+    setIsSubmitting?.(true);
+    try {
+      await googleService.postLocationLocalPosts(accountId ?? '', locationId ?? '', {
+        summary: data.eventDetail,
+        callToAction: {
+          actionType: Object.keys(LocationButtonName).find(key => LocationButtonName[key as keyof typeof LocationButtonName] === data.selectedButton) as LocationButtonName,
+          url: data.buttonTitle,
+        },
+        topicType: LocalPostTopicType.EVENT,
+        event: {
+          title: data.eventTitle,
+          schedule: {
+            startDate: data.startDate ? {
+              year: data.startDate.getFullYear(),
+              month: data.startDate.getMonth() + 1,
+              day: data.startDate.getDate(),
+            } : undefined,
+            endDate: data.endDate ? {
+              year: data.endDate.getFullYear(),
+              month: data.endDate.getMonth() + 1,
+              day: data.endDate.getDate(),
+            } : undefined,
+            startTime: data.startTime ? {
+              hours: data.startTime.getHours(),
+              minutes: data.startTime.getMinutes(),
+              seconds: 0,
+              nanos: 0
+            } : undefined,
+            endTime: data.endTime ? {
+              hours: data.endTime.getHours(),
+              minutes: data.endTime.getMinutes(),
+              seconds: 0,
+              nanos: 0
+            } : undefined
+          }
         }
-      }
-    }, uploadedPhotoFileList)
+      }, uploadedPhotoFileList);
+    } finally {
+      setIsSubmitting?.(false);
+    }
   };
 
   const eventDetailValue = watch('eventDetail') || '';

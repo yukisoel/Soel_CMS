@@ -70,7 +70,12 @@ export default function SearchStoreV2({ googleService }: Props) {
             placeholder="サービスを選択"
             selectedContent={selectedService}
             setSelectedContent={setSelectedService}
-            options={[ServiceName.GBP, ServiceName.TABELOG, ServiceName.RETTY]}
+            options={[
+              ServiceName.GBP,
+              // TODO: 後々実装
+              // ServiceName.TABELOG,
+              // ServiceName.RETTY
+            ]}
           />
         </LayoutLabeledFormItem>
         {selectedService === ServiceName.GBP && (
