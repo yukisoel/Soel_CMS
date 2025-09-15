@@ -7,6 +7,7 @@ import OverviewTab from "./tabs/OverviewTab";
 import ContactTab from "./tabs/ContactTab";
 import LocationTab from "./tabs/LocationTab";
 import HoursTab from "./tabs/HoursTab";
+import OtherSectionTab from "./tabs/OtherSectionTab";
 import { GoogleService } from "@/main/service/GoogleService";
 import { useParams } from "react-router-dom";
 import {GoogleLocationProfileModel, GoogleLocationAttributesModel} from "@/types/apiModel.ts";
@@ -20,16 +21,30 @@ export default function EditProfileLayoutV2({
 }: Props) {
     const {locationId} = useParams()
     const [profile, setProfile] = useState<GoogleLocationProfileModel | null>(null);
+    const [isLoadingProfile, setIsLoadingProfile] = useState(false);
+    const [isLoadingAttributes, setIsLoadingAttributes] = useState(false);
+    
     const fetchProfile = useCallback(async () => {
         if (!locationId) return;
-        const profile = await googleService.getLocationProfile(locationId);
-        setProfile(profile);
+        setIsLoadingProfile(true);
+        try {
+            const profile = await googleService.getLocationProfile(locationId);
+            setProfile(profile);
+        } finally {
+            setIsLoadingProfile(false);
+        }
     }, [googleService, locationId]);
+    
     const [attributes, setAttributes] = useState<GoogleLocationAttributesModel | null>(null);
     const fetchAttributes = useCallback(async () => {
         if (!locationId) return;
-        const attributes = await googleService.getLocationAttributes(locationId);
-        setAttributes(attributes);
+        setIsLoadingAttributes(true);
+        try {
+            const attributes = await googleService.getLocationAttributes(locationId);
+            setAttributes(attributes);
+        } finally {
+            setIsLoadingAttributes(false);
+        }
     }, [googleService, locationId]);
 
     const { selectedTab, tabsRender } = useAdvancedTabs([
@@ -43,7 +58,7 @@ export default function EditProfileLayoutV2({
     useEffect(() => {
         fetchProfile();
         fetchAttributes();
-    }, []);
+    }, [fetchProfile, fetchAttributes]);
 
     const renderContent = () => {
         switch (selectedTab) {
@@ -53,6 +68,7 @@ export default function EditProfileLayoutV2({
                         profile={profile ?? null}
                         fetchProfile={fetchProfile}
                         googleService={googleService}
+                        isLoading={isLoadingProfile}
                     />
                 );
             case 'contact':
@@ -63,6 +79,7 @@ export default function EditProfileLayoutV2({
                         fetchProfile={fetchProfile}
                         fetchAttributes={fetchAttributes}
                         googleService={googleService}
+                        isLoading={isLoadingProfile || isLoadingAttributes}
                     />
                 );
             case 'location':
@@ -71,6 +88,7 @@ export default function EditProfileLayoutV2({
                         profile={profile ?? null}
                         fetchProfile={fetchProfile}
                         googleService={googleService}
+                        isLoading={isLoadingProfile}
                     />
                 );
             case 'hours':
@@ -79,27 +97,20 @@ export default function EditProfileLayoutV2({
                         profile={profile ?? null}
                         googleService={googleService}
                         fetchProfile={fetchProfile}
+                        isLoading={isLoadingProfile}
                     />
                 );
-            // case 'other':
-            //     return (
-            //         <OtherSectionTab
-            //             register={register}
-            //             errors={errors}
-            //             values={{
-            //                 businessOwnerInfo: formValues.businessOwnerInfo || '',
-            //                 serviceOptionInfo: formValues.serviceOptionInfo || '',
-            //                 services: formValues.services || []
-            //             }}
-            //             setValueAndValidate={setValueAndValidate}
-            //             isUpdating={isSubmitting}
-            //             validationErrors={{
-            //                 businessOwnerInfo: errors.businessOwnerInfo?.message,
-            //                 serviceOptionInfo: errors.serviceOptionInfo?.message,
-            //                 services: errors.services?.message
-            //             }}
-            //         />
-            //     );
+            case 'other':
+                return (
+                    <OtherSectionTab
+                        profile={profile ?? null}
+                        attributes={attributes ?? null}
+                        fetchProfile={fetchProfile}
+                        fetchAttributes={fetchAttributes}
+                        googleService={googleService}
+                        isLoading={isLoadingProfile || isLoadingAttributes}
+                    />
+                );
             default:
                 return null;
         }

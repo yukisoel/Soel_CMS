@@ -105,6 +105,7 @@ export default function FileUpload({setUploadedPhotoFileList, size, onReset, sho
                         <p>写真をドラッグ&ドロップ</p>
                         <p>または</p>
                         <button className={styles.select_file_button}
+                            type="button"
                             onClick={clickSelectFileButton}>
                             コンピュータから選択
                         </button>

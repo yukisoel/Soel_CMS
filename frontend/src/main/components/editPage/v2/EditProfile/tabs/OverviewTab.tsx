@@ -1,6 +1,7 @@
 import Wrapper from "@/main/common/Wrapper";
 import Typography from "@/main/common/Typography";
 import Button from "@/main/common/Button";
+import Loading from "@/main/common/Loading";
 import styles from "../EditProfileLayoutV2.module.scss";
 import EditBusinessCategoriesModal from "../modals/EditBusinessCategoriesModal";
 import { GoogleLocationProfileModel, GoogleLocationCategory } from "@/types/apiModel.ts";
@@ -15,12 +16,14 @@ type Props = {
     profile: GoogleLocationProfileModel | null;
     fetchProfile: () => Promise<void>;
     googleService: GoogleService;
+    isLoading?: boolean;
 };
 
 export default function OverviewTab({
     profile,
     fetchProfile,
     googleService,
+    isLoading = false,
 }: Props) {
     const { locationId } = useParams();
     const { isOpen: isTitleModalOpen, openModal: openTitleModal, closeModal: closeTitleModalBase } = useModal();
@@ -65,6 +68,10 @@ export default function OverviewTab({
             )
             : null;
     }, [profile?.openInfo?.openingDate]);
+
+    if (isLoading) {
+        return <Loading message="プロフィール情報を更新中..." size="small" minHeight="200px" />;
+    }
 
     return (
         <Wrapper direction="col" gap="3rem" className={styles.main_content}>
@@ -235,8 +242,9 @@ export default function OverviewTab({
                 isOpen={isPrimaryCategoriesModalOpen}
                 onClose={closePrimaryCategoriesModalBase}
                 onSave={handlePrimaryCategoriesSave}
-                categories={[profile?.categories?.primaryCategory ?? {name: '', displayName: ''}]}
+                categories={profile?.categories?.primaryCategory ? [profile.categories.primaryCategory] : []}
                 googleService={googleService}
+                isSingleSelect={true}
             />
             <EditBusinessCategoriesModal
                 isOpen={isAdditionalCategoriesModalOpen}
@@ -244,6 +252,7 @@ export default function OverviewTab({
                 onSave={handleAdditionalCategoriesSave}
                 categories={profile?.categories?.additionalCategories ?? []}
                 googleService={googleService}
+                isSingleSelect={false}
             />
             <EditOpeningDateModal
                 isOpen={isOpeningDateModalOpen}

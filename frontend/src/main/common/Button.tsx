@@ -15,6 +15,6 @@ export default function Button({children, padding, bgColor, className, disabled,
             styles.button,
             styles[bgColor],
             { [styles.disabled]: disabled }
-        )} style={{padding: padding}} {...props}>{children}</button>
+        )} style={{padding: padding}} disabled={disabled} {...props}>{children}</button>
     )
 }

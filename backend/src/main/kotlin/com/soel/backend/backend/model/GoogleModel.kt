@@ -548,7 +548,8 @@ enum class BoolAttributeServiceType(
     SERVES_HAPPY_HOUR_FOOD("attributes/serves_happy_hour_food", "食べ物のハッピーアワーあり"),
     HAS_ALL_YOU_CAN_EAT_ALWAYS("attributes/has_all_you_can_eat_always", "食べ放題あり"),
     SERVES_LATE_NIGHT_FOOD("attributes/serves_late_night_food", "深夜の食事可"),
-    HAS_BRAILLE_MENU("attributes/has_braille_menu", "点字メニューあり");
+    HAS_BRAILLE_MENU("attributes/has_braille_menu", "点字メニューあり"),
+    SERVES_BREAKFAST("attributes/serves_breakfast", "朝食");
 
     companion object {
         @JvmStatic
@@ -573,7 +574,34 @@ enum class BoolAttributeServiceOptionType(
     HAS_DRIVE_THROUGH("attributes/has_drive_through", "ドライブスルーあり"),
     HAS_ONSITE_SERVICES("attributes/has_onsite_services", "実店舗の営業あり"),
     HAS_TAKEOUT("attributes/has_takeout", "テイクアウト可"),
-    SERVES_DINE_IN("attributes/serves_dine_in", "イートイン利用可");
+    SERVES_DINE_IN("attributes/serves_dine_in", "イートイン利用可"),
+    // バリアフリー
+    HAS_AURACAST_BROADCAST_AUDIO("attributes/has_auracast_broadcast_audio", "Auracast ブロードキャスト オーディオ"),
+    HAS_WHEELCHAIR_ACCESSIBLE_RESTROOM("attributes/has_wheelchair_accessible_restroom", "車椅子対応のトイレ"),
+    HAS_WHEELCHAIR_ACCESSIBLE_SEATING("attributes/has_wheelchair_accessible_seating", "車椅子対応の座席"),
+    HAS_WHEELCHAIR_ACCESSIBLE_PARKING("attributes/has_wheelchair_accessible_parking", "車椅子対応の駐車場"),
+    HAS_HEARING_LOOP("attributes/has_hearing_loop", "集団補聴用のヒアリングループ"),
+    // 設備
+    HAS_RESTROOM_UNISEX("attributes/has_restroom_unisex", "男女共用トイレ"),
+    // 客層
+    IS_TRANSGENDER_SAFESPACE("attributes/is_transgender_safespace", "トランスジェンダー対応"),
+    WELCOMES_LGBTQ("attributes/welcomes_lgbtq", "LGBTQ フレンドリー"),
+    // 駐車場
+    HAS_ONSITE_PARKING("attributes/has_onsite_parking", "敷地内駐車場"),
+    HAS_PARKING_GARAGE_FREE("attributes/has_parking_garage_free", "無料の屋内駐車場"),
+    HAS_PARKING_STREET_FREE("attributes/has_parking_street_free", "無料の路上駐車場"),
+    HAS_PARKING_LOT_FREE("attributes/has_parking_lot_free", "無料駐車場"),
+    HAS_PARKING_GARAGE_PAID("attributes/has_parking_garage_paid", "有料の屋内駐車場"),
+    HAS_PARKING_STREET_PAID("attributes/has_parking_street_paid", "有料の路上駐車場"),
+    HAS_PARKING_LOT_PAID("attributes/has_parking_lot_paid", "有料駐車場"),
+    // プラン
+    REQUIRES_APPOINTMENTS("attributes/requires_appointments", "要予約"),
+    // 決済方法
+    PAY_MOBILE_NFC("attributes/pay_mobile_nfc", "NFC モバイル決済"),
+    PAY_CREDIT_CARD("attributes/pay_credit_card", "クレジットカード"),
+    PAY_DEBIT_CARD("attributes/pay_debit_card", "デビットカード"),
+    REQUIRES_CASH_ONLY("attributes/requires_cash_only", "現金のみ"),
+    PAY_CHECK("attributes/pay_check", "小切手");
 
     companion object {
         @JvmStatic

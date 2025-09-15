@@ -1,6 +1,7 @@
 import styles from "@/main/components/stores/SelectStore/SelectStore.module.scss";
 import Wrapper from "@/main/common/Wrapper";
 import Typography from "@/main/common/Typography";
+import Loading from "@/main/common/Loading";
 import BrandSelector from "./BrandSelector";
 import AreaSelector from "./AreaSelector";
 import Button from "@/main/common/Button";
@@ -38,9 +39,10 @@ type Props = {
   onBackClick: () => void
   isNextButtonDisabled: boolean
   mode: 'brand' | 'area'
+  isLoading?: boolean
 }
 
-export default function SelectStore({areaSelectorProps, brandSelectorProps, onChangeSelectedBranches, onNextClick, onBackClick, isNextButtonDisabled, mode}: Props) {
+export default function SelectStore({areaSelectorProps, brandSelectorProps, onChangeSelectedBranches, onNextClick, onBackClick, isNextButtonDisabled, mode, isLoading = false}: Props) {
 
   return (
     <>
@@ -52,16 +54,18 @@ export default function SelectStore({areaSelectorProps, brandSelectorProps, onCh
             <Separator />
           </Wrapper>
         </Wrapper>
-        {
-          mode === 'brand' && (
-            <BrandSelector stores={brandSelectorProps} onChangeSelectedBranches={onChangeSelectedBranches} />
-          )
-        }
-        {
-          mode === 'area' && (
-            <AreaSelector regions={areaSelectorProps} onChangeSelectedBranches={onChangeSelectedBranches} />
-          )
-        }
+        {isLoading ? (
+          <Loading message="店舗情報を読み込み中..." size="medium" minHeight="300px" />
+        ) : (
+          <>
+            {mode === 'brand' && (
+              <BrandSelector stores={brandSelectorProps} onChangeSelectedBranches={onChangeSelectedBranches} />
+            )}
+            {mode === 'area' && (
+              <AreaSelector regions={areaSelectorProps} onChangeSelectedBranches={onChangeSelectedBranches} />
+            )}
+          </>
+        )}
         <Wrapper direction="col" padding="5rem 0 0" gap="8.1rem">
           <Wrapper>
             <Button bgColor="primary" padding="0.7rem 3.5rem" className={styles.button} onClick={onNextClick} disabled={isNextButtonDisabled}>

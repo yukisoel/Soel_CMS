@@ -2,6 +2,7 @@ import styles from "./EditPhotoLayoutV2.module.scss";
 import Wrapper from "@/main/common/Wrapper";
 import Typography from "@/main/common/Typography";
 import Button from "@/main/common/Button";
+import Loading from "@/main/common/Loading";
 import FileIcon from "@/main/assets/FileIcon.svg";
 import Separator from "@/main/common/Separator";
 import { useState, useEffect } from "react";
@@ -23,9 +24,11 @@ export default function EditPhotoLayoutV2({ googleService }: Props) {
     const [selectedPhotoIndices, setSelectedPhotoIndices] = useState<number[]>([]);
     const [selectedCategory, setSelectedCategory] = useState<string>('');
     const [photoList, setPhotoList] = useState<GoogleLocationPhotoModel[]>([]);
+    const [isLoading, setIsLoading] = useState(false);
 
     const fetchPhotos = async () => {
         if (accountId && locationId) {
+            setIsLoading(true);
             try {
                 const photos = await googleService.getLocationPhotos(
                     accountId,
@@ -34,6 +37,8 @@ export default function EditPhotoLayoutV2({ googleService }: Props) {
                 setPhotoList(photos);
             } catch (error) {
                 console.error("写真の取得に失敗しました:", error);
+            } finally {
+                setIsLoading(false);
             }
         }
     };
@@ -58,6 +63,10 @@ export default function EditPhotoLayoutV2({ googleService }: Props) {
         selectedCategory === '' ||
         photo.locationAssociation?.category === selectedCategory
     );
+
+    if (isLoading) {
+        return <Loading message="写真を読み込み中..." />;
+    }
 
     return (
         <Wrapper direction="col" padding="5rem 4.3rem 5.9rem 5rem" className={styles.content_container}>

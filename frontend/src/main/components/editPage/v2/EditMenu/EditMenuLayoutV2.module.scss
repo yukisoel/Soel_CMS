@@ -35,6 +35,14 @@
   height: 80px;
   background-color: #D9D9D9;
   border-radius: 5px;
+  overflow: hidden;
+  flex-shrink: 0;
+  
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
 }
 
 .menuItemName {
@@ -48,6 +56,15 @@
 .menuItemPrice {
   flex-shrink: 0;
   margin-left: 8px;
+}
+
+.menuItemDescription {
+  margin-top: 4px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
 }
 
 .ellipsis {

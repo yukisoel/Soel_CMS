@@ -131,3 +131,6 @@ dist
 .pnp.*
 
 .idea
+
+.cursor/*
+.serena/*
