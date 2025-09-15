@@ -8,8 +8,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    outputs:
-      image_exists: ${{ steps.check.outputs.image_exists }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -17,11 +15,7 @@ jobs:
       - name: Set environment variables
         run: |
           echo "ENV=dev" >> $GITHUB_ENV
-          if [ "${{ github.event_name }}" = "pull_request" ]; then
-            echo "IMAGE_TAG=${{ github.event.pull_request.head.sha }}" >> $GITHUB_ENV
-          else
-            echo "IMAGE_TAG=${GITHUB_SHA}" >> $GITHUB_ENV
-          fi
+          echo "IMAGE_TAG=${GITHUB_SHA::7}" >> $GITHUB_ENV
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
@@ -31,17 +25,13 @@ jobs:
           aws-region: ${{ vars.AWS_REGION }}
 
       - name: Build and Push app-image
-        id: build-and-push
         run: |
           cd infra
-          pwd
           chmod +x ./scripts/push-image.sh
           ./scripts/push-image.sh "${ENV}" "${IMAGE_TAG}"
 
       - name: Run Blue/Green Deploy at that commit
-        id: deploy-app
         run: |
           cd infra
-          pwd
           chmod +x ./scripts/deploy-app.sh
           ./scripts/deploy-app.sh "${ENV}" "${IMAGE_TAG}"
