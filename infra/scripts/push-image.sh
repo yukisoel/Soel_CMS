@@ -17,6 +17,16 @@ REPO_URI=$(aws cloudformation describe-stacks \
   --query "Stacks[0].Outputs[?OutputKey=='ECRRepositoryUri'].OutputValue" \
   --output text --region "$REGION")
 
+# === 既存イメージの確認 ===
+echo "🔍 既存イメージの確認中 (${IMAGE_TAG})..."
+if aws ecr describe-images \
+  --repository-name "${REPO_URI##*/}" \
+  --image-ids imageTag="${IMAGE_TAG}" \
+  --region "$REGION" >/dev/null 2>&1; then
+  echo "⏭️  イメージ ${IMAGE_TAG} は既に存在するため、ビルド＆プッシュをスキップします。"
+  exit 0
+fi
+
 echo "🔐 ECR にログイン..."
 aws ecr get-login-password --region $REGION \
   | docker login --username AWS --password-stdin ${REPO_URI%%/*}
