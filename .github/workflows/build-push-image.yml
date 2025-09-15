@@ -35,10 +35,12 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ vars.AWS_REGION }}
 
-      - name: Get ECR repository URI from CloudFormation
+      - name: Run Blue/Green Deploy at that commit
         id: get-ecr-uri
         run: |
           cd infra
           pwd
           echo ${ENV}
           echo ${IMAGE_TAG}
+          chmod +x ./scripts/900-deploy-app.sh
+          ./scripts/900-deploy-app.sh "${{ env.ENV }}" "${{ github.event.inputs.commit }}"
