@@ -25,9 +25,10 @@ type FormData = z.infer<typeof schema>;
 
 interface Props {
   googleService: GoogleService;
+  setIsSubmitting?: (value: boolean) => void;
 }
 
-export const LatestInformationTab: React.FC<Props> = ({ googleService }) => {
+export const LatestInformationTab: React.FC<Props> = ({ googleService, setIsSubmitting }) => {
   const { accountId, locationId } = useParams();
   const {
     register,
@@ -47,14 +48,20 @@ export const LatestInformationTab: React.FC<Props> = ({ googleService }) => {
   const onSubmit = async (data: FormData) => {
     if (!uploadedPhotoFileList) return;
     console.log(data);
-    await googleService.postLocationLocalPosts(accountId ?? '', locationId ?? '', {
-      summary: data.description,
-      callToAction: {
-        actionType: Object.keys(LocationButtonName).find(key => LocationButtonName[key as keyof typeof LocationButtonName] === data.selectedButton) as LocationButtonName,
-        url: data.buttonTitle,
-      },
-      topicType: LocalPostTopicType.STANDARD,
-    }, uploadedPhotoFileList)
+    
+    setIsSubmitting?.(true);
+    try {
+      await googleService.postLocationLocalPosts(accountId ?? '', locationId ?? '', {
+        summary: data.description,
+        callToAction: {
+          actionType: Object.keys(LocationButtonName).find(key => LocationButtonName[key as keyof typeof LocationButtonName] === data.selectedButton) as LocationButtonName,
+          url: data.buttonTitle,
+        },
+        topicType: LocalPostTopicType.STANDARD,
+      }, uploadedPhotoFileList);
+    } finally {
+      setIsSubmitting?.(false);
+    }
   };
 
   const descriptionValue = watch('description') || '';

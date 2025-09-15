@@ -1237,7 +1237,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/google/location/photo/{filename}": {
+    "/api/google/location/photo/{directoryName}/{filename}": {
         parameters: {
             query?: never;
             header?: never;
@@ -1245,10 +1245,37 @@ export interface paths {
             cookie?: never;
         };
         /**
-         * Google:Google API専用
-         * @description GoogleAPIに写真をアップロードするときに使用されます
+         * Google:Google API専用 写真取得API
+         * @description
+         *                 Google:Google API専用のエンドポイントです。
+         *                 特定のファイル名の写真を取得します。
+         *
          */
         get: operations["getLocationPhotoLocal"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/google/location/photo/bulk/{directoryName}/{filename}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Google:Google API専用 一括投稿用写真取得API
+         * @description
+         *                 Google:Google API専用のエンドポイントです。
+         *                 特定のディレクトリ名とファイル名の写真を取得します。
+         *                 ファイルは取得された後も削除されません。
+         *
+         */
+        get: operations["getLocationPhotoLocalBulk"];
         put?: never;
         post?: never;
         delete?: never;
@@ -1269,6 +1296,26 @@ export interface paths {
          * @description Google:店舗の最新情報を全て取得します
          */
         get: operations["getLocationLocalPosts"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/google/location/attributes/available": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Google:店舗の利用可能な属性情報を全て取得
+         * @description Google:店舗の利用可能な属性情報を全て取得します
+         */
+        get: operations["getLocationAvailableAttributes"];
         put?: never;
         post?: never;
         delete?: never;
@@ -1832,6 +1879,20 @@ export interface components {
             isAnonymous?: boolean;
         };
         StreamingResponseBody: Record<string, never>;
+        GoogleAttributeMetadata: {
+            parent?: string;
+            displayName?: string;
+            groupDisplayName?: string;
+            repeatable?: boolean;
+            deprecated?: boolean;
+            /** @enum {string} */
+            valueType?: GoogleAttributeMetadataValueType;
+            valueMetadata?: components["schemas"]["GoogleAttributeValueMetadata"][];
+        };
+        GoogleAttributeValueMetadata: {
+            displayName?: string;
+            values?: components["schemas"]["JsonNode"][];
+        };
         GoogleAccount: {
             name: string;
             accountName: string;
@@ -1925,7 +1986,7 @@ export interface operations {
             path?: never;
             cookie?: never;
         };
-        requestBody?: {
+        requestBody: {
             content: {
                 "application/json": components["schemas"]["GoogleLocationQuestion"];
             };
@@ -1989,7 +2050,7 @@ export interface operations {
             path?: never;
             cookie?: never;
         };
-        requestBody?: {
+        requestBody: {
             content: {
                 "application/json": components["schemas"]["GoogleLocationQuestion"];
             };
@@ -2169,7 +2230,7 @@ export interface operations {
             path?: never;
             cookie?: never;
         };
-        requestBody?: {
+        requestBody: {
             content: {
                 "application/json": components["schemas"]["GoogleLocationAnswer"];
             };
@@ -2525,7 +2586,7 @@ export interface operations {
             path?: never;
             cookie?: never;
         };
-        requestBody?: {
+        requestBody: {
             content: {
                 "application/json": string;
             };
@@ -2592,7 +2653,7 @@ export interface operations {
             path?: never;
             cookie?: never;
         };
-        requestBody?: {
+        requestBody: {
             content: {
                 "application/json": components["schemas"]["GoogleLocationProfileModel"];
             };
@@ -2627,7 +2688,7 @@ export interface operations {
             path?: never;
             cookie?: never;
         };
-        requestBody?: {
+        requestBody: {
             content: {
                 "application/json": string;
             };
@@ -2662,7 +2723,7 @@ export interface operations {
             path?: never;
             cookie?: never;
         };
-        requestBody?: {
+        requestBody: {
             content: {
                 "application/json": string;
             };
@@ -2697,7 +2758,7 @@ export interface operations {
             path?: never;
             cookie?: never;
         };
-        requestBody?: {
+        requestBody: {
             content: {
                 "application/json": components["schemas"]["GoogleLocationStoreFrontAddressRequest"];
             };
@@ -2732,7 +2793,7 @@ export interface operations {
             path?: never;
             cookie?: never;
         };
-        requestBody?: {
+        requestBody: {
             content: {
                 "application/json": string[];
             };
@@ -2767,7 +2828,7 @@ export interface operations {
             path?: never;
             cookie?: never;
         };
-        requestBody?: {
+        requestBody: {
             content: {
                 "application/json": components["schemas"]["GoogleLocationCategory"];
             };
@@ -2802,7 +2863,7 @@ export interface operations {
             path?: never;
             cookie?: never;
         };
-        requestBody?: {
+        requestBody: {
             content: {
                 "application/json": string;
             };
@@ -2837,7 +2898,7 @@ export interface operations {
             path?: never;
             cookie?: never;
         };
-        requestBody?: {
+        requestBody: {
             content: {
                 "application/json": components["schemas"]["GoogleLocationDate"];
             };
@@ -2872,7 +2933,7 @@ export interface operations {
             path?: never;
             cookie?: never;
         };
-        requestBody?: {
+        requestBody: {
             content: {
                 "application/json": string;
             };
@@ -2907,7 +2968,7 @@ export interface operations {
             path?: never;
             cookie?: never;
         };
-        requestBody?: {
+        requestBody: {
             content: {
                 "application/json": components["schemas"]["GoogleLocationBusinessHoursRequest"];
             };
@@ -2942,7 +3003,7 @@ export interface operations {
             path?: never;
             cookie?: never;
         };
-        requestBody?: {
+        requestBody: {
             content: {
                 "application/json": components["schemas"]["GoogleLocationCategory"][];
             };
@@ -3010,7 +3071,7 @@ export interface operations {
             path?: never;
             cookie?: never;
         };
-        requestBody?: {
+        requestBody: {
             content: {
                 "application/json": components["schemas"]["GoogleLocationFoodMenusModel"];
             };
@@ -3077,7 +3138,7 @@ export interface operations {
             path?: never;
             cookie?: never;
         };
-        requestBody?: {
+        requestBody: {
             content: {
                 "application/json": components["schemas"]["GoogleLocationAttributesModel"];
             };
@@ -3112,7 +3173,7 @@ export interface operations {
             path?: never;
             cookie?: never;
         };
-        requestBody?: {
+        requestBody: {
             content: {
                 "application/json": components["schemas"]["GoogleLocationAttributeSnsLinkRequest"];
             };
@@ -3147,7 +3208,7 @@ export interface operations {
             path?: never;
             cookie?: never;
         };
-        requestBody?: {
+        requestBody: {
             content: {
                 "application/json": components["schemas"]["GoogleLocationAttributeService"][];
             };
@@ -3182,7 +3243,7 @@ export interface operations {
             path?: never;
             cookie?: never;
         };
-        requestBody?: {
+        requestBody: {
             content: {
                 "application/json": components["schemas"]["GoogleLocationAttributeServiceOption"][];
             };
@@ -3217,7 +3278,7 @@ export interface operations {
             path?: never;
             cookie?: never;
         };
-        requestBody?: {
+        requestBody: {
             content: {
                 "application/json": string;
             };
@@ -3654,6 +3715,39 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
+                directoryName: string;
+                filename: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["StreamingResponseBody"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    getLocationPhotoLocalBulk: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                directoryName: string;
                 filename: string;
             };
             cookie?: never;
@@ -3699,6 +3793,37 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["GoogleLocationLocalPostModel"][];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    getLocationAvailableAttributes: {
+        parameters: {
+            query: {
+                locationId: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["GoogleAttributeMetadata"][];
                 };
             };
             /** @description Unauthorized */
@@ -4099,7 +4224,21 @@ export enum GoogleLocationAttributeServiceOptionType {
     "ドライブスルーあり" = "\u30C9\u30E9\u30A4\u30D6\u30B9\u30EB\u30FC\u3042\u308A",
     "実店舗の営業あり" = "\u5B9F\u5E97\u8217\u306E\u55B6\u696D\u3042\u308A",
     "テイクアウト可" = "\u30C6\u30A4\u30AF\u30A2\u30A6\u30C8\u53EF",
-    "イートイン利用可" = "\u30A4\u30FC\u30C8\u30A4\u30F3\u5229\u7528\u53EF"
+    "イートイン利用可" = "\u30A4\u30FC\u30C8\u30A4\u30F3\u5229\u7528\u53EF",
+    Auracast_ = "Auracast \u30D6\u30ED\u30FC\u30C9\u30AD\u30E3\u30B9\u30C8 \u30AA\u30FC\u30C7\u30A3\u30AA",
+    "車椅子対応のトイレ" = "\u8ECA\u6905\u5B50\u5BFE\u5FDC\u306E\u30C8\u30A4\u30EC",
+    "車椅子対応の座席" = "\u8ECA\u6905\u5B50\u5BFE\u5FDC\u306E\u5EA7\u5E2D",
+    "車椅子対応の駐車場" = "\u8ECA\u6905\u5B50\u5BFE\u5FDC\u306E\u99D0\u8ECA\u5834",
+    "集団補聴用のヒアリングループ" = "\u96C6\u56E3\u88DC\u8074\u7528\u306E\u30D2\u30A2\u30EA\u30F3\u30B0\u30EB\u30FC\u30D7",
+    "男女共用トイレ" = "\u7537\u5973\u5171\u7528\u30C8\u30A4\u30EC",
+    "トランスジェンダー対応" = "\u30C8\u30E9\u30F3\u30B9\u30B8\u30A7\u30F3\u30C0\u30FC\u5BFE\u5FDC",
+    "敷地内駐車場" = "\u6577\u5730\u5185\u99D0\u8ECA\u5834",
+    "無料の屋内駐車場" = "\u7121\u6599\u306E\u5C4B\u5185\u99D0\u8ECA\u5834",
+    "無料の路上駐車場" = "\u7121\u6599\u306E\u8DEF\u4E0A\u99D0\u8ECA\u5834",
+    "無料駐車場" = "\u7121\u6599\u99D0\u8ECA\u5834",
+    "有料の屋内駐車場" = "\u6709\u6599\u306E\u5C4B\u5185\u99D0\u8ECA\u5834",
+    "有料の路上駐車場" = "\u6709\u6599\u306E\u8DEF\u4E0A\u99D0\u8ECA\u5834",
+    "有料駐車場" = "\u6709\u6599\u99D0\u8ECA\u5834"
 }
 export enum GoogleLocationReviewCustomStarRating {
     STAR_RATING_UNSPECIFIED = "STAR_RATING_UNSPECIFIED",
@@ -4108,4 +4247,11 @@ export enum GoogleLocationReviewCustomStarRating {
     THREE = "THREE",
     FOUR = "FOUR",
     FIVE = "FIVE"
+}
+export enum GoogleAttributeMetadataValueType {
+    ATTRIBUTE_VALUE_TYPE_UNSPECIFIED = "ATTRIBUTE_VALUE_TYPE_UNSPECIFIED",
+    URL = "URL",
+    BOOL = "BOOL",
+    ENUM = "ENUM",
+    REPEATED_ENUM = "REPEATED_ENUM"
 }

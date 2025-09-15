@@ -2,6 +2,7 @@ import styles from "@/main/components/stores/Review/Modal/ReviewDetailModal.modu
 import Wrapper from "@/main/common/Wrapper";
 import Typography from "@/main/common/Typography";
 import Modal from "@/main/common/Modal/Modal";
+import Loading from "@/main/common/Loading";
 import StarIcon from "@/main/assets/StarIcon.svg";
 import NoReplyIcon from "@/main/assets/NoReplyIcon.svg";
 import ReplyedIcon from "@/main/assets/ReplyedIcon.svg";
@@ -16,10 +17,11 @@ type Props = {
     handleReply: (replyContent: string) => void;
     handleDeleteReply: () => Promise<void>;
     onClose: () => void;
-    review: Review
+    review: Review;
+    isReplying?: boolean;
 };
 
-export default function ReviewDetailModal({ isOpen, handleReply, handleDeleteReply, onClose, review }: Props) {
+export default function ReviewDetailModal({ isOpen, handleReply, handleDeleteReply, onClose, review, isReplying = false }: Props) {
     const [replyContent, setReplyContent] = useState<string>("");
 
     const handleSubmit = () => {
@@ -34,6 +36,9 @@ export default function ReviewDetailModal({ isOpen, handleReply, handleDeleteRep
 
     return (
         <Modal headerContent="口コミ詳細" isOpen={isOpen} onClose={handleClose} contentRender={() => (
+            isReplying ? (
+                <Loading message="返信を送信中..." size="small" minHeight="200px" />
+            ) : (
             <Wrapper direction="col" gap="3rem" className={styles.container}>
                 <Wrapper direction="col" gap="1rem" className={styles.card}>
                     <Wrapper justify="justify-between">
@@ -79,12 +84,13 @@ export default function ReviewDetailModal({ isOpen, handleReply, handleDeleteRep
                         <Typography content="戻る" color="primary" size="normal" weight="normal" />
                     </Button>
                     {!review.reviewReply && (
-                        <Button bgColor="primary" padding="7px 10px" onClick={handleSubmit}>
+                        <Button bgColor="primary" padding="7px 10px" onClick={handleSubmit} disabled={isReplying}>
                             <Typography content="返信する" color="primary" size="normal" weight="normal" />
                         </Button>
                     )}
                 </Wrapper>
             </Wrapper>
+            )
         )}/>
     );
 }

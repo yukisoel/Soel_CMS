@@ -32,9 +32,10 @@ type FormData = z.infer<typeof schema>;
 
 interface Props {
   googleService: GoogleService;
+  setIsSubmitting?: (value: boolean) => void;
 }
 
-export const EventTab: React.FC<Props> = ({ googleService }) => {
+export const EventTab: React.FC<Props> = ({ googleService, setIsSubmitting }) => {
   const { accountId, locationId } = useParams();
   const {
     register,
@@ -54,41 +55,47 @@ export const EventTab: React.FC<Props> = ({ googleService }) => {
   const onSubmit = async (data: FormData) => {
     if (!uploadedPhotoFileList) return;
     console.log(data);
-    await googleService.postLocationLocalPosts(accountId ?? '', locationId ?? '', {
-      summary: data.eventDetail,
-      callToAction: {
-        actionType: Object.keys(LocationButtonName).find(key => LocationButtonName[key as keyof typeof LocationButtonName] === data.selectedButton) as LocationButtonName,
-        url: data.buttonTitle,
-      },
-      topicType: LocalPostTopicType.EVENT,
-      event: {
-        title: data.eventTitle,
-        schedule: {
-          startDate: data.startDate ? {
-            year: data.startDate.getFullYear(),
-            month: data.startDate.getMonth() + 1,
-            day: data.startDate.getDate(),
-          } : undefined,
-          endDate: data.endDate ? {
-            year: data.endDate.getFullYear(),
-            month: data.endDate.getMonth() + 1,
-            day: data.endDate.getDate(),
-          } : undefined,
-          startTime: data.startTime ? {
-            hours: data.startTime.getHours(),
-            minutes: data.startTime.getMinutes(),
-            seconds: 0,
-            nanos: 0
-          } : undefined,
-          endTime: data.endTime ? {
-            hours: data.endTime.getHours(),
-            minutes: data.endTime.getMinutes(),
-            seconds: 0,
-            nanos: 0
-          } : undefined
+    
+    setIsSubmitting?.(true);
+    try {
+      await googleService.postLocationLocalPosts(accountId ?? '', locationId ?? '', {
+        summary: data.eventDetail,
+        callToAction: {
+          actionType: Object.keys(LocationButtonName).find(key => LocationButtonName[key as keyof typeof LocationButtonName] === data.selectedButton) as LocationButtonName,
+          url: data.buttonTitle,
+        },
+        topicType: LocalPostTopicType.EVENT,
+        event: {
+          title: data.eventTitle,
+          schedule: {
+            startDate: data.startDate ? {
+              year: data.startDate.getFullYear(),
+              month: data.startDate.getMonth() + 1,
+              day: data.startDate.getDate(),
+            } : undefined,
+            endDate: data.endDate ? {
+              year: data.endDate.getFullYear(),
+              month: data.endDate.getMonth() + 1,
+              day: data.endDate.getDate(),
+            } : undefined,
+            startTime: data.startTime ? {
+              hours: data.startTime.getHours(),
+              minutes: data.startTime.getMinutes(),
+              seconds: 0,
+              nanos: 0
+            } : undefined,
+            endTime: data.endTime ? {
+              hours: data.endTime.getHours(),
+              minutes: data.endTime.getMinutes(),
+              seconds: 0,
+              nanos: 0
+            } : undefined
+          }
         }
-      }
-    }, uploadedPhotoFileList)
+      }, uploadedPhotoFileList);
+    } finally {
+      setIsSubmitting?.(false);
+    }
   };
 
   const eventDetailValue = watch('eventDetail') || '';
@@ -134,7 +141,7 @@ export const EventTab: React.FC<Props> = ({ googleService }) => {
           />
           <DatePicker
             defaultValue={watch('startDate')}
-            onChange={(date) => setValue('startDate', date)}
+            onChange={(date) => setValue('startDate', date, { shouldValidate: true })}
           />
           {errors.startDate && (
             <Typography content={errors.startDate.message || ''} size="xsmall" color="error" />
@@ -150,7 +157,7 @@ export const EventTab: React.FC<Props> = ({ googleService }) => {
           />
           <TimePicker
             defaultValue={watch('startTime')}
-            onChange={(time) => setValue('startTime', time)}
+            onChange={(time) => setValue('startTime', time, { shouldValidate: true })}
           />
           {errors.startTime && (
             <Typography content={errors.startTime.message || ''} size="xsmall" color="error" />
@@ -166,7 +173,7 @@ export const EventTab: React.FC<Props> = ({ googleService }) => {
           />
           <DatePicker
             defaultValue={watch('endDate')}
-            onChange={(date) => setValue('endDate', date)}
+            onChange={(date) => setValue('endDate', date, { shouldValidate: true })}
           />
           {errors.endDate && (
             <Typography content={errors.endDate.message || ''} size="xsmall" color="error" />
@@ -182,7 +189,7 @@ export const EventTab: React.FC<Props> = ({ googleService }) => {
           />
           <TimePicker
             defaultValue={watch('endTime')}
-            onChange={(time) => setValue('endTime', time)}
+            onChange={(time) => setValue('endTime', time, { shouldValidate: true })}
           />
           {errors.endTime && (
             <Typography content={errors.endTime.message || ''} size="xsmall" color="error" />
@@ -216,7 +223,7 @@ export const EventTab: React.FC<Props> = ({ googleService }) => {
           <PhotoPullDownMenu
             placeholder="ボタンの種類を選択"
             selectedContent={selectedButton}
-            setSelectedContent={(value) => setValue('selectedButton', value)}
+            setSelectedContent={(value) => setValue('selectedButton', value, { shouldValidate: true })}
             options={Object.values(LocationButtonName).map(value => value.toString())}
           />
           {errors.selectedButton && (

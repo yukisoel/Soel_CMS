@@ -1,6 +1,7 @@
 import Wrapper from "@/main/common/Wrapper";
 import Typography from "@/main/common/Typography";
 import Button from "@/main/common/Button";
+import Loading from "@/main/common/Loading";
 import styles from "../EditProfileLayoutV2.module.scss";
 import { GoogleLocationProfileModel } from "@/types/apiModel.ts";
 import { GoogleService } from "@/main/service/GoogleService";
@@ -14,12 +15,14 @@ type Props = {
     profile: GoogleLocationProfileModel | null;
     fetchProfile: () => Promise<void>;
     googleService: GoogleService;
+    isLoading?: boolean;
 };
 
 export default function LocationTab({
     profile,
     fetchProfile,
     googleService,
+    isLoading = false,
 }: Props) {
     const { locationId } = useParams();
     const { isOpen: isAddressModal, openModal: openAddressModal, closeModal: closeAddressModal } = useModal();
@@ -47,6 +50,11 @@ export default function LocationTab({
         const addressLines = profile?.storefrontAddress?.addressLines;
         return `${postalCode} ${administrativeArea} ${addressLines?.join(' ')}`;
     }, [profile])
+
+    if (isLoading) {
+        return <Loading message="所在地情報を更新中..." size="small" minHeight="200px" />;
+    }
+
     return (
         <Wrapper direction="col" gap="3rem" className={styles.main_content}>
             {/* 店舗の住所 */}

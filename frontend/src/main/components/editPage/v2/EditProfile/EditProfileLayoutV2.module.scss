@@ -196,19 +196,31 @@
 }
 
 .service_item {
-    display: flex;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: 350px auto;
     align-items: center;
     padding: 1rem;
     width: 100%;
+    gap: 3rem;
 
     .service_name {
-        min-width: 200px;
+        word-wrap: break-word;
+        word-break: break-word;
+        line-height: 1.4;
+        align-self: start;
     }
 
     .radio_group {
         display: flex;
-        gap: 3rem;
-        margin-right: 50rem;
+        gap: 2rem;
+        justify-self: start;
     }
+}
+
+.empty_message {
+    text-align: center;
+    padding: 2rem 1rem;
+    background-color: var(--color-gray-50);
+    border-radius: 8px;
+    border: 1px solid var(--color-gray-200);
 }

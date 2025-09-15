@@ -1,6 +1,7 @@
 import Wrapper from "@/main/common/Wrapper";
 import Typography from "@/main/common/Typography";
 import Button from "@/main/common/Button";
+import Loading from "@/main/common/Loading";
 import styles from "../EditProfileLayoutV2.module.scss";
 import { GoogleLocationProfileModel, GoogleLocationAttributesModel, GoogleLocationAttributeSnsLinkRequest, GoogleLocationAttribute } from "@/types/apiModel";
 import { GoogleService } from "@/main/service/GoogleService";
@@ -18,6 +19,7 @@ type Props = {
     fetchProfile: () => Promise<void>;
     fetchAttributes: () => Promise<void>;
     googleService: GoogleService;
+    isLoading?: boolean;
 };
 
 const SNS_TYPE_LABEL_MAP = {
@@ -36,6 +38,7 @@ export default function ContactTab({
     fetchProfile,
     fetchAttributes,
     googleService,
+    isLoading = false,
 }: Props) {
     const { locationId } = useParams();
     const { isOpen: isPhoneNumberModalOpen, openModal: openPhoneNumberModal, closeModal: closePhoneNumberModalBase } = useModal();
@@ -77,6 +80,9 @@ export default function ContactTab({
 
     const [selectedSnsLink, setSelectedSnsLink] = useState<GoogleLocationAttribute | null>(null);
 
+    if (isLoading) {
+        return <Loading message="連絡先情報を更新中..." size="small" minHeight="200px" />;
+    }
 
     return (
         <Wrapper direction="col" gap="3rem" className={styles.main_content}>
