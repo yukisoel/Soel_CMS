@@ -1,7 +1,7 @@
 app:
   redirect:
-    url: https://cmssoel.click/edit
-  base-url: https://cmssoel.click
+    url: https://dev.cmssoel.click/edit
+  base-url: https://dev.cmssoel.click
 
 server:
   forward-headers-strategy: framework
@@ -12,9 +12,9 @@ spring:
       client:
         registration:
           cognito:
-            redirect-uri: "https://cmssoel.click/login/oauth2/code/cognito"
+            redirect-uri: "https://dev.cmssoel.click/login/oauth2/code/cognito"
           google:
-            redirect-uri: "https://cmssoel.click/login/oauth2/code/google"
+            redirect-uri: "https://dev.cmssoel.click/login/oauth2/code/google"
 springdoc:
   api-docs:
     enabled: false
