@@ -1,5 +1,6 @@
 {
     "family": "${TASK_NAME}",
+    "taskRoleArn": "arn:aws:iam::211125631266:role/dev-cmssoel-taskrole",
     "executionRoleArn": "${TASK_EXEC_ROLE}",
     "networkMode": "awsvpc",
     "containerDefinitions": [

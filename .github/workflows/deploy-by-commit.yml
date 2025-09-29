@@ -1,0 +1,46 @@
+name: Deploy App to Dev (manual by commit)
+
+on:
+  workflow_dispatch:
+    inputs:
+      commit_sha:
+        description: "Deploy this commit (7桁 or 40桁のコミットID)"
+        required: true
+        type: string
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout specified commit
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.commit_sha }}
+          fetch-depth: 0  # 念のため完全取得（タグ/マージコミット等を考慮）
+
+      - name: Set environment variables
+        run: |
+          echo "ENV=dev" >> $GITHUB_ENV
+          COMMIT_SHA="${{ inputs.commit_sha }}"
+          echo "COMMIT_SHA=${COMMIT_SHA}" >> $GITHUB_ENV
+          echo "IMAGE_TAG=${COMMIT_SHA:0:7}" >> $GITHUB_ENV
+          echo "Using COMMIT_SHA=${COMMIT_SHA}, IMAGE_TAG=${COMMIT_SHA:0:7}"
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ vars.AWS_REGION }}
+
+      - name: Build and Push app-image
+        run: |
+          cd infra
+          chmod +x ./scripts/push-image.sh
+          ./scripts/push-image.sh "${ENV}" "${IMAGE_TAG}"
+
+      - name: Run Blue/Green Deploy at that commit
+        run: |
+          cd infra
+          chmod +x ./scripts/deploy-app.sh
+          ./scripts/deploy-app.sh "${ENV}" "${IMAGE_TAG}"
