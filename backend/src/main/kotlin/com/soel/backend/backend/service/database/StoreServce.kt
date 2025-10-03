@@ -3,6 +3,7 @@ package com.soel.backend.backend.service.database
 import com.soel.backend.backend.domain.enum.Prefecture
 import com.soel.backend.backend.entity.StoreEntity
 import com.soel.backend.backend.mapper.StoreMapper
+import com.soel.backend.backend.model.GoogleLocation
 import com.soel.backend.backend.model.api.BrandWithStoresResponse
 import com.soel.backend.backend.model.api.PrefectureListWithBrandListWithStoreListResponse
 import com.soel.backend.backend.model.api.PrefectureWithBrandListWithStoreListResponse
@@ -36,6 +37,8 @@ interface StoreService {
     fun updateStorePrefecture(storeId: String, prefectureName: String): ResponseEntity<StoreResponse>
 
     fun deleteStore(storeId: String): ResponseEntity<Void>
+
+    fun syncGoogleStores(userId: String, googleAccountId: String, locations: List<com.soel.backend.backend.model.GoogleLocation>): ResponseEntity<StoreListResponse>
 }
 
 @Service
@@ -230,5 +233,46 @@ class StoreServiceImpl(
 
         storeRepository.delete(existingStore)
         return ResponseEntity.noContent().build()
+    }
+
+    override fun syncGoogleStores(userId: String, googleAccountId: String, locations: List<GoogleLocation>): ResponseEntity<StoreListResponse> {
+        val userUuid = UUID.fromString(userId)
+        val allStores = storeRepository.findByUserId(userUuid) ?: emptyList()
+
+        val existingForAccount = allStores.filter { it.googleAccountId == googleAccountId && it.googleLocationId != null }
+        val existingIds = existingForAccount.mapNotNull { it.googleLocationId }.toSet()
+
+        val incomingById = locations.associateBy { it.name }
+        val incomingIds = incomingById.keys
+
+        val toAddIds = incomingIds - existingIds
+        val toDeleteIds = existingIds - incomingIds
+
+        // Create entities to add
+        val toAddEntities = toAddIds.map { id ->
+            val title = incomingById[id]?.title ?: "(no name)"
+            StoreEntity(
+                userId = userUuid,
+                brandId = null,
+                name = title,
+                googleAccountId = googleAccountId,
+                googleLocationId = id,
+                prefecture = null
+            )
+        }
+
+        if (toAddEntities.isNotEmpty()) {
+            storeRepository.saveAll(toAddEntities)
+        }
+
+        if (toDeleteIds.isNotEmpty()) {
+            val deleteEntities = existingForAccount.filter { it.googleLocationId in toDeleteIds }
+            if (deleteEntities.isNotEmpty()) {
+                storeRepository.deleteAll(deleteEntities)
+            }
+        }
+
+        // Return updated list of user's stores
+        return findStoresByUserId(userId)
     }
 }

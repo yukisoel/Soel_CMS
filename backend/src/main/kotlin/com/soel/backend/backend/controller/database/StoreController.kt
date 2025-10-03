@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
@@ -324,5 +325,22 @@ class StoreController(
 
         val result = storeService.deleteStore(storeId)
         return ResponseEntity(result.body, result.statusCode)
+    }
+
+    @PostMapping("/google/sync")
+    @Operation(
+        summary = "Googleロケーションと店舗の同期",
+        description = "指定のGoogleアカウントに対し、受け取ったGoogleLocation配列でDBの店舗を同期します。配列にあるが未登録の店舗は追加し、配列にないがDBに存在する店舗は削除します。",
+        tags = ["Store POSTメソッド"]
+    )
+    fun syncGoogleStores(
+        request: HttpServletRequest,
+        @RequestParam accountId: String,
+        @RequestBody locations: List<com.soel.backend.backend.model.GoogleLocation>
+    ): ResponseEntity<StoreListResponse> {
+        val user = authHelper.getCognitoOidcUser(request)
+        val sub = user.getClaim<String>("sub")
+        println("sub: $sub, accountId: $accountId, locations: $locations")
+        return storeService.syncGoogleStores(sub, accountId, locations)
     }
 }
