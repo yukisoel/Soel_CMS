@@ -1,10 +1,10 @@
-import { useState, useEffect } from 'react';
-import Modal from '@/main/common/Modal/Modal';
-import Wrapper from '@/main/common/Wrapper';
-import Typography from '@/main/common/Typography';
-import Button from '@/main/common/Button';
-import Input from '@/main/common/Input';
-import Textarea from '@/main/common/Textarea';
+import { useState, useEffect } from 'react'
+import Modal from '@/main/common/Modal/Modal'
+import Wrapper from '@/main/common/Wrapper'
+import Typography from '@/main/common/Typography'
+import Button from '@/main/common/Button'
+import Input from '@/main/common/Input'
+import Textarea from '@/main/common/Textarea'
 
 type Props = {
   isOpen: boolean;
@@ -23,22 +23,22 @@ export default function EditOtherModal({
   content,
   onSave,
   isTextarea = false,
-  error,
+  error
 }: Props) {
-  const [value, setValue] = useState(content);
+  const [value, setValue] = useState(content)
 
   useEffect(() => {
     if (isOpen) {
-      setValue(content);
+      setValue(content)
     }
-  }, [isOpen, content]);
+  }, [isOpen, content])
 
   const handleSave = async () => {
-    const isValid = await onSave(value);
+    const isValid = await onSave(value)
     if (isValid) {
-      onClose();
+      onClose()
     }
-  };
+  }
 
   const renderContent = () => (
     <Wrapper direction="col" gap="2rem" padding="2rem">
@@ -91,7 +91,7 @@ export default function EditOtherModal({
         </Button>
       </Wrapper>
     </Wrapper>
-  );
+  )
 
   return (
     <Modal
@@ -100,5 +100,5 @@ export default function EditOtherModal({
       onClose={onClose}
       contentRender={renderContent}
     />
-  );
+  )
 }

@@ -1,24 +1,24 @@
-import {useContext, useEffect, useState} from "react";
-import {PankuzuItemListContext} from "@/main/contexts/PankuzuItemListContext.tsx";
-import {GoogleSelectedLocationContext} from "@/main/contexts/GoogleSelectedLocationContext.tsx";
-import {useParams} from "react-router-dom";
-import EditProductList from "./EditProductList";
-import EditProductCreate from "./EditProductCreate";
+import { useContext, useEffect, useState } from 'react'
+import { useParams } from 'react-router-dom'
+import EditProductList from './EditProductList'
+import EditProductCreate from './EditProductCreate'
+import { GoogleSelectedLocationContext } from '@/main/contexts/GoogleSelectedLocationContext.tsx'
+import { PankuzuItemListContext } from '@/main/contexts/PankuzuItemListContext.tsx'
 
 export default function EditProductLayout() {
-  const {setPankuzuItemList} = useContext(PankuzuItemListContext)
-  const {googleSelectedLocation} = useContext(GoogleSelectedLocationContext)
+  const { setPankuzuItemList } = useContext(PankuzuItemListContext)
+  const { googleSelectedLocation } = useContext(GoogleSelectedLocationContext)
 
-  const { locationId} = useParams()
+  const { locationId } = useParams()
 
-  const [mode, setMode] = useState<'list' | 'edit' | 'create'>('list');
+  const [mode, setMode] = useState<'list' | 'edit' | 'create'>('list')
 
   useEffect(() => {
     setPankuzuItemList([
-      {name: 'ページ編集', path: '/edit'},
-      {name: 'GBP', path: '/edit/gbp'},
-      {name: '編集メニュー', path: '/edit/menu'}])
-    if (googleSelectedLocation.name === "" && locationId) {
+      { name: 'ページ編集', path: '/edit' },
+      { name: 'GBP', path: '/edit/gbp' },
+      { name: '編集メニュー', path: '/edit/menu' }])
+    if (googleSelectedLocation.name === '' && locationId) {
     //   googleService.getLocation(locationId).then(location => {
     //     setGoogleSelectedLocation(location)
     //   })
@@ -41,7 +41,7 @@ export default function EditProductLayout() {
     setMode('list')
   }
 
-  const productList = Array.from({length: 50}, (_, i) => (`商品${i}`))
+  const productList = Array.from({ length: 50 }, (_, i) => (`商品${i}`))
 
   const pullDownSections = ['すべての商品', '食品', '飲料', 'その他']
 

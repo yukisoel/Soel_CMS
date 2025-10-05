@@ -11,28 +11,28 @@ export default defineConfig({
     proxy: {
       '/api': {
         target: 'http://localhost:8080/',
-        changeOrigin: true,
+        changeOrigin: true
       },
       '/oauth2': {
         target: 'http://localhost:8080/',
-        changeOrigin: true,
+        changeOrigin: true
       },
       '/login': {
         target: 'http://localhost:8080/',
-        changeOrigin: true,
+        changeOrigin: true
       },
       '/logout': {
         target: 'http://localhost:8080/',
-        changeOrigin: true,
+        changeOrigin: true
       }
     }
   },
   build: {
-    assetsDir: '.',
+    assetsDir: '.'
   },
   resolve: {
     alias: {
-      '@': '/src',
-    },
+      '@': '/src'
+    }
   }
 })

@@ -1,21 +1,22 @@
-import React from 'react';
-import Modal from '@/main/common/Modal/Modal';
-import Wrapper from '@/main/common/Wrapper';
-import Typography from '@/main/common/Typography';
-import Button from '@/main/common/Button';
-import Input from '@/main/common/Input';
-import { useForm } from 'react-hook-form';
-import { z } from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
-import LayoutLabeledFormItem from '@/main/common/LayoutLabeledFormItem';
-import type { GoogleLocationAttributeSnsLinkRequestSnsType } from '@/types/api.ts';
+import React from 'react'
+import { useForm } from 'react-hook-form'
+import { z } from 'zod'
+import { zodResolver } from '@hookform/resolvers/zod'
+import Modal from '@/main/common/Modal/Modal'
+import Wrapper from '@/main/common/Wrapper'
+import Typography from '@/main/common/Typography'
+import Button from '@/main/common/Button'
+import Input from '@/main/common/Input'
+import LayoutLabeledFormItem from '@/main/common/LayoutLabeledFormItem'
+import type { GoogleLocationAttributeSnsLinkRequestSnsType } from '@/types/api.ts'
+import { MAX_URL_LENGTH } from '@/main/constants/validation'
 
 const schema = z.object({
   snsLink: z.string()
     .min(1, 'SNSリンクは必須です')
-    .max(200, 'SNSリンクは200文字以内で入力してください')
-    .url('正しいURL形式で入力してください'),
-});
+    .max(MAX_URL_LENGTH, `SNSリンクは${MAX_URL_LENGTH}文字以内で入力してください`)
+    .url('正しいURL形式で入力してください')
+})
 
 type FormData = z.infer<typeof schema>;
 
@@ -36,15 +37,15 @@ const SNS_TYPE_LABEL_MAP: Record<GoogleLocationAttributeSnsLinkRequestSnsType, s
   TIKTOK: 'TikTokリンク',
   YOUTUBE: 'YouTubeリンク',
   LINKEDIN: 'LinkedInリンク',
-  PINTEREST: 'Pinterestリンク',
-};
+  PINTEREST: 'Pinterestリンク'
+}
 
 export const EditSnsLinkModal: React.FC<EditSnsLinkModalProps> = ({
   isOpen,
   onClose,
   onSubmit,
   type,
-  initialValues,
+  initialValues
 }) => {
   const {
     register,
@@ -53,18 +54,18 @@ export const EditSnsLinkModal: React.FC<EditSnsLinkModalProps> = ({
     reset,
     watch
   } = useForm<FormData>({
-    resolver: zodResolver(schema),
-  });
+    resolver: zodResolver(schema)
+  })
 
-  const snsLinkValue = watch('snsLink') || '';
+  const snsLinkValue = watch('snsLink') || ''
 
   React.useEffect(() => {
     if (isOpen) {
       reset(initialValues || {
-        snsLink: '',
-      });
+        snsLink: ''
+      })
     }
-  }, [isOpen, reset, initialValues]);
+  }, [isOpen, reset, initialValues])
 
   const contentRender = () => (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -98,7 +99,7 @@ export const EditSnsLinkModal: React.FC<EditSnsLinkModalProps> = ({
         </Wrapper>
       </Wrapper>
     </form>
-  );
+  )
 
   return (
     <Modal
@@ -107,5 +108,5 @@ export const EditSnsLinkModal: React.FC<EditSnsLinkModalProps> = ({
       headerContent="SNSリンクを編集"
       contentRender={contentRender}
     />
-  );
-};
+  )
+}

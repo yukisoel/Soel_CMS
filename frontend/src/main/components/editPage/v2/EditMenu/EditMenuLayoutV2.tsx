@@ -1,23 +1,19 @@
-import React from 'react';
-import Wrapper from '@/main/common/Wrapper';
-import Button from '@/main/common/Button';
-import SearchBox from '@/main/common/SearchBox';
-import Typography from '@/main/common/Typography';
-import Separator from '@/main/common/Separator';
-import Loading from '@/main/common/Loading';
-import styles from './EditMenuLayoutV2.module.scss';
-import AddIcon from '@/main/assets/AddIcon.svg';
-import { EditMenuModal } from './modals/EditMenuModal';
-import { EditSectionModal } from './modals/EditSectionModal';
-import { useModal } from '@/main/common/Modal/useModal';
-import { GoogleService } from '@/main/service/GoogleService';
-import { GoogleLocationFoodMenuSection, GoogleLocationFoodMenusModel, GoogleLocationFoodMenuItem, GoogleLocationPhotoModel } from '@/main/model/LocationModel';
-import { useParams } from 'react-router-dom';
-import { useMenuFood } from '@/main/hooks/EditMenu/useFoodMenu';
-
-type Props = {
-  googleService: GoogleService;
-};
+import React from 'react'
+import { useParams } from 'react-router-dom'
+import styles from './EditMenuLayoutV2.module.scss'
+import { EditMenuModal } from './modals/EditMenuModal'
+import { EditSectionModal } from './modals/EditSectionModal'
+import Wrapper from '@/main/common/Wrapper'
+import Button from '@/main/common/Button'
+import SearchBox from '@/main/common/SearchBox'
+import Typography from '@/main/common/Typography'
+import Separator from '@/main/common/Separator'
+import Loading from '@/main/common/Loading'
+import AddIcon from '@/main/assets/AddIcon.svg'
+import { useModal } from '@/main/common/Modal/useModal'
+import { useGoogleRepository } from '@/main/contexts/GoogleRepositoryContext'
+import { GoogleLocationFoodMenuSection, GoogleLocationFoodMenusModel, GoogleLocationFoodMenuItem, GoogleLocationPhotoModel } from '@/main/model/LocationModel'
+import { useMenuFood } from '@/main/hooks/EditMenu/useFoodMenu'
 
 type FilteredMenuItem = Omit<GoogleLocationFoodMenuItem, 'items'> & {
   originalSectionIndex: number;
@@ -29,30 +25,31 @@ type FilteredSection = Omit<GoogleLocationFoodMenuSection, 'items'> & {
   items: FilteredMenuItem[];
 };
 
-export const EditMenuLayoutV2: React.FC<Props> = ({ googleService }) => {
-  const { isOpen: isMenuModalOpen, openModal: openMenuModal, closeModal: closeMenuModalBase } = useModal();
-  const { isOpen: isSectionModalOpen, openModal: openSectionModal, closeModal: closeSectionModalBase } = useModal();
-  const [selectedSection, setSelectedSection] = React.useState<string | null>(null);
-  const [selectedMenuItem, setSelectedMenuItem] = React.useState<string | null>(null);
-  const [searchQuery, setSearchQuery] = React.useState('');
-  const { accountId, locationId } = useParams();
-  const { foodMenu, updateFoodMenus, isLoading } = useMenuFood(googleService, accountId ?? '', locationId ?? '');
+export const EditMenuLayoutV2: React.FC = () => {
+  const { isOpen: isMenuModalOpen, openModal: openMenuModal, closeModal: closeMenuModalBase } = useModal()
+  const { isOpen: isSectionModalOpen, openModal: openSectionModal, closeModal: closeSectionModalBase } = useModal()
+  const [selectedSection, setSelectedSection] = React.useState<string | null>(null)
+  const [selectedMenuItem, setSelectedMenuItem] = React.useState<string | null>(null)
+  const [searchQuery, setSearchQuery] = React.useState('')
+  const googleRepository = useGoogleRepository()
+  const { accountId, locationId } = useParams()
+  const { foodMenu, updateFoodMenus, isLoading } = useMenuFood(googleRepository, accountId ?? '', locationId ?? '')
   const [menuInitialValues, setMenuInitialValues] = React.useState<{
     title: string;
     price: string;
     description: string;
     selectedPhoto?: GoogleLocationPhotoModel;
-  } | undefined>(undefined);
+  } | undefined>(undefined)
   const [sectionInitialValues, setSectionInitialValues] = React.useState<{
     title: string;
-  } | undefined>(undefined);
+  } | undefined>(undefined)
 
   const handleSearch = (query: string) => {
-    setSearchQuery(query.toLowerCase());
-  };
+    setSearchQuery(query.toLowerCase())
+  }
 
   const filteredSections: FilteredSection[] = React.useMemo(() => {
-    if (!foodMenu) return [];
+    if (!foodMenu) return []
     if (!searchQuery) return foodMenu.menus[0].sections.map((section, index) => ({
       ...section,
       originalIndex: index,
@@ -61,22 +58,22 @@ export const EditMenuLayoutV2: React.FC<Props> = ({ googleService }) => {
         originalSectionIndex: index,
         originalItemIndex: itemIndex
       } as FilteredMenuItem))
-    }));
+    }))
 
     return foodMenu.menus[0].sections.map((section, originalIndex) => {
-      const sectionName = section.labels[0]?.displayName?.toLowerCase() || '';
+      const sectionName = section.labels[0]?.displayName?.toLowerCase() || ''
       const matchingItems = section.items.map((item, originalItemIndex) => {
         const filteredItem: FilteredMenuItem = {
           ...item,
           originalSectionIndex: originalIndex,
           originalItemIndex
-        };
-        return filteredItem;
+        }
+        return filteredItem
       }).filter(item => {
-        const itemName = item.labels[0]?.displayName?.toLowerCase() || '';
-        const itemDescription = item.labels[0]?.description?.toLowerCase() || '';
-        return itemName.includes(searchQuery) || itemDescription.includes(searchQuery);
-      });
+        const itemName = item.labels[0]?.displayName?.toLowerCase() || ''
+        const itemDescription = item.labels[0]?.description?.toLowerCase() || ''
+        return itemName.includes(searchQuery) || itemDescription.includes(searchQuery)
+      })
 
       // セクション名が一致するか、セクション内に一致するアイテムがある場合のみ表示
       if (sectionName.includes(searchQuery) || matchingItems.length > 0) {
@@ -84,51 +81,51 @@ export const EditMenuLayoutV2: React.FC<Props> = ({ googleService }) => {
           ...section,
           items: matchingItems,
           originalIndex
-        };
-        return filteredSection;
+        }
+        return filteredSection
       }
-      return null;
-    }).filter((section): section is FilteredSection => section !== null);
-  }, [foodMenu, searchQuery]);
+      return null
+    }).filter((section): section is FilteredSection => section !== null)
+  }, [foodMenu, searchQuery])
 
   const handleAddSection = () => {
-    setSelectedSection(null);
-    setSectionInitialValues(undefined);
-    openSectionModal();
-  };
+    setSelectedSection(null)
+    setSectionInitialValues(undefined)
+    openSectionModal()
+  }
 
   const handleEditSection = (sectionId: string) => {
-    setSelectedSection(sectionId);
-    const section = foodMenu?.menus[0].sections[parseInt(sectionId)];
+    setSelectedSection(sectionId)
+    const section = foodMenu?.menus[0].sections[parseInt(sectionId)]
     if (section) {
       setSectionInitialValues({
-        title: section.labels[0]?.displayName || '',
-      });
+        title: section.labels[0]?.displayName || ''
+      })
     }
-    openSectionModal();
-  };
+    openSectionModal()
+  }
 
   const handleAddMenuItem = (sectionId: string) => {
-    setSelectedSection(sectionId);
-    setSelectedMenuItem(null);
-    setMenuInitialValues(undefined);
-    openMenuModal();
-  };
+    setSelectedSection(sectionId)
+    setSelectedMenuItem(null)
+    setMenuInitialValues(undefined)
+    openMenuModal()
+  }
 
   const handleEditMenuItem = (sectionId: string, menuItemId: string) => {
-    setSelectedSection(sectionId);
-    setSelectedMenuItem(menuItemId);
-    const section = foodMenu?.menus[0].sections[parseInt(sectionId)];
-    const menuItem = section?.items[parseInt(menuItemId)];
+    setSelectedSection(sectionId)
+    setSelectedMenuItem(menuItemId)
+    const section = foodMenu?.menus[0].sections[parseInt(sectionId)]
+    const menuItem = section?.items[parseInt(menuItemId)]
     if (menuItem) {
       // Create a dummy photo object if mediaKeys exist
-      let selectedPhoto: GoogleLocationPhotoModel | undefined;
+      let selectedPhoto: GoogleLocationPhotoModel | undefined
       if (menuItem.attributes.mediaKeys && menuItem.attributes.mediaKeys.length > 0) {
         selectedPhoto = {
           name: `media/${menuItem.attributes.mediaKeys[0]}`,
           googleUrl: undefined,
           thumbnailUrl: undefined
-        };
+        }
       }
       
       setMenuInitialValues({
@@ -136,14 +133,14 @@ export const EditMenuLayoutV2: React.FC<Props> = ({ googleService }) => {
         price: menuItem.attributes.price?.units || '',
         description: menuItem.labels[0]?.description || '',
         selectedPhoto
-      });
+      })
     }
-    openMenuModal();
-  };
+    openMenuModal()
+  }
 
   const handleSaveSection = async (data: { title: string }) => {
     try {
-      if (!foodMenu) return;
+      if (!foodMenu) return
 
       const defaultMenuItem: GoogleLocationFoodMenuItem = {
         labels: [{
@@ -168,7 +165,7 @@ export const EditMenuLayoutV2: React.FC<Props> = ({ googleService }) => {
           mediaKeys: null
         },
         options: null
-      };
+      }
 
       const newSection: GoogleLocationFoodMenuSection = {
         labels: [{
@@ -177,22 +174,22 @@ export const EditMenuLayoutV2: React.FC<Props> = ({ googleService }) => {
           languageCode: null
         }],
         items: [defaultMenuItem]
-      };
+      }
 
       const updatedSections = selectedSection
         ? foodMenu.menus[0].sections.map((section, index) =>
-            index.toString() === selectedSection
-              ? {
-                  ...section,
-                  labels: [{
-                    displayName: data.title,
-                    description: null,
-                    languageCode: null
-                  }]
-                }
-              : section
-          )
-        : [...foodMenu.menus[0].sections, newSection];
+          index.toString() === selectedSection
+            ? {
+              ...section,
+              labels: [{
+                displayName: data.title,
+                description: null,
+                languageCode: null
+              }]
+            }
+            : section
+        )
+        : [...foodMenu.menus[0].sections, newSection]
 
       const updatedFoodMenu: GoogleLocationFoodMenusModel = {
         ...foodMenu,
@@ -200,41 +197,41 @@ export const EditMenuLayoutV2: React.FC<Props> = ({ googleService }) => {
           ...foodMenu.menus[0],
           sections: updatedSections
         }]
-      };
+      }
 
-      await updateFoodMenus(updatedFoodMenu);
-      closeSectionModal();
+      await updateFoodMenus(updatedFoodMenu)
+      closeSectionModal()
     } catch (error) {
-      console.error('Failed to save section:', error);
+      console.error('Failed to save section:', error)
     }
-  };
+  }
 
   const handleSaveMenuItem = async (data: { title: string; price: string; description: string; selectedPhoto?: GoogleLocationPhotoModel }) => {
     try {
-      if (!foodMenu) return;
+      if (!foodMenu) return
 
-      const sectionIndex = foodMenu.menus[0].sections.findIndex((_, index) => index.toString() === selectedSection);
-      if (sectionIndex === -1) return;
+      const sectionIndex = foodMenu.menus[0].sections.findIndex((_, index) => index.toString() === selectedSection)
+      if (sectionIndex === -1) return
 
       // Get the existing menu item if editing
-      let existingMenuItem: GoogleLocationFoodMenuItem | undefined;
+      let existingMenuItem: GoogleLocationFoodMenuItem | undefined
       if (selectedMenuItem) {
-        const section = foodMenu.menus[0].sections[sectionIndex];
-        existingMenuItem = section.items[parseInt(selectedMenuItem)];
+        const section = foodMenu.menus[0].sections[sectionIndex]
+        existingMenuItem = section.items[parseInt(selectedMenuItem)]
       }
 
       // Extract media key from photo name
-      let mediaKeys: string[] | null = null;
+      let mediaKeys: string[] | null = null
       if (data.selectedPhoto?.name) {
-        const mediaPrefix = 'media/';
-        const mediaIndex = data.selectedPhoto.name.indexOf(mediaPrefix);
+        const mediaPrefix = 'media/'
+        const mediaIndex = data.selectedPhoto.name.indexOf(mediaPrefix)
         if (mediaIndex !== -1) {
-          const mediaKey = data.selectedPhoto.name.substring(mediaIndex + mediaPrefix.length);
-          mediaKeys = [mediaKey];
+          const mediaKey = data.selectedPhoto.name.substring(mediaIndex + mediaPrefix.length)
+          mediaKeys = [mediaKey]
         }
       } else if (existingMenuItem?.attributes.mediaKeys) {
         // Preserve existing mediaKeys if no new photo selected
-        mediaKeys = existingMenuItem.attributes.mediaKeys;
+        mediaKeys = existingMenuItem.attributes.mediaKeys
       }
 
       const newMenuItem: GoogleLocationFoodMenuItem = {
@@ -260,19 +257,19 @@ export const EditMenuLayoutV2: React.FC<Props> = ({ googleService }) => {
           mediaKeys: mediaKeys
         },
         options: existingMenuItem?.options || null
-      };
+      }
 
       const updatedSections = foodMenu.menus[0].sections.map((section, index) => {
         if (index === sectionIndex) {
           const updatedItems = selectedMenuItem
             ? section.items.map((item, itemIndex) =>
-                itemIndex.toString() === selectedMenuItem ? newMenuItem : item
-              )
-            : [...section.items, newMenuItem];
-          return { ...section, items: updatedItems };
+              itemIndex.toString() === selectedMenuItem ? newMenuItem : item
+            )
+            : [...section.items, newMenuItem]
+          return { ...section, items: updatedItems }
         }
-        return section;
-      });
+        return section
+      })
 
       const updatedFoodMenu: GoogleLocationFoodMenusModel = {
         ...foodMenu,
@@ -280,31 +277,31 @@ export const EditMenuLayoutV2: React.FC<Props> = ({ googleService }) => {
           ...foodMenu.menus[0],
           sections: updatedSections
         }]
-      };
+      }
 
-      await updateFoodMenus(updatedFoodMenu);
-      closeMenuModal();
+      await updateFoodMenus(updatedFoodMenu)
+      closeMenuModal()
     } catch (error) {
-      console.error('Failed to save menu item:', error);
+      console.error('Failed to save menu item:', error)
     }
-  };
+  }
 
   const handleDeleteMenuItem = async (sectionId: string, menuItemId: string) => {
     try {
-      if (!foodMenu) return;
+      if (!foodMenu) return
 
-      const sectionIndex = parseInt(sectionId);
-      const menuItemIndex = parseInt(menuItemId);
+      const sectionIndex = parseInt(sectionId)
+      const menuItemIndex = parseInt(menuItemId)
 
       const updatedSections = foodMenu.menus[0].sections.map((section, index) => {
         if (index === sectionIndex) {
           return {
             ...section,
             items: section.items.filter((_, itemIndex) => itemIndex !== menuItemIndex)
-          };
+          }
         }
-        return section;
-      });
+        return section
+      })
 
       const updatedFoodMenu: GoogleLocationFoodMenusModel = {
         ...foodMenu,
@@ -312,21 +309,21 @@ export const EditMenuLayoutV2: React.FC<Props> = ({ googleService }) => {
           ...foodMenu.menus[0],
           sections: updatedSections
         }]
-      };
+      }
 
-      await updateFoodMenus(updatedFoodMenu);
-      closeMenuModal();
+      await updateFoodMenus(updatedFoodMenu)
+      closeMenuModal()
     } catch (error) {
-      console.error('Failed to delete menu item:', error);
+      console.error('Failed to delete menu item:', error)
     }
-  };
+  }
 
   const handleDeleteSection = async (sectionId: string) => {
     try {
-      if (!foodMenu) return;
+      if (!foodMenu) return
 
-      const sectionIndex = parseInt(sectionId);
-      const updatedSections = foodMenu.menus[0].sections.filter((_, index) => index !== sectionIndex);
+      const sectionIndex = parseInt(sectionId)
+      const updatedSections = foodMenu.menus[0].sections.filter((_, index) => index !== sectionIndex)
 
       const updatedFoodMenu: GoogleLocationFoodMenusModel = {
         ...foodMenu,
@@ -334,32 +331,32 @@ export const EditMenuLayoutV2: React.FC<Props> = ({ googleService }) => {
           ...foodMenu.menus[0],
           sections: updatedSections
         }]
-      };
+      }
 
-      await updateFoodMenus(updatedFoodMenu);
-      closeSectionModal();
+      await updateFoodMenus(updatedFoodMenu)
+      closeSectionModal()
     } catch (error) {
-      console.error('Failed to delete section:', error);
+      console.error('Failed to delete section:', error)
     }
-  };
-
-  const closeMenuModal = () => {
-    setSelectedMenuItem(null);
-    setMenuInitialValues(undefined);
-    closeMenuModalBase();
-  };
-
-  const closeSectionModal = () => {
-    setSelectedSection(null);
-    setSectionInitialValues(undefined);
-    closeSectionModalBase();
-  };
-
-  if (isLoading) {
-    return <Loading message="メニューを読み込み中..." />;
   }
 
-  if (!foodMenu) return null;
+  const closeMenuModal = () => {
+    setSelectedMenuItem(null)
+    setMenuInitialValues(undefined)
+    closeMenuModalBase()
+  }
+
+  const closeSectionModal = () => {
+    setSelectedSection(null)
+    setSectionInitialValues(undefined)
+    closeSectionModalBase()
+  }
+
+  if (isLoading) {
+    return <Loading message="メニューを読み込み中..." />
+  }
+
+  if (!foodMenu) return null
 
   return (
     <Wrapper direction="col" padding="5rem" gap="4rem">
@@ -470,7 +467,6 @@ export const EditMenuLayoutV2: React.FC<Props> = ({ googleService }) => {
         title={selectedMenuItem ? 'メニュー項目の編集' : 'メニュー項目の追加'}
         onSubmit={handleSaveMenuItem}
         onDelete={selectedMenuItem && selectedSection ? () => handleDeleteMenuItem(selectedSection, selectedMenuItem) : undefined}
-        googleService={googleService}
         initialValues={menuInitialValues}
       />
       <EditSectionModal
@@ -482,5 +478,5 @@ export const EditMenuLayoutV2: React.FC<Props> = ({ googleService }) => {
         initialValues={sectionInitialValues}
       />
     </Wrapper>
-  );
-};
+  )
+}

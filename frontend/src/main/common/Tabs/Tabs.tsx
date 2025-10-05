@@ -1,7 +1,7 @@
-import styles from './Tabs.module.scss';
-import Button from '../Button';
-import Typography from '../Typography';
-import Separator from '../Separator';
+import Button from '../Button'
+import Typography from '../Typography'
+import Separator from '../Separator'
+import styles from './Tabs.module.scss'
 
 export type TabItem = {
   tabKey: string;
@@ -16,24 +16,24 @@ type Props = {
   width?: string;
 };
 
-export function Tabs({ tabs, selectedTab, setSelectedTab, width, size = "medium" }: Props) {
+export function Tabs({ tabs, selectedTab, setSelectedTab, width, size = 'medium' }: Props) {
   return (
     <div className={styles.tabs_container} style={{ width: width }}>
-        {tabs.map((tab, index) => (
-            <>
-              <Button
-                  bgColor={selectedTab === tab.tabKey ? 'primary' : 'input'}
-                  onClick={() => setSelectedTab(tab.tabKey)}
-                  key={tab.tabKey}
-              >
-                  <Typography content={tab.content} color="primary" size={size} weight="normal" />
-              </Button>
-              {
-                (index < tabs.length -1 && tab.tabKey !== selectedTab) &&
+      {tabs.map((tab, index) => (
+        <>
+          <Button
+            bgColor={selectedTab === tab.tabKey ? 'primary' : 'input'}
+            onClick={() => setSelectedTab(tab.tabKey)}
+            key={tab.tabKey}
+          >
+            <Typography content={tab.content} color="primary" size={size} weight="normal" />
+          </Button>
+          {
+            (index < tabs.length -1 && tab.tabKey !== selectedTab) &&
                 <Separator orientation="vertical" height="27px" borderWidth="2px" />
-              }
-            </>
-        ))}
+          }
+        </>
+      ))}
     </div>
   )
 }

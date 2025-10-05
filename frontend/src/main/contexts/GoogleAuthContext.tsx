@@ -1,4 +1,4 @@
-import {createContext, useState} from "react";
+import { createContext, useState } from 'react'
 
 type InitialState = {
   profile: Profile | null
@@ -18,10 +18,10 @@ export type Profile = {
 
 export  const GoogleAuthContext = createContext<InitialState | null>(null)
 
-export const GoogleAuthContextProvider = ({children}: Props) => {
+export const GoogleAuthContextProvider = ({ children }: Props) => {
   const [profile, setProfile] = useState<Profile | null>(null)
   return (
-    <GoogleAuthContext.Provider value={{profile, setProfile}}>
+    <GoogleAuthContext.Provider value={{ profile, setProfile }}>
       {children}
     </GoogleAuthContext.Provider>
   )

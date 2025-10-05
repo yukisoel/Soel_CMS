@@ -1,5 +1,5 @@
-import classNames from 'classnames';
-import styles from './Separator.module.scss';
+import classNames from 'classnames'
+import styles from './Separator.module.scss'
 
 type Props = {
   width?: string;
@@ -14,9 +14,9 @@ export default function Separator({ width, height, orientation = 'horizontal', b
     <hr
       className={classNames(className, styles.separator, {
         [styles.vertical]: orientation === 'vertical',
-        [styles.horizontal]: orientation === 'horizontal',
+        [styles.horizontal]: orientation === 'horizontal'
       })}
       style={{ width, height, borderWidth }}
     />
-  );
+  )
 }

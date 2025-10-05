@@ -1,7 +1,7 @@
-import styles from "@/main/components/editPage/LocalPostButtonPullDownMenu.module.scss";
-import TriangleIcon from "@/main/assets/PullDownMenuTriangle.svg";
-import classNames from "classnames";
-import {ChangeEvent, useState} from "react";
+import classNames from 'classnames'
+import { ChangeEvent, useState } from 'react'
+import styles from '@/main/components/editPage/LocalPostButtonPullDownMenu.module.scss'
+import TriangleIcon from '@/main/assets/PullDownMenuTriangle.svg'
 
 export type Props = {
   placeholder?: string
@@ -11,11 +11,11 @@ export type Props = {
 }
 
 export default function LocalPostButtonPullDownMenu({
-                                                      placeholder,
-                                                      selectedContent,
-                                                      setSelectedContent,
-                                                      options
-                                                    }: Props) {
+  placeholder,
+  selectedContent,
+  setSelectedContent,
+  options
+}: Props) {
   const effectivePlaceholder = placeholder ? placeholder : 'ボタンの追加（省略可）'
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const [searchWord, setSearchWord] = useState<string>('')
@@ -58,18 +58,18 @@ export default function LocalPostButtonPullDownMenu({
           <>
             <input
               className={`${styles.pull_down_menu_content} ${styles.pull_down_menu_input} ${styles.pull_down_menu_border}`}
-              placeholder={"ボタンの追加（省略可）"}
+              placeholder={'ボタンの追加（省略可）'}
               onChange={handleShowSearchOptions}
             />
             {options.map((value, index) => {
               if (searchWord.length === 0 || value.includes(searchWord)) {
                 return (
                   <div key={index}
-                       className={`${styles.pull_down_menu_content} ${styles.pull_down_menu_option} ${styles.pull_down_menu_border}`}
-                       onClick={() => {
-                         toggleIsOpen()
-                         setSelectedContent(value)
-                       }}
+                    className={`${styles.pull_down_menu_content} ${styles.pull_down_menu_option} ${styles.pull_down_menu_border}`}
+                    onClick={() => {
+                      toggleIsOpen()
+                      setSelectedContent(value)
+                    }}
                   >
                     {value}
                   </div>

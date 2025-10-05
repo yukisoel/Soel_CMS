@@ -1,54 +1,53 @@
-import React, { useState, useEffect } from 'react';
-import { GoogleService } from '@/main/service/GoogleService';
-import { GoogleLocationPhotoModel } from '@/main/model/LocationModel';
-import { LocationAssociationName } from '@/main/model/LocationAssociationName';
-import { useParams } from 'react-router-dom';
-import Wrapper from '@/main/common/Wrapper';
-import Typography from '@/main/common/Typography';
-import styles from './PhotoSelector.module.scss';
+import React, { useState, useEffect } from 'react'
+import { useParams } from 'react-router-dom'
+import styles from './PhotoSelector.module.scss'
+import { useGoogleRepository } from '@/main/contexts/GoogleRepositoryContext'
+import { GoogleLocationPhotoModel } from '@/main/model/LocationModel'
+import { LocationAssociationName } from '@/main/model/LocationAssociationName'
+import Wrapper from '@/main/common/Wrapper'
+import Typography from '@/main/common/Typography'
 
 type PhotoSelectorProps = {
   onPhotoSelect: (photo: GoogleLocationPhotoModel) => void;
   selectedPhoto?: GoogleLocationPhotoModel;
-  googleService: GoogleService;
 };
 
 export const PhotoSelector: React.FC<PhotoSelectorProps> = ({
   onPhotoSelect,
-  selectedPhoto,
-  googleService
+  selectedPhoto
 }) => {
-  const [photoList, setPhotoList] = useState<GoogleLocationPhotoModel[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [selectedCategory, setSelectedCategory] = useState<string>(LocationAssociationName.CATEGORY_UNSPECIFIED);
+  const [photoList, setPhotoList] = useState<GoogleLocationPhotoModel[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+  const [selectedCategory, setSelectedCategory] = useState<string>(LocationAssociationName.CATEGORY_UNSPECIFIED)
 
-  const { accountId, locationId } = useParams();
+  const { accountId, locationId } = useParams()
+  const googleRepository = useGoogleRepository()
 
   useEffect(() => {
     if (accountId && locationId) {
-      setLoading(true);
-      googleService.getLocationPhotos(accountId, locationId)
+      setLoading(true)
+      googleRepository.getLocationPhotos(accountId, locationId)
         .then(photos => {
-          setPhotoList(photos);
-          setError(null);
+          setPhotoList(photos)
+          setError(null)
         })
         .catch(err => {
-          setError('写真の取得に失敗しました');
-          console.error(err);
+          setError('写真の取得に失敗しました')
+          console.error(err)
         })
         .finally(() => {
-          setLoading(false);
-        });
+          setLoading(false)
+        })
     }
-  }, [accountId, locationId, googleService]);
+  }, [accountId, locationId, googleRepository])
 
   const filteredPhotos = photoList.filter(photo => {
     if (selectedCategory === LocationAssociationName.CATEGORY_UNSPECIFIED) {
-      return true;
+      return true
     }
-    return photo.locationAssociation?.category === selectedCategory;
-  });
+    return photo.locationAssociation?.category === selectedCategory
+  })
 
   const categoryOptions = [
     { value: LocationAssociationName.FOOD_AND_DRINK, label: '食べ物・飲み物' },
@@ -57,14 +56,14 @@ export const PhotoSelector: React.FC<PhotoSelectorProps> = ({
     { value: LocationAssociationName.EXTERIOR, label: '外観' },
     { value: LocationAssociationName.PRODUCT, label: '商品' },
     { value: LocationAssociationName.CATEGORY_UNSPECIFIED, label: 'すべて' }
-  ];
+  ]
 
   if (loading) {
     return (
       <Wrapper justify="justify-center" align="align-center" style={{ minHeight: '200px' }}>
         <Typography content="写真を読み込み中..." size="small" color="secondary" />
       </Wrapper>
-    );
+    )
   }
 
   if (error) {
@@ -72,7 +71,7 @@ export const PhotoSelector: React.FC<PhotoSelectorProps> = ({
       <Wrapper justify="justify-center" align="align-center" style={{ minHeight: '200px' }}>
         <Typography content={error} size="small" color="error" />
       </Wrapper>
-    );
+    )
   }
 
   return (
@@ -112,9 +111,9 @@ export const PhotoSelector: React.FC<PhotoSelectorProps> = ({
                   alt={`写真 ${index + 1}`}
                   className={styles.photoImage}
                   onError={(e) => {
-                    const target = e.target as HTMLImageElement;
+                    const target = e.target as HTMLImageElement
                     if (target.src === photo.googleUrl && photo.thumbnailUrl) {
-                      target.src = photo.thumbnailUrl;
+                      target.src = photo.thumbnailUrl
                     }
                   }}
                 />
@@ -129,5 +128,5 @@ export const PhotoSelector: React.FC<PhotoSelectorProps> = ({
         </Wrapper>
       )}
     </Wrapper>
-  );
-};
+  )
+}

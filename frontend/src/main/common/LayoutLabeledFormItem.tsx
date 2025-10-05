@@ -1,5 +1,5 @@
-import Typography from "@/main/common/Typography";
-import Wrapper from "@/main/common/Wrapper";
+import Typography from '@/main/common/Typography'
+import Wrapper from '@/main/common/Wrapper'
 
 type Props = {
   children: React.ReactNode
@@ -11,10 +11,10 @@ type Props = {
   }
 }
 
-export default function LayoutLabeledFormItem({label, children, className, counter}: Props) {
+export default function LayoutLabeledFormItem({ label, children, className, counter }: Props) {
   return (
     <Wrapper direction="col" gap="1rem" className={className}>
-          <Typography content={label} size="normal" color="primary" />
+      <Typography content={label} size="normal" color="primary" />
       <Wrapper direction="col" gap="0.5rem">
         {children}
         {counter && (
@@ -22,7 +22,7 @@ export default function LayoutLabeledFormItem({label, children, className, count
             <Typography
               content={`${counter.current} / ${counter.max}`}
               size="xsmall"
-              color={counter.current > counter.max ? "error" : "secondary"}
+              color={counter.current > counter.max ? 'error' : 'secondary'}
             />
           </Wrapper>
         )}

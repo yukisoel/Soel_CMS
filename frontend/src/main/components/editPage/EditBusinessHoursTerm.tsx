@@ -1,4 +1,4 @@
-import styles from "@/main/components/editPage/EditProfileLayout.module.scss";
+import styles from '@/main/components/editPage/EditProfileLayout.module.scss'
 
 type Props = {
   name: string
@@ -8,7 +8,7 @@ type Props = {
   setEditTerm: (editTerm: string | null) => void
 }
 
-export function EditBusinessHoursTerm({name, title, businessHoursList, editTerm, setEditTerm}: Props) {
+export function EditBusinessHoursTerm({ name, title, businessHoursList, editTerm, setEditTerm }: Props) {
 
   const handleClickEditButton = () => {
     if (name === editTerm) setEditTerm(null)

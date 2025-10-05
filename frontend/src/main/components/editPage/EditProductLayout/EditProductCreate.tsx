@@ -1,29 +1,29 @@
-import Button from "@/main/common/Button";
-import useFileUpload from "@/main/common/FileUpload/useFileUpload";
-import Input from "@/main/common/Input";
-import LayoutLabeledFormItem from "@/main/common/LayoutLabeledFormItem";
-import Typography from "@/main/common/Typography";
-import Wrapper from "@/main/common/Wrapper";
-import styles from '@/main/components/editPage/EditProductLayout/EditProductCreate.module.scss';
-import PhotoPullDownMenu from "../PhotoPullDownMenu";
+import PhotoPullDownMenu from '../PhotoPullDownMenu'
+import Button from '@/main/common/Button'
+import useFileUpload from '@/main/common/FileUpload/useFileUpload'
+import Input from '@/main/common/Input'
+import LayoutLabeledFormItem from '@/main/common/LayoutLabeledFormItem'
+import Typography from '@/main/common/Typography'
+import Wrapper from '@/main/common/Wrapper'
+import styles from '@/main/components/editPage/EditProductLayout/EditProductCreate.module.scss'
 
 type Props = {
   onClickSave: () => void
   onClickCancel: () => void
 }
 
-export default function EditProductCreate({onClickSave, onClickCancel}: Props) {
-  const { render } = useFileUpload({size: 'regular'})
+export default function EditProductCreate({ onClickSave, onClickCancel }: Props) {
+  const { render } = useFileUpload({ size: 'regular' })
   const pullDownSections = ['すべての商品', '食品', '飲料', 'その他']
 
   return (
     <Wrapper direction="col" className={styles.edit_product_container}>
       <Wrapper justify="justify-center" gap="2rem" className={styles.header_container}>
         <Button bgColor="secondary" padding="2rem 3.2rem 2.2rem 3.1rem" onClick={onClickCancel}>
-            <Typography content="キャンセル" size="medium" color="primary" />
+          <Typography content="キャンセル" size="medium" color="primary" />
         </Button>
         <Button bgColor="primary" padding="2rem 4.3rem 2.2rem 4.5rem" onClick={onClickSave}>
-            <Typography content="公開する" size="medium" color="primary" />
+          <Typography content="公開する" size="medium" color="primary" />
         </Button>
       </Wrapper>
       <Wrapper padding="5rem 4rem 2rem 10rem" gap="5rem" direction="col" justify="justify-center" align="align-center" className={styles.product_container}>

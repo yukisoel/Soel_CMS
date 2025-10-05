@@ -4,7 +4,7 @@
  */
 
 export interface paths {
-    "/api/store/create": {
+    '/api/store/create': {
         parameters: {
             query?: never;
             header?: never;
@@ -22,14 +22,14 @@ export interface paths {
          *                 店舗の作成に成功した場合は、status 201 Created を返します。(Bodyは StoreResponse)
          *
          */
-        post: operations["createStore"];
+        post: operations['createStore'];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/api/google/places/autocomplete": {
+    '/api/google/places/autocomplete': {
         parameters: {
             query?: never;
             header?: never;
@@ -42,14 +42,14 @@ export interface paths {
          * Google Places API: 場所Idと場所名の候補リストを取得
          * @description Google Places APIを使用して、場所Idと場所名の候補リストを取得します。
          */
-        post: operations["postPlacesAutoComplete"];
+        post: operations['postPlacesAutoComplete'];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/api/google/location/question": {
+    '/api/google/location/question': {
         parameters: {
             query?: never;
             header?: never;
@@ -66,14 +66,14 @@ export interface paths {
          *                   例 : {"text": "質問内容"}
          *
          */
-        post: operations["postLocationQuestion"];
+        post: operations['postLocationQuestion'];
         /**
          * Google:店舗の質問の削除
          * @description
          *                   Google:店舗の質問を削除します。
          *
          */
-        delete: operations["deleteLocationQuestion"];
+        delete: operations['deleteLocationQuestion'];
         options?: never;
         head?: never;
         /**
@@ -84,10 +84,10 @@ export interface paths {
          *                   例 : {"text": "質問内容"}
          *
          */
-        patch: operations["updateLocationQuestion"];
+        patch: operations['updateLocationQuestion'];
         trace?: never;
     };
-    "/api/google/location/photos": {
+    '/api/google/location/photos': {
         parameters: {
             query?: never;
             header?: never;
@@ -98,20 +98,20 @@ export interface paths {
          * Google:店舗の写真を全て取得
          * @description Google:店舗の写真を全て取得します
          */
-        get: operations["getLocationPhotos"];
+        get: operations['getLocationPhotos'];
         put?: never;
         /**
          * Google:写真を追加
          * @description Google:店舗の写真を追加します
          */
-        post: operations["postLocationPhotos"];
+        post: operations['postLocationPhotos'];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/api/google/location/local_post": {
+    '/api/google/location/local_post': {
         parameters: {
             query?: never;
             header?: never;
@@ -140,14 +140,14 @@ export interface paths {
          *                 }
          *
          */
-        post: operations["postLocationLocalPosts"];
+        post: operations['postLocationLocalPosts'];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/api/google/location/local_post/bulk": {
+    '/api/google/location/local_post/bulk': {
         parameters: {
             query?: never;
             header?: never;
@@ -176,14 +176,14 @@ export interface paths {
          *                 }
          *
          */
-        post: operations["postBulkLocationLocalPost"];
+        post: operations['postBulkLocationLocalPost'];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/api/google/location/answer": {
+    '/api/google/location/answer': {
         parameters: {
             query?: never;
             header?: never;
@@ -200,20 +200,20 @@ export interface paths {
          *                   例 : {"text": "回答内容"}
          *
          */
-        post: operations["postLocationAnswer"];
+        post: operations['postLocationAnswer'];
         /**
          * Google:店舗の回答の削除
          * @description
          *                   Google:現在のユーザーが作成した回答を削除します。
          *
          */
-        delete: operations["deleteLocationAnswer"];
+        delete: operations['deleteLocationAnswer'];
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/api/brand/create": {
+    '/api/brand/create': {
         parameters: {
             query?: never;
             header?: never;
@@ -231,14 +231,14 @@ export interface paths {
          *                 ブランドの作成に成功した場合は、status 201 Created を返します。(Bodyは BrandResponse)
          *
          */
-        post: operations["createBrand"];
+        post: operations['createBrand'];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/api/store/update": {
+    '/api/store/update': {
         parameters: {
             query?: never;
             header?: never;
@@ -260,10 +260,10 @@ export interface paths {
          *                 店舗情報の更新に成功した場合は、status 200 OK を返します。(Bodyは StoreResponse)
          *
          */
-        patch: operations["updateStore"];
+        patch: operations['updateStore'];
         trace?: never;
     };
-    "/api/store/update/prefecture": {
+    '/api/store/update/prefecture': {
         parameters: {
             query?: never;
             header?: never;
@@ -285,10 +285,10 @@ export interface paths {
          *                 都道府県の更新に成功した場合は、status 200 OK を返します。(Bodyは StoreResponse)
          *
          */
-        patch: operations["updateStorePrefecture"];
+        patch: operations['updateStorePrefecture'];
         trace?: never;
     };
-    "/api/store/update/name": {
+    '/api/store/update/name': {
         parameters: {
             query?: never;
             header?: never;
@@ -310,10 +310,10 @@ export interface paths {
          *                 店舗名の更新に成功した場合は、status 200 OK を返します。(Bodyは StoreResponse)
          *
          */
-        patch: operations["updateStoreName"];
+        patch: operations['updateStoreName'];
         trace?: never;
     };
-    "/api/store/update/google": {
+    '/api/store/update/google': {
         parameters: {
             query?: never;
             header?: never;
@@ -335,10 +335,10 @@ export interface paths {
          *                 Googleアカウントとロケーションの更新に成功した場合は、status 200 OK を返します。(Bodyは StoreResponse)
          *
          */
-        patch: operations["updateStoreGoogleAccountLocation"];
+        patch: operations['updateStoreGoogleAccountLocation'];
         trace?: never;
     };
-    "/api/store/update/google/location": {
+    '/api/store/update/google/location': {
         parameters: {
             query?: never;
             header?: never;
@@ -360,10 +360,10 @@ export interface paths {
          *                 Googleロケーションの更新に成功した場合は、status 200 OK を返します。(Bodyは StoreResponse)
          *
          */
-        patch: operations["updateStoreGoogleLocation"];
+        patch: operations['updateStoreGoogleLocation'];
         trace?: never;
     };
-    "/api/store/update/google/account": {
+    '/api/store/update/google/account': {
         parameters: {
             query?: never;
             header?: never;
@@ -385,10 +385,10 @@ export interface paths {
          *                 Googleアカウントの更新に成功した場合は、status 200 OK を返します。(Bodyは StoreResponse)
          *
          */
-        patch: operations["updateStoreGoogleAccount"];
+        patch: operations['updateStoreGoogleAccount'];
         trace?: never;
     };
-    "/api/store/update/brand": {
+    '/api/store/update/brand': {
         parameters: {
             query?: never;
             header?: never;
@@ -410,10 +410,10 @@ export interface paths {
          *                 ブランドの更新に成功した場合は、status 200 OK を返します。(Bodyは StoreResponse)
          *
          */
-        patch: operations["updateStoreBrand"];
+        patch: operations['updateStoreBrand'];
         trace?: never;
     };
-    "/api/google/location/review/reply": {
+    '/api/google/location/review/reply': {
         parameters: {
             query?: never;
             header?: never;
@@ -429,7 +429,7 @@ export interface paths {
          *                   Google:店舗のクチコミの返信を削除します。
          *
          */
-        delete: operations["deleteLocationReviewReply"];
+        delete: operations['deleteLocationReviewReply'];
         options?: never;
         head?: never;
         /**
@@ -440,10 +440,10 @@ export interface paths {
          *                   例 : "Thank you for your feedback!"
          *
          */
-        patch: operations["updateLocationReviewReply"];
+        patch: operations['updateLocationReviewReply'];
         trace?: never;
     };
-    "/api/google/location/profile": {
+    '/api/google/location/profile': {
         parameters: {
             query?: never;
             header?: never;
@@ -454,7 +454,7 @@ export interface paths {
          * Google:店舗プロフィールの取得
          * @description Google:店舗プロフィールの取得を行います
          */
-        get: operations["getLocationProfile"];
+        get: operations['getLocationProfile'];
         put?: never;
         post?: never;
         delete?: never;
@@ -464,10 +464,10 @@ export interface paths {
          * Google:店舗プロフィールの更新
          * @description Google:店舗プロフィールを更新します
          */
-        patch: operations["updateLocationProfile"];
+        patch: operations['updateLocationProfile'];
         trace?: never;
     };
-    "/api/google/location/profile/website_uri": {
+    '/api/google/location/profile/website_uri': {
         parameters: {
             query?: never;
             header?: never;
@@ -488,10 +488,10 @@ export interface paths {
          *                   例 : https://example.com
          *
          */
-        patch: operations["updateLocationProfileWebsiteUri"];
+        patch: operations['updateLocationProfileWebsiteUri'];
         trace?: never;
     };
-    "/api/google/location/profile/title": {
+    '/api/google/location/profile/title': {
         parameters: {
             query?: never;
             header?: never;
@@ -508,10 +508,10 @@ export interface paths {
          * Google:店舗のプロフィールの更新:ビジネス名
          * @description Google:店舗のビジネス名を更新します
          */
-        patch: operations["updateLocationProfileTitle"];
+        patch: operations['updateLocationProfileTitle'];
         trace?: never;
     };
-    "/api/google/location/profile/store_front_address": {
+    '/api/google/location/profile/store_front_address': {
         parameters: {
             query?: never;
             header?: never;
@@ -539,10 +539,10 @@ export interface paths {
          *                         }
          *
          */
-        patch: operations["updateLocationStoreFrontAddress"];
+        patch: operations['updateLocationStoreFrontAddress'];
         trace?: never;
     };
-    "/api/google/location/profile/service_area": {
+    '/api/google/location/profile/service_area': {
         parameters: {
             query?: never;
             header?: never;
@@ -563,10 +563,10 @@ export interface paths {
          *                   例 : ["ChIJLx1v3J2XGGAR5g4q0G7f8lE", "ChIJLx1v3J2XGGAR5g4q0G7f8lE"]
          *
          */
-        patch: operations["updateLocationServiceArea"];
+        patch: operations['updateLocationServiceArea'];
         trace?: never;
     };
-    "/api/google/location/profile/primary_category": {
+    '/api/google/location/profile/primary_category': {
         parameters: {
             query?: never;
             header?: never;
@@ -583,10 +583,10 @@ export interface paths {
          * Google:店舗のプロフィールの更新:メインカテゴリ
          * @description Google:店舗のメインカテゴリを更新します
          */
-        patch: operations["updateLocationProfilePrimaryCategory"];
+        patch: operations['updateLocationProfilePrimaryCategory'];
         trace?: never;
     };
-    "/api/google/location/profile/phone_number": {
+    '/api/google/location/profile/phone_number': {
         parameters: {
             query?: never;
             header?: never;
@@ -612,10 +612,10 @@ export interface paths {
          *                   例4 : 090 1234 5678
          *
          */
-        patch: operations["updateLocationProfilePhoneNumber"];
+        patch: operations['updateLocationProfilePhoneNumber'];
         trace?: never;
     };
-    "/api/google/location/profile/opening_date": {
+    '/api/google/location/profile/opening_date': {
         parameters: {
             query?: never;
             header?: never;
@@ -636,10 +636,10 @@ export interface paths {
          *                   例 : {"year": 2023, "month": 10, "day": 1}
          *
          */
-        patch: operations["updateLocationProfileOpeningDate"];
+        patch: operations['updateLocationProfileOpeningDate'];
         trace?: never;
     };
-    "/api/google/location/profile/description": {
+    '/api/google/location/profile/description': {
         parameters: {
             query?: never;
             header?: never;
@@ -660,10 +660,10 @@ export interface paths {
          *                   例 : これは店舗です。
          *
          */
-        patch: operations["updateLocationProfileDescription"];
+        patch: operations['updateLocationProfileDescription'];
         trace?: never;
     };
-    "/api/google/location/profile/business_hours": {
+    '/api/google/location/profile/business_hours': {
         parameters: {
             query?: never;
             header?: never;
@@ -711,10 +711,10 @@ export interface paths {
          *                         }
          *
          */
-        patch: operations["updateLocationBusinessHours"];
+        patch: operations['updateLocationBusinessHours'];
         trace?: never;
     };
-    "/api/google/location/profile/additional_categories": {
+    '/api/google/location/profile/additional_categories': {
         parameters: {
             query?: never;
             header?: never;
@@ -739,10 +739,10 @@ export interface paths {
          *                   ]
          *
          */
-        patch: operations["updateLocationProfileAdditionalCategories"];
+        patch: operations['updateLocationProfileAdditionalCategories'];
         trace?: never;
     };
-    "/api/google/location/food_menus": {
+    '/api/google/location/food_menus': {
         parameters: {
             query?: never;
             header?: never;
@@ -753,7 +753,7 @@ export interface paths {
          * Google:店舗のメニューを全て取得
          * @description Google:店舗のメニューを全て取得します
          */
-        get: operations["getLocationFoodMenus"];
+        get: operations['getLocationFoodMenus'];
         put?: never;
         post?: never;
         delete?: never;
@@ -763,10 +763,10 @@ export interface paths {
          * Google:店舗のメニューの更新
          * @description Google:店舗のメニューを更新します
          */
-        patch: operations["updateLocationFoodMenus"];
+        patch: operations['updateLocationFoodMenus'];
         trace?: never;
     };
-    "/api/google/location/attributes": {
+    '/api/google/location/attributes': {
         parameters: {
             query?: never;
             header?: never;
@@ -777,7 +777,7 @@ export interface paths {
          * Google:店舗の属性情報を全て取得
          * @description Google:店舗の属性情報を全て取得します
          */
-        get: operations["getLocationAttributes"];
+        get: operations['getLocationAttributes'];
         put?: never;
         post?: never;
         delete?: never;
@@ -815,10 +815,10 @@ export interface paths {
          *                         }
          *
          */
-        patch: operations["updateLocationAttributes"];
+        patch: operations['updateLocationAttributes'];
         trace?: never;
     };
-    "/api/google/location/attributes/sns_link": {
+    '/api/google/location/attributes/sns_link': {
         parameters: {
             query?: never;
             header?: never;
@@ -841,10 +841,10 @@ export interface paths {
          *                     TWITTER, TIKTOK, INSTAGRAM, YOUTUBE, INSTAGRAM, FACEBOOK, LINKEDIN, PINTEREST
          *
          */
-        patch: operations["updateLocationAttributeSnsLink"];
+        patch: operations['updateLocationAttributeSnsLink'];
         trace?: never;
     };
-    "/api/google/location/attributes/services": {
+    '/api/google/location/attributes/services': {
         parameters: {
             query?: never;
             header?: never;
@@ -879,10 +879,10 @@ export interface paths {
          *                   ]
          *
          */
-        patch: operations["updateLocationServices"];
+        patch: operations['updateLocationServices'];
         trace?: never;
     };
-    "/api/google/location/attributes/serviceOptions": {
+    '/api/google/location/attributes/serviceOptions': {
         parameters: {
             query?: never;
             header?: never;
@@ -917,10 +917,10 @@ export interface paths {
          *                   ]
          *
          */
-        patch: operations["updateLocationServiceOptions"];
+        patch: operations['updateLocationServiceOptions'];
         trace?: never;
     };
-    "/api/google/location/attributes/menu_link": {
+    '/api/google/location/attributes/menu_link': {
         parameters: {
             query?: never;
             header?: never;
@@ -941,10 +941,10 @@ export interface paths {
          *                   例 : https://example.com/
          *
          */
-        patch: operations["updateLocationAttributeMenuLink"];
+        patch: operations['updateLocationAttributeMenuLink'];
         trace?: never;
     };
-    "/api/google/location/attributes/business_owner_info": {
+    '/api/google/location/attributes/business_owner_info': {
         parameters: {
             query?: never;
             header?: never;
@@ -966,10 +966,10 @@ export interface paths {
          *                   例 : true
          *
          */
-        patch: operations["updateLocationBusinessOwnerInfo"];
+        patch: operations['updateLocationBusinessOwnerInfo'];
         trace?: never;
     };
-    "/api/brand/update/name": {
+    '/api/brand/update/name': {
         parameters: {
             query?: never;
             header?: never;
@@ -991,10 +991,10 @@ export interface paths {
          *                 ブランド名の更新に成功した場合は、status 200 OK を返します。(Bodyは BrandListApiResponse)
          *
          */
-        patch: operations["updateBrandName"];
+        patch: operations['updateBrandName'];
         trace?: never;
     };
-    "/api/user/me": {
+    '/api/user/me': {
         parameters: {
             query?: never;
             header?: never;
@@ -1009,7 +1009,7 @@ export interface paths {
          *                 既に登録されている場合は、status 200 OK を返します。(Bodyは UserApiResponse)
          *
          */
-        get: operations["getMe"];
+        get: operations['getMe'];
         put?: never;
         post?: never;
         delete?: never;
@@ -1018,7 +1018,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/store": {
+    '/api/store': {
         parameters: {
             query?: never;
             header?: never;
@@ -1033,7 +1033,7 @@ export interface paths {
          *                 店舗が存在しない場合は、status 404 Not Found を返します。(Bodyは StoreErrorResponse)
          *
          */
-        get: operations["getStore"];
+        get: operations['getStore'];
         put?: never;
         post?: never;
         delete?: never;
@@ -1042,7 +1042,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/store/list": {
+    '/api/store/list': {
         parameters: {
             query?: never;
             header?: never;
@@ -1057,7 +1057,7 @@ export interface paths {
          *                 ユーザーが持つ店舗情報が存在しない場合は、空のリストを返します。(Bodyは StoreListResponse)
          *
          */
-        get: operations["getStoreListByUserId"];
+        get: operations['getStoreListByUserId'];
         put?: never;
         post?: never;
         delete?: never;
@@ -1066,7 +1066,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/store/list/prefecture": {
+    '/api/store/list/prefecture': {
         parameters: {
             query?: never;
             header?: never;
@@ -1081,7 +1081,7 @@ export interface paths {
          *                 都道府県ごとの店舗情報が存在しない場合は、空のリストを返します。(Bodyは PrefectureListWithBrandListWithStoreListResponse)
          *
          */
-        get: operations["getStoreListByPrefecture"];
+        get: operations['getStoreListByPrefecture'];
         put?: never;
         post?: never;
         delete?: never;
@@ -1090,7 +1090,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/store/list/filter/brand": {
+    '/api/store/list/filter/brand': {
         parameters: {
             query?: never;
             header?: never;
@@ -1105,7 +1105,7 @@ export interface paths {
          *                 ブランドIDが指定されていない場合は、全店舗を返します。(Bodyは StoreListResponse)
          *
          */
-        get: operations["getStoreListByBrandId"];
+        get: operations['getStoreListByBrandId'];
         put?: never;
         post?: never;
         delete?: never;
@@ -1114,7 +1114,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/google/me": {
+    '/api/google/me': {
         parameters: {
             query?: never;
             header?: never;
@@ -1125,7 +1125,7 @@ export interface paths {
          * Google:ログインユーザー情報の取得
          * @description Google:ログインユーザー情報の取得を行います
          */
-        get: operations["getMe_1"];
+        get: operations['getMe_1'];
         put?: never;
         post?: never;
         delete?: never;
@@ -1134,7 +1134,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/google/locations": {
+    '/api/google/locations': {
         parameters: {
             query?: never;
             header?: never;
@@ -1145,7 +1145,7 @@ export interface paths {
          * Google:店舗一覧の取得
          * @description Google:店舗一覧の取得を行います
          */
-        get: operations["getLocations"];
+        get: operations['getLocations'];
         put?: never;
         post?: never;
         delete?: never;
@@ -1154,7 +1154,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/google/location": {
+    '/api/google/location': {
         parameters: {
             query?: never;
             header?: never;
@@ -1165,7 +1165,7 @@ export interface paths {
          * Google:店舗情報の取得
          * @description Google:店舗情報の取得を行います
          */
-        get: operations["getLocation"];
+        get: operations['getLocation'];
         put?: never;
         post?: never;
         delete?: never;
@@ -1174,7 +1174,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/google/location/reviews": {
+    '/api/google/location/reviews': {
         parameters: {
             query?: never;
             header?: never;
@@ -1185,7 +1185,7 @@ export interface paths {
          * Google:店舗のクチコミを全て取得
          * @description Google:店舗のクチコミを全て取得します
          */
-        get: operations["getLocationReviews"];
+        get: operations['getLocationReviews'];
         put?: never;
         post?: never;
         delete?: never;
@@ -1194,7 +1194,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/google/location/review": {
+    '/api/google/location/review': {
         parameters: {
             query?: never;
             header?: never;
@@ -1205,7 +1205,7 @@ export interface paths {
          * Google:店舗のクチコミを取得
          * @description Google:店舗のクチコミを取得します
          */
-        get: operations["getLocationReview"];
+        get: operations['getLocationReview'];
         put?: never;
         post?: never;
         delete?: never;
@@ -1214,7 +1214,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/google/location/questions": {
+    '/api/google/location/questions': {
         parameters: {
             query?: never;
             header?: never;
@@ -1228,7 +1228,7 @@ export interface paths {
          *                ビジネスプロフィールが無効だったり制限がかかっている場合はエラーが返ってきます。
          *
          */
-        get: operations["getLocationQuestions"];
+        get: operations['getLocationQuestions'];
         put?: never;
         post?: never;
         delete?: never;
@@ -1237,7 +1237,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/google/location/photo/{directoryName}/{filename}": {
+    '/api/google/location/photo/{directoryName}/{filename}': {
         parameters: {
             query?: never;
             header?: never;
@@ -1251,7 +1251,7 @@ export interface paths {
          *                 特定のファイル名の写真を取得します。
          *
          */
-        get: operations["getLocationPhotoLocal"];
+        get: operations['getLocationPhotoLocal'];
         put?: never;
         post?: never;
         delete?: never;
@@ -1260,7 +1260,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/google/location/photo/bulk/{directoryName}/{filename}": {
+    '/api/google/location/photo/bulk/{directoryName}/{filename}': {
         parameters: {
             query?: never;
             header?: never;
@@ -1275,7 +1275,7 @@ export interface paths {
          *                 ファイルは取得された後も削除されません。
          *
          */
-        get: operations["getLocationPhotoLocalBulk"];
+        get: operations['getLocationPhotoLocalBulk'];
         put?: never;
         post?: never;
         delete?: never;
@@ -1284,7 +1284,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/google/location/local_posts": {
+    '/api/google/location/local_posts': {
         parameters: {
             query?: never;
             header?: never;
@@ -1295,7 +1295,7 @@ export interface paths {
          * Google:店舗の最新情報を全て取得
          * @description Google:店舗の最新情報を全て取得します
          */
-        get: operations["getLocationLocalPosts"];
+        get: operations['getLocationLocalPosts'];
         put?: never;
         post?: never;
         delete?: never;
@@ -1304,7 +1304,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/google/location/attributes/available": {
+    '/api/google/location/attributes/available': {
         parameters: {
             query?: never;
             header?: never;
@@ -1315,7 +1315,7 @@ export interface paths {
          * Google:店舗の利用可能な属性情報を全て取得
          * @description Google:店舗の利用可能な属性情報を全て取得します
          */
-        get: operations["getLocationAvailableAttributes"];
+        get: operations['getLocationAvailableAttributes'];
         put?: never;
         post?: never;
         delete?: never;
@@ -1324,7 +1324,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/google/location/answers": {
+    '/api/google/location/answers': {
         parameters: {
             query?: never;
             header?: never;
@@ -1338,7 +1338,7 @@ export interface paths {
          *                ビジネスプロフィールが無効だったり制限がかかっている場合はエラーが返ってきます。
          *
          */
-        get: operations["getLocationAnswers"];
+        get: operations['getLocationAnswers'];
         put?: never;
         post?: never;
         delete?: never;
@@ -1347,7 +1347,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/google/categories": {
+    '/api/google/categories': {
         parameters: {
             query?: never;
             header?: never;
@@ -1358,7 +1358,7 @@ export interface paths {
          * Google:カテゴリ一覧の取得
          * @description Google:カテゴリ一覧の取得を行います
          */
-        get: operations["getCategories"];
+        get: operations['getCategories'];
         put?: never;
         post?: never;
         delete?: never;
@@ -1367,7 +1367,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/google/accounts": {
+    '/api/google/accounts': {
         parameters: {
             query?: never;
             header?: never;
@@ -1378,7 +1378,7 @@ export interface paths {
          * Google:アカウント一覧の取得
          * @description Google:アカウント一覧の取得を行います
          */
-        get: operations["getAccounts"];
+        get: operations['getAccounts'];
         put?: never;
         post?: never;
         delete?: never;
@@ -1387,7 +1387,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/google/account": {
+    '/api/google/account': {
         parameters: {
             query?: never;
             header?: never;
@@ -1398,7 +1398,7 @@ export interface paths {
          * Google:アカウント情報の取得
          * @description Google:アカウント情報の取得を行います
          */
-        get: operations["getAccount"];
+        get: operations['getAccount'];
         put?: never;
         post?: never;
         delete?: never;
@@ -1407,7 +1407,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/cognito/me": {
+    '/api/cognito/me': {
         parameters: {
             query?: never;
             header?: never;
@@ -1422,7 +1422,7 @@ export interface paths {
          *                 既に登録されている場合は、status 200 OK を返します。(Bodyは CognitoAccountResponse)
          *
          */
-        get: operations["getMe_2"];
+        get: operations['getMe_2'];
         put?: never;
         post?: never;
         delete?: never;
@@ -1431,7 +1431,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/brand/list": {
+    '/api/brand/list': {
         parameters: {
             query?: never;
             header?: never;
@@ -1446,7 +1446,7 @@ export interface paths {
          *                 ユーザーが持つブランド情報が存在しない場合は、空のリストを返します。(Bodyは BrandListApiResponse)
          *
          */
-        get: operations["getBrandList"];
+        get: operations['getBrandList'];
         put?: never;
         post?: never;
         delete?: never;
@@ -1455,7 +1455,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/store/delete": {
+    '/api/store/delete': {
         parameters: {
             query?: never;
             header?: never;
@@ -1473,13 +1473,13 @@ export interface paths {
          *                 店舗の削除に成功した場合は、status 204 No Content を返します。
          *
          */
-        delete: operations["deleteStore"];
+        delete: operations['deleteStore'];
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/api/brand/delete": {
+    '/api/brand/delete': {
         parameters: {
             query?: never;
             header?: never;
@@ -1497,7 +1497,7 @@ export interface paths {
          *                 ブランドの削除に成功した場合は、status 204 No Content を返します。
          *
          */
-        delete: operations["deleteBrand"];
+        delete: operations['deleteBrand'];
         options?: never;
         head?: never;
         patch?: never;
@@ -1536,7 +1536,7 @@ export interface components {
             text?: string;
         };
         GooglePlacesAutoCompleteResponse: {
-            placeSetList?: components["schemas"]["GooglePlacesAutoCompletePlaceSet"][];
+            placeSetList?: components['schemas']['GooglePlacesAutoCompletePlaceSet'][];
         };
         GoogleLocationAnswer: {
             name?: string;
@@ -1545,7 +1545,7 @@ export interface components {
             updateTime?: string;
             /** Format: int32 */
             upvoteCount?: number;
-            author?: components["schemas"]["GoogleLocationAuthor"];
+            author?: components['schemas']['GoogleLocationAuthor'];
         };
         GoogleLocationAuthor: {
             name?: string;
@@ -1562,8 +1562,8 @@ export interface components {
             upvoteCount?: number;
             /** Format: int32 */
             totalAnswerCount?: number;
-            author?: components["schemas"]["GoogleLocationAuthor"];
-            topAnswers?: components["schemas"]["GoogleLocationAnswer"][];
+            author?: components['schemas']['GoogleLocationAuthor'];
+            topAnswers?: components['schemas']['GoogleLocationAnswer'][];
         };
         GoogleLocationAssociation: {
             /** @enum {string} */
@@ -1583,22 +1583,22 @@ export interface components {
         };
         GoogleLocationEvent: {
             title?: string;
-            schedule?: components["schemas"]["GoogleLocationTimeInterval"];
+            schedule?: components['schemas']['GoogleLocationTimeInterval'];
         };
         GoogleLocationLocalPostModel: {
             name?: string;
             languageCode?: string;
             summary?: string;
-            callToAction?: components["schemas"]["GoogleLocationCallToAction"];
+            callToAction?: components['schemas']['GoogleLocationCallToAction'];
             createTime?: string;
             updateTime?: string;
-            event?: components["schemas"]["GoogleLocationEvent"];
+            event?: components['schemas']['GoogleLocationEvent'];
             state?: string;
-            media?: components["schemas"]["GoogleLocationPhotoModel"][];
+            media?: components['schemas']['GoogleLocationPhotoModel'][];
             searchUrl?: string;
             topicType?: string;
             alertType?: string;
-            offer?: components["schemas"]["GoogleLocationOffer"];
+            offer?: components['schemas']['GoogleLocationOffer'];
         };
         GoogleLocationOffer: {
             couponCode?: string;
@@ -1614,15 +1614,15 @@ export interface components {
             googleUrl?: string;
             thumbnailUrl?: string;
             createTime?: string;
-            locationAssociation?: components["schemas"]["GoogleLocationAssociation"];
-            dataRef?: components["schemas"]["GoogleLocationPhotoDataRef"];
+            locationAssociation?: components['schemas']['GoogleLocationAssociation'];
+            dataRef?: components['schemas']['GoogleLocationPhotoDataRef'];
             sourceUrl?: string;
         };
         GoogleLocationTimeInterval: {
-            startDate?: components["schemas"]["GoogleLocationDate"];
-            endDate?: components["schemas"]["GoogleLocationDate"];
-            startTime?: components["schemas"]["GoogleLocationTimeOfDay"];
-            endTime?: components["schemas"]["GoogleLocationTimeOfDay"];
+            startDate?: components['schemas']['GoogleLocationDate'];
+            endDate?: components['schemas']['GoogleLocationDate'];
+            startTime?: components['schemas']['GoogleLocationTimeOfDay'];
+            endTime?: components['schemas']['GoogleLocationTimeOfDay'];
         };
         GoogleLocationTimeOfDay: {
             /** Format: int32 */
@@ -1645,11 +1645,11 @@ export interface components {
             updateTime?: string;
         };
         GoogleLocationBusinessHours: {
-            periods: components["schemas"]["GoogleLocationTimePeriod"][];
+            periods: components['schemas']['GoogleLocationTimePeriod'][];
         };
         GoogleLocationCategories: {
-            primaryCategory?: components["schemas"]["GoogleLocationCategory"];
-            additionalCategories?: components["schemas"]["GoogleLocationCategory"][];
+            primaryCategory?: components['schemas']['GoogleLocationCategory'];
+            additionalCategories?: components['schemas']['GoogleLocationCategory'][];
         };
         GoogleLocationCategory: {
             name?: string;
@@ -1657,12 +1657,12 @@ export interface components {
         };
         GoogleLocationMoreHours: {
             hoursTypeId?: string;
-            periods?: components["schemas"]["GoogleLocationTimePeriod"][];
+            periods?: components['schemas']['GoogleLocationTimePeriod'][];
         };
         GoogleLocationOpenInfo: {
             status?: string;
             canReopen?: boolean;
-            openingDate?: components["schemas"]["GoogleLocationDate"];
+            openingDate?: components['schemas']['GoogleLocationDate'];
         };
         GoogleLocationPhoneNumbers: {
             primaryPhone?: string;
@@ -1673,7 +1673,7 @@ export interface components {
             placeId?: string;
         };
         GoogleLocationPlaceInfos: {
-            placeInfos?: components["schemas"]["GoogleLocationPlaceInfo"][];
+            placeInfos?: components['schemas']['GoogleLocationPlaceInfo'][];
         };
         GoogleLocationPostalAddress: {
             postalCode?: string;
@@ -1687,28 +1687,28 @@ export interface components {
         GoogleLocationProfileModel: {
             name?: string;
             title?: string;
-            phoneNumbers?: components["schemas"]["GoogleLocationPhoneNumbers"];
-            categories?: components["schemas"]["GoogleLocationCategories"];
-            storefrontAddress?: components["schemas"]["GoogleLocationPostalAddress"];
+            phoneNumbers?: components['schemas']['GoogleLocationPhoneNumbers'];
+            categories?: components['schemas']['GoogleLocationCategories'];
+            storefrontAddress?: components['schemas']['GoogleLocationPostalAddress'];
             websiteUri?: string;
-            regularHours?: components["schemas"]["GoogleLocationBusinessHours"];
-            moreHours?: components["schemas"]["GoogleLocationMoreHours"][];
-            profile?: components["schemas"]["GoogleLocationProfile"];
-            openInfo?: components["schemas"]["GoogleLocationOpenInfo"];
-            serviceArea?: components["schemas"]["GoogleLocationServiceArea"];
+            regularHours?: components['schemas']['GoogleLocationBusinessHours'];
+            moreHours?: components['schemas']['GoogleLocationMoreHours'][];
+            profile?: components['schemas']['GoogleLocationProfile'];
+            openInfo?: components['schemas']['GoogleLocationOpenInfo'];
+            serviceArea?: components['schemas']['GoogleLocationServiceArea'];
         };
         GoogleLocationServiceArea: {
             businessType?: string;
             regionCode?: string;
-            places?: components["schemas"]["GoogleLocationPlaceInfos"];
+            places?: components['schemas']['GoogleLocationPlaceInfos'];
         };
         GoogleLocationTimePeriod: {
             /** @enum {string} */
             openDay: GoogleLocationTimePeriodOpenDay;
-            openTime: components["schemas"]["GoogleLocationTimeOfDay"];
+            openTime: components['schemas']['GoogleLocationTimeOfDay'];
             /** @enum {string} */
             closeDay: GoogleLocationTimePeriodCloseDay;
-            closeTime: components["schemas"]["GoogleLocationTimeOfDay"];
+            closeTime: components['schemas']['GoogleLocationTimeOfDay'];
         };
         GoogleLocationStoreFrontAddressRequest: {
             postalCode: string;
@@ -1719,7 +1719,7 @@ export interface components {
         GoogleLocationBusinessHoursRequest: {
             /** @enum {string} */
             hoursTypeId: GoogleLocationBusinessHoursRequestHoursTypeId;
-            periods: components["schemas"]["GoogleLocationTimePeriod"][];
+            periods: components['schemas']['GoogleLocationTimePeriod'][];
         };
         GoogleLocationCaloriesFact: {
             /** Format: int32 */
@@ -1729,43 +1729,43 @@ export interface components {
             unit?: string;
         };
         GoogleLocationFoodMenu: {
-            labels?: components["schemas"]["GoogleLocationMenuLabel"][];
+            labels?: components['schemas']['GoogleLocationMenuLabel'][];
             sourceUrl?: string;
-            sections?: components["schemas"]["GoogleLocationFoodMenuSection"][];
+            sections?: components['schemas']['GoogleLocationFoodMenuSection'][];
             cuisines?: string[];
         };
         GoogleLocationFoodMenuItem: {
-            labels?: components["schemas"]["GoogleLocationMenuLabel"][];
-            attributes?: components["schemas"]["GoogleLocationFoodMenuItemAttributes"];
-            options?: components["schemas"]["GoogleLocationFoodMenuItemOption"][];
+            labels?: components['schemas']['GoogleLocationMenuLabel'][];
+            attributes?: components['schemas']['GoogleLocationFoodMenuItemAttributes'];
+            options?: components['schemas']['GoogleLocationFoodMenuItemOption'][];
         };
         GoogleLocationFoodMenuItemAttributes: {
-            price?: components["schemas"]["GoogleLocationMoney"];
+            price?: components['schemas']['GoogleLocationMoney'];
             spiciness?: string;
             allergen?: string[];
             dietaryRestriction?: string[];
-            nutritionFacts?: components["schemas"]["GoogleLocationNutritionFacts"];
-            ingredients?: components["schemas"]["GoogleLocationIngredient"][];
+            nutritionFacts?: components['schemas']['GoogleLocationNutritionFacts'];
+            ingredients?: components['schemas']['GoogleLocationIngredient'][];
             /** Format: int32 */
             servesNumPeople?: number;
             preparationMethods?: string[];
-            portionSize?: components["schemas"]["GoogleLocationPortionSize"];
+            portionSize?: components['schemas']['GoogleLocationPortionSize'];
             mediaKeys?: string[];
         };
         GoogleLocationFoodMenuItemOption: {
-            labels?: components["schemas"]["GoogleLocationMenuLabel"][];
-            attributes?: components["schemas"]["GoogleLocationFoodMenuItemAttributes"];
+            labels?: components['schemas']['GoogleLocationMenuLabel'][];
+            attributes?: components['schemas']['GoogleLocationFoodMenuItemAttributes'];
         };
         GoogleLocationFoodMenuSection: {
-            labels?: components["schemas"]["GoogleLocationMenuLabel"][];
-            items?: components["schemas"]["GoogleLocationFoodMenuItem"][];
+            labels?: components['schemas']['GoogleLocationMenuLabel'][];
+            items?: components['schemas']['GoogleLocationFoodMenuItem'][];
         };
         GoogleLocationFoodMenusModel: {
             name?: string;
-            menus?: components["schemas"]["GoogleLocationFoodMenu"][];
+            menus?: components['schemas']['GoogleLocationFoodMenu'][];
         };
         GoogleLocationIngredient: {
-            labels?: components["schemas"]["GoogleLocationMenuLabel"][];
+            labels?: components['schemas']['GoogleLocationMenuLabel'][];
         };
         GoogleLocationMenuLabel: {
             displayName?: string;
@@ -1786,31 +1786,31 @@ export interface components {
             unit?: string;
         };
         GoogleLocationNutritionFacts: {
-            calories?: components["schemas"]["GoogleLocationCaloriesFact"];
-            totalFat?: components["schemas"]["GoogleLocationNutritionFact"];
-            cholesterol?: components["schemas"]["GoogleLocationNutritionFact"];
-            sodium?: components["schemas"]["GoogleLocationNutritionFact"];
-            totalCarbohydrates?: components["schemas"]["GoogleLocationNutritionFact"];
-            protein?: components["schemas"]["GoogleLocationNutritionFact"];
+            calories?: components['schemas']['GoogleLocationCaloriesFact'];
+            totalFat?: components['schemas']['GoogleLocationNutritionFact'];
+            cholesterol?: components['schemas']['GoogleLocationNutritionFact'];
+            sodium?: components['schemas']['GoogleLocationNutritionFact'];
+            totalCarbohydrates?: components['schemas']['GoogleLocationNutritionFact'];
+            protein?: components['schemas']['GoogleLocationNutritionFact'];
         };
         GoogleLocationPortionSize: {
             /** Format: int32 */
             quantity?: number;
-            unit?: components["schemas"]["GoogleLocationMenuLabel"][];
+            unit?: components['schemas']['GoogleLocationMenuLabel'][];
         };
         GoogleLocationAttribute: {
             name?: string;
             /** @enum {string} */
             valueType?: GoogleLocationAttributeValueType;
-            uriValues?: components["schemas"]["GoogleLocationAttributeUriValue"][];
-            values?: components["schemas"]["JsonNode"][];
+            uriValues?: components['schemas']['GoogleLocationAttributeUriValue'][];
+            values?: components['schemas']['JsonNode'][];
         };
         GoogleLocationAttributeUriValue: {
             uri?: string;
         };
         GoogleLocationAttributesModel: {
             name?: string;
-            attributes?: components["schemas"]["GoogleLocationAttribute"][];
+            attributes?: components['schemas']['GoogleLocationAttribute'][];
         };
         JsonNode: Record<string, never>;
         GoogleLocationAttributeSnsLinkRequest: {
@@ -1830,27 +1830,27 @@ export interface components {
         };
         UserApiResponse: Record<string, never>;
         StoreListResponse: {
-            stores: components["schemas"]["StoreResponse"][];
+            stores: components['schemas']['StoreResponse'][];
         };
         BrandWithStoresResponse: {
             brandId: string;
             userId: string;
             name: string;
             createdAt: string;
-            stores: components["schemas"]["StoreResponse"][];
+            stores: components['schemas']['StoreResponse'][];
             /** Format: int32 */
             storesCount: number;
         };
         PrefectureListWithBrandListWithStoreListResponse: {
-            prefectures: components["schemas"]["PrefectureWithBrandListWithStoreListResponse"][];
+            prefectures: components['schemas']['PrefectureWithBrandListWithStoreListResponse'][];
         };
         PrefectureWithBrandListWithStoreListResponse: {
             prefectureName?: string;
             prefectureJapaneseName?: string;
-            brands: components["schemas"]["BrandWithStoresResponse"][];
+            brands: components['schemas']['BrandWithStoresResponse'][];
         };
         GoogleMe: {
-            names: components["schemas"]["GoogleName"][];
+            names: components['schemas']['GoogleName'][];
         };
         GoogleName: {
             displayName: string;
@@ -1867,8 +1867,8 @@ export interface components {
             comment?: string;
             /** @enum {string} */
             starRating?: GoogleLocationReviewCustomStarRating;
-            reviewer?: components["schemas"]["GoogleLocationReviewReviewer"];
-            reviewReply?: components["schemas"]["GoogleLocationReviewReply"];
+            reviewer?: components['schemas']['GoogleLocationReviewReviewer'];
+            reviewReply?: components['schemas']['GoogleLocationReviewReply'];
             createTime?: string;
             updateTime?: string;
             isReply?: boolean;
@@ -1887,18 +1887,18 @@ export interface components {
             deprecated?: boolean;
             /** @enum {string} */
             valueType?: GoogleAttributeMetadataValueType;
-            valueMetadata?: components["schemas"]["GoogleAttributeValueMetadata"][];
+            valueMetadata?: components['schemas']['GoogleAttributeValueMetadata'][];
         };
         GoogleAttributeValueMetadata: {
             displayName?: string;
-            values?: components["schemas"]["JsonNode"][];
+            values?: components['schemas']['JsonNode'][];
         };
         GoogleAccount: {
             name: string;
             accountName: string;
         };
         BrandWithStoresListResponse: {
-            brands: components["schemas"]["BrandWithStoresResponse"][];
+            brands: components['schemas']['BrandWithStoresResponse'][];
         };
     };
     responses: never;
@@ -1930,7 +1930,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["StoreResponse"];
+                    '*/*': components['schemas']['StoreResponse'];
                 };
             };
             /** @description Unauthorized */
@@ -1939,7 +1939,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ErrorResponse"];
+                    '*/*': components['schemas']['ErrorResponse'];
                 };
             };
         };
@@ -1953,7 +1953,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["GooglePlacesAutoCompleteRequest"];
+                'application/json': components['schemas']['GooglePlacesAutoCompleteRequest'];
             };
         };
         responses: {
@@ -1963,7 +1963,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["GooglePlacesAutoCompleteResponse"];
+                    '*/*': components['schemas']['GooglePlacesAutoCompleteResponse'];
                 };
             };
             /** @description Unauthorized */
@@ -1972,7 +1972,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ErrorResponse"];
+                    '*/*': components['schemas']['ErrorResponse'];
                 };
             };
         };
@@ -1988,7 +1988,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["GoogleLocationQuestion"];
+                'application/json': components['schemas']['GoogleLocationQuestion'];
             };
         };
         responses: {
@@ -2005,7 +2005,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ErrorResponse"];
+                    '*/*': components['schemas']['ErrorResponse'];
                 };
             };
         };
@@ -2035,7 +2035,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ErrorResponse"];
+                    '*/*': components['schemas']['ErrorResponse'];
                 };
             };
         };
@@ -2052,7 +2052,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["GoogleLocationQuestion"];
+                'application/json': components['schemas']['GoogleLocationQuestion'];
             };
         };
         responses: {
@@ -2062,7 +2062,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["GoogleLocationQuestion"];
+                    '*/*': components['schemas']['GoogleLocationQuestion'];
                 };
             };
             /** @description Unauthorized */
@@ -2071,7 +2071,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ErrorResponse"];
+                    '*/*': components['schemas']['ErrorResponse'];
                 };
             };
         };
@@ -2094,7 +2094,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["GoogleLocationPhotoModel"][];
+                    '*/*': components['schemas']['GoogleLocationPhotoModel'][];
                 };
             };
             /** @description Unauthorized */
@@ -2103,7 +2103,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ErrorResponse"];
+                    '*/*': components['schemas']['ErrorResponse'];
                 };
             };
         };
@@ -2120,7 +2120,7 @@ export interface operations {
         };
         requestBody?: {
             content: {
-                "multipart/form-data": {
+                'multipart/form-data': {
                     files: string[];
                 };
             };
@@ -2132,7 +2132,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": Record<string, never>;
+                    '*/*': Record<string, never>;
                 };
             };
             /** @description Unauthorized */
@@ -2141,7 +2141,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ErrorResponse"];
+                    '*/*': components['schemas']['ErrorResponse'];
                 };
             };
         };
@@ -2158,9 +2158,9 @@ export interface operations {
         };
         requestBody?: {
             content: {
-                "multipart/form-data": {
+                'multipart/form-data': {
                     files?: string[];
-                    localPost?: components["schemas"]["GoogleLocationLocalPostModel"];
+                    localPost?: components['schemas']['GoogleLocationLocalPostModel'];
                 };
             };
         };
@@ -2178,7 +2178,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ErrorResponse"];
+                    '*/*': components['schemas']['ErrorResponse'];
                 };
             };
         };
@@ -2195,9 +2195,9 @@ export interface operations {
         };
         requestBody?: {
             content: {
-                "multipart/form-data": {
+                'multipart/form-data': {
                     files?: string[];
-                    localPost?: components["schemas"]["GoogleLocationLocalPostModel"];
+                    localPost?: components['schemas']['GoogleLocationLocalPostModel'];
                 };
             };
         };
@@ -2215,7 +2215,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ErrorResponse"];
+                    '*/*': components['schemas']['ErrorResponse'];
                 };
             };
         };
@@ -2232,7 +2232,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["GoogleLocationAnswer"];
+                'application/json': components['schemas']['GoogleLocationAnswer'];
             };
         };
         responses: {
@@ -2249,7 +2249,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ErrorResponse"];
+                    '*/*': components['schemas']['ErrorResponse'];
                 };
             };
         };
@@ -2279,7 +2279,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ErrorResponse"];
+                    '*/*': components['schemas']['ErrorResponse'];
                 };
             };
         };
@@ -2301,7 +2301,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["BrandResponse"];
+                    '*/*': components['schemas']['BrandResponse'];
                 };
             };
             /** @description Unauthorized */
@@ -2310,7 +2310,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ErrorResponse"];
+                    '*/*': components['schemas']['ErrorResponse'];
                 };
             };
         };
@@ -2337,7 +2337,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["StoreResponse"];
+                    '*/*': components['schemas']['StoreResponse'];
                 };
             };
             /** @description Unauthorized */
@@ -2346,7 +2346,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ErrorResponse"];
+                    '*/*': components['schemas']['ErrorResponse'];
                 };
             };
         };
@@ -2369,7 +2369,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["StoreResponse"];
+                    '*/*': components['schemas']['StoreResponse'];
                 };
             };
             /** @description Unauthorized */
@@ -2378,7 +2378,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ErrorResponse"];
+                    '*/*': components['schemas']['ErrorResponse'];
                 };
             };
         };
@@ -2401,7 +2401,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["StoreResponse"];
+                    '*/*': components['schemas']['StoreResponse'];
                 };
             };
             /** @description Unauthorized */
@@ -2410,7 +2410,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ErrorResponse"];
+                    '*/*': components['schemas']['ErrorResponse'];
                 };
             };
         };
@@ -2434,7 +2434,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["StoreResponse"];
+                    '*/*': components['schemas']['StoreResponse'];
                 };
             };
             /** @description Unauthorized */
@@ -2443,7 +2443,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ErrorResponse"];
+                    '*/*': components['schemas']['ErrorResponse'];
                 };
             };
         };
@@ -2466,7 +2466,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["StoreResponse"];
+                    '*/*': components['schemas']['StoreResponse'];
                 };
             };
             /** @description Unauthorized */
@@ -2475,7 +2475,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ErrorResponse"];
+                    '*/*': components['schemas']['ErrorResponse'];
                 };
             };
         };
@@ -2498,7 +2498,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["StoreResponse"];
+                    '*/*': components['schemas']['StoreResponse'];
                 };
             };
             /** @description Unauthorized */
@@ -2507,7 +2507,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ErrorResponse"];
+                    '*/*': components['schemas']['ErrorResponse'];
                 };
             };
         };
@@ -2530,7 +2530,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["StoreResponse"];
+                    '*/*': components['schemas']['StoreResponse'];
                 };
             };
             /** @description Unauthorized */
@@ -2539,7 +2539,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ErrorResponse"];
+                    '*/*': components['schemas']['ErrorResponse'];
                 };
             };
         };
@@ -2570,7 +2570,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ErrorResponse"];
+                    '*/*': components['schemas']['ErrorResponse'];
                 };
             };
         };
@@ -2588,7 +2588,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": string;
+                'application/json': string;
             };
         };
         responses: {
@@ -2598,7 +2598,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["GoogleLocationReviewReply"];
+                    '*/*': components['schemas']['GoogleLocationReviewReply'];
                 };
             };
             /** @description Unauthorized */
@@ -2607,7 +2607,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ErrorResponse"];
+                    '*/*': components['schemas']['ErrorResponse'];
                 };
             };
         };
@@ -2629,7 +2629,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["GoogleLocationProfileModel"];
+                    '*/*': components['schemas']['GoogleLocationProfileModel'];
                 };
             };
             /** @description Unauthorized */
@@ -2638,7 +2638,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ErrorResponse"];
+                    '*/*': components['schemas']['ErrorResponse'];
                 };
             };
         };
@@ -2655,7 +2655,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["GoogleLocationProfileModel"];
+                'application/json': components['schemas']['GoogleLocationProfileModel'];
             };
         };
         responses: {
@@ -2665,7 +2665,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["GoogleLocationProfileModel"];
+                    '*/*': components['schemas']['GoogleLocationProfileModel'];
                 };
             };
             /** @description Unauthorized */
@@ -2674,7 +2674,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ErrorResponse"];
+                    '*/*': components['schemas']['ErrorResponse'];
                 };
             };
         };
@@ -2690,7 +2690,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": string;
+                'application/json': string;
             };
         };
         responses: {
@@ -2700,7 +2700,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["GoogleLocationProfileModel"];
+                    '*/*': components['schemas']['GoogleLocationProfileModel'];
                 };
             };
             /** @description Unauthorized */
@@ -2709,7 +2709,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ErrorResponse"];
+                    '*/*': components['schemas']['ErrorResponse'];
                 };
             };
         };
@@ -2725,7 +2725,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": string;
+                'application/json': string;
             };
         };
         responses: {
@@ -2735,7 +2735,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["GoogleLocationProfileModel"];
+                    '*/*': components['schemas']['GoogleLocationProfileModel'];
                 };
             };
             /** @description Unauthorized */
@@ -2744,7 +2744,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ErrorResponse"];
+                    '*/*': components['schemas']['ErrorResponse'];
                 };
             };
         };
@@ -2760,7 +2760,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["GoogleLocationStoreFrontAddressRequest"];
+                'application/json': components['schemas']['GoogleLocationStoreFrontAddressRequest'];
             };
         };
         responses: {
@@ -2770,7 +2770,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["GoogleLocationProfileModel"];
+                    '*/*': components['schemas']['GoogleLocationProfileModel'];
                 };
             };
             /** @description Unauthorized */
@@ -2779,7 +2779,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ErrorResponse"];
+                    '*/*': components['schemas']['ErrorResponse'];
                 };
             };
         };
@@ -2795,7 +2795,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": string[];
+                'application/json': string[];
             };
         };
         responses: {
@@ -2805,7 +2805,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["GoogleLocationProfileModel"];
+                    '*/*': components['schemas']['GoogleLocationProfileModel'];
                 };
             };
             /** @description Unauthorized */
@@ -2814,7 +2814,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ErrorResponse"];
+                    '*/*': components['schemas']['ErrorResponse'];
                 };
             };
         };
@@ -2830,7 +2830,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["GoogleLocationCategory"];
+                'application/json': components['schemas']['GoogleLocationCategory'];
             };
         };
         responses: {
@@ -2840,7 +2840,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["GoogleLocationProfileModel"];
+                    '*/*': components['schemas']['GoogleLocationProfileModel'];
                 };
             };
             /** @description Unauthorized */
@@ -2849,7 +2849,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ErrorResponse"];
+                    '*/*': components['schemas']['ErrorResponse'];
                 };
             };
         };
@@ -2865,7 +2865,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": string;
+                'application/json': string;
             };
         };
         responses: {
@@ -2875,7 +2875,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["GoogleLocationProfileModel"];
+                    '*/*': components['schemas']['GoogleLocationProfileModel'];
                 };
             };
             /** @description Unauthorized */
@@ -2884,7 +2884,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ErrorResponse"];
+                    '*/*': components['schemas']['ErrorResponse'];
                 };
             };
         };
@@ -2900,7 +2900,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["GoogleLocationDate"];
+                'application/json': components['schemas']['GoogleLocationDate'];
             };
         };
         responses: {
@@ -2910,7 +2910,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["GoogleLocationProfileModel"];
+                    '*/*': components['schemas']['GoogleLocationProfileModel'];
                 };
             };
             /** @description Unauthorized */
@@ -2919,7 +2919,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ErrorResponse"];
+                    '*/*': components['schemas']['ErrorResponse'];
                 };
             };
         };
@@ -2935,7 +2935,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": string;
+                'application/json': string;
             };
         };
         responses: {
@@ -2945,7 +2945,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["GoogleLocationProfileModel"];
+                    '*/*': components['schemas']['GoogleLocationProfileModel'];
                 };
             };
             /** @description Unauthorized */
@@ -2954,7 +2954,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ErrorResponse"];
+                    '*/*': components['schemas']['ErrorResponse'];
                 };
             };
         };
@@ -2970,7 +2970,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["GoogleLocationBusinessHoursRequest"];
+                'application/json': components['schemas']['GoogleLocationBusinessHoursRequest'];
             };
         };
         responses: {
@@ -2980,7 +2980,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["GoogleLocationProfileModel"];
+                    '*/*': components['schemas']['GoogleLocationProfileModel'];
                 };
             };
             /** @description Unauthorized */
@@ -2989,7 +2989,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ErrorResponse"];
+                    '*/*': components['schemas']['ErrorResponse'];
                 };
             };
         };
@@ -3005,7 +3005,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["GoogleLocationCategory"][];
+                'application/json': components['schemas']['GoogleLocationCategory'][];
             };
         };
         responses: {
@@ -3015,7 +3015,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["GoogleLocationProfileModel"];
+                    '*/*': components['schemas']['GoogleLocationProfileModel'];
                 };
             };
             /** @description Unauthorized */
@@ -3024,7 +3024,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ErrorResponse"];
+                    '*/*': components['schemas']['ErrorResponse'];
                 };
             };
         };
@@ -3047,7 +3047,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["GoogleLocationFoodMenusModel"];
+                    '*/*': components['schemas']['GoogleLocationFoodMenusModel'];
                 };
             };
             /** @description Unauthorized */
@@ -3056,7 +3056,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ErrorResponse"];
+                    '*/*': components['schemas']['ErrorResponse'];
                 };
             };
         };
@@ -3073,7 +3073,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["GoogleLocationFoodMenusModel"];
+                'application/json': components['schemas']['GoogleLocationFoodMenusModel'];
             };
         };
         responses: {
@@ -3083,7 +3083,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["GoogleLocationFoodMenusModel"];
+                    '*/*': components['schemas']['GoogleLocationFoodMenusModel'];
                 };
             };
             /** @description Unauthorized */
@@ -3092,7 +3092,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ErrorResponse"];
+                    '*/*': components['schemas']['ErrorResponse'];
                 };
             };
         };
@@ -3114,7 +3114,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["GoogleLocationAttributesModel"];
+                    '*/*': components['schemas']['GoogleLocationAttributesModel'];
                 };
             };
             /** @description Unauthorized */
@@ -3123,7 +3123,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ErrorResponse"];
+                    '*/*': components['schemas']['ErrorResponse'];
                 };
             };
         };
@@ -3140,7 +3140,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["GoogleLocationAttributesModel"];
+                'application/json': components['schemas']['GoogleLocationAttributesModel'];
             };
         };
         responses: {
@@ -3150,7 +3150,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["GoogleLocationAttributesModel"];
+                    '*/*': components['schemas']['GoogleLocationAttributesModel'];
                 };
             };
             /** @description Unauthorized */
@@ -3159,7 +3159,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ErrorResponse"];
+                    '*/*': components['schemas']['ErrorResponse'];
                 };
             };
         };
@@ -3175,7 +3175,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["GoogleLocationAttributeSnsLinkRequest"];
+                'application/json': components['schemas']['GoogleLocationAttributeSnsLinkRequest'];
             };
         };
         responses: {
@@ -3185,7 +3185,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["GoogleLocationAttributesModel"];
+                    '*/*': components['schemas']['GoogleLocationAttributesModel'];
                 };
             };
             /** @description Unauthorized */
@@ -3194,7 +3194,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ErrorResponse"];
+                    '*/*': components['schemas']['ErrorResponse'];
                 };
             };
         };
@@ -3210,7 +3210,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["GoogleLocationAttributeService"][];
+                'application/json': components['schemas']['GoogleLocationAttributeService'][];
             };
         };
         responses: {
@@ -3220,7 +3220,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["GoogleLocationAttributesModel"];
+                    '*/*': components['schemas']['GoogleLocationAttributesModel'];
                 };
             };
             /** @description Unauthorized */
@@ -3229,7 +3229,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ErrorResponse"];
+                    '*/*': components['schemas']['ErrorResponse'];
                 };
             };
         };
@@ -3245,7 +3245,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["GoogleLocationAttributeServiceOption"][];
+                'application/json': components['schemas']['GoogleLocationAttributeServiceOption'][];
             };
         };
         responses: {
@@ -3255,7 +3255,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["GoogleLocationAttributesModel"];
+                    '*/*': components['schemas']['GoogleLocationAttributesModel'];
                 };
             };
             /** @description Unauthorized */
@@ -3264,7 +3264,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ErrorResponse"];
+                    '*/*': components['schemas']['ErrorResponse'];
                 };
             };
         };
@@ -3280,7 +3280,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": string;
+                'application/json': string;
             };
         };
         responses: {
@@ -3290,7 +3290,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["GoogleLocationAttributesModel"];
+                    '*/*': components['schemas']['GoogleLocationAttributesModel'];
                 };
             };
             /** @description Unauthorized */
@@ -3299,7 +3299,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ErrorResponse"];
+                    '*/*': components['schemas']['ErrorResponse'];
                 };
             };
         };
@@ -3315,7 +3315,7 @@ export interface operations {
         };
         requestBody?: {
             content: {
-                "application/json": boolean;
+                'application/json': boolean;
             };
         };
         responses: {
@@ -3325,7 +3325,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["GoogleLocationAttributesModel"];
+                    '*/*': components['schemas']['GoogleLocationAttributesModel'];
                 };
             };
             /** @description Unauthorized */
@@ -3334,7 +3334,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ErrorResponse"];
+                    '*/*': components['schemas']['ErrorResponse'];
                 };
             };
         };
@@ -3350,7 +3350,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": string;
+                'application/json': string;
             };
         };
         responses: {
@@ -3360,7 +3360,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["BrandResponse"];
+                    '*/*': components['schemas']['BrandResponse'];
                 };
             };
             /** @description Unauthorized */
@@ -3369,7 +3369,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ErrorResponse"];
+                    '*/*': components['schemas']['ErrorResponse'];
                 };
             };
         };
@@ -3389,7 +3389,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["UserApiResponse"];
+                    '*/*': components['schemas']['UserApiResponse'];
                 };
             };
             /** @description Unauthorized */
@@ -3398,7 +3398,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ErrorResponse"];
+                    '*/*': components['schemas']['ErrorResponse'];
                 };
             };
         };
@@ -3420,7 +3420,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["StoreResponse"];
+                    '*/*': components['schemas']['StoreResponse'];
                 };
             };
             /** @description Unauthorized */
@@ -3429,7 +3429,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ErrorResponse"];
+                    '*/*': components['schemas']['ErrorResponse'];
                 };
             };
         };
@@ -3449,7 +3449,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["StoreListResponse"];
+                    '*/*': components['schemas']['StoreListResponse'];
                 };
             };
             /** @description Unauthorized */
@@ -3458,7 +3458,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ErrorResponse"];
+                    '*/*': components['schemas']['ErrorResponse'];
                 };
             };
         };
@@ -3478,7 +3478,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["PrefectureListWithBrandListWithStoreListResponse"];
+                    '*/*': components['schemas']['PrefectureListWithBrandListWithStoreListResponse'];
                 };
             };
             /** @description Unauthorized */
@@ -3487,7 +3487,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ErrorResponse"];
+                    '*/*': components['schemas']['ErrorResponse'];
                 };
             };
         };
@@ -3509,7 +3509,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["StoreListResponse"];
+                    '*/*': components['schemas']['StoreListResponse'];
                 };
             };
             /** @description Unauthorized */
@@ -3518,7 +3518,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ErrorResponse"];
+                    '*/*': components['schemas']['ErrorResponse'];
                 };
             };
         };
@@ -3538,7 +3538,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["GoogleMe"];
+                    '*/*': components['schemas']['GoogleMe'];
                 };
             };
             /** @description Unauthorized */
@@ -3547,7 +3547,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ErrorResponse"];
+                    '*/*': components['schemas']['ErrorResponse'];
                 };
             };
         };
@@ -3569,7 +3569,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["GoogleLocation"][];
+                    '*/*': components['schemas']['GoogleLocation'][];
                 };
             };
             /** @description Unauthorized */
@@ -3578,7 +3578,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ErrorResponse"];
+                    '*/*': components['schemas']['ErrorResponse'];
                 };
             };
         };
@@ -3600,7 +3600,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["GoogleLocation"];
+                    '*/*': components['schemas']['GoogleLocation'];
                 };
             };
             /** @description Unauthorized */
@@ -3609,7 +3609,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ErrorResponse"];
+                    '*/*': components['schemas']['ErrorResponse'];
                 };
             };
         };
@@ -3632,7 +3632,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["GoogleLocationReviewCustom"][];
+                    '*/*': components['schemas']['GoogleLocationReviewCustom'][];
                 };
             };
             /** @description Unauthorized */
@@ -3641,7 +3641,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ErrorResponse"];
+                    '*/*': components['schemas']['ErrorResponse'];
                 };
             };
         };
@@ -3665,7 +3665,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["GoogleLocationReviewCustom"];
+                    '*/*': components['schemas']['GoogleLocationReviewCustom'];
                 };
             };
             /** @description Unauthorized */
@@ -3674,7 +3674,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ErrorResponse"];
+                    '*/*': components['schemas']['ErrorResponse'];
                 };
             };
         };
@@ -3696,7 +3696,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["GoogleLocationQuestion"][];
+                    '*/*': components['schemas']['GoogleLocationQuestion'][];
                 };
             };
             /** @description Unauthorized */
@@ -3705,7 +3705,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ErrorResponse"];
+                    '*/*': components['schemas']['ErrorResponse'];
                 };
             };
         };
@@ -3728,7 +3728,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["StreamingResponseBody"];
+                    '*/*': components['schemas']['StreamingResponseBody'];
                 };
             };
             /** @description Unauthorized */
@@ -3737,7 +3737,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ErrorResponse"];
+                    '*/*': components['schemas']['ErrorResponse'];
                 };
             };
         };
@@ -3760,7 +3760,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["StreamingResponseBody"];
+                    '*/*': components['schemas']['StreamingResponseBody'];
                 };
             };
             /** @description Unauthorized */
@@ -3769,7 +3769,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ErrorResponse"];
+                    '*/*': components['schemas']['ErrorResponse'];
                 };
             };
         };
@@ -3792,7 +3792,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["GoogleLocationLocalPostModel"][];
+                    '*/*': components['schemas']['GoogleLocationLocalPostModel'][];
                 };
             };
             /** @description Unauthorized */
@@ -3801,7 +3801,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ErrorResponse"];
+                    '*/*': components['schemas']['ErrorResponse'];
                 };
             };
         };
@@ -3823,7 +3823,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["GoogleAttributeMetadata"][];
+                    '*/*': components['schemas']['GoogleAttributeMetadata'][];
                 };
             };
             /** @description Unauthorized */
@@ -3832,7 +3832,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ErrorResponse"];
+                    '*/*': components['schemas']['ErrorResponse'];
                 };
             };
         };
@@ -3855,7 +3855,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["GoogleLocationAnswer"][];
+                    '*/*': components['schemas']['GoogleLocationAnswer'][];
                 };
             };
             /** @description Unauthorized */
@@ -3864,7 +3864,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ErrorResponse"];
+                    '*/*': components['schemas']['ErrorResponse'];
                 };
             };
         };
@@ -3884,7 +3884,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["GoogleLocationCategory"][];
+                    '*/*': components['schemas']['GoogleLocationCategory'][];
                 };
             };
             /** @description Unauthorized */
@@ -3893,7 +3893,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ErrorResponse"];
+                    '*/*': components['schemas']['ErrorResponse'];
                 };
             };
         };
@@ -3913,7 +3913,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["GoogleAccount"][];
+                    '*/*': components['schemas']['GoogleAccount'][];
                 };
             };
             /** @description Unauthorized */
@@ -3922,7 +3922,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ErrorResponse"];
+                    '*/*': components['schemas']['ErrorResponse'];
                 };
             };
         };
@@ -3944,7 +3944,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["GoogleAccount"];
+                    '*/*': components['schemas']['GoogleAccount'];
                 };
             };
             /** @description Unauthorized */
@@ -3953,7 +3953,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ErrorResponse"];
+                    '*/*': components['schemas']['ErrorResponse'];
                 };
             };
         };
@@ -3973,7 +3973,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": Record<string, never>;
+                    '*/*': Record<string, never>;
                 };
             };
             /** @description Unauthorized */
@@ -3982,7 +3982,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ErrorResponse"];
+                    '*/*': components['schemas']['ErrorResponse'];
                 };
             };
         };
@@ -4002,7 +4002,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["BrandWithStoresListResponse"];
+                    '*/*': components['schemas']['BrandWithStoresListResponse'];
                 };
             };
             /** @description Unauthorized */
@@ -4011,7 +4011,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ErrorResponse"];
+                    '*/*': components['schemas']['ErrorResponse'];
                 };
             };
         };
@@ -4040,7 +4040,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ErrorResponse"];
+                    '*/*': components['schemas']['ErrorResponse'];
                 };
             };
         };
@@ -4069,189 +4069,189 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ErrorResponse"];
+                    '*/*': components['schemas']['ErrorResponse'];
                 };
             };
         };
     };
 }
 export enum GoogleLocationAuthorType {
-    AUTHOR_TYPE_UNSPECIFIED = "AUTHOR_TYPE_UNSPECIFIED",
-    REGULAR_USER = "REGULAR_USER",
-    LOCAL_GUIDE = "LOCAL_GUIDE",
-    MERCHANT = "MERCHANT"
+    AUTHOR_TYPE_UNSPECIFIED = 'AUTHOR_TYPE_UNSPECIFIED',
+    REGULAR_USER = 'REGULAR_USER',
+    LOCAL_GUIDE = 'LOCAL_GUIDE',
+    MERCHANT = 'MERCHANT'
 }
 export enum GoogleLocationAssociationCategory {
-    COVER = "COVER",
-    PROFILE = "PROFILE",
-    LOGO = "LOGO",
-    EXTERIOR = "EXTERIOR",
-    INTERIOR = "INTERIOR",
-    PRODUCT = "PRODUCT",
-    AT_WORK = "AT_WORK",
-    FOOD_AND_DRINK = "FOOD_AND_DRINK",
-    MENU = "MENU",
-    ROOMS = "ROOMS",
-    TEAMS = "TEAMS",
-    ADDITIONAL = "ADDITIONAL",
-    CATEGORY_UNSPECIFIED = "CATEGORY_UNSPECIFIED"
+    COVER = 'COVER',
+    PROFILE = 'PROFILE',
+    LOGO = 'LOGO',
+    EXTERIOR = 'EXTERIOR',
+    INTERIOR = 'INTERIOR',
+    PRODUCT = 'PRODUCT',
+    AT_WORK = 'AT_WORK',
+    FOOD_AND_DRINK = 'FOOD_AND_DRINK',
+    MENU = 'MENU',
+    ROOMS = 'ROOMS',
+    TEAMS = 'TEAMS',
+    ADDITIONAL = 'ADDITIONAL',
+    CATEGORY_UNSPECIFIED = 'CATEGORY_UNSPECIFIED'
 }
 export enum GoogleLocationTimePeriodOpenDay {
-    DAY_OF_WEEK_UNSPECIFIED = "DAY_OF_WEEK_UNSPECIFIED",
-    MONDAY = "MONDAY",
-    TUESDAY = "TUESDAY",
-    WEDNESDAY = "WEDNESDAY",
-    THURSDAY = "THURSDAY",
-    FRIDAY = "FRIDAY",
-    SATURDAY = "SATURDAY",
-    SUNDAY = "SUNDAY"
+    DAY_OF_WEEK_UNSPECIFIED = 'DAY_OF_WEEK_UNSPECIFIED',
+    MONDAY = 'MONDAY',
+    TUESDAY = 'TUESDAY',
+    WEDNESDAY = 'WEDNESDAY',
+    THURSDAY = 'THURSDAY',
+    FRIDAY = 'FRIDAY',
+    SATURDAY = 'SATURDAY',
+    SUNDAY = 'SUNDAY'
 }
 export enum GoogleLocationTimePeriodCloseDay {
-    DAY_OF_WEEK_UNSPECIFIED = "DAY_OF_WEEK_UNSPECIFIED",
-    MONDAY = "MONDAY",
-    TUESDAY = "TUESDAY",
-    WEDNESDAY = "WEDNESDAY",
-    THURSDAY = "THURSDAY",
-    FRIDAY = "FRIDAY",
-    SATURDAY = "SATURDAY",
-    SUNDAY = "SUNDAY"
+    DAY_OF_WEEK_UNSPECIFIED = 'DAY_OF_WEEK_UNSPECIFIED',
+    MONDAY = 'MONDAY',
+    TUESDAY = 'TUESDAY',
+    WEDNESDAY = 'WEDNESDAY',
+    THURSDAY = 'THURSDAY',
+    FRIDAY = 'FRIDAY',
+    SATURDAY = 'SATURDAY',
+    SUNDAY = 'SUNDAY'
 }
 export enum GoogleLocationStoreFrontAddressRequestAdministrativeArea {
-    "北海道" = "\u5317\u6D77\u9053",
-    "青森県" = "\u9752\u68EE\u770C",
-    "岩手県" = "\u5CA9\u624B\u770C",
-    "宮城県" = "\u5BAE\u57CE\u770C",
-    "秋田県" = "\u79CB\u7530\u770C",
-    "山形県" = "\u5C71\u5F62\u770C",
-    "福島県" = "\u798F\u5CF6\u770C",
-    "茨城県" = "\u8328\u57CE\u770C",
-    "栃木県" = "\u6803\u6728\u770C",
-    "群馬県" = "\u7FA4\u99AC\u770C",
-    "埼玉県" = "\u57FC\u7389\u770C",
-    "千葉県" = "\u5343\u8449\u770C",
-    "東京都" = "\u6771\u4EAC\u90FD",
-    "神奈川県" = "\u795E\u5948\u5DDD\u770C",
-    "新潟県" = "\u65B0\u6F5F\u770C",
-    "富山県" = "\u5BCC\u5C71\u770C",
-    "石川県" = "\u77F3\u5DDD\u770C",
-    "福井県" = "\u798F\u4E95\u770C",
-    "山梨県" = "\u5C71\u68A8\u770C",
-    "長野県" = "\u9577\u91CE\u770C",
-    "岐阜県" = "\u5C90\u961C\u770C",
-    "静岡県" = "\u9759\u5CA1\u770C",
-    "愛知県" = "\u611B\u77E5\u770C",
-    "三重県" = "\u4E09\u91CD\u770C",
-    "滋賀県" = "\u6ECB\u8CC0\u770C",
-    "京都府" = "\u4EAC\u90FD\u5E9C",
-    "大阪府" = "\u5927\u962A\u5E9C",
-    "兵庫県" = "\u5175\u5EAB\u770C",
-    "奈良県" = "\u5948\u826F\u770C",
-    "和歌山県" = "\u548C\u6B4C\u5C71\u770C",
-    "鳥取県" = "\u9CE5\u53D6\u770C",
-    "島根県" = "\u5CF6\u6839\u770C",
-    "岡山県" = "\u5CA1\u5C71\u770C",
-    "広島県" = "\u5E83\u5CF6\u770C",
-    "山口県" = "\u5C71\u53E3\u770C",
-    "徳島県" = "\u5FB3\u5CF6\u770C",
-    "香川県" = "\u9999\u5DDD\u770C",
-    "愛媛県" = "\u611B\u5A9B\u770C",
-    "高知県" = "\u9AD8\u77E5\u770C",
-    "福岡県" = "\u798F\u5CA1\u770C",
-    "佐賀県" = "\u4F50\u8CC0\u770C",
-    "長崎県" = "\u9577\u5D0E\u770C",
-    "熊本県" = "\u718A\u672C\u770C",
-    "大分県" = "\u5927\u5206\u770C",
-    "宮崎県" = "\u5BAE\u5D0E\u770C",
-    "鹿児島県" = "\u9E7F\u5150\u5CF6\u770C",
-    "沖縄県" = "\u6C96\u7E04\u770C"
+    '北海道' = '\u5317\u6D77\u9053',
+    '青森県' = '\u9752\u68EE\u770C',
+    '岩手県' = '\u5CA9\u624B\u770C',
+    '宮城県' = '\u5BAE\u57CE\u770C',
+    '秋田県' = '\u79CB\u7530\u770C',
+    '山形県' = '\u5C71\u5F62\u770C',
+    '福島県' = '\u798F\u5CF6\u770C',
+    '茨城県' = '\u8328\u57CE\u770C',
+    '栃木県' = '\u6803\u6728\u770C',
+    '群馬県' = '\u7FA4\u99AC\u770C',
+    '埼玉県' = '\u57FC\u7389\u770C',
+    '千葉県' = '\u5343\u8449\u770C',
+    '東京都' = '\u6771\u4EAC\u90FD',
+    '神奈川県' = '\u795E\u5948\u5DDD\u770C',
+    '新潟県' = '\u65B0\u6F5F\u770C',
+    '富山県' = '\u5BCC\u5C71\u770C',
+    '石川県' = '\u77F3\u5DDD\u770C',
+    '福井県' = '\u798F\u4E95\u770C',
+    '山梨県' = '\u5C71\u68A8\u770C',
+    '長野県' = '\u9577\u91CE\u770C',
+    '岐阜県' = '\u5C90\u961C\u770C',
+    '静岡県' = '\u9759\u5CA1\u770C',
+    '愛知県' = '\u611B\u77E5\u770C',
+    '三重県' = '\u4E09\u91CD\u770C',
+    '滋賀県' = '\u6ECB\u8CC0\u770C',
+    '京都府' = '\u4EAC\u90FD\u5E9C',
+    '大阪府' = '\u5927\u962A\u5E9C',
+    '兵庫県' = '\u5175\u5EAB\u770C',
+    '奈良県' = '\u5948\u826F\u770C',
+    '和歌山県' = '\u548C\u6B4C\u5C71\u770C',
+    '鳥取県' = '\u9CE5\u53D6\u770C',
+    '島根県' = '\u5CF6\u6839\u770C',
+    '岡山県' = '\u5CA1\u5C71\u770C',
+    '広島県' = '\u5E83\u5CF6\u770C',
+    '山口県' = '\u5C71\u53E3\u770C',
+    '徳島県' = '\u5FB3\u5CF6\u770C',
+    '香川県' = '\u9999\u5DDD\u770C',
+    '愛媛県' = '\u611B\u5A9B\u770C',
+    '高知県' = '\u9AD8\u77E5\u770C',
+    '福岡県' = '\u798F\u5CA1\u770C',
+    '佐賀県' = '\u4F50\u8CC0\u770C',
+    '長崎県' = '\u9577\u5D0E\u770C',
+    '熊本県' = '\u718A\u672C\u770C',
+    '大分県' = '\u5927\u5206\u770C',
+    '宮崎県' = '\u5BAE\u5D0E\u770C',
+    '鹿児島県' = '\u9E7F\u5150\u5CF6\u770C',
+    '沖縄県' = '\u6C96\u7E04\u770C'
 }
 export enum GoogleLocationBusinessHoursRequestHoursTypeId {
-    "通常営業" = "\u901A\u5E38\u55B6\u696D",
-    "入店可能時間" = "\u5165\u5E97\u53EF\u80FD\u6642\u9593",
-    "注文可能時間" = "\u6CE8\u6587\u53EF\u80FD\u6642\u9593",
-    "ドライブスルー" = "\u30C9\u30E9\u30A4\u30D6\u30B9\u30EB\u30FC",
-    "宅配" = "\u5B85\u914D",
-    "テイクアウト" = "\u30C6\u30A4\u30AF\u30A2\u30A6\u30C8",
-    "朝食" = "\u671D\u98DF",
-    "ランチ" = "\u30E9\u30F3\u30C1",
-    "ディナー" = "\u30C7\u30A3\u30CA\u30FC",
-    "ブランチ" = "\u30D6\u30E9\u30F3\u30C1",
-    "ハッピーアワー" = "\u30CF\u30C3\u30D4\u30FC\u30A2\u30EF\u30FC",
-    "高齢者限定時間帯" = "\u9AD8\u9F62\u8005\u9650\u5B9A\u6642\u9593\u5E2F",
-    "オンラインサービスの提供時間" = "\u30AA\u30F3\u30E9\u30A4\u30F3\u30B5\u30FC\u30D3\u30B9\u306E\u63D0\u4F9B\u6642\u9593"
+    '通常営業' = '\u901A\u5E38\u55B6\u696D',
+    '入店可能時間' = '\u5165\u5E97\u53EF\u80FD\u6642\u9593',
+    '注文可能時間' = '\u6CE8\u6587\u53EF\u80FD\u6642\u9593',
+    'ドライブスルー' = '\u30C9\u30E9\u30A4\u30D6\u30B9\u30EB\u30FC',
+    '宅配' = '\u5B85\u914D',
+    'テイクアウト' = '\u30C6\u30A4\u30AF\u30A2\u30A6\u30C8',
+    '朝食' = '\u671D\u98DF',
+    'ランチ' = '\u30E9\u30F3\u30C1',
+    'ディナー' = '\u30C7\u30A3\u30CA\u30FC',
+    'ブランチ' = '\u30D6\u30E9\u30F3\u30C1',
+    'ハッピーアワー' = '\u30CF\u30C3\u30D4\u30FC\u30A2\u30EF\u30FC',
+    '高齢者限定時間帯' = '\u9AD8\u9F62\u8005\u9650\u5B9A\u6642\u9593\u5E2F',
+    'オンラインサービスの提供時間' = '\u30AA\u30F3\u30E9\u30A4\u30F3\u30B5\u30FC\u30D3\u30B9\u306E\u63D0\u4F9B\u6642\u9593'
 }
 export enum GoogleLocationAttributeValueType {
-    ATTRIBUTE_VALUE_TYPE_UNSPECIFIED = "ATTRIBUTE_VALUE_TYPE_UNSPECIFIED",
-    URL = "URL",
-    BOOL = "BOOL",
-    ENUM = "ENUM",
-    REPEATED_ENUM = "REPEATED_ENUM"
+    ATTRIBUTE_VALUE_TYPE_UNSPECIFIED = 'ATTRIBUTE_VALUE_TYPE_UNSPECIFIED',
+    URL = 'URL',
+    BOOL = 'BOOL',
+    ENUM = 'ENUM',
+    REPEATED_ENUM = 'REPEATED_ENUM'
 }
 export enum GoogleLocationAttributeSnsLinkRequestSnsType {
-    TWITTER = "TWITTER",
-    TIKTOK = "TIKTOK",
-    YOUTUBE = "YOUTUBE",
-    INSTAGRAM = "INSTAGRAM",
-    FACEBOOK = "FACEBOOK",
-    LINKEDIN = "LINKEDIN",
-    PINTEREST = "PINTEREST"
+    TWITTER = 'TWITTER',
+    TIKTOK = 'TIKTOK',
+    YOUTUBE = 'YOUTUBE',
+    INSTAGRAM = 'INSTAGRAM',
+    FACEBOOK = 'FACEBOOK',
+    LINKEDIN = 'LINKEDIN',
+    PINTEREST = 'PINTEREST'
 }
 export enum GoogleLocationAttributeServiceType {
-    "アルコール飲料あり" = "\u30A2\u30EB\u30B3\u30FC\u30EB\u98F2\u6599\u3042\u308A",
-    "オーガニック料理あり" = "\u30AA\u30FC\u30AC\u30CB\u30C3\u30AF\u6599\u7406\u3042\u308A",
-    "カクテルあり" = "\u30AB\u30AF\u30C6\u30EB\u3042\u308A",
-    "コーヒーあり" = "\u30B3\u30FC\u30D2\u30FC\u3042\u308A",
-    "サラダバーあり" = "\u30B5\u30E9\u30C0\u30D0\u30FC\u3042\u308A",
-    "ドリンクのハッピーアワーあり" = "\u30C9\u30EA\u30F3\u30AF\u306E\u30CF\u30C3\u30D4\u30FC\u30A2\u30EF\u30FC\u3042\u308A",
-    "ハードリカーあり" = "\u30CF\u30FC\u30C9\u30EA\u30AB\u30FC\u3042\u308A",
-    "ハラルメニューあり" = "\u30CF\u30E9\u30EB\u30E1\u30CB\u30E5\u30FC\u3042\u308A",
-    "ビーガンメニューあり" = "\u30D3\u30FC\u30AC\u30F3\u30E1\u30CB\u30E5\u30FC\u3042\u308A",
-    "ビールあり" = "\u30D3\u30FC\u30EB\u3042\u308A",
-    "ベジタリアンメニューあり" = "\u30D9\u30B8\u30BF\u30EA\u30A2\u30F3\u30E1\u30CB\u30E5\u30FC\u3042\u308A",
-    "ワインあり" = "\u30EF\u30A4\u30F3\u3042\u308A",
-    "個室あり" = "\u500B\u5BA4\u3042\u308A",
-    "小皿料理を提供するお店" = "\u5C0F\u76BF\u6599\u7406\u3092\u63D0\u4F9B\u3059\u308B\u304A\u5E97",
-    "食べ物のハッピーアワーあり" = "\u98DF\u3079\u7269\u306E\u30CF\u30C3\u30D4\u30FC\u30A2\u30EF\u30FC\u3042\u308A",
-    "食べ放題あり" = "\u98DF\u3079\u653E\u984C\u3042\u308A",
-    "深夜の食事可" = "\u6DF1\u591C\u306E\u98DF\u4E8B\u53EF",
-    "点字メニューあり" = "\u70B9\u5B57\u30E1\u30CB\u30E5\u30FC\u3042\u308A"
+    'アルコール飲料あり' = '\u30A2\u30EB\u30B3\u30FC\u30EB\u98F2\u6599\u3042\u308A',
+    'オーガニック料理あり' = '\u30AA\u30FC\u30AC\u30CB\u30C3\u30AF\u6599\u7406\u3042\u308A',
+    'カクテルあり' = '\u30AB\u30AF\u30C6\u30EB\u3042\u308A',
+    'コーヒーあり' = '\u30B3\u30FC\u30D2\u30FC\u3042\u308A',
+    'サラダバーあり' = '\u30B5\u30E9\u30C0\u30D0\u30FC\u3042\u308A',
+    'ドリンクのハッピーアワーあり' = '\u30C9\u30EA\u30F3\u30AF\u306E\u30CF\u30C3\u30D4\u30FC\u30A2\u30EF\u30FC\u3042\u308A',
+    'ハードリカーあり' = '\u30CF\u30FC\u30C9\u30EA\u30AB\u30FC\u3042\u308A',
+    'ハラルメニューあり' = '\u30CF\u30E9\u30EB\u30E1\u30CB\u30E5\u30FC\u3042\u308A',
+    'ビーガンメニューあり' = '\u30D3\u30FC\u30AC\u30F3\u30E1\u30CB\u30E5\u30FC\u3042\u308A',
+    'ビールあり' = '\u30D3\u30FC\u30EB\u3042\u308A',
+    'ベジタリアンメニューあり' = '\u30D9\u30B8\u30BF\u30EA\u30A2\u30F3\u30E1\u30CB\u30E5\u30FC\u3042\u308A',
+    'ワインあり' = '\u30EF\u30A4\u30F3\u3042\u308A',
+    '個室あり' = '\u500B\u5BA4\u3042\u308A',
+    '小皿料理を提供するお店' = '\u5C0F\u76BF\u6599\u7406\u3092\u63D0\u4F9B\u3059\u308B\u304A\u5E97',
+    '食べ物のハッピーアワーあり' = '\u98DF\u3079\u7269\u306E\u30CF\u30C3\u30D4\u30FC\u30A2\u30EF\u30FC\u3042\u308A',
+    '食べ放題あり' = '\u98DF\u3079\u653E\u984C\u3042\u308A',
+    '深夜の食事可' = '\u6DF1\u591C\u306E\u98DF\u4E8B\u53EF',
+    '点字メニューあり' = '\u70B9\u5B57\u30E1\u30CB\u30E5\u30FC\u3042\u308A'
 }
 export enum GoogleLocationAttributeServiceOptionType {
-    "テラス席あり" = "\u30C6\u30E9\u30B9\u5E2D\u3042\u308A",
-    "店先受取可" = "\u5E97\u5148\u53D7\u53D6\u53EF",
-    "非接触宅配可" = "\u975E\u63A5\u89E6\u5B85\u914D\u53EF",
-    "宅配可" = "\u5B85\u914D\u53EF",
-    "ドライブスルーあり" = "\u30C9\u30E9\u30A4\u30D6\u30B9\u30EB\u30FC\u3042\u308A",
-    "実店舗の営業あり" = "\u5B9F\u5E97\u8217\u306E\u55B6\u696D\u3042\u308A",
-    "テイクアウト可" = "\u30C6\u30A4\u30AF\u30A2\u30A6\u30C8\u53EF",
-    "イートイン利用可" = "\u30A4\u30FC\u30C8\u30A4\u30F3\u5229\u7528\u53EF",
-    Auracast_ = "Auracast \u30D6\u30ED\u30FC\u30C9\u30AD\u30E3\u30B9\u30C8 \u30AA\u30FC\u30C7\u30A3\u30AA",
-    "車椅子対応のトイレ" = "\u8ECA\u6905\u5B50\u5BFE\u5FDC\u306E\u30C8\u30A4\u30EC",
-    "車椅子対応の座席" = "\u8ECA\u6905\u5B50\u5BFE\u5FDC\u306E\u5EA7\u5E2D",
-    "車椅子対応の駐車場" = "\u8ECA\u6905\u5B50\u5BFE\u5FDC\u306E\u99D0\u8ECA\u5834",
-    "集団補聴用のヒアリングループ" = "\u96C6\u56E3\u88DC\u8074\u7528\u306E\u30D2\u30A2\u30EA\u30F3\u30B0\u30EB\u30FC\u30D7",
-    "男女共用トイレ" = "\u7537\u5973\u5171\u7528\u30C8\u30A4\u30EC",
-    "トランスジェンダー対応" = "\u30C8\u30E9\u30F3\u30B9\u30B8\u30A7\u30F3\u30C0\u30FC\u5BFE\u5FDC",
-    "敷地内駐車場" = "\u6577\u5730\u5185\u99D0\u8ECA\u5834",
-    "無料の屋内駐車場" = "\u7121\u6599\u306E\u5C4B\u5185\u99D0\u8ECA\u5834",
-    "無料の路上駐車場" = "\u7121\u6599\u306E\u8DEF\u4E0A\u99D0\u8ECA\u5834",
-    "無料駐車場" = "\u7121\u6599\u99D0\u8ECA\u5834",
-    "有料の屋内駐車場" = "\u6709\u6599\u306E\u5C4B\u5185\u99D0\u8ECA\u5834",
-    "有料の路上駐車場" = "\u6709\u6599\u306E\u8DEF\u4E0A\u99D0\u8ECA\u5834",
-    "有料駐車場" = "\u6709\u6599\u99D0\u8ECA\u5834"
+    'テラス席あり' = '\u30C6\u30E9\u30B9\u5E2D\u3042\u308A',
+    '店先受取可' = '\u5E97\u5148\u53D7\u53D6\u53EF',
+    '非接触宅配可' = '\u975E\u63A5\u89E6\u5B85\u914D\u53EF',
+    '宅配可' = '\u5B85\u914D\u53EF',
+    'ドライブスルーあり' = '\u30C9\u30E9\u30A4\u30D6\u30B9\u30EB\u30FC\u3042\u308A',
+    '実店舗の営業あり' = '\u5B9F\u5E97\u8217\u306E\u55B6\u696D\u3042\u308A',
+    'テイクアウト可' = '\u30C6\u30A4\u30AF\u30A2\u30A6\u30C8\u53EF',
+    'イートイン利用可' = '\u30A4\u30FC\u30C8\u30A4\u30F3\u5229\u7528\u53EF',
+    Auracast_ = 'Auracast \u30D6\u30ED\u30FC\u30C9\u30AD\u30E3\u30B9\u30C8 \u30AA\u30FC\u30C7\u30A3\u30AA',
+    '車椅子対応のトイレ' = '\u8ECA\u6905\u5B50\u5BFE\u5FDC\u306E\u30C8\u30A4\u30EC',
+    '車椅子対応の座席' = '\u8ECA\u6905\u5B50\u5BFE\u5FDC\u306E\u5EA7\u5E2D',
+    '車椅子対応の駐車場' = '\u8ECA\u6905\u5B50\u5BFE\u5FDC\u306E\u99D0\u8ECA\u5834',
+    '集団補聴用のヒアリングループ' = '\u96C6\u56E3\u88DC\u8074\u7528\u306E\u30D2\u30A2\u30EA\u30F3\u30B0\u30EB\u30FC\u30D7',
+    '男女共用トイレ' = '\u7537\u5973\u5171\u7528\u30C8\u30A4\u30EC',
+    'トランスジェンダー対応' = '\u30C8\u30E9\u30F3\u30B9\u30B8\u30A7\u30F3\u30C0\u30FC\u5BFE\u5FDC',
+    '敷地内駐車場' = '\u6577\u5730\u5185\u99D0\u8ECA\u5834',
+    '無料の屋内駐車場' = '\u7121\u6599\u306E\u5C4B\u5185\u99D0\u8ECA\u5834',
+    '無料の路上駐車場' = '\u7121\u6599\u306E\u8DEF\u4E0A\u99D0\u8ECA\u5834',
+    '無料駐車場' = '\u7121\u6599\u99D0\u8ECA\u5834',
+    '有料の屋内駐車場' = '\u6709\u6599\u306E\u5C4B\u5185\u99D0\u8ECA\u5834',
+    '有料の路上駐車場' = '\u6709\u6599\u306E\u8DEF\u4E0A\u99D0\u8ECA\u5834',
+    '有料駐車場' = '\u6709\u6599\u99D0\u8ECA\u5834'
 }
 export enum GoogleLocationReviewCustomStarRating {
-    STAR_RATING_UNSPECIFIED = "STAR_RATING_UNSPECIFIED",
-    ONE = "ONE",
-    TWO = "TWO",
-    THREE = "THREE",
-    FOUR = "FOUR",
-    FIVE = "FIVE"
+    STAR_RATING_UNSPECIFIED = 'STAR_RATING_UNSPECIFIED',
+    ONE = 'ONE',
+    TWO = 'TWO',
+    THREE = 'THREE',
+    FOUR = 'FOUR',
+    FIVE = 'FIVE'
 }
 export enum GoogleAttributeMetadataValueType {
-    ATTRIBUTE_VALUE_TYPE_UNSPECIFIED = "ATTRIBUTE_VALUE_TYPE_UNSPECIFIED",
-    URL = "URL",
-    BOOL = "BOOL",
-    ENUM = "ENUM",
-    REPEATED_ENUM = "REPEATED_ENUM"
+    ATTRIBUTE_VALUE_TYPE_UNSPECIFIED = 'ATTRIBUTE_VALUE_TYPE_UNSPECIFIED',
+    URL = 'URL',
+    BOOL = 'BOOL',
+    ENUM = 'ENUM',
+    REPEATED_ENUM = 'REPEATED_ENUM'
 }

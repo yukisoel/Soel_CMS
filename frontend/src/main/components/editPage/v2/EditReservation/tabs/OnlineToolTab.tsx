@@ -1,10 +1,10 @@
-import { useState } from 'react';
-import Wrapper from '@/main/common/Wrapper';
-import Typography from '@/main/common/Typography';
-import Button from '@/main/common/Button';
-import Input from '@/main/common/Input';
-import styles from '../EditReservationV2.module.scss';
-import { EditLinkModal } from '../modals/EditLinkModal';
+import { useState } from 'react'
+import styles from '../EditReservationV2.module.scss'
+import { EditLinkModal } from '../modals/EditLinkModal'
+import Wrapper from '@/main/common/Wrapper'
+import Typography from '@/main/common/Typography'
+import Button from '@/main/common/Button'
+import Input from '@/main/common/Input'
 
 type LinkItem = {
   id: string;
@@ -16,51 +16,51 @@ type Props = {
   onTryButtonClick: () => void;
 };
 
-export const OnlineToolTab = ({ onTryButtonClick }: Props) => {
+export const OnlineToolTab = ({ onTryButtonClick: _onTryButtonClick }: Props) => {
   const [links, setLinks] = useState<LinkItem[]>([
     { id: '1', label: '食べログ', url: 'https://tabelog.com' },
     { id: '2', label: 'ぐるなび', url: 'https://gnavi.co.jp' },
-    { id: '3', label: 'ホットペッパーグルメ', url: 'https://www.hotpepper.jp' },
-  ]);
+    { id: '3', label: 'ホットペッパーグルメ', url: 'https://www.hotpepper.jp' }
+  ])
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedLink, setSelectedLink] = useState<LinkItem | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [selectedLink, setSelectedLink] = useState<LinkItem | null>(null)
 
   const handleEditClick = (link: LinkItem) => {
-    setSelectedLink(link);
-    setIsModalOpen(true);
-  };
+    setSelectedLink(link)
+    setIsModalOpen(true)
+  }
 
   const handleAddClick = () => {
-    setSelectedLink(null);
-    setIsModalOpen(true);
-  };
+    setSelectedLink(null)
+    setIsModalOpen(true)
+  }
 
   const handleModalClose = () => {
-    setIsModalOpen(false);
-    setSelectedLink(null);
-  };
+    setIsModalOpen(false)
+    setSelectedLink(null)
+  }
 
   const handleModalSubmit = async (data: { label: string; url: string }) => {
     if (selectedLink) {
       // 編集
       setLinks(links.map(link =>
         link.id === selectedLink.id ? { ...link, ...data } : link
-      ));
+      ))
     } else {
       // 新規追加
-      const newId = (links.length + 1).toString();
-      setLinks([...links, { id: newId, ...data }]);
+      const newId = (links.length + 1).toString()
+      setLinks([...links, { id: newId, ...data }])
     }
-    handleModalClose();
-  };
+    handleModalClose()
+  }
 
   const handleDeleteLink = async () => {
     if (selectedLink) {
-      setLinks(links.filter(link => link.id !== selectedLink.id));
-      handleModalClose();
+      setLinks(links.filter(link => link.id !== selectedLink.id))
+      handleModalClose()
     }
-  };
+  }
 
   return (
     <Wrapper direction="col" align="align-start" gap="5rem" padding="0 3rem">
@@ -116,5 +116,5 @@ export const OnlineToolTab = ({ onTryButtonClick }: Props) => {
         initialValues={selectedLink || undefined}
       />
     </Wrapper>
-  );
-};
+  )
+}

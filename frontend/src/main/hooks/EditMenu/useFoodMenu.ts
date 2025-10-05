@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react'
-import { GoogleService } from '@/main/service/GoogleService.ts'
+import { GoogleRepository } from '@/main/repositories/GoogleRepository'
 import { GoogleLocationFoodMenusModel } from '@/main/model/LocationModel'
 
-export const useMenuFood = (googleService: GoogleService, accountId: string, locationId: string) => {
+export const useMenuFood = (googleRepository: GoogleRepository, accountId: string, locationId: string) => {
   const [foodMenu, setFoodMenu] = useState<GoogleLocationFoodMenusModel>()
   const [isLoading, setIsLoading] = useState(true)
 
@@ -16,7 +16,7 @@ export const useMenuFood = (googleService: GoogleService, accountId: string, loc
   }, [accountId, locationId])
 
   const getFoodMenus = async () => {
-    return googleService.getLocationFoodMenus(accountId, locationId).then(data => {
+    return googleRepository.getLocationFoodMenus(accountId, locationId).then(data => {
       // Ensure menus is never null
       if (data && !data.menus) {
         data.menus = [{
@@ -37,7 +37,7 @@ export const useMenuFood = (googleService: GoogleService, accountId: string, loc
 
   const updateFoodMenus = async (foodMenu: GoogleLocationFoodMenusModel) => {
     setIsLoading(true)
-    return googleService.updateLocationFoodMenus(accountId, locationId, foodMenu).then(async () => {
+    return googleRepository.updateLocationFoodMenus(accountId, locationId, foodMenu).then(async () => {
       await getFoodMenus()
     }).finally(() => {
       setIsLoading(false)

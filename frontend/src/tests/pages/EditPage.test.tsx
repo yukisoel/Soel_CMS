@@ -1,8 +1,8 @@
-import {describe, expect} from "vitest";
-import EditPage from "../../main/pages/EditPage.tsx";
-import {render, screen} from "@testing-library/react";
-import ButtonBackIcon from "@/main/assets/Button_Back.svg";
-import {MemoryRouter, Route, Routes} from "react-router-dom";
+import { describe, expect } from 'vitest'
+import { render, screen } from '@testing-library/react'
+import { MemoryRouter, Route, Routes } from 'react-router-dom'
+import EditPage from '../../main/pages/EditPage.tsx'
+import ButtonBackIcon from '@/main/assets/Button_Back.svg'
 
 
 describe('EditPage', () => {

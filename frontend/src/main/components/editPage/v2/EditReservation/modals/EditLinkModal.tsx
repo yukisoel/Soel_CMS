@@ -1,18 +1,18 @@
-import React from 'react';
-import Modal from '@/main/common/Modal/Modal';
-import Wrapper from '@/main/common/Wrapper';
-import Typography from '@/main/common/Typography';
-import Button from '@/main/common/Button';
-import Input from '@/main/common/Input';
-import { useForm } from 'react-hook-form';
-import { z } from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
-import LayoutLabeledFormItem from '@/main/common/LayoutLabeledFormItem';
+import React from 'react'
+import { useForm } from 'react-hook-form'
+import { z } from 'zod'
+import { zodResolver } from '@hookform/resolvers/zod'
+import Modal from '@/main/common/Modal/Modal'
+import Wrapper from '@/main/common/Wrapper'
+import Typography from '@/main/common/Typography'
+import Button from '@/main/common/Button'
+import Input from '@/main/common/Input'
+import LayoutLabeledFormItem from '@/main/common/LayoutLabeledFormItem'
 
 const schema = z.object({
   label: z.string().min(1, 'サービス名は必須です'),
-  url: z.string().min(1, 'URLは必須です').url('有効なURLを入力してください'),
-});
+  url: z.string().min(1, 'URLは必須です').url('有効なURLを入力してください')
+})
 
 type FormData = z.infer<typeof schema>;
 
@@ -32,25 +32,25 @@ export const EditLinkModal: React.FC<EditLinkModalProps> = ({
   onClose,
   onSubmit,
   onDelete,
-  initialValues,
+  initialValues
 }) => {
   const {
     register,
     handleSubmit,
     formState: { errors },
-    reset,
+    reset
   } = useForm<FormData>({
-    resolver: zodResolver(schema),
-  });
+    resolver: zodResolver(schema)
+  })
 
   React.useEffect(() => {
     if (isOpen) {
       reset(initialValues || {
         label: '',
-        url: '',
-      });
+        url: ''
+      })
     }
-  }, [isOpen, reset, initialValues]);
+  }, [isOpen, reset, initialValues])
 
   const contentRender = () => (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -96,7 +96,7 @@ export const EditLinkModal: React.FC<EditLinkModalProps> = ({
         </Wrapper>
       </Wrapper>
     </form>
-  );
+  )
 
   return (
     <Modal
@@ -105,5 +105,5 @@ export const EditLinkModal: React.FC<EditLinkModalProps> = ({
       headerContent="予約リンクを編集"
       contentRender={contentRender}
     />
-  );
-};
+  )
+}
