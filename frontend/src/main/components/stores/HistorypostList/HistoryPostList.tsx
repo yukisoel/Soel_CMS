@@ -60,7 +60,7 @@ export default function HistoryPostList() {
   return (
     <Wrapper direction="col" padding="5rem 4.3rem 5.9rem 5rem" className={styles.content_container}>
       <Wrapper direction="col" gap="2rem">
-        <Typography content="予約投稿一覧" color="primary" size="medium" />
+        <Typography content="過去投稿一覧" color="primary" size="medium" />
         <Wrapper gap="3rem">
           <SearchBox placeholder="ブランド名を検索" width="42.7rem" onChange={() => {}} />
           <SearchBox placeholder="サービス名を検索" width="42.7rem" onChange={() => {}} />
@@ -108,7 +108,7 @@ export default function HistoryPostList() {
         ))}
       </Wrapper>
       {selectedPost && (
-        <PostDetailModal isOpen={!!selectedPost} onClose={handleCloseModal} post={selectedPost} onNextClick={handleNextPost} onPrevClick={handlePrevPost} isEditDisabled />
+        <PostDetailModal isOpen={!!selectedPost} onClose={handleCloseModal} post={selectedPost} onNextClick={handleNextPost} onPrevClick={handlePrevPost} isHistory />
       )}
     </Wrapper>
   )

@@ -40,7 +40,14 @@ const DatePicker: React.FC<Props> = ({ defaultValue, readOnly = false, onChange 
         placeholderText="日付を選択"
         className={styles.date_picker_input}
         popperClassName="date_picker"
+        popperProps={{ strategy: 'fixed' }}
+        portalId="root-portal"
         disabled={readOnly}
+        showMonthDropdown
+        showYearDropdown
+        dropdownMode="select"
+        yearDropdownItemNumber={100}
+        scrollableYearDropdown
       />
       <img src={ArrowIcon} alt="Arrow Icon" className={styles.arrow_icon} />
     </div>

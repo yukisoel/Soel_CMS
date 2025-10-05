@@ -133,7 +133,7 @@ export default function SearchStore() {
                   data-testid='search_button'
                   className={styles.search_button}
                   onClick={() => {
-                    if (selectedService === 'GBP') {
+                    if (selectedService === ServiceName.GBP) {
                       navigate('/edit/gbp/accounts/' + selectedAccount?.name + '/location/'+ googleSelectedLocation.name)
                     }
                   }}

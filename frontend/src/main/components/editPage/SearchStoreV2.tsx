@@ -77,9 +77,9 @@ export default function SearchStoreV2() {
         </LayoutLabeledFormItem>
         {selectedService === ServiceName.GBP && (
           <>
-            <LayoutLabeledFormItem label="アカウントを選択">
+            <LayoutLabeledFormItem label="Googleアカウントを選択">
               <PhotoPullDownMenu
-                placeholder="アカウントを選択"
+                placeholder="Googleアカウントを選択"
                 selectedContent={selectedAccountName}
                 setSelectedContent={setSelectedAccountName}
                 options={accountList.map(account => account.accountName)}

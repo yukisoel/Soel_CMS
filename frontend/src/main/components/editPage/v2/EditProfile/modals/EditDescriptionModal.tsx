@@ -60,7 +60,7 @@ export const EditDescriptionModal: React.FC<EditDescriptionModalProps> = ({
           label="説明"
           counter={{
             current: descriptionValue.length,
-            max: 500
+            max: 750
           }}
         >
           <Textarea

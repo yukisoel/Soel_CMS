@@ -9,6 +9,7 @@ import Button from '@/main/common/Button'
 
 const posts: Post[] = [
   {
+    id: '1',
     title: 'タイトル1',
     date: '2024年12月20日',
     time: '12時34分',
@@ -19,6 +20,7 @@ const posts: Post[] = [
     images: []
   },
   {
+    id: '2',
     title: 'タイトル2',
     date: '2024年12月21日',
     time: '14時00分',
@@ -29,6 +31,7 @@ const posts: Post[] = [
     images: []
   },
   {
+    id: '3',
     title: 'タイトル2',
     date: '2024年12月21日',
     time: '14時00分',
@@ -39,6 +42,7 @@ const posts: Post[] = [
     images: []
   },
   {
+    id: '4',
     title: 'タイトル2',
     date: '2024年12月21日',
     time: '14時00分',
@@ -49,6 +53,7 @@ const posts: Post[] = [
     images: []
   },
   {
+    id: '5',
     title: 'タイトル2',
     date: '2024年12月21日',
     time: '14時00分',
@@ -59,6 +64,7 @@ const posts: Post[] = [
     images: []
   },
   {
+    id: '6',
     title: 'タイトル2',
     date: '2024年12月21日',
     time: '14時00分',
@@ -79,7 +85,7 @@ export default function SchedulePost() {
 
   const handleNextPost = () => {
     if (selectedPost) {
-      const currentIndex = posts.findIndex(post => post.title === selectedPost.title)
+      const currentIndex = posts.findIndex(post => post.id === selectedPost.id)
       const nextIndex = (currentIndex + 1) % posts.length
       setSelectedPost(posts[nextIndex])
     }
@@ -87,7 +93,7 @@ export default function SchedulePost() {
 
   const handlePrevPost = () => {
     if (selectedPost) {
-      const currentIndex = posts.findIndex(post => post.title === selectedPost.title)
+      const currentIndex = posts.findIndex(post => post.id === selectedPost.id)
       const prevIndex = (currentIndex - 1 + posts.length) % posts.length
       setSelectedPost(posts[prevIndex])
     }
@@ -110,7 +116,7 @@ export default function SchedulePost() {
       </Wrapper>
       <Wrapper direction="col" gap="2rem" align="align-start" padding="4rem 0 0 0">
         {posts.map((post, index) => (
-          <Wrapper key={index} gap="1rem" align="align-end" justify="justify-start">
+          <Wrapper key={post.id || index} gap="1rem" align="align-end" justify="justify-start" onClick={() => handleOpenModal(post)}>
             <Wrapper padding="2.2rem" align="align-start" className={styles.card}>
               <Wrapper gap="1.5rem">
                 <div className={styles.image_large} />
