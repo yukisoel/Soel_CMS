@@ -5,6 +5,7 @@ import com.soel.backend.backend.model.api.PrefectureListWithBrandListWithStoreLi
 import com.soel.backend.backend.model.api.StoreListResponse
 import com.soel.backend.backend.model.api.StoreResponse
 import com.soel.backend.backend.service.database.StoreService
+import com.soel.backend.backend.usecase.database.StoreUsecase
 import io.swagger.v3.oas.annotations.Operation
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.http.ResponseEntity
@@ -12,7 +13,6 @@ import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
@@ -21,7 +21,8 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("/api/store")
 class StoreController(
     val storeService: StoreService,
-    val authHelper: AuthHelper
+    val authHelper: AuthHelper,
+    val storeUsecase: StoreUsecase
 ) {
     @Operation(
         summary = "店舗情報を取得",
@@ -330,17 +331,17 @@ class StoreController(
     @PostMapping("/google/sync")
     @Operation(
         summary = "Googleロケーションと店舗の同期",
-        description = "指定のGoogleアカウントに対し、受け取ったGoogleLocation配列でDBの店舗を同期します。配列にあるが未登録の店舗は追加し、配列にないがDBに存在する店舗は削除します。",
+        description = "指定のGoogleアカウントに紐づくGoogleロケーションをGoogle APIから取得し、都道府県情報を含めてDBの店舗と同期します。APIに存在するが未登録の店舗は追加し、APIに存在しない店舗は削除します。",
         tags = ["Store POSTメソッド"]
     )
     fun syncGoogleStores(
         request: HttpServletRequest,
-        @RequestParam accountId: String,
-        @RequestBody locations: List<com.soel.backend.backend.model.GoogleLocation>
+        @RequestParam accountId: String
     ): ResponseEntity<StoreListResponse> {
         val user = authHelper.getCognitoOidcUser(request)
-        val sub = user.getClaim<String>("sub")
-        println("sub: $sub, accountId: $accountId, locations: $locations")
-        return storeService.syncGoogleStores(sub, accountId, locations)
+        val sub = user.getClaim<String>("sub") ?: return ResponseEntity.badRequest().build()
+        val accessToken = authHelper.getGoogleAccessToken(request)
+
+        return storeUsecase.syncGoogleStores(accessToken, sub, accountId)
     }
 }
