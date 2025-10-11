@@ -1,0 +1,88 @@
+@use '@/main/styles/variables' as vars;
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.add_brand_container {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background-color: vars.$background-color-secondary;
+  border-radius: 10px;
+  padding: 0 1rem;
+  height: 4.2rem;
+}
+
+.add_brand_input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  font-size: 2rem;
+  font-family: 'Noto Sans CJK JP', sans-serif;
+  font-weight: 400;
+  color: vars.$text-color-primary;
+  outline: none;
+
+  &::placeholder {
+    color: #C9C9C9;
+  }
+}
+
+.add_button {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+
+  &:hover {
+    opacity: 0.8;
+  }
+}
+
+.brand_list_section {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-height: 40rem;
+  overflow-y: auto;
+}
+
+.brand_list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.brand_item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: vars.$background-color-secondary;
+  border-radius: 10px;
+  padding: 0.7rem 1rem;
+  height: 4.2rem;
+}
+
+.delete_button {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+
+  &:hover {
+    opacity: 0.8;
+  }
+}

@@ -37,6 +37,10 @@ export interface GoogleRepository {
 
   getBrandList(): Promise<BrandWithStoresListResponse>
 
+  createBrand(brandName: string): Promise<void>
+
+  deleteBrand(brandId: string): Promise<void>
+
   getStoreListByPrefecture(): Promise<PrefectureListWithBrandListWithStoreListResponse>
 
   getStoreList(): Promise<StoreListResponse>
@@ -327,6 +331,35 @@ export class GoogleRepositoryImpl implements GoogleRepository {
     } catch (error) {
       console.error(error)
       throw new Error('google get brand list failed')
+    }
+  }
+
+  async createBrand(brandName: string): Promise<void> {
+    try {
+      await axiosApiClient.post('brand/create', null, {
+        params: {
+          brandName
+        },
+        headers: {
+          'Accept': 'application/json; charset=utf-8'
+        }
+      })
+    } catch (error) {
+      console.error('Failed to create brand:', error)
+      throw new Error('ブランドの作成に失敗しました')
+    }
+  }
+
+  async deleteBrand(brandId: string): Promise<void> {
+    try {
+      await axiosApiClient.delete('brand/delete', {
+        params: {
+          brandId
+        }
+      })
+    } catch (error) {
+      console.error('Failed to delete brand:', error)
+      throw new Error('ブランドの削除に失敗しました')
     }
   }
 

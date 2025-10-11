@@ -7,6 +7,7 @@ import Wrapper from '@/main/common/Wrapper.tsx'
 import Typography from '@/main/common/Typography.tsx'
 import StoreEditModal from '@/main/components/stores/StoreEditModal/StoreEditModal.tsx'
 import StoreBulkEditModal from '@/main/components/stores/StoreBulkEditModal/StoreBulkEditModal.tsx'
+import BrandManagementModal from '@/main/components/brands/BrandManagementModal/BrandManagementModal.tsx'
 import Loading from '@/main/common/Loading.tsx'
 import { StoreResponse } from '@/types/apiModel.ts'
 import { useGoogleRepository } from '@/main/contexts/GoogleRepositoryContext.tsx'
@@ -30,6 +31,7 @@ export default function StoreListPage() {
   const [isBulkEditMode, setIsBulkEditMode] = useState(false)
   const [selectedStoreIds, setSelectedStoreIds] = useState<string[]>([])
   const [isBulkEditModalOpen, setIsBulkEditModalOpen] = useState(false)
+  const [isBrandManagementModalOpen, setIsBrandManagementModalOpen] = useState(false)
 
   useEffect(() => {
     fetchStores()
@@ -183,7 +185,7 @@ export default function StoreListPage() {
                 <Button bgColor="primary" padding="0.7rem 1rem" onClick={handleBulkEditModeToggle}>
                   <Typography content="複数店舗を編集" color="primary" size="normal" />
                 </Button>
-                <Button bgColor="primary" padding="0.7rem 1rem">
+                <Button bgColor="primary" padding="0.7rem 1rem" onClick={() => setIsBrandManagementModalOpen(true)}>
                   <Typography content="ブランドの管理" color="primary" size="normal" />
                 </Button>
               </>
@@ -258,6 +260,11 @@ export default function StoreListPage() {
         onClose={() => setIsBulkEditModalOpen(false)}
         selectedStoreCount={selectedStoreIds.length}
         onUpdate={handleBulkUpdate}
+      />
+
+      <BrandManagementModal
+        isOpen={isBrandManagementModalOpen}
+        onClose={() => setIsBrandManagementModalOpen(false)}
       />
     </Wrapper>
   )
