@@ -122,7 +122,8 @@ export const regionOrder = [
   '関西',
   '中国',
   '四国',
-  '九州'
+  '九州',
+  '不明'
 ]
 
 // Create a map of regions to their prefectures
@@ -134,7 +135,8 @@ export const regionToPrefectures: Record<string, string[]> = {
   '関西': ['三重県', '滋賀県', '京都府', '大阪府', '兵庫県', '奈良県', '和歌山県'],
   '中国': ['鳥取県', '島根県', '岡山県', '広島県', '山口県'],
   '四国': ['徳島県', '香川県', '愛媛県', '高知県'],
-  '九州': ['福岡県', '佐賀県', '長崎県', '熊本県', '大分県', '宮崎県', '鹿児島県', '沖縄県']
+  '九州': ['福岡県', '佐賀県', '長崎県', '熊本県', '大分県', '宮崎県', '鹿児島県', '沖縄県'],
+  '不明': ['不明']
 }
 
 // Branch type from SelectStore component

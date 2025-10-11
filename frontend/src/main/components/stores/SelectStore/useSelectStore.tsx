@@ -29,7 +29,7 @@ export const useSelectStore = ({ onNextClick, onBackClick }: Props) => {
         const response = await googleRepository.getBrandList()
 
         const transformedData: Store[] = response.brands.map(brand => ({
-          name: brand.name,
+          name: brand.name || '不明',
           branches: brand.stores.map(store => ({
             id: store.storeId,
             name: store.name,
@@ -56,7 +56,7 @@ export const useSelectStore = ({ onNextClick, onBackClick }: Props) => {
 
         // Step 2: APIレスポンスのデータをMapに配置
         response.prefectures.forEach(prefecture => {
-          const prefectureName = prefecture.prefectureJapaneseName || prefecture.prefectureName || ''
+          const prefectureName = prefecture.prefectureJapaneseName || prefecture.prefectureName || '不明'
 
           // 該当する都道府県のbrandMapを取得
           const brandMap = getBrandMapByPrefecture(regionMap, prefectureName)
@@ -64,6 +64,7 @@ export const useSelectStore = ({ onNextClick, onBackClick }: Props) => {
           if (brandMap) {
             // ブランドごとに店舗をグループ化
             prefecture.brands.forEach(brand => {
+              const brandName = brand.name || '不明'
               const branches: Branch[] = brand.stores.map(store => ({
                 id: store.storeId,
                 name: store.name,
@@ -71,7 +72,7 @@ export const useSelectStore = ({ onNextClick, onBackClick }: Props) => {
               }))
 
               // ブランドと店舗をセット
-              brandMap.set(brand.name, branches)
+              brandMap.set(brandName, branches)
             })
           }
         })
