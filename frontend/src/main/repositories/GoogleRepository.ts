@@ -47,6 +47,8 @@ export interface GoogleRepository {
 
   updateStore(storeId: string, prefecture: string, brandId: string | null): Promise<StoreResponse>
 
+  syncGoogleStore(accountId: string): Promise<void>
+
   postLocationPhoto(accountId: string, locationId: string, photos: FileList): Promise<void>
 
   updateLocationProfile(locationId: string, updateMask: string, locationProfile: GoogleLocationProfileModel): Promise<GoogleLocationProfileModel>
@@ -408,6 +410,22 @@ export class GoogleRepositoryImpl implements GoogleRepository {
     } catch (error) {
       console.error('Failed to update store:', error)
       throw new Error('店舗情報の更新に失敗しました')
+    }
+  }
+
+  async syncGoogleStore(accountId: string): Promise<void> {
+    try {
+      await axiosApiClient.post('store/google/sync', null, {
+        params: {
+          accountId
+        },
+        headers: {
+          'Accept': 'application/json; charset=utf-8'
+        }
+      })
+    } catch (error) {
+      console.error('Failed to sync google store:', error)
+      // エラーが発生してもユーザーには通知しない（バックグラウンド同期のため）
     }
   }
 
