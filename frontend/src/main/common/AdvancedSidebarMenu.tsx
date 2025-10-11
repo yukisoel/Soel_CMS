@@ -67,7 +67,7 @@ export default function AdvancedSidebarMenu() {
           <img src={SoelLogoIcon} alt="soel_logo" />
         </Wrapper>
         <div className={styles.separator} />
-        <Link to="" onClick={(e) => e.preventDefault()}>
+        <Link to="/">
           <Wrapper gap="1.7rem" padding="2.1rem 0 2.1rem 4.4rem">
             <img src={HomeIcon} alt="home_icon" />
             <Typography content="ホーム" size="medium" color="primary" />

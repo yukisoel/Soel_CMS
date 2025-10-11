@@ -4,7 +4,7 @@ import {
   GoogleLocationFoodMenusModel,
   GoogleLocationPhotoModel
 } from '@/main/model/LocationModel.ts'
-import { GoogleAccount, GoogleLocation, GoogleLocationProfileModel, GoogleLocationDate, GoogleLocationCategory, GoogleLocationAttributeSnsLinkRequest, GoogleLocationAttributesModel, GoogleLocationStoreFrontAddressRequest, GoogleLocationBusinessHoursRequest, GooglePlacesAutoCompleteResponse, GoogleLocationLocalPostRequest, GoogleLocationReviewModel, BrandWithStoresListResponse, PrefectureListWithBrandListWithStoreListResponse, GoogleLocationAttributeService, GoogleLocationAttributeServiceOption, GoogleLocationBusinessOwnerInfo, GoogleAttributeMetadata } from '@/types/apiModel.ts'
+import { GoogleAccount, GoogleLocation, GoogleLocationProfileModel, GoogleLocationDate, GoogleLocationCategory, GoogleLocationAttributeSnsLinkRequest, GoogleLocationAttributesModel, GoogleLocationStoreFrontAddressRequest, GoogleLocationBusinessHoursRequest, GooglePlacesAutoCompleteResponse, GoogleLocationLocalPostRequest, GoogleLocationReviewModel, BrandWithStoresListResponse, PrefectureListWithBrandListWithStoreListResponse, GoogleLocationAttributeService, GoogleLocationAttributeServiceOption, GoogleLocationBusinessOwnerInfo, GoogleAttributeMetadata, StoreResponse, StoreListResponse } from '@/types/apiModel.ts'
 
 export interface GoogleRepository {
   getAccounts(): Promise<GoogleAccount[]>
@@ -38,6 +38,10 @@ export interface GoogleRepository {
   getBrandList(): Promise<BrandWithStoresListResponse>
 
   getStoreListByPrefecture(): Promise<PrefectureListWithBrandListWithStoreListResponse>
+
+  getStoreList(): Promise<StoreListResponse>
+
+  updateStore(storeId: string, prefecture: string, brandId: string | null): Promise<StoreResponse>
 
   postLocationPhoto(accountId: string, locationId: string, photos: FileList): Promise<void>
 
@@ -334,6 +338,43 @@ export class GoogleRepositoryImpl implements GoogleRepository {
     } catch (error) {
       console.error(error)
       throw new Error('google get store list by prefecture failed')
+    }
+  }
+
+  async getStoreList(): Promise<StoreListResponse> {
+    try {
+      const response: AxiosResponse<StoreListResponse> = await axiosApiClient.get('store/list', {
+        headers: {
+          'Accept': 'application/json; charset=utf-8'
+        }
+      })
+      return response.data
+    } catch (error) {
+      console.error('Failed to fetch store list:', error)
+      throw new Error('店舗一覧の取得に失敗しました')
+    }
+  }
+
+  async updateStore(storeId: string, _prefecture: string, brandId: string | null): Promise<StoreResponse> {
+    try {
+      const response: AxiosResponse<StoreResponse> = await axiosApiClient.patch(
+        'store/update',
+        null,
+        {
+          params: {
+            storeId,
+            storeName: '',
+            brandId: brandId || undefined
+          },
+          headers: {
+            'Accept': 'application/json; charset=utf-8'
+          }
+        }
+      )
+      return response.data
+    } catch (error) {
+      console.error('Failed to update store:', error)
+      throw new Error('店舗情報の更新に失敗しました')
     }
   }
 
