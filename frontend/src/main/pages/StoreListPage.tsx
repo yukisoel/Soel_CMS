@@ -6,6 +6,7 @@ import Button from '@/main/common/Button.tsx'
 import Wrapper from '@/main/common/Wrapper.tsx'
 import Typography from '@/main/common/Typography.tsx'
 import StoreEditModal from '@/main/components/stores/StoreEditModal/StoreEditModal.tsx'
+import StoreBulkEditModal from '@/main/components/stores/StoreBulkEditModal/StoreBulkEditModal.tsx'
 import Loading from '@/main/common/Loading.tsx'
 import { StoreResponse } from '@/types/apiModel.ts'
 import { useGoogleRepository } from '@/main/contexts/GoogleRepositoryContext.tsx'
@@ -26,6 +27,9 @@ export default function StoreListPage() {
   const [selectedStore, setSelectedStore] = useState<Store | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [isBulkEditMode, setIsBulkEditMode] = useState(false)
+  const [selectedStoreIds, setSelectedStoreIds] = useState<string[]>([])
+  const [isBulkEditModalOpen, setIsBulkEditModalOpen] = useState(false)
 
   useEffect(() => {
     fetchStores()
@@ -35,7 +39,7 @@ export default function StoreListPage() {
     return {
       id: apiStore.storeId,
       name: apiStore.name,
-      prefecture: apiStore.prefectureJapaneseName || '',
+      prefecture: apiStore.prefectureJapaneseName || '都道府県 未割り当て',
       brandName: apiStore.brandId || null
     }
   }
@@ -69,6 +73,49 @@ export default function StoreListPage() {
     } catch (err) {
       alert(err instanceof Error ? err.message : '店舗情報の更新に失敗しました')
       console.error('Failed to update store:', err)
+    }
+  }
+
+  const handleBulkEditModeToggle = () => {
+    setIsBulkEditMode(!isBulkEditMode)
+    setSelectedStoreIds([])
+  }
+
+  const handleStoreCheckboxChange = (storeId: string) => {
+    setSelectedStoreIds(prev =>
+      prev.includes(storeId)
+        ? prev.filter(id => id !== storeId)
+        : [...prev, storeId]
+    )
+  }
+
+  const handleBulkEditClick = () => {
+    if (selectedStoreIds.length === 0) {
+      alert('編集する店舗を選択してください')
+      return
+    }
+    setIsBulkEditModalOpen(true)
+  }
+
+  const handleBulkUpdate = async (brandName: string | null, prefecture: string) => {
+    try {
+      // 選択された各店舗を更新
+      await Promise.all(
+        selectedStoreIds.map(storeId =>
+          googleRepository.updateStore(storeId, prefecture, brandName)
+        )
+      )
+
+      // 成功したら店舗一覧を再取得
+      await fetchStores()
+      alert(`${selectedStoreIds.length}件の店舗を更新しました`)
+    } catch (err) {
+      alert(err instanceof Error ? err.message : '一括更新に失敗しました')
+      console.error('Failed to bulk update stores:', err)
+    } finally {
+      setIsBulkEditModalOpen(false)
+      setIsBulkEditMode(false)
+      setSelectedStoreIds([])
     }
   }
 
@@ -122,12 +169,25 @@ export default function StoreListPage() {
           </Wrapper>
 
           <Wrapper gap="2rem" className={styles.action_buttons}>
-            <Button bgColor="primary" padding="0.7rem 1rem">
-              <Typography content="複数店舗を編集" color="primary" size="normal" />
-            </Button>
-            <Button bgColor="primary" padding="0.7rem 1rem">
-              <Typography content="ブランドの管理" color="primary" size="normal" />
-            </Button>
+            {isBulkEditMode ? (
+              <>
+                <Button bgColor="tertiary" padding="0.7rem 1rem" onClick={handleBulkEditModeToggle}>
+                  <Typography content="キャンセル" color="secondary" size="normal" />
+                </Button>
+                <Button bgColor="primary" padding="0.7rem 1rem" onClick={handleBulkEditClick}>
+                  <Typography content="選択中の項目を編集" color="primary" size="normal" />
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button bgColor="primary" padding="0.7rem 1rem" onClick={handleBulkEditModeToggle}>
+                  <Typography content="複数店舗を編集" color="primary" size="normal" />
+                </Button>
+                <Button bgColor="primary" padding="0.7rem 1rem">
+                  <Typography content="ブランドの管理" color="primary" size="normal" />
+                </Button>
+              </>
+            )}
           </Wrapper>
         </Wrapper>
 
@@ -136,13 +196,28 @@ export default function StoreListPage() {
         <Wrapper direction="col" gap="1rem" className={styles.store_list}>
           {stores.map((store) => (
             <Wrapper key={store.id} gap="1rem" align="align-center">
-              <Wrapper className={styles.store_card}>
+              {isBulkEditMode && (
+                <Wrapper className={styles.checkbox_wrapper}>
+                  <input
+                    type="checkbox"
+                    className={styles.checkbox}
+                    checked={selectedStoreIds.includes(store.id)}
+                    onChange={() => handleStoreCheckboxChange(store.id)}
+                  />
+                </Wrapper>
+              )}
+              <Wrapper className={selectedStoreIds.includes(store.id) ? styles.store_card_selected : styles.store_card}>
                 <Wrapper align="align-center" gap="2rem" className={styles.store_info}>
                   <Wrapper key={`name-${store.id}`} className={styles.store_name}>
                     {store.name}
                   </Wrapper>
                   <Wrapper key={`divider1-${store.id}`} className={styles.vertical_divider} />
-                  <Wrapper key={`prefecture-${store.id}`} className={styles.prefecture}>
+                  <Wrapper
+                    key={`prefecture-${store.id}`}
+                    className={
+                      store.prefecture === '都道府県 未割り当て' ? styles.prefecture_unassigned : styles.prefecture
+                    }
+                  >
                     {store.prefecture}
                   </Wrapper>
                   <Wrapper key={`divider2-${store.id}`} className={styles.vertical_divider} />
@@ -156,14 +231,16 @@ export default function StoreListPage() {
                   </Wrapper>
                 </Wrapper>
               </Wrapper>
-              <Button
-                bgColor="primary"
-                padding="0.2rem 0.9rem"
-                className={styles.edit_button}
-                onClick={() => handleEditClick(store)}
-              >
-                <Typography content="編集" color="primary" size="normal" weight="normal" />
-              </Button>
+              {!isBulkEditMode && (
+                <Button
+                  bgColor="primary"
+                  padding="0.2rem 0.9rem"
+                  className={styles.edit_button}
+                  onClick={() => handleEditClick(store)}
+                >
+                  <Typography content="編集" color="primary" size="normal" weight="normal" />
+                </Button>
+              )}
             </Wrapper>
           ))}
         </Wrapper>
@@ -174,6 +251,13 @@ export default function StoreListPage() {
         onClose={() => setIsModalOpen(false)}
         store={selectedStore}
         onUpdate={handleUpdateStore}
+      />
+
+      <StoreBulkEditModal
+        isOpen={isBulkEditModalOpen}
+        onClose={() => setIsBulkEditModalOpen(false)}
+        selectedStoreCount={selectedStoreIds.length}
+        onUpdate={handleBulkUpdate}
       />
     </Wrapper>
   )

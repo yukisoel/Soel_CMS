@@ -61,6 +61,50 @@
   box-sizing: border-box;
 }
 
+.store_card_selected {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #FFE9B2;
+  border-radius: 10px;
+  padding: 1rem 2rem;
+  height: 5.8rem;
+  box-sizing: border-box;
+}
+
+.checkbox_wrapper {
+  display: flex;
+  align-items: center;
+  margin-right: 1rem;
+}
+
+.checkbox {
+  width: 2.2rem;
+  height: 2.2rem;
+  border-radius: 5px;
+  border: none;
+  background-color: #D9D9D9;
+  cursor: pointer;
+  appearance: none;
+  position: relative;
+
+  &:checked {
+    background-color: vars.$background-color-primary;
+  }
+
+  &:checked::after {
+    content: '';
+    position: absolute;
+    left: 0.5rem;
+    top: 0.8rem;
+    width: 1.2rem;
+    height: 0.7rem;
+    border-left: 2px solid #000;
+    border-bottom: 2px solid #000;
+    transform: rotate(-45deg);
+  }
+}
+
 .store_info {
   display: flex;
   align-items: center;
@@ -93,6 +137,15 @@
   font-size: 1.6rem;
   font-weight: 500;
   color: vars.$text-color-primary;
+  min-width: 17.8rem;
+  display: flex;
+  align-items: center;
+}
+
+.prefecture_unassigned {
+  font-size: 1.6rem;
+  font-weight: 500;
+  color: vars.$background-color-primary-dark;
   min-width: 17.8rem;
   display: flex;
   align-items: center;
