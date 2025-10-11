@@ -49,9 +49,10 @@ class StoreServiceImpl(
     override fun findStoresByUserId(userId: String): ResponseEntity<StoreListResponse> {
         val uuid = UUID.fromString(userId)
         val stores = storeRepository.findByUserId(uuid) ?: emptyList()
+        val brandNameMap = loadBrandNameMap(stores)
         return ResponseEntity.ok(
             StoreListResponse(stores.map { entity ->
-                StoreMapper.entityToResponse(entity)
+                toStoreResponse(entity, brandNameMap)
             })
         )
     }
@@ -59,9 +60,10 @@ class StoreServiceImpl(
     override fun findStoresByUserIdAndBrandIdIsNull(userId: String): ResponseEntity<StoreListResponse> {
         val uuid = UUID.fromString(userId)
         val stores = storeRepository.findByUserIdAndBrandIdIsNull(uuid) ?: emptyList()
+        val brandNameMap = loadBrandNameMap(stores)
         return ResponseEntity.ok(
             StoreListResponse(stores.map { entity ->
-                StoreMapper.entityToResponse(entity)
+                toStoreResponse(entity, brandNameMap)
             })
         )
     }
@@ -70,6 +72,7 @@ class StoreServiceImpl(
         val uuid = UUID.fromString(userId)
         val stores = storeRepository.findByUserId(uuid) ?: emptyList()
         val brands = brandRepository.findByUserId(uuid) ?: emptyList()
+        val brandNameMap = brands.associate { it.brandId to it.name }
 
         val prefectureMap = stores.groupBy { it.prefecture }
         val prefectureListWithBrandListWithStoreListResponse = prefectureMap.map { (prefecture, storeEntities) ->
@@ -77,7 +80,10 @@ class StoreServiceImpl(
             val brandListWithStoresResponse = brandMap.map { (brandId, storeEntities) ->
                 val brandEntity = brands.find { it.brandId == brandId }
                 val storeListResponse = storeEntities.filter { it.brandId == brandId }
-                        .map { StoreMapper.entityToResponse(it) }
+                        .map { storeEntity ->
+                            val brandName = brandEntity?.name ?: storeEntity.brandId?.let { brandNameMap[it] } ?: ""
+                            StoreMapper.entityToResponse(storeEntity, brandName)
+                        }
 
                 BrandWithStoresResponse(
                     brandId = brandEntity?.brandId?.toString() ?: "",
@@ -273,6 +279,25 @@ class StoreServiceImpl(
         }
 
         return findStoresByUserId(userId)
+    }
+
+    private fun toStoreResponse(store: StoreEntity, brandNameMap: Map<UUID, String>): StoreResponse {
+        val brandName = store.brandId?.let { brandNameMap[it] } ?: ""
+        val response = StoreMapper.entityToResponse(store, brandName)
+        return if (response.brandId == null) {
+            response.copy(brandId = "", brandName = "")
+        } else {
+            response
+        }
+    }
+
+    private fun loadBrandNameMap(stores: Collection<StoreEntity>): Map<UUID, String> {
+        val brandIds = stores.mapNotNull { it.brandId }.distinct()
+        if (brandIds.isEmpty()) {
+            return emptyMap()
+        }
+
+        return brandRepository.findAllById(brandIds).associate { it.brandId to it.name }
     }
 
     private fun resolvePrefecture(prefectureValue: String?): Prefecture? {
