@@ -1,4 +1,4 @@
-import { useContext, useMemo, useState } from 'react'
+import { useContext, useMemo, useState, useEffect } from 'react'
 import { useSelectStore } from '../SelectStore/useSelectStore'
 import { useSelectService } from '../SelectService/useSelectService'
 import PostContentConfirm from './PostContentConfirm'
@@ -12,6 +12,12 @@ export default function SchedulePost() {
   const googleRepository = useGoogleRepository()
   const { selectedAccount } = useContext(GoogleAccountsContext)
   const [mode, setMode] = useState<'selectStore' | 'selectService' | 'schedulePost' | 'confirmPost'>('selectStore')
+
+  useEffect(() => {
+    if (selectedAccount?.name) {
+      googleRepository.syncGoogleStore(selectedAccount.name)
+    }
+  }, [selectedAccount, googleRepository])
 
   const { selectedBranches, selectStoreRender } = useSelectStore({
     onNextClick: () => setMode('selectService'),

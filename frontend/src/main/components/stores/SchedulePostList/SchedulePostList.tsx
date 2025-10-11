@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from 'react'
+import { useState } from 'react'
 import PostDetailModal, { Post } from './PostDetailModal/PostDetailModal'
 import styles from '@/main/components/stores/SchedulePostList/SchedulePostList.module.scss'
 import Wrapper from '@/main/common/Wrapper'
@@ -6,8 +6,6 @@ import Typography from '@/main/common/Typography'
 import SearchBox from '@/main/common/SearchBox'
 import Separator from '@/main/common/Separator'
 import Button from '@/main/common/Button'
-import { useGoogleRepository } from '@/main/contexts/GoogleRepositoryContext.tsx'
-import { GoogleAccountsContext } from '@/main/contexts/GoogleAccountsContext.tsx'
 
 const posts: Post[] = [
   {
@@ -79,15 +77,7 @@ const posts: Post[] = [
 ]
 
 export default function SchedulePost() {
-  const googleRepository = useGoogleRepository()
-  const { selectedAccount } = useContext(GoogleAccountsContext)
   const [selectedPost, setSelectedPost] = useState<Post | null>(null)
-
-  useEffect(() => {
-    if (selectedAccount?.name) {
-      googleRepository.syncGoogleStore(selectedAccount.name)
-    }
-  }, [selectedAccount, googleRepository])
 
   const handleOpenModal = (post: Post) => {
     setSelectedPost(post)
