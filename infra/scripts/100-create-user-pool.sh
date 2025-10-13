@@ -21,7 +21,15 @@ EXISTING_USER_POOL_ID=$(aws cognito-idp list-user-pools \
   --output text)
 
 # === CloudFormation パラメータ組み立て ===
-PARAMS="Environment=$ENV ProjectName=$PROJECT UserPoolClientName=$USER_POOL_CLIENT_NAME UserPoolName=$USER_POOL_NAME"
+PARAMS="\
+Environment=$ENV \
+ProjectName=$PROJECT \
+UserPoolClientName=$USER_POOL_CLIENT_NAME \
+UserPoolName=$USER_POOL_NAME \
+CognitoDomainPrefix=$PREFIX \
+CallbackURLs=https://${FQDN}/login/oauth2/code/cognito \
+LogoutURLs=https://${FQDN}/ \
+"
 
 if [[ -n "$EXISTING_USER_POOL_ID" ]]; then
   echo "🔁 既存のユーザープールを再利用: $EXISTING_USER_POOL_ID"

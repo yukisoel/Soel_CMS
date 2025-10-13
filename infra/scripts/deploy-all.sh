@@ -25,6 +25,7 @@ SCRIPTS=(
   "080-deploy-ecs.sh"
   "090-deploy-codedeploy.sh"
   "100-create-user-pool.sh"
+  "110-set-secrets.sh"
   # "900-deploy-app.sh"
 )
 
