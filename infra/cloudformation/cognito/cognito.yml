@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: '2010-09-09'
-Description: Create or reuse a Cognito User Pool
+Description: Create or reuse a Cognito User Pool (with Hosted UI domain)
 
 Parameters:
   Environment:
@@ -20,6 +20,18 @@ Parameters:
     Default: ""
     Description: If provided, reuse this existing Cognito User Pool instead of creating a new one
 
+  CognitoDomainPrefix:
+    Type: String
+    Description: "Cognito管理ドメインのプレフィックス (例: dev-cmssoel)"
+
+  # ▼ 追加: Hosted UI のコールバック/ログアウトURL
+  CallbackURLs:
+    Type: List<String>
+    Description: "Callback URLs for the Hosted UI (comma-separated)"
+  LogoutURLs:
+    Type: List<String>
+    Description: "Sign-out URLs for the Hosted UI (comma-separated)"
+
 Conditions:
   UseExistingUserPool: !Not [!Equals [!Ref ExistingUserPoolId, ""]]
   CreateUserPool: !Equals [!Ref ExistingUserPoolId, ""]
@@ -31,10 +43,8 @@ Resources:
     DeletionPolicy: Retain
     Properties:
       UserPoolName: !Ref UserPoolName
-      AutoVerifiedAttributes:
-        - email
-      UsernameAttributes:
-        - email
+      AutoVerifiedAttributes: [email]
+      UsernameAttributes: [email]
       Policies:
         PasswordPolicy:
           MinimumLength: 8
@@ -53,24 +63,39 @@ Resources:
       ClientName: !Ref UserPoolClientName
       UserPoolId: !If [UseExistingUserPool, !Ref ExistingUserPoolId, !Ref MyUserPool]
       GenerateSecret: true
-      ExplicitAuthFlows:
-        - ALLOW_USER_PASSWORD_AUTH
-        - ALLOW_REFRESH_TOKEN_AUTH
-        - ALLOW_USER_SRP_AUTH
-        - ALLOW_CUSTOM_AUTH
+      AllowedOAuthFlowsUserPoolClient: true
+      AllowedOAuthFlows: [code]
+      AllowedOAuthScopes: [openid, email, phone, profile]
+      SupportedIdentityProviders: [COGNITO]
+      CallbackURLs: !Ref CallbackURLs
+      LogoutURLs: !Ref LogoutURLs
+
+  # Cognito標準ドメイン（CustomAuthDomainName不要）
+  MyUserPoolDomain:
+    Type: AWS::Cognito::UserPoolDomain
+    Properties:
+      Domain: !Ref CognitoDomainPrefix
+      UserPoolId: !If [UseExistingUserPool, !Ref ExistingUserPoolId, !Ref MyUserPool]
 
 Outputs:
   UserPoolId:
     Description: Cognito User Pool ID
     Value: !If [UseExistingUserPool, !Ref ExistingUserPoolId, !Ref MyUserPool]
 
-  UserPoolArn:
-    Description: Cognito User Pool ARN
-    Value: !If [UseExistingUserPool,
-      !Sub "arn:aws:cognito-idp:${AWS::Region}:${AWS::AccountId}:userpool/${ExistingUserPoolId}",
-      !GetAtt MyUserPool.Arn
-    ]
-
   UserPoolClientId:
     Description: Cognito User Pool App Client ID
     Value: !Ref MyUserPoolClient
+
+  HostedUIDomain:
+    Description: Hosted UI base URL
+    Value: !Sub "https://${CognitoDomainPrefix}.auth.${AWS::Region}.amazoncognito.com"
+
+  LoginURL:
+    Description: Direct login page URL
+    Value: !Sub
+      - "https://${Domain}/login?client_id=${ClientId}&response_type=code&scope=openid+email+profile&redirect_uri=${Redirect}"
+      - {
+          Domain: !Sub "${CognitoDomainPrefix}.auth.${AWS::Region}.amazoncognito.com",
+          ClientId: !Ref MyUserPoolClient,
+          Redirect: !Select [0, !Ref CallbackURLs]
+        }
