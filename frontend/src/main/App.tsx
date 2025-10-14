@@ -1,6 +1,6 @@
 import { Route, Routes } from 'react-router-dom'
 import EditPageAdvanced from './pages/EditPageAdvanced.tsx'
-import StoreListPage from './pages/StoreListPage.tsx'
+import EditStoreList from './components/editPage/v2/EditStoreList/EditStoreList.tsx'
 import SchedulePost from './components/stores/SchedulePost/SchedulePost.tsx'
 import BlukPhoto from './components/stores/BulkPhoto/BulkPhoto.tsx'
 import BulkSpecialOpeningHours from './components/stores/BulkSpecialOpeningHours/BulkSpecialOpeningHours.tsx'
@@ -32,7 +32,7 @@ function App() {
       <GoogleAccountsContextProvider>
         <GoogleSelectedLocationContextProvider>
           <Routes>
-            <Route path="/" element={<StoreListPage />} />
+            <Route path={'/'} element={<EditStoreList />}></Route>
             <Route path="/edit"
               element={
                 <PankuzuListContextProvider>

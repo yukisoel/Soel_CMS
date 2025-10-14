@@ -18,6 +18,7 @@ import StoreMangeIcon from '@/main/assets/StoreManageIcon.svg'
 export default function AdvancedSidebarMenu() {
   const { selectedAccount } = useContext(GoogleAccountsContext)
   const { googleSelectedLocation } = useContext(GoogleSelectedLocationContext)
+  const { pathname } = useLocation()
 
   const SidebarItems = useMemo(() => {
     const items = [
@@ -76,7 +77,7 @@ export default function AdvancedSidebarMenu() {
         </Wrapper>
         <div className={styles.separator} />
         <Link to="/">
-          <Wrapper gap="1.7rem" padding="2.1rem 0 2.1rem 4.4rem">
+          <Wrapper gap="1.7rem" padding="2.1rem 0 2.1rem 4.4rem" className={pathname === '/' ? styles.home_selected : ''}>
             <img src={HomeIcon} alt="home_icon" />
             <Typography content="ホーム" size="medium" color="primary" />
           </Wrapper>

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import styles from '@/main/pages/StoreListPage.module.scss'
+import styles from './EditStoreList.module.scss'
 import AdvancedSidebarMenu from '@/main/common/AdvancedSidebarMenu.tsx'
 import SearchBox from '@/main/common/SearchBox.tsx'
 import Button from '@/main/common/Button.tsx'
@@ -19,7 +19,7 @@ export type Store = {
   brandName: string | null
 }
 
-export default function StoreListPage() {
+export default function EditStoreList() {
   const googleRepository = useGoogleRepository()
   const [storeSearchValue, setStoreSearchValue] = useState('')
   const [prefectureSearchValue, setPrefectureSearchValue] = useState('')
