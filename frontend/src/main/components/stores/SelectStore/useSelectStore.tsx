@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import SelectStore, { Branch, Region, Store, Prefecture } from './SelectStore'
 import { initializeRegionMapForStores, regionOrder, getBrandMapByPrefecture } from '@/main/utils/prefectureToRegion'
@@ -132,11 +132,11 @@ export const useSelectStore = ({ onNextClick, onBackClick }: Props) => {
     }
 
     fetchData()
-  }, [googleRepository, mode])
+  }, [mode])
 
-  const onChangeSelectedBranches = (stores: Branch[]) => {
+  const onChangeSelectedBranches = useCallback((stores: Branch[]) => {
     setSelectedBranches(stores)
-  }
+  }, [])
 
   const selectStoreRender = () => (
     <SelectStore
