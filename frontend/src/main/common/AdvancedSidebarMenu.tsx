@@ -125,6 +125,8 @@ function SidebarItem({ title, icon: Icon, items, flipIcon = false }: SidebarItem
   const [flyoutPosition, setFlyoutPosition] = useState<{ top: number } | null>(null)
   const closeTimerRef = useRef<NodeJS.Timeout | null>(null)
 
+  const FLYOUT_CLOSE_DELAY_MS = 500
+
   const isSelected = useMemo(() => {
     const pathWithoutQuery = pathname.split('?')[0]
 
@@ -158,7 +160,7 @@ function SidebarItem({ title, icon: Icon, items, flipIcon = false }: SidebarItem
     closeTimerRef.current = setTimeout(() => {
       setHoveredItem(null)
       setFlyoutPosition(null)
-    }, 500)
+    }, FLYOUT_CLOSE_DELAY_MS)
   }
 
   const handleMouseEnter = (itemTitle: string, rect: DOMRect) => {
