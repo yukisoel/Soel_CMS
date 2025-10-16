@@ -65,7 +65,6 @@ export default function BrandManagementModal({ isOpen, onClose }: Props) {
       await googleRepository.createBrand(newBrandName.trim())
       setNewBrandName('')
       await fetchBrands()
-      alert('ブランドを追加しました')
     } catch (error) {
       alert(error instanceof Error ? error.message : 'ブランドの追加に失敗しました')
       console.error('Failed to add brand:', error)

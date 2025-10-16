@@ -16,6 +16,7 @@ export type Store = {
   id: string
   name: string
   prefecture: string
+  brandId: string | null
   brandName: string | null
 }
 
@@ -42,6 +43,7 @@ export default function EditStoreList() {
       id: apiStore.storeId,
       name: apiStore.name,
       prefecture: apiStore.prefectureJapaneseName || '都道府県 未割り当て',
+      brandId: apiStore.brandId || null,
       brandName: apiStore.brandName || null
     }
   }
@@ -65,9 +67,9 @@ export default function EditStoreList() {
     setIsModalOpen(true)
   }
 
-  const handleUpdateStore = async (storeId: string, brandName: string | null, prefecture: string) => {
+  const handleUpdateStore = async (storeId: string, brandId: string | null, prefecture: string) => {
     try {
-      const updatedStoreResponse = await googleRepository.updateStore(storeId, prefecture, brandName)
+      const updatedStoreResponse = await googleRepository.updateStore(storeId, prefecture, brandId)
       const updatedStore = convertApiResponseToStore(updatedStoreResponse)
       setStores(stores.map(store =>
         store.id === storeId ? updatedStore : store
@@ -110,7 +112,6 @@ export default function EditStoreList() {
 
       // 成功したら店舗一覧を再取得
       await fetchStores()
-      alert(`${selectedStoreIds.length}件の店舗を更新しました`)
     } catch (err) {
       alert(err instanceof Error ? err.message : '一括更新に失敗しました')
       console.error('Failed to bulk update stores:', err)
@@ -120,6 +121,13 @@ export default function EditStoreList() {
       setSelectedStoreIds([])
     }
   }
+
+  // 検索フィルタリング
+  const filteredStores = stores.filter(store => {
+    const matchesStoreName = store.name.toLowerCase().includes(storeSearchValue.toLowerCase())
+    const matchesPrefecture = store.prefecture.includes(prefectureSearchValue)
+    return matchesStoreName && matchesPrefecture
+  })
 
   if (isLoading) {
     return (
@@ -196,7 +204,7 @@ export default function EditStoreList() {
         <Wrapper className={styles.divider} />
 
         <Wrapper direction="col" gap="1rem" className={styles.store_list}>
-          {stores.map((store) => (
+          {filteredStores.map((store) => (
             <Wrapper key={store.id} gap="1rem" align="align-center">
               {isBulkEditMode && (
                 <Wrapper className={styles.checkbox_wrapper}>

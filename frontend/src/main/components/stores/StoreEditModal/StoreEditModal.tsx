@@ -18,6 +18,7 @@ type Store = {
   id: string
   name: string
   prefecture: string
+  brandId: string | null
   brandName: string | null
 }
 
@@ -25,12 +26,12 @@ type Props = {
   isOpen: boolean
   onClose: () => void
   store: Store | null
-  onUpdate: (storeId: string, brandName: string | null, prefecture: string) => void
+  onUpdate: (storeId: string, brandId: string | null, prefecture: string) => void
 }
 
 const storeEditSchema = z.object({
   prefecture: z.string().min(1, '都道府県を選択してください'),
-  brandName: z.string().nullable()
+  brandId: z.string().nullable()
 })
 
 type StoreEditFormData = z.infer<typeof storeEditSchema>
@@ -68,7 +69,7 @@ export default function StoreEditModal({ isOpen, onClose, store, onUpdate }: Pro
     if (store) {
       reset({
         prefecture: store.prefecture,
-        brandName: store.brandName || ''
+        brandId: store.brandId || ''
       })
     }
   }, [store, reset])
@@ -88,7 +89,7 @@ export default function StoreEditModal({ isOpen, onClose, store, onUpdate }: Pro
   if (!isOpen || !store) return null
 
   const onSubmit = (data: StoreEditFormData) => {
-    onUpdate(store.id, data.brandName || null, data.prefecture)
+    onUpdate(store.id, data.brandId || null, data.prefecture)
     onClose()
   }
 
@@ -153,7 +154,7 @@ export default function StoreEditModal({ isOpen, onClose, store, onUpdate }: Pro
             <Wrapper className={styles.select_wrapper}>
               <select
                 className={styles.select_input}
-                {...register('brandName')}
+                {...register('brandId')}
               >
                 <option value="">ブランド名を選択</option>
                 {brands.map((brand) => (
@@ -169,8 +170,8 @@ export default function StoreEditModal({ isOpen, onClose, store, onUpdate }: Pro
                 </svg>
               </Wrapper>
             </Wrapper>
-            {errors.brandName && (
-              <Typography content={errors.brandName.message || ''} size="small" color="error" />
+            {errors.brandId && (
+              <Typography content={errors.brandId.message || ''} size="small" color="error" />
             )}
           </Wrapper>
         </Wrapper>

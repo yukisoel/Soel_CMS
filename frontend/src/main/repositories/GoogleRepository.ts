@@ -390,23 +390,56 @@ export class GoogleRepositoryImpl implements GoogleRepository {
     }
   }
 
-  async updateStore(storeId: string, _prefecture: string, brandId: string | null): Promise<StoreResponse> {
+  async updateStore(storeId: string, prefecture: string, brandId: string | null): Promise<StoreResponse> {
     try {
-      const response: AxiosResponse<StoreResponse> = await axiosApiClient.patch(
-        'store/update',
-        null,
-        {
-          params: {
-            storeId,
-            storeName: '',
-            brandId: brandId || undefined
-          },
-          headers: {
-            'Accept': 'application/json; charset=utf-8'
+      let response: AxiosResponse<StoreResponse> | undefined
+
+      // ブランドを更新
+      if (brandId) {
+        response = await axiosApiClient.patch(
+          'store/update/brand',
+          null,
+          {
+            params: {
+              storeId,
+              brandId
+            },
+            headers: {
+              'Accept': 'application/json; charset=utf-8'
+            }
           }
+        )
+      }
+
+      // 都道府県を更新（未割り当ての場合はスキップ）
+      if (prefecture && prefecture !== '都道府県 未割り当て') {
+        response = await axiosApiClient.patch(
+          'store/update/prefecture',
+          null,
+          {
+            params: {
+              storeId,
+              prefectureName: prefecture
+            },
+            headers: {
+              'Accept': 'application/json; charset=utf-8'
+            }
+          }
+        )
+      }
+
+      // どちらかの更新があればそのレスポンスを返す、なければ店舗情報を再取得
+      if (response) {
+        return response.data
+      } else {
+        // 両方ともスキップされた場合は現在の店舗情報を取得
+        const storeListResponse = await this.getStoreList()
+        const store = storeListResponse.stores.find(s => s.storeId === storeId)
+        if (!store) {
+          throw new Error('店舗が見つかりませんでした')
         }
-      )
-      return response.data
+        return store
+      }
     } catch (error) {
       console.error('Failed to update store:', error)
       throw new Error('店舗情報の更新に失敗しました')
