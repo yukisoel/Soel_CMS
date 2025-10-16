@@ -42,7 +42,7 @@ export default function EditStoreList() {
       id: apiStore.storeId,
       name: apiStore.name,
       prefecture: apiStore.prefectureJapaneseName || '都道府県 未割り当て',
-      brandName: apiStore.brandId || null
+      brandName: apiStore.brandName || null
     }
   }
 
