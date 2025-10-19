@@ -4,7 +4,7 @@ import {
   GoogleLocationFoodMenusModel,
   GoogleLocationPhotoModel
 } from '@/main/model/LocationModel.ts'
-import { GoogleAccount, GoogleLocation, GoogleLocationProfileModel, GoogleLocationDate, GoogleLocationCategory, GoogleLocationAttributeSnsLinkRequest, GoogleLocationAttributesModel, GoogleLocationStoreFrontAddressRequest, GoogleLocationBusinessHoursRequest, GooglePlacesAutoCompleteResponse, GoogleLocationLocalPostRequest, GoogleLocationReviewModel, BrandWithStoresListResponse, PrefectureListWithBrandListWithStoreListResponse, GoogleLocationAttributeService, GoogleLocationAttributeServiceOption, GoogleLocationBusinessOwnerInfo, GoogleAttributeMetadata } from '@/types/apiModel.ts'
+import { GoogleAccount, GoogleLocation, GoogleLocationProfileModel, GoogleLocationDate, GoogleLocationCategory, GoogleLocationAttributeSnsLinkRequest, GoogleLocationAttributesModel, GoogleLocationStoreFrontAddressRequest, GoogleLocationBusinessHoursRequest, GooglePlacesAutoCompleteResponse, GoogleLocationLocalPostRequest, GoogleLocationReviewModel, BrandWithStoresListResponse, PrefectureListWithBrandListWithStoreListResponse, GoogleLocationAttributeService, GoogleLocationAttributeServiceOption, GoogleLocationBusinessOwnerInfo, GoogleAttributeMetadata, StoreResponse, StoreListResponse } from '@/types/apiModel.ts'
 
 export interface GoogleRepository {
   getAccounts(): Promise<GoogleAccount[]>
@@ -37,7 +37,17 @@ export interface GoogleRepository {
 
   getBrandList(): Promise<BrandWithStoresListResponse>
 
+  createBrand(brandName: string): Promise<void>
+
+  deleteBrand(brandId: string): Promise<void>
+
   getStoreListByPrefecture(): Promise<PrefectureListWithBrandListWithStoreListResponse>
+
+  getStoreList(): Promise<StoreListResponse>
+
+  updateStore(storeId: string, prefecture: string, brandId: string | null): Promise<StoreResponse>
+
+  syncGoogleStore(accountId: string): Promise<void>
 
   postLocationPhoto(accountId: string, locationId: string, photos: FileList): Promise<void>
 
@@ -326,6 +336,35 @@ export class GoogleRepositoryImpl implements GoogleRepository {
     }
   }
 
+  async createBrand(brandName: string): Promise<void> {
+    try {
+      await axiosApiClient.post('brand/create', null, {
+        params: {
+          brandName
+        },
+        headers: {
+          'Accept': 'application/json; charset=utf-8'
+        }
+      })
+    } catch (error) {
+      console.error('Failed to create brand:', error)
+      throw new Error('ブランドの作成に失敗しました')
+    }
+  }
+
+  async deleteBrand(brandId: string): Promise<void> {
+    try {
+      await axiosApiClient.delete('brand/delete', {
+        params: {
+          brandId
+        }
+      })
+    } catch (error) {
+      console.error('Failed to delete brand:', error)
+      throw new Error('ブランドの削除に失敗しました')
+    }
+  }
+
   async getStoreListByPrefecture(): Promise<PrefectureListWithBrandListWithStoreListResponse> {
 
     try {
@@ -334,6 +373,92 @@ export class GoogleRepositoryImpl implements GoogleRepository {
     } catch (error) {
       console.error(error)
       throw new Error('google get store list by prefecture failed')
+    }
+  }
+
+  async getStoreList(): Promise<StoreListResponse> {
+    try {
+      const response: AxiosResponse<StoreListResponse> = await axiosApiClient.get('store/list', {
+        headers: {
+          'Accept': 'application/json; charset=utf-8'
+        }
+      })
+      return response.data
+    } catch (error) {
+      console.error('Failed to fetch store list:', error)
+      throw new Error('店舗一覧の取得に失敗しました')
+    }
+  }
+
+  async updateStore(storeId: string, prefecture: string, brandId: string | null): Promise<StoreResponse> {
+    try {
+      let response: AxiosResponse<StoreResponse> | undefined
+
+      // ブランドを更新
+      if (brandId) {
+        response = await axiosApiClient.patch(
+          'store/update/brand',
+          null,
+          {
+            params: {
+              storeId,
+              brandId
+            },
+            headers: {
+              'Accept': 'application/json; charset=utf-8'
+            }
+          }
+        )
+      }
+
+      // 都道府県を更新（未割り当ての場合はスキップ）
+      if (prefecture && prefecture !== '都道府県 未割り当て') {
+        response = await axiosApiClient.patch(
+          'store/update/prefecture',
+          null,
+          {
+            params: {
+              storeId,
+              prefectureName: prefecture
+            },
+            headers: {
+              'Accept': 'application/json; charset=utf-8'
+            }
+          }
+        )
+      }
+
+      // どちらかの更新があればそのレスポンスを返す、なければ店舗情報を再取得
+      if (response) {
+        return response.data
+      } else {
+        // 両方ともスキップされた場合は現在の店舗情報を取得
+        const storeListResponse = await this.getStoreList()
+        const store = storeListResponse.stores.find(s => s.storeId === storeId)
+        if (!store) {
+          throw new Error('店舗が見つかりませんでした')
+        }
+        return store
+      }
+    } catch (error) {
+      console.error('Failed to update store:', error)
+      throw new Error('店舗情報の更新に失敗しました')
+    }
+  }
+
+  async syncGoogleStore(accountId: string): Promise<void> {
+    try {
+      await axiosApiClient.post('store/google/sync', null, {
+        params: {
+          accountId
+        },
+        headers: {
+          'Accept': 'application/json; charset=utf-8'
+        }
+      })
+    } catch (error) {
+      console.error('Failed to sync google store:', error)
+      // エラーが発生してもユーザーには通知しない（バックグラウンド同期のため）
     }
   }
 

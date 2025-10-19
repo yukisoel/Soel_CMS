@@ -11,6 +11,48 @@
     }
   ],
   "paths": {
+    "/api/store/google/sync": {
+      "post": {
+        "tags": [
+          "Store POSTメソッド"
+        ],
+        "summary": "Googleロケーションと店舗の同期",
+        "description": "指定のGoogleアカウントに紐づくGoogleロケーションをGoogle APIから取得し、都道府県情報を含めてDBの店舗と同期します。APIに存在するが未登録の店舗は追加し、APIに存在しない店舗は削除します。",
+        "operationId": "syncGoogleStores",
+        "parameters": [
+          {
+            "name": "accountId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/StoreListResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/store/create": {
       "post": {
         "tags": [
@@ -152,7 +194,8 @@
                 "$ref": "#/components/schemas/GoogleLocationQuestion"
               }
             }
-          }
+          },
+          "required": true
         },
         "responses": {
           "401": {
@@ -243,7 +286,8 @@
                 "$ref": "#/components/schemas/GoogleLocationQuestion"
               }
             }
-          }
+          },
+          "required": true
         },
         "responses": {
           "401": {
@@ -565,7 +609,8 @@
                 "$ref": "#/components/schemas/GoogleLocationAnswer"
               }
             }
-          }
+          },
+          "required": true
         },
         "responses": {
           "401": {
@@ -1147,7 +1192,8 @@
                 "type": "string"
               }
             }
-          }
+          },
+          "required": true
         },
         "responses": {
           "401": {
@@ -1246,7 +1292,8 @@
                 "$ref": "#/components/schemas/GoogleLocationProfileModel"
               }
             }
-          }
+          },
+          "required": true
         },
         "responses": {
           "401": {
@@ -1297,7 +1344,8 @@
                 "type": "string"
               }
             }
-          }
+          },
+          "required": true
         },
         "responses": {
           "401": {
@@ -1348,7 +1396,8 @@
                 "type": "string"
               }
             }
-          }
+          },
+          "required": true
         },
         "responses": {
           "401": {
@@ -1399,7 +1448,8 @@
                 "$ref": "#/components/schemas/GoogleLocationStoreFrontAddressRequest"
               }
             }
-          }
+          },
+          "required": true
         },
         "responses": {
           "401": {
@@ -1453,7 +1503,8 @@
                 }
               }
             }
-          }
+          },
+          "required": true
         },
         "responses": {
           "401": {
@@ -1504,7 +1555,8 @@
                 "$ref": "#/components/schemas/GoogleLocationCategory"
               }
             }
-          }
+          },
+          "required": true
         },
         "responses": {
           "401": {
@@ -1555,7 +1607,8 @@
                 "type": "string"
               }
             }
-          }
+          },
+          "required": true
         },
         "responses": {
           "401": {
@@ -1606,7 +1659,8 @@
                 "$ref": "#/components/schemas/GoogleLocationDate"
               }
             }
-          }
+          },
+          "required": true
         },
         "responses": {
           "401": {
@@ -1657,7 +1711,8 @@
                 "type": "string"
               }
             }
-          }
+          },
+          "required": true
         },
         "responses": {
           "401": {
@@ -1708,7 +1763,8 @@
                 "$ref": "#/components/schemas/GoogleLocationBusinessHoursRequest"
               }
             }
-          }
+          },
+          "required": true
         },
         "responses": {
           "401": {
@@ -1762,7 +1818,8 @@
                 }
               }
             }
-          }
+          },
+          "required": true
         },
         "responses": {
           "401": {
@@ -1869,7 +1926,8 @@
                 "$ref": "#/components/schemas/GoogleLocationFoodMenusModel"
               }
             }
-          }
+          },
+          "required": true
         },
         "responses": {
           "401": {
@@ -1968,7 +2026,8 @@
                 "$ref": "#/components/schemas/GoogleLocationAttributesModel"
               }
             }
-          }
+          },
+          "required": true
         },
         "responses": {
           "401": {
@@ -2019,7 +2078,8 @@
                 "$ref": "#/components/schemas/GoogleLocationAttributeSnsLinkRequest"
               }
             }
-          }
+          },
+          "required": true
         },
         "responses": {
           "401": {
@@ -2073,7 +2133,8 @@
                 }
               }
             }
-          }
+          },
+          "required": true
         },
         "responses": {
           "401": {
@@ -2127,7 +2188,8 @@
                 }
               }
             }
-          }
+          },
+          "required": true
         },
         "responses": {
           "401": {
@@ -2178,7 +2240,8 @@
                 "type": "string"
               }
             }
-          }
+          },
+          "required": true
         },
         "responses": {
           "401": {
@@ -2763,15 +2826,73 @@
         }
       }
     },
-    "/api/google/location/photo/{filename}": {
+    "/api/google/location/photo/{directoryName}/{filename}": {
       "get": {
         "tags": [
           "Google:特殊API"
         ],
-        "summary": "Google:Google API専用",
-        "description": "GoogleAPIに写真をアップロードするときに使用されます",
+        "summary": "Google:Google API専用 写真取得API",
+        "description": "\n            Google:Google API専用のエンドポイントです。\n            特定のファイル名の写真を取得します。\n        ",
         "operationId": "getLocationPhotoLocal",
         "parameters": [
+          {
+            "name": "directoryName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "filename",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/StreamingResponseBody"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/google/location/photo/bulk/{directoryName}/{filename}": {
+      "get": {
+        "tags": [
+          "Google:特殊API"
+        ],
+        "summary": "Google:Google API専用 一括投稿用写真取得API",
+        "description": "\n            Google:Google API専用のエンドポイントです。\n            特定のディレクトリ名とファイル名の写真を取得します。\n            ファイルは取得された後も削除されません。\n        ",
+        "operationId": "getLocationPhotoLocalBulk",
+        "parameters": [
+          {
+            "name": "directoryName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "filename",
             "in": "path",
@@ -2850,6 +2971,51 @@
                   "type": "array",
                   "items": {
                     "$ref": "#/components/schemas/GoogleLocationLocalPostModel"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/google/location/attributes/available": {
+      "get": {
+        "tags": [
+          "Google:GETメソッド"
+        ],
+        "summary": "Google:店舗の利用可能な属性情報を全て取得",
+        "description": "Google:店舗の利用可能な属性情報を全て取得します",
+        "operationId": "getLocationAvailableAttributes",
+        "parameters": [
+          {
+            "name": "locationId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/GoogleAttributeMetadata"
                   }
                 }
               }
@@ -3189,6 +3355,20 @@
           }
         }
       },
+      "StoreListResponse": {
+        "required": [
+          "stores"
+        ],
+        "type": "object",
+        "properties": {
+          "stores": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/StoreResponse"
+            }
+          }
+        }
+      },
       "StoreResponse": {
         "required": [
           "createdAt",
@@ -3208,6 +3388,9 @@
             "type": "string"
           },
           "brandId": {
+            "type": "string"
+          },
+          "brandName": {
             "type": "string"
           },
           "googleAccountId": {
@@ -4263,7 +4446,8 @@
               "食べ物のハッピーアワーあり",
               "食べ放題あり",
               "深夜の食事可",
-              "点字メニューあり"
+              "点字メニューあり",
+              "朝食"
             ]
           },
           "value": {
@@ -4287,7 +4471,28 @@
               "ドライブスルーあり",
               "実店舗の営業あり",
               "テイクアウト可",
-              "イートイン利用可"
+              "イートイン利用可",
+              "Auracast ブロードキャスト オーディオ",
+              "車椅子対応のトイレ",
+              "車椅子対応の座席",
+              "車椅子対応の駐車場",
+              "集団補聴用のヒアリングループ",
+              "男女共用トイレ",
+              "トランスジェンダー対応",
+              "LGBTQ フレンドリー",
+              "敷地内駐車場",
+              "無料の屋内駐車場",
+              "無料の路上駐車場",
+              "無料駐車場",
+              "有料の屋内駐車場",
+              "有料の路上駐車場",
+              "有料駐車場",
+              "要予約",
+              "NFC モバイル決済",
+              "クレジットカード",
+              "デビットカード",
+              "現金のみ",
+              "小切手"
             ]
           },
           "value": {
@@ -4297,20 +4502,6 @@
       },
       "UserApiResponse": {
         "type": "object"
-      },
-      "StoreListResponse": {
-        "required": [
-          "stores"
-        ],
-        "type": "object",
-        "properties": {
-          "stores": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/StoreResponse"
-            }
-          }
-        }
       },
       "BrandWithStoresResponse": {
         "required": [
@@ -4483,6 +4674,56 @@
       },
       "StreamingResponseBody": {
         "type": "object"
+      },
+      "GoogleAttributeMetadata": {
+        "type": "object",
+        "properties": {
+          "parent": {
+            "type": "string"
+          },
+          "displayName": {
+            "type": "string"
+          },
+          "groupDisplayName": {
+            "type": "string"
+          },
+          "repeatable": {
+            "type": "boolean"
+          },
+          "deprecated": {
+            "type": "boolean"
+          },
+          "valueType": {
+            "type": "string",
+            "enum": [
+              "ATTRIBUTE_VALUE_TYPE_UNSPECIFIED",
+              "URL",
+              "BOOL",
+              "ENUM",
+              "REPEATED_ENUM"
+            ]
+          },
+          "valueMetadata": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GoogleAttributeValueMetadata"
+            }
+          }
+        }
+      },
+      "GoogleAttributeValueMetadata": {
+        "type": "object",
+        "properties": {
+          "displayName": {
+            "type": "string"
+          },
+          "values": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/JsonNode"
+            }
+          }
+        }
       },
       "GoogleAccount": {
         "required": [

@@ -175,7 +175,10 @@ class StoreServiceImpl(
 
         val updatedStore = storeRepository.save(existingStore)
 
-        return ResponseEntity.ok(StoreMapper.entityToResponse(updatedStore))
+        // ブランド名を取得
+        val brandNameMap = loadBrandNameMap(listOf(updatedStore))
+
+        return ResponseEntity.ok(toStoreResponse(updatedStore, brandNameMap))
     }
 
     override fun updateStoreGoogleAccount(storeId: String, googleAccountId: String): ResponseEntity<StoreResponse> {
@@ -229,7 +232,10 @@ class StoreServiceImpl(
 
         val updatedStore = storeRepository.save(existingStore)
 
-        return ResponseEntity.ok(StoreMapper.entityToResponse(updatedStore))
+        // ブランド名を取得
+        val brandNameMap = loadBrandNameMap(listOf(updatedStore))
+
+        return ResponseEntity.ok(toStoreResponse(updatedStore, brandNameMap))
     }
 
     override fun deleteStore(storeId: String): ResponseEntity<Void> {

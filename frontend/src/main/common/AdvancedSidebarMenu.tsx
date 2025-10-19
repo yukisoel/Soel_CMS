@@ -1,4 +1,4 @@
-import { useContext, useMemo, useState } from 'react'
+import { useContext, useMemo, useState, useEffect, useRef } from 'react'
 import classNames from 'classnames'
 import { Link, useLocation } from 'react-router-dom'
 import { GoogleAccountsContext } from '../contexts/GoogleAccountsContext'
@@ -18,47 +18,56 @@ import StoreMangeIcon from '@/main/assets/StoreManageIcon.svg'
 export default function AdvancedSidebarMenu() {
   const { selectedAccount } = useContext(GoogleAccountsContext)
   const { googleSelectedLocation } = useContext(GoogleSelectedLocationContext)
+  const { pathname } = useLocation()
 
-  const SidebarItems = useMemo(() => [
-    {
-      title: '基本情報',
-      icon: StoreMangeIcon,
-      items: [
-        { title: '各店基本情報変更', link: '/edit' },
-        { title: '写真一括変更', link: '/edit/bulk/photo' },
-        { title: '特別営業時間一括変更', link: '/edit/bulk/special' }
-      ],
-      flipIcon: true
-    },
-    {
-      title: '投稿',
-      icon: EditorIcon,
-      items: [
-        { title: '一括投稿', link: '/edit/bulk/schedule-post', subItems: [
-          { title: 'ブランドから選択', link: '/edit/bulk/schedule-post?mode=brand' },
-          { title: 'エリアから選択', link: '/edit/bulk/schedule-post?mode=area' }
-        ] },
-        { title: '投稿予約一覧', link: '/edit/bulk/schedule-post-list' },
-        { title: '過去投稿一覧', link: '/edit/bulk/history-post-list' }
-      ],
-      flipIcon: true
-    },
-    {
-      title: '口コミ管理',
-      icon: ReviewIcon,
-      items: [
-        { title: '口コミ一覧', link: `/edit/accounts/${selectedAccount?.name}/location/${googleSelectedLocation?.name}/review` },
-        { title: '口コミ分析', link: '#' }
-      ],
-      flipIcon: true
-    },
-    {
-      title: '広告',
-      icon: AdManageIcon,
-      items: [],
-      flipIcon: true
+  const SidebarItems = useMemo(() => {
+    const items = [
+      {
+        title: '基本情報',
+        icon: StoreMangeIcon,
+        items: [
+          { title: '各店基本情報変更', link: '/edit' },
+          { title: '写真一括変更', link: '/edit/bulk/photo' },
+          { title: '特別営業時間一括変更', link: '/edit/bulk/special' }
+        ],
+        flipIcon: true
+      },
+      {
+        title: '投稿',
+        icon: EditorIcon,
+        items: [
+          { title: '一括投稿', link: '/edit/bulk/schedule-post', subItems: [
+            { title: 'ブランドから選択', link: '/edit/bulk/schedule-post?mode=brand' },
+            { title: 'エリアから選択', link: '/edit/bulk/schedule-post?mode=area' }
+          ] },
+          { title: '投稿予約一覧', link: '/edit/bulk/schedule-post-list' },
+          { title: '過去投稿一覧', link: '/edit/bulk/history-post-list' }
+        ],
+        flipIcon: true
+      },
+      {
+        title: '広告',
+        icon: AdManageIcon,
+        items: [],
+        flipIcon: true
+      }
+    ]
+
+    // 口コミ管理はlocationが選択されている場合のみ表示
+    if (selectedAccount?.name && googleSelectedLocation?.name) {
+      items.splice(2, 0, {
+        title: '口コミ管理',
+        icon: ReviewIcon,
+        items: [
+          { title: '口コミ一覧', link: `/edit/accounts/${selectedAccount.name}/location/${googleSelectedLocation.name}/review` },
+          { title: '口コミ分析', link: '#' }
+        ],
+        flipIcon: true
+      })
     }
-  ], [selectedAccount, googleSelectedLocation])
+
+    return items
+  }, [selectedAccount, googleSelectedLocation])
 
   return (
     <Wrapper direction="col" className={styles.sidebar_container} justify="justify-between">
@@ -67,8 +76,8 @@ export default function AdvancedSidebarMenu() {
           <img src={SoelLogoIcon} alt="soel_logo" />
         </Wrapper>
         <div className={styles.separator} />
-        <Link to="" onClick={(e) => e.preventDefault()}>
-          <Wrapper gap="1.7rem" padding="2.1rem 0 2.1rem 4.4rem">
+        <Link to="/">
+          <Wrapper gap="1.7rem" padding="2.1rem 0 2.1rem 4.4rem" className={pathname === '/' ? styles.home_selected : ''}>
             <img src={HomeIcon} alt="home_icon" />
             <Typography content="ホーム" size="medium" color="primary" />
           </Wrapper>
@@ -111,12 +120,65 @@ type SidebarItemProps = {
 }
 
 function SidebarItem({ title, icon: Icon, items, flipIcon = false }: SidebarItemProps) {
-  const [isOpen, setIsOpen] = useState<boolean>(false)
-  const [hoveredItem, setHoveredItem] = useState<string | null>(null)
   const { pathname } = useLocation()
+  const [hoveredItem, setHoveredItem] = useState<string | null>(null)
+  const [flyoutPosition, setFlyoutPosition] = useState<{ top: number } | null>(null)
+  const closeTimerRef = useRef<NodeJS.Timeout | null>(null)
+
+  const FLYOUT_CLOSE_DELAY_MS = 500
+
   const isSelected = useMemo(() => {
-    return items.some(({ link }) => pathname.includes(link))
+    const pathWithoutQuery = pathname.split('?')[0]
+
+    return items.some(({ link, subItems }) => {
+      const linkPath = link.split('?')[0]
+
+      // Exact match for this item
+      if (pathWithoutQuery === linkPath) return true
+
+      // Check subItems
+      if (subItems) {
+        return subItems.some(subItem => {
+          const subPath = subItem.link.split('?')[0]
+          return pathWithoutQuery === subPath || pathWithoutQuery.startsWith(subPath + '/')
+        })
+      }
+
+      return false
+    })
   }, [pathname, items])
+
+  const [isOpen, setIsOpen] = useState<boolean>(isSelected)
+
+  useEffect(() => {
+    if (isSelected) {
+      setIsOpen(true)
+    }
+  }, [isSelected])
+
+  const handleMouseLeave = () => {
+    closeTimerRef.current = setTimeout(() => {
+      setHoveredItem(null)
+      setFlyoutPosition(null)
+    }, FLYOUT_CLOSE_DELAY_MS)
+  }
+
+  const handleMouseEnter = (itemTitle: string, rect: DOMRect) => {
+    if (closeTimerRef.current) {
+      clearTimeout(closeTimerRef.current)
+      closeTimerRef.current = null
+    }
+    setHoveredItem(itemTitle)
+    setFlyoutPosition({ top: rect.top })
+  }
+
+  useEffect(() => {
+    return () => {
+      if (closeTimerRef.current) {
+        clearTimeout(closeTimerRef.current)
+      }
+    }
+  }, [])
 
   return (
     <>
@@ -133,19 +195,40 @@ function SidebarItem({ title, icon: Icon, items, flipIcon = false }: SidebarItem
             {items.map(({ title, link, subItems }, index) => (
               <Wrapper
                 className={classNames(
-                  link === pathname ? styles.sub_menu_container_selected : '',
+                  (() => {
+                    const linkPath = link.split('?')[0]
+                    const pathWithoutQuery = pathname.split('?')[0]
+                    // Exact match only (no substring matching)
+                    return pathWithoutQuery === linkPath
+                  })() ? styles.sub_menu_container_selected : '',
                   styles.sub_menu_item_wrapper
                 )}
                 key={index}
                 padding="2rem 0 2rem 7.8rem"
-                onMouseEnter={() => setHoveredItem(title)}
-                onMouseLeave={() => setHoveredItem(null)}
+                onMouseEnter={(e) => {
+                  const rect = e.currentTarget.getBoundingClientRect()
+                  handleMouseEnter(title, rect)
+                }}
+                onMouseLeave={handleMouseLeave}
               >
                 {subItems ? (
                   <>
-                    <Typography content={title} size="normal" weight="normal" color="primary" />
-                    {hoveredItem === title && (
-                      <div className={styles.flyout_menu}>
+                    <Link to={link}>
+                      <Typography content={title} size="normal" weight="normal" color="primary" />
+                    </Link>
+                    {hoveredItem === title && flyoutPosition && (
+                      <div
+                        className={styles.flyout_menu}
+                        style={{ top: `${flyoutPosition.top}px` }}
+                        onMouseEnter={() => {
+                          if (closeTimerRef.current) {
+                            clearTimeout(closeTimerRef.current)
+                            closeTimerRef.current = null
+                          }
+                          setHoveredItem(title)
+                        }}
+                        onMouseLeave={handleMouseLeave}
+                      >
                         {subItems.map((subItem, subIndex) => (
                           <div key={subIndex}>
                             <Link to={subItem.link}>

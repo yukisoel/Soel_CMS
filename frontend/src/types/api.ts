@@ -4,6 +4,26 @@
  */
 
 export interface paths {
+    '/api/store/google/sync': {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Googleロケーションと店舗の同期
+         * @description 指定のGoogleアカウントに紐づくGoogleロケーションをGoogle APIから取得し、都道府県情報を含めてDBの店舗と同期します。APIに存在するが未登録の店舗は追加し、APIに存在しない店舗は削除します。
+         */
+        post: operations['syncGoogleStores'];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     '/api/store/create': {
         parameters: {
             query?: never;
@@ -1516,11 +1536,15 @@ export interface components {
             message: string;
             path: string;
         };
+        StoreListResponse: {
+            stores: components['schemas']['StoreResponse'][];
+        };
         StoreResponse: {
             storeId: string;
             name: string;
             userId: string;
             brandId?: string;
+            brandName?: string;
             googleAccountId?: string;
             googleLocationId?: string;
             googleLinkedAt?: string;
@@ -1829,9 +1853,6 @@ export interface components {
             value?: boolean;
         };
         UserApiResponse: Record<string, never>;
-        StoreListResponse: {
-            stores: components['schemas']['StoreResponse'][];
-        };
         BrandWithStoresResponse: {
             brandId: string;
             userId: string;
@@ -1909,6 +1930,37 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    syncGoogleStores: {
+        parameters: {
+            query: {
+                accountId: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    '*/*': components['schemas']['StoreListResponse'];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    '*/*': components['schemas']['ErrorResponse'];
+                };
+            };
+        };
+    };
     createStore: {
         parameters: {
             query: {
@@ -4214,7 +4266,8 @@ export enum GoogleLocationAttributeServiceType {
     '食べ物のハッピーアワーあり' = '\u98DF\u3079\u7269\u306E\u30CF\u30C3\u30D4\u30FC\u30A2\u30EF\u30FC\u3042\u308A',
     '食べ放題あり' = '\u98DF\u3079\u653E\u984C\u3042\u308A',
     '深夜の食事可' = '\u6DF1\u591C\u306E\u98DF\u4E8B\u53EF',
-    '点字メニューあり' = '\u70B9\u5B57\u30E1\u30CB\u30E5\u30FC\u3042\u308A'
+    '点字メニューあり' = '\u70B9\u5B57\u30E1\u30CB\u30E5\u30FC\u3042\u308A',
+    '朝食' = '\u671D\u98DF'
 }
 export enum GoogleLocationAttributeServiceOptionType {
     'テラス席あり' = '\u30C6\u30E9\u30B9\u5E2D\u3042\u308A',
@@ -4232,13 +4285,20 @@ export enum GoogleLocationAttributeServiceOptionType {
     '集団補聴用のヒアリングループ' = '\u96C6\u56E3\u88DC\u8074\u7528\u306E\u30D2\u30A2\u30EA\u30F3\u30B0\u30EB\u30FC\u30D7',
     '男女共用トイレ' = '\u7537\u5973\u5171\u7528\u30C8\u30A4\u30EC',
     'トランスジェンダー対応' = '\u30C8\u30E9\u30F3\u30B9\u30B8\u30A7\u30F3\u30C0\u30FC\u5BFE\u5FDC',
+    LGBTQ_ = 'LGBTQ \u30D5\u30EC\u30F3\u30C9\u30EA\u30FC',
     '敷地内駐車場' = '\u6577\u5730\u5185\u99D0\u8ECA\u5834',
     '無料の屋内駐車場' = '\u7121\u6599\u306E\u5C4B\u5185\u99D0\u8ECA\u5834',
     '無料の路上駐車場' = '\u7121\u6599\u306E\u8DEF\u4E0A\u99D0\u8ECA\u5834',
     '無料駐車場' = '\u7121\u6599\u99D0\u8ECA\u5834',
     '有料の屋内駐車場' = '\u6709\u6599\u306E\u5C4B\u5185\u99D0\u8ECA\u5834',
     '有料の路上駐車場' = '\u6709\u6599\u306E\u8DEF\u4E0A\u99D0\u8ECA\u5834',
-    '有料駐車場' = '\u6709\u6599\u99D0\u8ECA\u5834'
+    '有料駐車場' = '\u6709\u6599\u99D0\u8ECA\u5834',
+    '要予約' = '\u8981\u4E88\u7D04',
+    NFC_ = 'NFC \u30E2\u30D0\u30A4\u30EB\u6C7A\u6E08',
+    'クレジットカード' = '\u30AF\u30EC\u30B8\u30C3\u30C8\u30AB\u30FC\u30C9',
+    'デビットカード' = '\u30C7\u30D3\u30C3\u30C8\u30AB\u30FC\u30C9',
+    '現金のみ' = '\u73FE\u91D1\u306E\u307F',
+    '小切手' = '\u5C0F\u5207\u624B'
 }
 export enum GoogleLocationReviewCustomStarRating {
     STAR_RATING_UNSPECIFIED = 'STAR_RATING_UNSPECIFIED',

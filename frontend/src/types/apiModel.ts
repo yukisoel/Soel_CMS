@@ -1,5 +1,6 @@
 import { components, paths } from '@/types/api'
 
+// Google API types
 export type GoogleAccount = paths['/api/google/account']['get']['responses']['200']['content']['*/*']
 
 export type GoogleLocation = paths['/api/google/location']['get']['responses']['200']['content']['*/*']
@@ -63,6 +64,7 @@ export type PrefectureListWithBrandListWithStoreListResponse = components['schem
 export type PrefectureWithBrandListWithStoreListResponse = components['schemas']['PrefectureWithBrandListWithStoreListResponse']
 export type BrandWithStoresResponse = components['schemas']['BrandWithStoresResponse']
 export type StoreResponse = components['schemas']['StoreResponse']
+export type StoreListResponse = components['schemas']['StoreListResponse']
 export type GoogleAttributeMetadata = components['schemas']['GoogleAttributeMetadata']
 // export type GoogleLocationBusinessHours = paths['/api/google/location/profile']['get']['responses']['200']['content']['*/*']['regularHours']
 // export type GoogleLocationTimePeriod = paths['/api/google/location/profile']['get']['responses']['200']['content']['*/*']['regularHours']['periods'][0]

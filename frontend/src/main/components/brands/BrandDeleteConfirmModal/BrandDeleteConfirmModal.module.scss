@@ -1,0 +1,28 @@
+@use '@/main/styles/variables' as vars;
+
+.message_container {
+  text-align: center;
+  margin-bottom: 5rem;
+  line-height: 1.5;
+}
+
+.button_container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  align-items: center;
+  width: 100%;
+}
+
+.cancel_button {
+  width: 20rem;
+  height: 15.5rem;
+  border: 1px solid vars.$text-color-primary;
+  border-radius: 10px;
+}
+
+.delete_button {
+  width: 20.1rem;
+  height: 4.2rem;
+  border-radius: 10px;
+}
