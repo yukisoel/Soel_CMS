@@ -8,9 +8,36 @@
 
 ※要各自設定
 
+~/.aws/config に設定
+```
+[profile infra-sso]
+sso_session = my-session
+sso_account_id = 211125631266
+sso_role_name = InfraAccess
+region = ap-northeast-1
+output = json
+```
+
+デフォルトで使用するプロファイルを設定
+```
+export AWS_PROFILE=infra-sso
+```
+
+sso login
+```
+aws sso login --profile infra-sso
+```
+
+現在の権限確認
+```
+aws sts get-caller-identity
+```
+
 ### 環境変数の設定
+※ 詳細は infra/env/README.md を参照
+
 - infra/env/{ENV}.env を埋める
-※ 2025/05/21 現在 dev.env と prd.env を仮作成済
+- infra/env/{ENV}.secret.env を作成する
 
 ### ROUTE53まわり
 - ホストゾーンがすでに存在すること
@@ -21,7 +48,12 @@ cd infra
 ./script/request-acm-test-cert.sh [dev|prd]
 ```
 
-※ 2025/05/21 現在 dev.cmssoel.click と cmssoel.click の証明書が作成済
+※ 2025/10/13 現在下記の証明書が作成済
+- cmssoel.click
+- dev.cmssoel.click
+- prd.cmssoel.click
+
+*.cmssoel.click についてはまとめた方がsand環境作成時などが楽かもしれない
 
 ### 環境周り
 - deploy用のバケットがあること
@@ -38,8 +70,8 @@ cd infra
 ```
 
 ## インフラ削除手順
-※ ECR内のイメージやsecretもすべて削除するため、注意する
-※ スタックが中途半端に残ってしまうことがある。その場合は再び実行する
+※ ECR内のイメージなどもすべて削除するため、注意する
+※ シークレットとCognitoユーザープールは、スクリプト実行後、残すかどうかを選択できるようになっている
 ```bash
 cd infra
 ./script/cleanup.sh [dev|prd]
@@ -48,7 +80,8 @@ cd infra
 # アプリデプロイ手順
 ```bash
 cd infra
-./script/100-deploy-app.sh [dev|prd] [タグ名]
-# e.g. ./script/100-deploy-app.sh dev dev-v1.0.0
+./script/900-deploy-app.sh [dev|prd] [タグ名]
+# e.g. ./script/900-deploy-app.sh dev dev-v1.0.0
+# タグ名は省略可能。その場合は "init" が使用される
 ```
 
