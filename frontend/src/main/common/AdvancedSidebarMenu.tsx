@@ -79,7 +79,7 @@ export default function AdvancedSidebarMenu() {
         <Link to="/">
           <Wrapper gap="1.7rem" padding="2.1rem 0 2.1rem 4.4rem" className={pathname === '/' ? styles.home_selected : ''}>
             <img src={HomeIcon} alt="home_icon" />
-            <Typography content="店舗情報管理" size="medium" color="primary" />
+            <Typography content="店舗管理" size="medium" color="primary" />
           </Wrapper>
         </Link>
         {
