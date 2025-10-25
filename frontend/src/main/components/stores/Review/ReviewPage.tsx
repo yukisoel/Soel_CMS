@@ -1,5 +1,4 @@
-import { useState, useEffect } from 'react'
-import { useParams } from 'react-router-dom'
+import { useState } from 'react'
 import ReviewCard, { Review } from './ReviewCard'
 import SearchDetailModal from './Modal/SearchDetailModal'
 import ReviewDetailModal from './Modal/ReviewDetailModal'
@@ -22,76 +21,76 @@ export default function ReviewPage() {
   const { isOpen: isReviewDetailModalOpen, openModal: openReviewDetailModal, closeModal: closeReviewDetailModal } = useModal()
   const [selectedReview, setSelectedReview] = useState<Review | null>(null)
   const [reviews, setReviews] = useState<Review[]>([])
-  const [isLoading, setIsLoading] = useState(true)
+  const [isLoading, setIsLoading] = useState(false)
   const [isReplying, setIsReplying] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
+  const [currentAccountId, setCurrentAccountId] = useState<string>('')
+  const [currentLocationId, setCurrentLocationId] = useState<string>('')
+  const [currentAccountName, setCurrentAccountName] = useState<string>('')
+  const [currentLocationTitle, setCurrentLocationTitle] = useState<string>('')
 
-  const { accountId, locationId } = useParams()
+  // モーダルから呼ばれる検索ハンドラー
+  const handleSearchFetch = async (accountId: string, locationId: string, accountName: string, locationTitle: string) => {
+    setIsLoading(true)
+    setCurrentAccountId(accountId)
+    setCurrentLocationId(locationId)
+    setCurrentAccountName(accountName)
+    setCurrentLocationTitle(locationTitle)
+    try {
+      const locationReviews = await googleRepository.getLocationReviews(
+        accountId,
+        locationId
+      )
 
-  useEffect(() => {
-    const fetchReviews = async () => {
-      setIsLoading(true)
-      try {
-        // Contextの値が設定されている場合のみAPIを呼び出し
-        if (accountId && locationId) {
-          const locationReviews = await googleRepository.getLocationReviews(
-            accountId,
-            locationId
-          )
+      const formattedReviews: Review[] = locationReviews.map((review: GoogleLocationReviewModel, index: number) => {
+        const ratingValue = review.starRating ? (() => {
+          switch (review.starRating) {
+          case GoogleLocationReviewCustomStarRating.ONE:
+            return 1
+          case GoogleLocationReviewCustomStarRating.TWO:
+            return 2
+          case GoogleLocationReviewCustomStarRating.THREE:
+            return 3
+          case GoogleLocationReviewCustomStarRating.FOUR:
+            return 4
+          case GoogleLocationReviewCustomStarRating.FIVE:
+            return 5
+          default:
+            return 0
+          }
+        })() : 0
+        const reviewDate = review.createTime ? (() => {
+          const date = new Date(review.createTime)
+          const year = date.getFullYear()
+          const month = String(date.getMonth() + 1).padStart(2, '0')
+          const day = String(date.getDate()).padStart(2, '0')
+          return `${year}年${month}月${day}日`
+        })() : ''
 
-          const formattedReviews: Review[] = locationReviews.map((review: GoogleLocationReviewModel, index: number) => {
-            const ratingValue = review.starRating ? (() => {
-              switch (review.starRating) {
-              case GoogleLocationReviewCustomStarRating.ONE:
-                return 1
-              case GoogleLocationReviewCustomStarRating.TWO:
-                return 2
-              case GoogleLocationReviewCustomStarRating.THREE:
-                return 3
-              case GoogleLocationReviewCustomStarRating.FOUR:
-                return 4
-              case GoogleLocationReviewCustomStarRating.FIVE:
-                return 5
-              default:
-                return 0
-              }
-            })() : 0
-            const reviewDate = review.createTime ? (() => {
-              const date = new Date(review.createTime)
-              const year = date.getFullYear()
-              const month = String(date.getMonth() + 1).padStart(2, '0')
-              const day = String(date.getDate()).padStart(2, '0')
-              return `${year}年${month}月${day}日`
-            })() : ''
+        // reviewIdはUUIDとして扱う
+        const reviewId = review.reviewId || `review-${index}-${Date.now()}`
 
-            // reviewIdはUUIDとして扱う
-            const reviewId = review.reviewId || `review-${index}-${Date.now()}`
-
-            return {
-              id: reviewId,
-              serviceName: 'GBP',
-              rating: ratingValue,
-              date: reviewDate,
-              content: review.comment || '',
-              replied: !!review.reviewReply,
-              reviewReply: review.reviewReply ? {
-                comment: review.reviewReply.comment || '',
-                updateTime: review.reviewReply.updateTime || ''
-              } : undefined
-            }
-          })
-
-          setReviews(formattedReviews)
+        return {
+          id: reviewId,
+          serviceName: 'GBP',
+          rating: ratingValue,
+          date: reviewDate,
+          content: review.comment || '',
+          replied: !!review.reviewReply,
+          reviewReply: review.reviewReply ? {
+            comment: review.reviewReply.comment || '',
+            updateTime: review.reviewReply.updateTime || ''
+          } : undefined
         }
-      } catch (error) {
-        console.error('Failed to fetch reviews:', error)
-      } finally {
-        setIsLoading(false)
-      }
-    }
+      })
 
-    fetchReviews()
-  }, [googleRepository, accountId, locationId])
+      setReviews(formattedReviews)
+    } catch (error) {
+      console.error('Failed to fetch reviews:', error)
+    } finally {
+      setIsLoading(false)
+    }
+  }
 
   const handleReviewClick = (review: Review) => {
     setSelectedReview(review)
@@ -99,10 +98,10 @@ export default function ReviewPage() {
   }
 
   const handleReply = async (replyContent: string) => {
-    if (accountId && locationId && selectedReview) {
+    if (currentAccountId && currentLocationId && selectedReview) {
       setIsReplying(true)
       try {
-        await googleRepository.postLocationReviewReply(accountId, locationId, selectedReview.id, replyContent)
+        await googleRepository.postLocationReviewReply(currentAccountId, currentLocationId, selectedReview.id, replyContent)
         // Refresh the reviews after replying
         const updatedReviews = reviews.map(review =>
           review.id === selectedReview.id
@@ -120,9 +119,9 @@ export default function ReviewPage() {
   }
 
   const handleDeleteReply = async () => {
-    if (accountId && locationId && selectedReview) {
+    if (currentAccountId && currentLocationId && selectedReview) {
       try {
-        await googleRepository.deleteLocationReviewReply(accountId, locationId, selectedReview.id.toString())
+        await googleRepository.deleteLocationReviewReply(currentAccountId, currentLocationId, selectedReview.id.toString())
         // Refresh the reviews after deletion
         const updatedReviews = reviews.map(review =>
           review.id === selectedReview.id
@@ -153,6 +152,15 @@ export default function ReviewPage() {
     <Wrapper direction="col" padding="5rem 4.3rem 5.9rem 5rem" className={styles.content_container}>
       <Wrapper direction="col" gap="2rem">
         <Typography content="口コミ" color="primary" size="medium" />
+        {currentAccountName && currentLocationTitle && (
+          <Wrapper direction="col" gap="0.5rem">
+            <Typography
+              content={`現在の検索条件: ${currentAccountName} / ${currentLocationTitle}`}
+              color="gray"
+              size="small"
+            />
+          </Wrapper>
+        )}
         <Wrapper gap="3rem">
           <SearchBox placeholder="ワードを検索" width="42.7rem" onChange={handleSearch} value={searchQuery} />
           <Button bgColor="primary" onClick={openSearchModal}>
@@ -176,7 +184,7 @@ export default function ReviewPage() {
           ))
         )}
       </Wrapper>
-      <SearchDetailModal isOpen={isSearchModalOpen} onClose={closeSearchModal} />
+      <SearchDetailModal isOpen={isSearchModalOpen} onClose={closeSearchModal} onSearch={handleSearchFetch} />
       {selectedReview && (
         <ReviewDetailModal
           isOpen={isReviewDetailModalOpen}
