@@ -15,6 +15,12 @@ import { GoogleLocationReviewCustomStarRating } from '@/types/api'
 import { useGoogleRepository } from '@/main/contexts/GoogleRepositoryContext'
 
 
+// 日付の終了時刻を表す定数
+const END_OF_DAY_HOURS = 23
+const END_OF_DAY_MINUTES = 59
+const END_OF_DAY_SECONDS = 59
+const END_OF_DAY_MILLISECONDS = 999
+
 export default function ReviewPage() {
   const googleRepository = useGoogleRepository()
   const { isOpen: isSearchModalOpen, openModal: openSearchModal, closeModal: closeSearchModal } = useModal()
@@ -171,7 +177,7 @@ export default function ReviewPage() {
 
           if (searchCriteria.endDate) {
             const endDate = new Date(searchCriteria.endDate)
-            endDate.setHours(23, 59, 59, 999)
+            endDate.setHours(END_OF_DAY_HOURS, END_OF_DAY_MINUTES, END_OF_DAY_SECONDS, END_OF_DAY_MILLISECONDS)
             if (reviewDate > endDate) return false
           }
 
