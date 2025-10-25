@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import ReviewCard, { Review } from './ReviewCard'
-import SearchDetailModal from './Modal/SearchDetailModal'
+import SearchDetailModal, { SearchCriteria } from './Modal/SearchDetailModal'
 import ReviewDetailModal from './Modal/ReviewDetailModal'
 import styles from '@/main/components/stores/Review/ReviewPage.module.scss'
 import Wrapper from '@/main/common/Wrapper'
@@ -28,18 +28,20 @@ export default function ReviewPage() {
   const [currentLocationId, setCurrentLocationId] = useState<string>('')
   const [currentAccountName, setCurrentAccountName] = useState<string>('')
   const [currentLocationTitle, setCurrentLocationTitle] = useState<string>('')
+  const [searchCriteria, setSearchCriteria] = useState<SearchCriteria | null>(null)
 
   // モーダルから呼ばれる検索ハンドラー
-  const handleSearchFetch = async (accountId: string, locationId: string, accountName: string, locationTitle: string) => {
+  const handleSearchFetch = async (criteria: SearchCriteria) => {
     setIsLoading(true)
-    setCurrentAccountId(accountId)
-    setCurrentLocationId(locationId)
-    setCurrentAccountName(accountName)
-    setCurrentLocationTitle(locationTitle)
+    setCurrentAccountId(criteria.accountId)
+    setCurrentLocationId(criteria.locationId)
+    setCurrentAccountName(criteria.accountName)
+    setCurrentLocationTitle(criteria.locationTitle)
+    setSearchCriteria(criteria)
     try {
       const locationReviews = await googleRepository.getLocationReviews(
-        accountId,
-        locationId
+        criteria.accountId,
+        criteria.locationId
       )
 
       const formattedReviews: Review[] = locationReviews.map((review: GoogleLocationReviewModel, index: number) => {
@@ -75,13 +77,14 @@ export default function ReviewPage() {
           serviceName: 'GBP',
           rating: ratingValue,
           date: reviewDate,
+          createTime: review.createTime,
           content: review.comment || '',
           replied: !!review.reviewReply,
           reviewReply: review.reviewReply ? {
             comment: review.reviewReply.comment || '',
             updateTime: review.reviewReply.updateTime || ''
           } : undefined
-        }
+        } as Review & { createTime?: string }
       })
 
       setReviews(formattedReviews)
@@ -140,13 +143,67 @@ export default function ReviewPage() {
     setSearchQuery(e.target.value)
   }
 
-  // 検索クエリに基づいてレビューをフィルタリング
-  const filteredReviews = reviews.filter(review => {
-    if (!searchQuery) return true
+  // 検索条件に基づいてレビューをフィルタリング＆ソート
+  const filteredReviews = (() => {
+    let result = [...reviews]
 
-    const query = searchQuery.toLowerCase()
-    return review.content.toLowerCase().includes(query)
-  })
+    // ワード検索でのフィルタリング
+    if (searchQuery) {
+      const query = searchQuery.toLowerCase()
+      result = result.filter(review => review.content.toLowerCase().includes(query))
+    }
+
+    // 検索条件が設定されている場合
+    if (searchCriteria) {
+      // 日付範囲でのフィルタリング
+      if (searchCriteria.startDate || searchCriteria.endDate) {
+        result = result.filter(review => {
+          const reviewWithTime = review as Review & { createTime?: string }
+          if (!reviewWithTime.createTime) return true
+
+          const reviewDate = new Date(reviewWithTime.createTime)
+
+          if (searchCriteria.startDate) {
+            const startDate = new Date(searchCriteria.startDate)
+            startDate.setHours(0, 0, 0, 0)
+            if (reviewDate < startDate) return false
+          }
+
+          if (searchCriteria.endDate) {
+            const endDate = new Date(searchCriteria.endDate)
+            endDate.setHours(23, 59, 59, 999)
+            if (reviewDate > endDate) return false
+          }
+
+          return true
+        })
+      }
+
+      // 返信状態でのソート
+      if (searchCriteria.replyStatus === '未返信') {
+        result.sort((a, b) => {
+          // 未返信を上に
+          if (a.replied === b.replied) return 0
+          return a.replied ? 1 : -1
+        })
+      } else if (searchCriteria.replyStatus === '返信済み') {
+        result.sort((a, b) => {
+          // 返信済みを上に
+          if (a.replied === b.replied) return 0
+          return a.replied ? -1 : 1
+        })
+      }
+
+      // 評価順でのソート
+      if (searchCriteria.ratingOrder === '高評価') {
+        result.sort((a, b) => b.rating - a.rating)
+      } else if (searchCriteria.ratingOrder === '低評価') {
+        result.sort((a, b) => a.rating - b.rating)
+      }
+    }
+
+    return result
+  })()
 
   return (
     <Wrapper direction="col" padding="5rem 4.3rem 5.9rem 5rem" className={styles.content_container}>

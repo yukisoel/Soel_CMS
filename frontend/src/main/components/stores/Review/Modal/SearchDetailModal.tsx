@@ -11,10 +11,21 @@ import Typography from '@/main/common/Typography'
 import { useGoogleRepository } from '@/main/contexts/GoogleRepositoryContext'
 import { GoogleAccount, GoogleLocation } from '@/types/apiModel'
 
+export type SearchCriteria = {
+  accountId: string;
+  locationId: string;
+  accountName: string;
+  locationTitle: string;
+  startDate: Date | null;
+  endDate: Date | null;
+  replyStatus: string;
+  ratingOrder: string;
+};
+
 type Props = {
     isOpen: boolean;
     onClose: () => void;
-    onSearch: (accountId: string, locationId: string, accountName: string, locationTitle: string) => void;
+    onSearch: (criteria: SearchCriteria) => void;
 };
 
 export default function SearchDetailModal({ isOpen, onClose, onSearch }: Props) {
@@ -77,12 +88,16 @@ export default function SearchDetailModal({ isOpen, onClose, onSearch }: Props) 
 
   const handleSearch = () => {
     if (selectedAccount && selectedLocation) {
-      onSearch(
-        selectedAccount.name,
-        selectedLocation.name,
-        selectedAccount.accountName,
-        selectedLocation.title
-      )
+      onSearch({
+        accountId: selectedAccount.name,
+        locationId: selectedLocation.name,
+        accountName: selectedAccount.accountName,
+        locationTitle: selectedLocation.title,
+        startDate,
+        endDate,
+        replyStatus,
+        ratingOrder
+      })
       onClose()
     }
   }
