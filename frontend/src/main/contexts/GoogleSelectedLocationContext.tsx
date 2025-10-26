@@ -1,5 +1,5 @@
-import {createContext, useState} from "react";
-import {GoogleLocation} from "@/types/apiModel.ts";
+import { createContext, useState } from 'react'
+import { GoogleLocation } from '@/types/apiModel.ts'
 
 interface GoogleSelectedLocationContextState {
   googleSelectedLocation: GoogleLocation
@@ -11,15 +11,15 @@ type Props = {
 }
 
 export const GoogleSelectedLocationContext = createContext<GoogleSelectedLocationContextState>({
-  googleSelectedLocation: {name: '', title: ''},
+  googleSelectedLocation: { name: '', title: '' },
   setGoogleSelectedLocation: () => {}
 })
 
-export const GoogleSelectedLocationContextProvider = ({children}: Props) => {
-  const [googleSelectedLocation, setGoogleSelectedLocation] = useState<GoogleLocation>({name: '', title: ''})
+export const GoogleSelectedLocationContextProvider = ({ children }: Props) => {
+  const [googleSelectedLocation, setGoogleSelectedLocation] = useState<GoogleLocation>({ name: '', title: '' })
 
   return (
-    <GoogleSelectedLocationContext.Provider value={{googleSelectedLocation: googleSelectedLocation, setGoogleSelectedLocation: setGoogleSelectedLocation}}>
+    <GoogleSelectedLocationContext.Provider value={{ googleSelectedLocation: googleSelectedLocation, setGoogleSelectedLocation: setGoogleSelectedLocation }}>
       {children}
     </GoogleSelectedLocationContext.Provider>
   )

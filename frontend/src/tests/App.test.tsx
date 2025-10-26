@@ -1,6 +1,6 @@
-import {render,screen} from "@testing-library/react";
-import {MemoryRouter} from "react-router-dom";
-import App from "@/main/App.tsx";
+import { render,screen } from '@testing-library/react'
+import { MemoryRouter } from 'react-router-dom'
+import App from '@/main/App.tsx'
 
 describe('App', () => {
   it('/edit にアクセスすると、SearchStore が表示される', async () => {

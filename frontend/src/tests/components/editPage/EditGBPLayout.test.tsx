@@ -1,22 +1,22 @@
-import {describe, expect} from "vitest";
-import {render, screen} from "@testing-library/react";
-import EditGBPLayout from "@/main/components/editPage/EditGBPLayout.tsx";
-import EditProfileIcon from "@/main/assets/EditProfileIcon.svg"
-import EditPhotoIcon from "@/main/assets/EditPhotoIcon.svg"
-import EditMenuIcon from "@/main/assets/EditMenuIcon.svg"
-import EditOrderIcon from "@/main/assets/EditOrderIcon.svg"
-import EditInfoIcon from "@/main/assets/EditInfoIcon.svg"
-import EditItemIcon from "@/main/assets/EditItemIcon.svg"
-import EditReserveIcon from "@/main/assets/EditReserveIcon.svg"
-import EditQnAIcon from "@/main/assets/EditQnAIcon.svg"
+import { describe, expect } from 'vitest'
+import { render, screen } from '@testing-library/react'
+import EditGBPLayout from '@/main/components/editPage/EditGBPLayout.tsx'
+import EditProfileIcon from '@/main/assets/EditProfileIcon.svg'
+import EditPhotoIcon from '@/main/assets/EditPhotoIcon.svg'
+import EditMenuIcon from '@/main/assets/EditMenuIcon.svg'
+import EditOrderIcon from '@/main/assets/EditOrderIcon.svg'
+import EditInfoIcon from '@/main/assets/EditInfoIcon.svg'
+import EditItemIcon from '@/main/assets/EditItemIcon.svg'
+import EditReserveIcon from '@/main/assets/EditReserveIcon.svg'
+import EditQnAIcon from '@/main/assets/EditQnAIcon.svg'
 import {
   GoogleSelectedLocationContextProvider
-} from "@/main/contexts/GoogleSelectedLocationContext.tsx";
+} from '@/main/contexts/GoogleSelectedLocationContext.tsx'
 
 describe('EditGBPLayout', () => {
   // const dumyyStoreName = 'dummyStoreName'
   it.skip('店舗名が表示される', async () => {
-    const storeNameTest = "storeNameTest"
+    const storeNameTest = 'storeNameTest'
     render(
       <GoogleSelectedLocationContextProvider>
         <EditGBPLayout/>

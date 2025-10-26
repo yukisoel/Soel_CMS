@@ -1,9 +1,9 @@
-import styles from './EditReservationV2.module.scss';
-import Wrapper from '@/main/common/Wrapper';
-import Typography from '@/main/common/Typography';
-import { useAdvancedTabs } from '@/main/common/AdvancedTabs/useAdvancedTabs';
-import { RecommendedTab } from './tabs/RecommendedTab';
-import { OnlineToolTab } from './tabs/OnlineToolTab';
+import styles from './EditReservationV2.module.scss'
+import { RecommendedTab } from './tabs/RecommendedTab'
+import { OnlineToolTab } from './tabs/OnlineToolTab'
+import Wrapper from '@/main/common/Wrapper'
+import Typography from '@/main/common/Typography'
+import { useAdvancedTabs } from '@/main/common/AdvancedTabs/useAdvancedTabs'
 
 type Props = {
   onTryButtonClick: () => void;
@@ -12,8 +12,8 @@ type Props = {
 export default function EditReservationV2({ onTryButtonClick }: Props) {
   const { selectedTab, tabsRender } = useAdvancedTabs([
     { tabKey: 'recommended', content: 'おすすめの予約ボタン' },
-    { tabKey: 'onlineTool', content: 'オンライン予約ツールへのリンク' },
-  ]);
+    { tabKey: 'onlineTool', content: 'オンライン予約ツールへのリンク' }
+  ])
 
   return (
     <Wrapper direction="col" gap="4rem" padding="5rem" className={styles.content_container}>
@@ -24,5 +24,5 @@ export default function EditReservationV2({ onTryButtonClick }: Props) {
       {selectedTab === 'recommended' && <RecommendedTab onTryButtonClick={onTryButtonClick} />}
       {selectedTab === 'onlineTool' && <OnlineToolTab onTryButtonClick={onTryButtonClick} />}
     </Wrapper>
-  );
+  )
 }

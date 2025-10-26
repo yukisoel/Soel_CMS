@@ -1,17 +1,17 @@
-import React from 'react';
-import Modal from '@/main/common/Modal/Modal';
-import Wrapper from '@/main/common/Wrapper';
-import Typography from '@/main/common/Typography';
-import Button from '@/main/common/Button';
-import DatePicker from '@/main/common/DatePicker/DatePicker';
-import { useForm, Controller } from 'react-hook-form';
-import { z } from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
-import LayoutLabeledFormItem from '@/main/common/LayoutLabeledFormItem';
+import React from 'react'
+import { useForm, Controller } from 'react-hook-form'
+import { z } from 'zod'
+import { zodResolver } from '@hookform/resolvers/zod'
+import Modal from '@/main/common/Modal/Modal'
+import Wrapper from '@/main/common/Wrapper'
+import Typography from '@/main/common/Typography'
+import Button from '@/main/common/Button'
+import DatePicker from '@/main/common/DatePicker/DatePicker'
+import LayoutLabeledFormItem from '@/main/common/LayoutLabeledFormItem'
 
 const schema = z.object({
-  openingDate: z.date({ required_error: '開業日は必須です' }).nullable().refine(val => val !== null, '開業日は必須です'),
-});
+  openingDate: z.date({ required_error: '開業日は必須です' }).nullable().refine(val => val !== null, '開業日は必須です')
+})
 
 type FormData = {
   openingDate: Date | null;
@@ -30,23 +30,23 @@ export const EditOpeningDateModal: React.FC<EditOpeningDateModalProps> = ({
   isOpen,
   onClose,
   onSubmit,
-  initialValues,
+  initialValues
 }) => {
   const {
     control,
     handleSubmit,
     formState: { errors },
-    reset,
+    reset
   } = useForm<FormData>({
     resolver: zodResolver(schema),
-    defaultValues: initialValues || { openingDate: null },
-  });
+    defaultValues: initialValues || { openingDate: null }
+  })
 
   React.useEffect(() => {
     if (isOpen) {
-      reset(initialValues || { openingDate: null });
+      reset(initialValues || { openingDate: null })
     }
-  }, [isOpen, reset, initialValues]);
+  }, [isOpen, reset, initialValues])
 
   const contentRender = () => (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -78,7 +78,7 @@ export const EditOpeningDateModal: React.FC<EditOpeningDateModalProps> = ({
         </Wrapper>
       </Wrapper>
     </form>
-  );
+  )
 
   return (
     <Modal
@@ -87,5 +87,5 @@ export const EditOpeningDateModal: React.FC<EditOpeningDateModalProps> = ({
       headerContent="開業日を編集"
       contentRender={contentRender}
     />
-  );
-};
+  )
+}

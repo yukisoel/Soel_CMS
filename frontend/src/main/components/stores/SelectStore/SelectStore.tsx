@@ -1,11 +1,11 @@
-import styles from "@/main/components/stores/SelectStore/SelectStore.module.scss";
-import Wrapper from "@/main/common/Wrapper";
-import Typography from "@/main/common/Typography";
-import Loading from "@/main/common/Loading";
-import BrandSelector from "./BrandSelector";
-import AreaSelector from "./AreaSelector";
-import Button from "@/main/common/Button";
-import Separator from "@/main/common/Separator";
+import BrandSelector from './BrandSelector'
+import AreaSelector from './AreaSelector'
+import styles from '@/main/components/stores/SelectStore/SelectStore.module.scss'
+import Wrapper from '@/main/common/Wrapper'
+import Typography from '@/main/common/Typography'
+import Loading from '@/main/common/Loading'
+import Button from '@/main/common/Button'
+import Separator from '@/main/common/Separator'
 
 export type Branch = {
   id: string
@@ -42,7 +42,7 @@ type Props = {
   isLoading?: boolean
 }
 
-export default function SelectStore({areaSelectorProps, brandSelectorProps, onChangeSelectedBranches, onNextClick, onBackClick, isNextButtonDisabled, mode, isLoading = false}: Props) {
+export default function SelectStore({ areaSelectorProps, brandSelectorProps, onChangeSelectedBranches, onNextClick, onBackClick, isNextButtonDisabled, mode, isLoading = false }: Props) {
 
   return (
     <>

@@ -1,20 +1,21 @@
-import React from 'react';
-import Modal from '@/main/common/Modal/Modal';
-import Wrapper from '@/main/common/Wrapper';
-import Typography from '@/main/common/Typography';
-import Button from '@/main/common/Button';
-import Input from '@/main/common/Input';
-import { useForm } from 'react-hook-form';
-import { z } from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
-import LayoutLabeledFormItem from '@/main/common/LayoutLabeledFormItem';
+import React from 'react'
+import { useForm } from 'react-hook-form'
+import { z } from 'zod'
+import { zodResolver } from '@hookform/resolvers/zod'
+import Modal from '@/main/common/Modal/Modal'
+import Wrapper from '@/main/common/Wrapper'
+import Typography from '@/main/common/Typography'
+import Button from '@/main/common/Button'
+import Input from '@/main/common/Input'
+import LayoutLabeledFormItem from '@/main/common/LayoutLabeledFormItem'
+import { MAX_PHONE_LENGTH } from '@/main/constants/validation'
 
 const schema = z.object({
   phone: z.string()
     .min(1, '電話番号は必須です')
-    .max(20, '電話番号は20文字以内で入力してください')
-    .regex(/^[0-9-]+$/, '数字とハイフンのみ入力できます'),
-});
+    .max(MAX_PHONE_LENGTH, `電話番号は${MAX_PHONE_LENGTH}文字以内で入力してください`)
+    .regex(/^[0-9-]+$/, '数字とハイフンのみ入力できます')
+})
 
 type FormData = z.infer<typeof schema>;
 
@@ -31,7 +32,7 @@ export const EditPhoneModal: React.FC<EditPhoneModalProps> = ({
   isOpen,
   onClose,
   onSubmit,
-  initialValues,
+  initialValues
 }) => {
   const {
     register,
@@ -40,18 +41,18 @@ export const EditPhoneModal: React.FC<EditPhoneModalProps> = ({
     reset,
     watch
   } = useForm<FormData>({
-    resolver: zodResolver(schema),
-  });
+    resolver: zodResolver(schema)
+  })
 
-  const phoneValue = watch('phone') || '';
+  const phoneValue = watch('phone') || ''
 
   React.useEffect(() => {
     if (isOpen) {
       reset(initialValues || {
-        phone: '',
-      });
+        phone: ''
+      })
     }
-  }, [isOpen, reset, initialValues]);
+  }, [isOpen, reset, initialValues])
 
   const contentRender = () => (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -85,7 +86,7 @@ export const EditPhoneModal: React.FC<EditPhoneModalProps> = ({
         </Wrapper>
       </Wrapper>
     </form>
-  );
+  )
 
   return (
     <Modal
@@ -94,5 +95,5 @@ export const EditPhoneModal: React.FC<EditPhoneModalProps> = ({
       headerContent="電話番号を編集"
       contentRender={contentRender}
     />
-  );
-};
+  )
+}

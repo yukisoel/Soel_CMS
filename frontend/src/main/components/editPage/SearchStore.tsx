@@ -1,40 +1,38 @@
-import styles from "@/main/components/editPage/SearchStore.module.scss";
-import PullDownMenu from "@/main/components/PullDownMenu.tsx";
-import {useContext, useEffect, useState} from "react";
-import {useNavigate} from "react-router-dom";
-import {PankuzuItemListContext} from "@/main/contexts/PankuzuItemListContext.tsx";
-import {ServiceName} from "@/main/model/ServiceName.ts";
-import {GoogleService} from "@/main/service/GoogleService.ts";
-import {GoogleAccountsContext} from "@/main/contexts/GoogleAccountsContext.tsx";
-import {GoogleSelectedLocationContext} from "@/main/contexts/GoogleSelectedLocationContext.tsx";
-import {GoogleAccount, GoogleLocation} from "@/types/apiModel.ts";
+import { useContext, useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import styles from '@/main/components/editPage/SearchStore.module.scss'
+import PullDownMenu from '@/main/components/PullDownMenu.tsx'
+import { PankuzuItemListContext } from '@/main/contexts/PankuzuItemListContext.tsx'
+import { ServiceName } from '@/main/model/ServiceName.ts'
+import { GoogleAccountsContext } from '@/main/contexts/GoogleAccountsContext.tsx'
+import { GoogleSelectedLocationContext } from '@/main/contexts/GoogleSelectedLocationContext.tsx'
+import { GoogleAccount, GoogleLocation } from '@/types/apiModel.ts'
+import { useGoogleRepository } from '@/main/contexts/GoogleRepositoryContext'
 
-type Props = {
-  googleService: GoogleService
-}
 
-export default function SearchStore({googleService}: Props) {
-  const [selectedService, setSelectedService] = useState<string>("")
-  const [selectedAccountName, setSelectedAccountName] = useState<string>("")
-  const [selectedLocationTitle, setSelectedLocationTitle] = useState<string>("")
+export default function SearchStore() {
+  const googleRepository = useGoogleRepository()
+  const [selectedService, setSelectedService] = useState<string>('')
+  const [selectedAccountName, setSelectedAccountName] = useState<string>('')
+  const [selectedLocationTitle, setSelectedLocationTitle] = useState<string>('')
   const [accountList, setAccountList] = useState<GoogleAccount[]>([])
   const [locationList, setLocationList] = useState<GoogleLocation[]>([])
-  const [selectedPullDownMenu, setSelectedPullDownMenu] = useState<string>("none")
+  const [selectedPullDownMenu, setSelectedPullDownMenu] = useState<string>('none')
   const navigate = useNavigate()
 
-  const {selectedAccount,setSelectedAccount} = useContext(GoogleAccountsContext)
-  const {googleSelectedLocation, setGoogleSelectedLocation} = useContext(GoogleSelectedLocationContext)
-  const {setPankuzuItemList} = useContext(PankuzuItemListContext)
+  const { selectedAccount,setSelectedAccount } = useContext(GoogleAccountsContext)
+  const { googleSelectedLocation, setGoogleSelectedLocation } = useContext(GoogleSelectedLocationContext)
+  const { setPankuzuItemList } = useContext(PankuzuItemListContext)
 
   useEffect(() => {
-    setPankuzuItemList([{name: 'ページ編集', path: '/edit'}])
+    setPankuzuItemList([{ name: 'ページ編集', path: '/edit' }])
   }, [])
 
   useEffect(() => {
     if (selectedService === ServiceName.GBP) {
       createAccountList()
     }
-  }, [selectedService]);
+  }, [selectedService])
 
   useEffect(() => {
     if (selectedAccountName) {
@@ -54,13 +52,13 @@ export default function SearchStore({googleService}: Props) {
   }, [selectedLocationTitle])
 
   const createAccountList = () => {
-    googleService.getAccounts().then(accounts => {
+    googleRepository.getAccounts().then(accounts => {
       setAccountList(accounts)
     })
   }
 
   const createLocationList = (googleAccount:GoogleAccount) => {
-    googleService.getLocations(googleAccount).then(locations => {
+    googleRepository.getLocations(googleAccount).then(locations => {
       setLocationList(locations)
     })
   }
@@ -73,8 +71,8 @@ export default function SearchStore({googleService}: Props) {
             <div className={styles.store_search_wrapper}>
 
               <div data-testid="service_select_container"
-                   className={styles.pull_down_menu_container}
-                   hidden={selectedPullDownMenu !== '対象サービスを選択' && selectedPullDownMenu !== 'none'}
+                className={styles.pull_down_menu_container}
+                hidden={selectedPullDownMenu !== '対象サービスを選択' && selectedPullDownMenu !== 'none'}
               >
                 <PullDownMenu
                   title={'対象サービスを選択'}
@@ -91,8 +89,8 @@ export default function SearchStore({googleService}: Props) {
             <>
               <div className={styles.store_search_wrapper}>
                 <div data-testid="service_select_container"
-                     className={styles.pull_down_menu_container}
-                     hidden={selectedPullDownMenu !== '対象サービスを選択' && selectedPullDownMenu !== 'none'}
+                  className={styles.pull_down_menu_container}
+                  hidden={selectedPullDownMenu !== '対象サービスを選択' && selectedPullDownMenu !== 'none'}
                 >
                   <PullDownMenu
                     title={'対象サービスを選択'}
@@ -104,8 +102,8 @@ export default function SearchStore({googleService}: Props) {
                   />
                 </div>
                 <div data-testid="brand_select_container"
-                     className={styles.pull_down_menu_container}
-                     hidden={selectedPullDownMenu !== 'アカウントを選択' && selectedPullDownMenu !== 'none'}
+                  className={styles.pull_down_menu_container}
+                  hidden={selectedPullDownMenu !== 'アカウントを選択' && selectedPullDownMenu !== 'none'}
                 >
                   <PullDownMenu
                     title={'アカウントを選択'}
@@ -117,8 +115,8 @@ export default function SearchStore({googleService}: Props) {
                   />
                 </div>
                 <div data-testid="store_select_container"
-                     className={styles.pull_down_menu_container}
-                     hidden={selectedPullDownMenu !== '店舗を選択' && selectedPullDownMenu !== 'none'}
+                  className={styles.pull_down_menu_container}
+                  hidden={selectedPullDownMenu !== '店舗を選択' && selectedPullDownMenu !== 'none'}
                 >
                   <PullDownMenu
                     title={'店舗を選択'}
@@ -135,8 +133,8 @@ export default function SearchStore({googleService}: Props) {
                   data-testid='search_button'
                   className={styles.search_button}
                   onClick={() => {
-                    if (selectedService === 'GBP') {
-                      navigate('/edit/gbp/accounts/' + selectedAccount?.name + "/location/"+ googleSelectedLocation.name)
+                    if (selectedService === ServiceName.GBP) {
+                      navigate('/edit/gbp/accounts/' + selectedAccount?.name + '/location/'+ googleSelectedLocation.name)
                     }
                   }}
                 >

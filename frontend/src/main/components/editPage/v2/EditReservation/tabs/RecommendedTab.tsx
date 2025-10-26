@@ -1,9 +1,9 @@
-import Wrapper from '@/main/common/Wrapper';
-import Typography from '@/main/common/Typography';
-import Button from '@/main/common/Button';
-import CheckCircleIcon from '@/main/assets/CheckCircleIcon.svg';
-import RecommendReservationIcon from '@/main/assets/RecommendReservation.svg';
-import styles from '../EditReservationV2.module.scss';
+import styles from '../EditReservationV2.module.scss'
+import Wrapper from '@/main/common/Wrapper'
+import Typography from '@/main/common/Typography'
+import Button from '@/main/common/Button'
+import CheckCircleIcon from '@/main/assets/CheckCircleIcon.svg'
+import RecommendReservationIcon from '@/main/assets/RecommendReservation.svg'
 
 type Props = {
   onTryButtonClick: () => void;
@@ -44,5 +44,5 @@ export const RecommendedTab = ({ onTryButtonClick }: Props) => {
         <img src={RecommendReservationIcon} alt="RecommendReservationIcon" />
       </Wrapper>
     </Wrapper>
-  );
-};
+  )
+}

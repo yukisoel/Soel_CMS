@@ -1,6 +1,6 @@
-import { forwardRef } from 'react';
-import styles from '@/main/common/Typography.module.scss';
-import classNames from 'classnames';
+import { forwardRef } from 'react'
+import classNames from 'classnames'
+import styles from '@/main/common/Typography.module.scss'
 
 type Props = {
     content: string;
@@ -11,21 +11,21 @@ type Props = {
 };
 
 const Typography = forwardRef<HTMLSpanElement, Props>(({ content, size, color, weight, className }, ref) => {
-    return (
-        <span
-            ref={ref}
-            className={classNames(
-                className,
-                styles[color],
-                styles[size],
-                styles[`weight-${weight}`],
-            )}
-        >
-            {content}
-        </span>
-    );
-});
+  return (
+    <span
+      ref={ref}
+      className={classNames(
+        className,
+        styles[color],
+        styles[size],
+        styles[`weight-${weight}`]
+      )}
+    >
+      {content}
+    </span>
+  )
+})
 
-Typography.displayName = 'Typography';
+Typography.displayName = 'Typography'
 
-export default Typography;
+export default Typography

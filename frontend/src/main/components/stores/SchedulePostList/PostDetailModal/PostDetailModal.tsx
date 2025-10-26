@@ -1,14 +1,15 @@
-import { MouseEvent, useEffect } from 'react';
-import Wrapper from "@/main/common/Wrapper";
-import Typography from "@/main/common/Typography";
-import Button from "@/main/common/Button";
-import styles from "./PostDetailModal.module.scss";
-import CloseIcon from '@/main/assets/CloseIcon.svg';
-import Separator from "@/main/common/Separator";
-import ModalNavIcon from '@/main/assets/ModalNavIcon.svg';
-import Scroll from '@/main/common/Scroll';
+import { MouseEvent, useEffect } from 'react'
+import styles from './PostDetailModal.module.scss'
+import Wrapper from '@/main/common/Wrapper'
+import Typography from '@/main/common/Typography'
+import Button from '@/main/common/Button'
+import CloseIcon from '@/main/assets/CloseIcon.svg'
+import Separator from '@/main/common/Separator'
+import ModalNavIcon from '@/main/assets/ModalNavIcon.svg'
+import Scroll from '@/main/common/Scroll'
 
 export type Post = {
+    id?: string;
     title: string;
     date: string;
     time: string;
@@ -25,110 +26,110 @@ type Props = {
     post: Post;
     onNextClick: () => void;
     onPrevClick: () => void;
-    isEditDisabled?: boolean; // 修正するボタンを無効にするためのプロパティ
+    isHistory?: boolean; // 過去投稿一覧からの表示かどうか
 };
 
-const PostDetailModal = ({ isOpen, onClose, post, onPrevClick, onNextClick, isEditDisabled = false }: Props) => {
-    useEffect(() => {
-        if (isOpen) {
-            document.body.style.overflow = 'hidden';
-        } else {
-            document.body.style.overflow = 'auto';
-        }
+const PostDetailModal = ({ isOpen, onClose, post, onPrevClick, onNextClick, isHistory = false }: Props) => {
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = 'auto'
+    }
 
-        return () => {
-            document.body.style.overflow = 'auto';
-        };
-    }, [isOpen]);
+    return () => {
+      document.body.style.overflow = 'auto'
+    }
+  }, [isOpen])
 
-    if (!isOpen) return null;
+  if (!isOpen) return null
 
-    const handleOverlayClick = (e: MouseEvent<HTMLDivElement>) => {
-        if (e.target === e.currentTarget) {
-            onClose();
-        }
-    };
+  const handleOverlayClick = (e: MouseEvent<HTMLDivElement>) => {
+    if (e.target === e.currentTarget) {
+      onClose()
+    }
+  }
 
-    return (
-        <div className={styles.modal_overlay} onClick={handleOverlayClick}>
-            <div className={styles.modal_wrapper}>
-                <Wrapper gap="2.2rem">
-                    <img src={ModalNavIcon} alt="modal nav icon" width="38px" height="662px" onClick={onPrevClick} />
-                    <Wrapper direction="col" gap="3rem" className={styles.modal_content}>
-                        <Wrapper direction="col" gap="2rem">
-                            <div className={styles.modal_header}>
-                                <Typography content="投稿詳細" color="primary" size="normal" />
-                                <button className={styles.close_button} onClick={onClose}>
-                                    <img src={CloseIcon} alt="close icon" />
-                                </button>
-                            </div>
-                            <Separator width="100%" />
-                        </Wrapper>
-                        <Wrapper direction="col">
-                            <Wrapper gap="3.5rem" padding="0 0 4rem 0">
-                                <Wrapper direction="col" gap="3.9rem">
-                                    <Wrapper direction="col" gap="1.3rem" className={styles.image_wrapper}>
-                                        <div style={{ width: "298px", height: "298px", backgroundColor: "#D9D9D9" }} />
-                                        <Wrapper gap="0.7rem" className={styles.image_list_wrapper}>
-                                            <div style={{ width: "44px", height: "44px", backgroundColor: "#D9D9D9" }} />
-                                            <div style={{ width: "44px", height: "44px", backgroundColor: "#D9D9D9" }} />
-                                            <div style={{ width: "44px", height: "44px", backgroundColor: "#D9D9D9" }} />
-                                            <div style={{ width: "44px", height: "44px", backgroundColor: "#D9D9D9" }} />
-                                            <div style={{ width: "44px", height: "44px", backgroundColor: "#D9D9D9" }} />
-                                            <div style={{ width: "44px", height: "44px", backgroundColor: "#D9D9D9" }} />
-                                            <div style={{ width: "44px", height: "44px", backgroundColor: "#D9D9D9" }} />
-                                        </Wrapper>
-                                        <Typography content="画像にマウスを合わせると拡大されます。" color="secondary" size="xxsmall" weight="normal" />
-                                    </Wrapper>
-                                    <Wrapper direction="col" gap="1.8rem">
-                                        <Typography content="予約日時" color="primary" size="normal" />
-                                        <Typography content={`${post.date} ${post.time}`} color="primary" size="normal" weight="normal" className={styles.date_wrapper} />
-                                    </Wrapper>
-                                </Wrapper>
-                                <Wrapper direction="col" gap="4rem">
-                                    <Wrapper gap="3.3rem">
-                                        <Wrapper direction="col" gap="1.8rem">
-                                            <Typography content="投稿予定店舗" color="primary" size="normal" />
-                                            <Scroll height="154px" width="495px">
-                                                <Typography content={post.shopList} color="primary" size="normal" weight="normal" />
-                                            </Scroll>
-                                        </Wrapper>
-                                        <Wrapper direction="col" gap="1.8rem">
-                                            <Typography content="投稿サービス" color="primary" size="normal" />
-                                            <Scroll height="154px" width="495px">
-                                                <Typography content={post.serviceList} color="primary" size="normal" weight="normal" />
-                                            </Scroll>
-                                        </Wrapper>
-                                    </Wrapper>
-                                    <Wrapper direction="col" gap="1.8rem">
-                                        <Typography content="投稿文章" color="primary" size="normal" />
-                                        <Scroll height="154px">
-                                            <Typography content={post.postContent} color="primary" size="normal" weight="normal" />
-                                        </Scroll>
-                                    </Wrapper>
-                                    <Wrapper direction="col" gap="1.8rem">
-                                        <Typography content="Instagramハッシュタグ" color="primary" size="normal" />
-                                        <Scroll height="105px">
-                                            <Typography content={post.hashtags.join(' ')} color="primary" size="normal" weight="normal" />
-                                        </Scroll>
-                                    </Wrapper>
-                                </Wrapper>
-                            </Wrapper>
-                            <Wrapper justify="justify-end" gap="4rem">
-                                <Button bgColor="secondary" padding="7px 10px" onClick={() => { }}>
-                                    <Typography content="複製して新規投稿を作成" color="primary" size="normal" weight="normal" />
-                                </Button>
-                                <Button bgColor="primary" padding="7px 10px" onClick={() => { }} disabled={isEditDisabled}>
-                                    <Typography content="修正する" color="primary" size="normal" weight="normal" />
-                                </Button>
-                            </Wrapper>
-                        </Wrapper>
+  return (
+    <div className={styles.modal_overlay} onClick={handleOverlayClick}>
+      <div className={styles.modal_wrapper}>
+        <Wrapper gap="2.2rem">
+          <img src={ModalNavIcon} alt="modal nav icon" width="38px" height="662px" onClick={onPrevClick} />
+          <Wrapper direction="col" gap="3rem" className={styles.modal_content}>
+            <Wrapper direction="col" gap="2rem">
+              <div className={styles.modal_header}>
+                <Typography content="投稿詳細" color="primary" size="normal" />
+                <button className={styles.close_button} onClick={onClose}>
+                  <img src={CloseIcon} alt="close icon" />
+                </button>
+              </div>
+              <Separator width="100%" />
+            </Wrapper>
+            <Wrapper direction="col">
+              <Wrapper gap="3.5rem" padding="0 0 4rem 0">
+                <Wrapper direction="col" gap="3.9rem">
+                  <Wrapper direction="col" gap="1.3rem" className={styles.image_wrapper}>
+                    <div style={{ width: '298px', height: '298px', backgroundColor: '#D9D9D9' }} />
+                    <Wrapper gap="0.7rem" className={styles.image_list_wrapper}>
+                      <div style={{ width: '44px', height: '44px', backgroundColor: '#D9D9D9' }} />
+                      <div style={{ width: '44px', height: '44px', backgroundColor: '#D9D9D9' }} />
+                      <div style={{ width: '44px', height: '44px', backgroundColor: '#D9D9D9' }} />
+                      <div style={{ width: '44px', height: '44px', backgroundColor: '#D9D9D9' }} />
+                      <div style={{ width: '44px', height: '44px', backgroundColor: '#D9D9D9' }} />
+                      <div style={{ width: '44px', height: '44px', backgroundColor: '#D9D9D9' }} />
+                      <div style={{ width: '44px', height: '44px', backgroundColor: '#D9D9D9' }} />
                     </Wrapper>
-                    <img src={ModalNavIcon} alt="modal nav icon" width="38px" height="662px" className={styles.next_button} onClick={onNextClick} />
+                    <Typography content="画像にマウスを合わせると拡大されます。" color="secondary" size="xxsmall" weight="normal" />
+                  </Wrapper>
+                  <Wrapper direction="col" gap="1.8rem">
+                    <Typography content="予約日時" color="primary" size="normal" />
+                    <Typography content={`${post.date} ${post.time}`} color="primary" size="normal" weight="normal" className={styles.date_wrapper} />
+                  </Wrapper>
                 </Wrapper>
-            </div>
-        </div>
-    );
-};
+                <Wrapper direction="col" gap="4rem">
+                  <Wrapper gap="3.3rem">
+                    <Wrapper direction="col" gap="1.8rem">
+                      <Typography content={isHistory ? '投稿済み店舗' : '投稿予定店舗'} color="primary" size="normal" />
+                      <Scroll height="154px" width="495px">
+                        <Typography content={post.shopList} color="primary" size="normal" weight="normal" />
+                      </Scroll>
+                    </Wrapper>
+                    <Wrapper direction="col" gap="1.8rem">
+                      <Typography content="投稿サービス" color="primary" size="normal" />
+                      <Scroll height="154px" width="495px">
+                        <Typography content={post.serviceList} color="primary" size="normal" weight="normal" />
+                      </Scroll>
+                    </Wrapper>
+                  </Wrapper>
+                  <Wrapper direction="col" gap="1.8rem">
+                    <Typography content="投稿文章" color="primary" size="normal" />
+                    <Scroll height="154px">
+                      <Typography content={post.postContent} color="primary" size="normal" weight="normal" />
+                    </Scroll>
+                  </Wrapper>
+                  <Wrapper direction="col" gap="1.8rem">
+                    <Typography content="Instagramハッシュタグ" color="primary" size="normal" />
+                    <Scroll height="105px">
+                      <Typography content={post.hashtags.join(' ')} color="primary" size="normal" weight="normal" />
+                    </Scroll>
+                  </Wrapper>
+                </Wrapper>
+              </Wrapper>
+              <Wrapper justify="justify-end" gap="4rem">
+                <Button bgColor="secondary" padding="7px 10px" onClick={() => { }}>
+                  <Typography content="複製して新規投稿を作成" color="primary" size="normal" weight="normal" />
+                </Button>
+                <Button bgColor="primary" padding="7px 10px" onClick={() => { }} disabled={isHistory}>
+                  <Typography content="修正する" color="primary" size="normal" weight="normal" />
+                </Button>
+              </Wrapper>
+            </Wrapper>
+          </Wrapper>
+          <img src={ModalNavIcon} alt="modal nav icon" width="38px" height="662px" className={styles.next_button} onClick={onNextClick} />
+        </Wrapper>
+      </div>
+    </div>
+  )
+}
 
-export default PostDetailModal;
+export default PostDetailModal

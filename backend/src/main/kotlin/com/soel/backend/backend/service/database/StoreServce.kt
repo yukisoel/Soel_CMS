@@ -3,6 +3,7 @@ package com.soel.backend.backend.service.database
 import com.soel.backend.backend.domain.enum.Prefecture
 import com.soel.backend.backend.entity.StoreEntity
 import com.soel.backend.backend.mapper.StoreMapper
+import com.soel.backend.backend.model.GoogleLocationWithPrefecture
 import com.soel.backend.backend.model.api.BrandWithStoresResponse
 import com.soel.backend.backend.model.api.PrefectureListWithBrandListWithStoreListResponse
 import com.soel.backend.backend.model.api.PrefectureWithBrandListWithStoreListResponse
@@ -36,6 +37,8 @@ interface StoreService {
     fun updateStorePrefecture(storeId: String, prefectureName: String): ResponseEntity<StoreResponse>
 
     fun deleteStore(storeId: String): ResponseEntity<Void>
+
+    fun syncGoogleStores(userId: String, googleAccountId: String, locations: List<GoogleLocationWithPrefecture>): ResponseEntity<StoreListResponse>
 }
 
 @Service
@@ -46,9 +49,10 @@ class StoreServiceImpl(
     override fun findStoresByUserId(userId: String): ResponseEntity<StoreListResponse> {
         val uuid = UUID.fromString(userId)
         val stores = storeRepository.findByUserId(uuid) ?: emptyList()
+        val brandNameMap = loadBrandNameMap(stores)
         return ResponseEntity.ok(
             StoreListResponse(stores.map { entity ->
-                StoreMapper.entityToResponse(entity)
+                toStoreResponse(entity, brandNameMap)
             })
         )
     }
@@ -56,9 +60,10 @@ class StoreServiceImpl(
     override fun findStoresByUserIdAndBrandIdIsNull(userId: String): ResponseEntity<StoreListResponse> {
         val uuid = UUID.fromString(userId)
         val stores = storeRepository.findByUserIdAndBrandIdIsNull(uuid) ?: emptyList()
+        val brandNameMap = loadBrandNameMap(stores)
         return ResponseEntity.ok(
             StoreListResponse(stores.map { entity ->
-                StoreMapper.entityToResponse(entity)
+                toStoreResponse(entity, brandNameMap)
             })
         )
     }
@@ -67,6 +72,7 @@ class StoreServiceImpl(
         val uuid = UUID.fromString(userId)
         val stores = storeRepository.findByUserId(uuid) ?: emptyList()
         val brands = brandRepository.findByUserId(uuid) ?: emptyList()
+        val brandNameMap = brands.associate { it.brandId to it.name }
 
         val prefectureMap = stores.groupBy { it.prefecture }
         val prefectureListWithBrandListWithStoreListResponse = prefectureMap.map { (prefecture, storeEntities) ->
@@ -74,7 +80,10 @@ class StoreServiceImpl(
             val brandListWithStoresResponse = brandMap.map { (brandId, storeEntities) ->
                 val brandEntity = brands.find { it.brandId == brandId }
                 val storeListResponse = storeEntities.filter { it.brandId == brandId }
-                        .map { StoreMapper.entityToResponse(it) }
+                        .map { storeEntity ->
+                            val brandName = brandEntity?.name ?: storeEntity.brandId?.let { brandNameMap[it] } ?: ""
+                            StoreMapper.entityToResponse(storeEntity, brandName)
+                        }
 
                 BrandWithStoresResponse(
                     brandId = brandEntity?.brandId?.toString() ?: "",
@@ -166,7 +175,10 @@ class StoreServiceImpl(
 
         val updatedStore = storeRepository.save(existingStore)
 
-        return ResponseEntity.ok(StoreMapper.entityToResponse(updatedStore))
+        // ブランド名を取得
+        val brandNameMap = loadBrandNameMap(listOf(updatedStore))
+
+        return ResponseEntity.ok(toStoreResponse(updatedStore, brandNameMap))
     }
 
     override fun updateStoreGoogleAccount(storeId: String, googleAccountId: String): ResponseEntity<StoreResponse> {
@@ -220,7 +232,10 @@ class StoreServiceImpl(
 
         val updatedStore = storeRepository.save(existingStore)
 
-        return ResponseEntity.ok(StoreMapper.entityToResponse(updatedStore))
+        // ブランド名を取得
+        val brandNameMap = loadBrandNameMap(listOf(updatedStore))
+
+        return ResponseEntity.ok(toStoreResponse(updatedStore, brandNameMap))
     }
 
     override fun deleteStore(storeId: String): ResponseEntity<Void> {
@@ -230,5 +245,75 @@ class StoreServiceImpl(
 
         storeRepository.delete(existingStore)
         return ResponseEntity.noContent().build()
+    }
+
+    override fun syncGoogleStores(userId: String, googleAccountId: String, locations: List<GoogleLocationWithPrefecture>): ResponseEntity<StoreListResponse> {
+        val userUuid = UUID.fromString(userId)
+        val allStores = storeRepository.findByUserId(userUuid) ?: emptyList()
+
+        val existingForAccount = allStores.filter { it.googleAccountId == googleAccountId && it.googleLocationId != null }
+        val existingById = existingForAccount.associateBy { it.googleLocationId!! }
+
+        val incomingById = locations.associateBy { it.name }
+        val incomingIds = incomingById.keys
+        val existingIds = existingById.keys
+
+        val toAddIds = incomingIds - existingIds
+        val toDeleteIds = existingIds - incomingIds
+
+        val toAddEntities = toAddIds.mapNotNull { id ->
+            val payload = incomingById[id] ?: return@mapNotNull null
+            StoreEntity(
+                userId = userUuid,
+                brandId = null,
+                name = payload.title,
+                googleAccountId = googleAccountId,
+                googleLocationId = payload.name,
+                prefecture = resolvePrefecture(payload.prefecture)
+            )
+        }
+
+        if (toAddEntities.isNotEmpty()) {
+            storeRepository.saveAll(toAddEntities)
+        }
+
+        if (toDeleteIds.isNotEmpty()) {
+            val deleteEntities = existingForAccount.filter { it.googleLocationId in toDeleteIds }
+            if (deleteEntities.isNotEmpty()) {
+                storeRepository.deleteAll(deleteEntities)
+            }
+        }
+
+        return findStoresByUserId(userId)
+    }
+
+    private fun toStoreResponse(store: StoreEntity, brandNameMap: Map<UUID, String>): StoreResponse {
+        val brandName = store.brandId?.let { brandNameMap[it] } ?: ""
+        val response = StoreMapper.entityToResponse(store, brandName)
+        return if (response.brandId == null) {
+            response.copy(brandId = "", brandName = "")
+        } else {
+            response
+        }
+    }
+
+    private fun loadBrandNameMap(stores: Collection<StoreEntity>): Map<UUID, String> {
+        val brandIds = stores.mapNotNull { it.brandId }.distinct()
+        if (brandIds.isEmpty()) {
+            return emptyMap()
+        }
+
+        return brandRepository.findAllById(brandIds).associate { it.brandId to it.name }
+    }
+
+    private fun resolvePrefecture(prefectureValue: String?): Prefecture? {
+        val normalized = prefectureValue?.trim()
+        if (normalized.isNullOrBlank()) {
+            return null
+        }
+
+        return Prefecture.entries.firstOrNull {
+            it.japaneseName == normalized || it.name.equals(normalized, ignoreCase = true)
+        }
     }
 }

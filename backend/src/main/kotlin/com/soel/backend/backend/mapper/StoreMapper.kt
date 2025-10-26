@@ -11,6 +11,7 @@ object StoreMapper {
             storeId = e.storeId.toString(),
             userId = e.userId.toString(),
             brandId = e.brandId?.toString(),
+            brandName = null,
             name = e.name,
             googleAccountId = e.googleAccountId,
             googleLocationId = e.googleLocationId,
@@ -19,11 +20,12 @@ object StoreMapper {
             prefecture = e.prefecture
         )
 
-    fun entityToResponse(e: StoreEntity): StoreResponse =
+    fun entityToResponse(e: StoreEntity, brandName: String? = null): StoreResponse =
         StoreResponse(
             storeId = e.storeId.toString(),
             userId = e.userId.toString(),
             brandId = e.brandId?.toString(),
+            brandName = brandName,
             name = e.name,
             googleAccountId = e.googleAccountId,
             googleLocationId = e.googleLocationId,
@@ -32,7 +34,4 @@ object StoreMapper {
             prefectureName = e.prefecture?.name,
             prefectureJapaneseName = e.prefecture?.japaneseName
         )
-
-    fun entitiesToResponses(entities: List<StoreEntity>): List<StoreResponse> =
-        entities.map { entityToResponse(it) }
 }

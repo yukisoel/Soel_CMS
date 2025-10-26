@@ -48,7 +48,7 @@ class BrandServiceImpl(
         val nullBrandStoresEntities = storeRepository.findByUserIdAndBrandIdIsNull(uuid) ?: emptyList()
         if (nullBrandStoresEntities.isNotEmpty()) {
             val stores: List<StoreResponse> = nullBrandStoresEntities.map { storeEntity ->
-                StoreMapper.entityToResponse(storeEntity)
+                StoreMapper.entityToResponse(storeEntity, brandName = "").copy(brandId = "", brandName = "")
             }
             brandWithStoresResponse.add(
                 BrandWithStoresResponse(

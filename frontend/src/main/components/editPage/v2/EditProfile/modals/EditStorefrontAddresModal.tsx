@@ -1,26 +1,27 @@
-import React from 'react';
-import Modal from '@/main/common/Modal/Modal';
-import Wrapper from '@/main/common/Wrapper';
-import Typography from '@/main/common/Typography';
-import Button from '@/main/common/Button';
-import Input from '@/main/common/Input';
-import { useForm } from 'react-hook-form';
-import { z } from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
-import LayoutLabeledFormItem from '@/main/common/LayoutLabeledFormItem';
-import { GoogleLocationStoreFrontAddressRequestAdministrativeArea } from '@/types/api.ts';
-import PhotoPullDownMenu from '@/main/components/editPage/PhotoPullDownMenu';
+import React from 'react'
+import { useForm } from 'react-hook-form'
+import { z } from 'zod'
+import { zodResolver } from '@hookform/resolvers/zod'
+import Modal from '@/main/common/Modal/Modal'
+import Wrapper from '@/main/common/Wrapper'
+import Typography from '@/main/common/Typography'
+import Button from '@/main/common/Button'
+import Input from '@/main/common/Input'
+import LayoutLabeledFormItem from '@/main/common/LayoutLabeledFormItem'
+import { GoogleLocationStoreFrontAddressRequestAdministrativeArea } from '@/types/api.ts'
+import PhotoPullDownMenu from '@/main/components/editPage/PhotoPullDownMenu'
+import { MAX_POSTAL_CODE_LENGTH, MAX_ADDRESS_LENGTH } from '@/main/constants/validation'
 
-const PREFECTURES = Object.keys(GoogleLocationStoreFrontAddressRequestAdministrativeArea) as Array<keyof typeof GoogleLocationStoreFrontAddressRequestAdministrativeArea>;
+const PREFECTURES = Object.keys(GoogleLocationStoreFrontAddressRequestAdministrativeArea) as Array<keyof typeof GoogleLocationStoreFrontAddressRequestAdministrativeArea>
 
 const schema = z.object({
   postalCode: z.string()
     .min(1, '郵便番号は必須です')
-    .max(10, '郵便番号は10文字以内で入力してください')
+    .max(MAX_POSTAL_CODE_LENGTH, `郵便番号は${MAX_POSTAL_CODE_LENGTH}文字以内で入力してください`)
     .regex(/^\d{3}-?\d{4}$/,'正しい郵便番号形式で入力してください'),
   prefecture: z.string().min(1, '都道府県は必須です'),
-  address: z.string().min(1, '住所は必須です').max(200, '住所は200文字以内で入力してください'),
-});
+  address: z.string().min(1, '住所は必須です').max(MAX_ADDRESS_LENGTH, `住所は${MAX_ADDRESS_LENGTH}文字以内で入力してください`)
+})
 
 type FormData = z.infer<typeof schema>;
 
@@ -39,7 +40,7 @@ export const EditStorefrontAddressModal: React.FC<EditStorefrontAddressModalProp
   isOpen,
   onClose,
   onSubmit,
-  initialValues,
+  initialValues
 }) => {
   const {
     register,
@@ -49,22 +50,22 @@ export const EditStorefrontAddressModal: React.FC<EditStorefrontAddressModalProp
     watch,
     setValue
   } = useForm<FormData>({
-    resolver: zodResolver(schema),
-  });
+    resolver: zodResolver(schema)
+  })
 
-  const postalCodeValue = watch('postalCode') || '';
-  const addressValue = watch('address') || '';
-  const prefectureValue = watch('prefecture') || '';
+  const postalCodeValue = watch('postalCode') || ''
+  const addressValue = watch('address') || ''
+  const prefectureValue = watch('prefecture') || ''
 
   React.useEffect(() => {
     if (isOpen) {
       reset(initialValues || {
         postalCode: '',
         prefecture: '',
-        address: '',
-      });
+        address: ''
+      })
     }
-  }, [isOpen, reset, initialValues]);
+  }, [isOpen, reset, initialValues])
 
   const contentRender = () => (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -120,7 +121,7 @@ export const EditStorefrontAddressModal: React.FC<EditStorefrontAddressModalProp
         </Wrapper>
       </Wrapper>
     </form>
-  );
+  )
 
   return (
     <Modal
@@ -129,5 +130,5 @@ export const EditStorefrontAddressModal: React.FC<EditStorefrontAddressModalProp
       headerContent="店舗住所を編集"
       contentRender={contentRender}
     />
-  );
-};
+  )
+}

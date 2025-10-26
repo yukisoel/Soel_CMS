@@ -34,7 +34,11 @@ object BrandMapper {
             userId = e.userId.toString(),
             name = e.name,
             createdAt = e.createdAt.toString(),
-            stores = StoreMapper.entitiesToResponses(stores)
+            stores = stores.map { store ->
+                val response = StoreMapper.entityToResponse(store, brandName = e.name)
+                val normalizedBrandId = response.brandId ?: ""
+                response.copy(brandId = normalizedBrandId, brandName = e.name)
+            }
         )
 
     fun domainToResponse(b: Brand): BrandResponse =

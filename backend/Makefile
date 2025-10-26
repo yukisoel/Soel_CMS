@@ -1,5 +1,7 @@
 start:
-	source .env && ./gradlew bootRun
+	@echo "🚀 DevToolsでホットリロード対応の開発サーバーを起動します..."
+	@echo "📁 Kotlinファイルの変更を監視して自動再起動します"
+	source .env && ./gradlew bootRun --continuous
 
 kt2openApiDocs:
 	@echo "🔄 Starting OpenAPI Docs Generation..."

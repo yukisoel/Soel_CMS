@@ -1,27 +1,27 @@
-import React, { useState } from 'react';
-import Modal from '@/main/common/Modal/Modal';
-import Wrapper from '@/main/common/Wrapper';
-import Typography from '@/main/common/Typography';
-import Button from '@/main/common/Button';
-import Input from '@/main/common/Input';
-import Textarea from '@/main/common/Textarea';
-import { useForm } from 'react-hook-form';
-import { z } from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
-import LayoutLabeledFormItem from '@/main/common/LayoutLabeledFormItem';
-import { PhotoSelector } from '../components/PhotoSelector';
-import { GoogleService } from '@/main/service/GoogleService';
-import { GoogleLocationPhotoModel } from '@/main/model/LocationModel';
-import styles from './EditMenuModal.module.scss';
+import React, { useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { z } from 'zod'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { PhotoSelector } from '../components/PhotoSelector'
+import styles from './EditMenuModal.module.scss'
+import Modal from '@/main/common/Modal/Modal'
+import Wrapper from '@/main/common/Wrapper'
+import Typography from '@/main/common/Typography'
+import Button from '@/main/common/Button'
+import Input from '@/main/common/Input'
+import Textarea from '@/main/common/Textarea'
+import LayoutLabeledFormItem from '@/main/common/LayoutLabeledFormItem'
+import { GoogleLocationPhotoModel } from '@/main/model/LocationModel'
+import { MAX_TITLE_LENGTH, MAX_DESCRIPTION_LENGTH } from '@/main/constants/validation'
 
 const schema = z.object({
   title: z.string()
     .min(1, 'メニュー名は必須です')
-    .max(140, 'メニュー名は140文字以内で入力してください'),
+    .max(MAX_TITLE_LENGTH, `メニュー名は${MAX_TITLE_LENGTH}文字以内で入力してください`),
   price: z.string().min(1, '価格は必須です'),
   description: z.string()
-    .max(1000, '説明は1000文字以内で入力してください'),
-});
+    .max(MAX_DESCRIPTION_LENGTH, `説明は${MAX_DESCRIPTION_LENGTH}文字以内で入力してください`)
+})
 
 type FormData = z.infer<typeof schema>;
 
@@ -31,7 +31,6 @@ type EditMenuModalProps = {
   title: string;
   onSubmit: (data: FormData & { selectedPhoto?: GoogleLocationPhotoModel }) => Promise<void>;
   onDelete?: () => Promise<void>;
-  googleService: GoogleService;
   initialValues?: {
     title: string;
     price: string;
@@ -46,8 +45,7 @@ export const EditMenuModal: React.FC<EditMenuModalProps> = ({
   title,
   onSubmit,
   onDelete,
-  googleService,
-  initialValues,
+  initialValues
 }) => {
   const {
     register,
@@ -57,48 +55,48 @@ export const EditMenuModal: React.FC<EditMenuModalProps> = ({
     watch
   } = useForm<FormData>({
     resolver: zodResolver(schema),
-    defaultValues: initialValues,
-  });
+    defaultValues: initialValues
+  })
 
-  const titleValue = watch('title') || '';
-  const descriptionValue = watch('description') || '';
-  const [selectedPhoto, setSelectedPhoto] = useState<GoogleLocationPhotoModel | undefined>(initialValues?.selectedPhoto);
-  const [showPhotoSelector, setShowPhotoSelector] = useState(false);
+  const titleValue = watch('title') || ''
+  const descriptionValue = watch('description') || ''
+  const [selectedPhoto, setSelectedPhoto] = useState<GoogleLocationPhotoModel | undefined>(initialValues?.selectedPhoto)
+  const [showPhotoSelector, setShowPhotoSelector] = useState(false)
 
   React.useEffect(() => {
     if (isOpen) {
       reset(initialValues || {
         title: '',
         price: '',
-        description: '',
-      });
-      setSelectedPhoto(initialValues?.selectedPhoto);
-      setShowPhotoSelector(false);
+        description: ''
+      })
+      setSelectedPhoto(initialValues?.selectedPhoto)
+      setShowPhotoSelector(false)
     }
-  }, [isOpen, initialValues, reset]);
+  }, [isOpen, initialValues, reset])
 
   const handlePhotoSelect = (photo: GoogleLocationPhotoModel) => {
-    setSelectedPhoto(photo);
-    setShowPhotoSelector(false);
-  };
+    setSelectedPhoto(photo)
+    setShowPhotoSelector(false)
+  }
 
   // 既存の写真がある場合のプレビューURL取得
   const getPhotoUrl = (photo: GoogleLocationPhotoModel | undefined) => {
-    if (!photo) return null;
-    
+    if (!photo) return null
+
     // mediaKeyがある場合はGoogle CDNから取得
     if (photo.name && photo.name.includes('media/')) {
-      const mediaKey = photo.name.split('media/')[1];
-      return `https://lh3.googleusercontent.com/p/${mediaKey}=s0`;
+      const mediaKey = photo.name.split('media/')[1]
+      return `https://lh3.googleusercontent.com/p/${mediaKey}=s0`
     }
-    
+
     // それ以外は通常のURL
-    return photo.googleUrl || photo.thumbnailUrl;
-  };
+    return photo.googleUrl || photo.thumbnailUrl
+  }
 
   const handleFormSubmit = (data: FormData) => {
-    return onSubmit({ ...data, selectedPhoto });
-  };
+    return onSubmit({ ...data, selectedPhoto })
+  }
 
   const contentRender = () => (
     <form onSubmit={handleSubmit(handleFormSubmit)}>
@@ -154,7 +152,6 @@ export const EditMenuModal: React.FC<EditMenuModalProps> = ({
             </Wrapper>
           ) : (
             <PhotoSelector
-              googleService={googleService}
               onPhotoSelect={handlePhotoSelect}
               selectedPhoto={selectedPhoto}
             />
@@ -194,7 +191,7 @@ export const EditMenuModal: React.FC<EditMenuModalProps> = ({
         </Wrapper>
       </Wrapper>
     </form>
-  );
+  )
 
   return (
     <Modal
@@ -203,5 +200,5 @@ export const EditMenuModal: React.FC<EditMenuModalProps> = ({
       headerContent={title}
       contentRender={contentRender}
     />
-  );
-};
+  )
+}

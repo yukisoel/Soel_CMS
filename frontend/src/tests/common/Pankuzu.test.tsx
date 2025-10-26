@@ -1,12 +1,12 @@
-import {describe, expect} from "vitest";
-import Pankuzu, {PankuzuItem} from "@/main/common/Pankuzu.tsx";
-import {render, screen, waitFor} from "@testing-library/react";
-import {MemoryRouter, Route, Routes} from "react-router-dom";
-import {userEvent} from "@testing-library/user-event";
+import { describe, expect } from 'vitest'
+import { render, screen, waitFor } from '@testing-library/react'
+import { MemoryRouter, Route, Routes } from 'react-router-dom'
+import { userEvent } from '@testing-library/user-event'
+import Pankuzu, { PankuzuItem } from '@/main/common/Pankuzu.tsx'
 
-describe("Pankuzu", () => {
+describe('Pankuzu', () => {
   it('パンクズリストが表示される', async () => {
-    const testPankuzuList: PankuzuItem[] = [{name: 'test1Name', path: 'test1Path'}, {
+    const testPankuzuList: PankuzuItem[] = [{ name: 'test1Name', path: 'test1Path' }, {
       name: 'test2Name',
       path: 'test2Path'
     }]
@@ -23,14 +23,14 @@ describe("Pankuzu", () => {
   })
 
   it('パンクズリストをクリックするとページ遷移する', async () => {
-    const testPankuzuList: PankuzuItem[] = [{name: 'test1Name', path: '/test1Path'}]
+    const testPankuzuList: PankuzuItem[] = [{ name: 'test1Name', path: '/test1Path' }]
     render(
       <MemoryRouter initialEntries={['/pankuzu']}>
         <Routes>
           <Route path="/pankuzu" element={<Pankuzu
             pankuzuItemList={testPankuzuList}
           />}/>
-          <Route path={testPankuzuList[0].path} element={<div data-testid={"pankuzu-test"}>dummy</div>}/>
+          <Route path={testPankuzuList[0].path} element={<div data-testid={'pankuzu-test'}>dummy</div>}/>
         </Routes>
 
       </MemoryRouter>

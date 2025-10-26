@@ -1,10 +1,10 @@
-import { useState, useEffect } from 'react';
-import Modal from '@/main/common/Modal/Modal';
-import Wrapper from '@/main/common/Wrapper';
-import Typography from '@/main/common/Typography';
-import Button from '@/main/common/Button';
-import RadioButton from '@/main/common/RadioButton';
-import styles from '../EditProfileLayoutV2.module.scss';
+import { useState, useEffect } from 'react'
+import styles from '../EditProfileLayoutV2.module.scss'
+import Modal from '@/main/common/Modal/Modal'
+import Wrapper from '@/main/common/Wrapper'
+import Typography from '@/main/common/Typography'
+import Button from '@/main/common/Button'
+import RadioButton from '@/main/common/RadioButton'
 
 type Props = {
   isOpen: boolean;
@@ -21,24 +21,24 @@ export default function EditBusinessOwnerModal({
   onSave,
   error
 }: Props) {
-  const [ownedByWomen, setOwnedByWomen] = useState<boolean>(isOwnedByWomen);
+  const [ownedByWomen, setOwnedByWomen] = useState<boolean>(isOwnedByWomen)
 
   useEffect(() => {
     if (isOpen) {
-      setOwnedByWomen(isOwnedByWomen);
+      setOwnedByWomen(isOwnedByWomen)
     }
-  }, [isOpen, isOwnedByWomen]);
+  }, [isOpen, isOwnedByWomen])
 
   const handleChange = (value: string) => {
-    setOwnedByWomen(value === 'yes');
-  };
+    setOwnedByWomen(value === 'yes')
+  }
 
   const handleSave = async () => {
-    const isValid = await onSave(ownedByWomen);
+    const isValid = await onSave(ownedByWomen)
     if (isValid) {
-      onClose();
+      onClose()
     }
-  };
+  }
 
   const renderContent = () => (
     <Wrapper direction="col" gap="3rem">
@@ -96,7 +96,7 @@ export default function EditBusinessOwnerModal({
         </Button>
       </Wrapper>
     </Wrapper>
-  );
+  )
 
   return (
     <Modal
@@ -105,5 +105,5 @@ export default function EditBusinessOwnerModal({
       onClose={onClose}
       contentRender={renderContent}
     />
-  );
+  )
 }

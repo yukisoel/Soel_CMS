@@ -1,5 +1,5 @@
 export enum ServiceName {
-  GBP = 'GBP',
+  GBP = 'Googleビジネスプロフィール',
   TABELOG = '食べログ',
   RETTY = 'Retty',
 }

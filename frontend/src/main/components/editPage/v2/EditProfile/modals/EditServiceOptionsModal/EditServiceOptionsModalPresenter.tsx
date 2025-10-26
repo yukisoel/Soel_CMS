@@ -1,9 +1,9 @@
-import Modal from '@/main/common/Modal/Modal';
-import Wrapper from '@/main/common/Wrapper';
-import Typography from '@/main/common/Typography';
-import Button from '@/main/common/Button';
-import RadioButton from '@/main/common/RadioButton';
-import styles from '../../EditProfileLayoutV2.module.scss';
+import styles from '../../EditProfileLayoutV2.module.scss'
+import Modal from '@/main/common/Modal/Modal'
+import Wrapper from '@/main/common/Wrapper'
+import Typography from '@/main/common/Typography'
+import Button from '@/main/common/Button'
+import RadioButton from '@/main/common/RadioButton'
 
 type ServiceOption = {
   id: string;
@@ -102,7 +102,7 @@ export default function EditServiceOptionsModalPresenter({
         </Button>
       </Wrapper>
     </Wrapper>
-  );
+  )
 
   return (
     <Modal
@@ -111,5 +111,5 @@ export default function EditServiceOptionsModalPresenter({
       onClose={onClose}
       contentRender={renderContent}
     />
-  );
+  )
 }

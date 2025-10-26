@@ -1,6 +1,6 @@
-import React, { forwardRef } from 'react';
-import styles from '@/main/common/Wrapper.module.scss';
-import classNames from 'classnames';
+import React, { forwardRef } from 'react'
+import classNames from 'classnames'
+import styles from '@/main/common/Wrapper.module.scss'
 
 type Props = {
     children?: React.ReactNode;
@@ -13,24 +13,24 @@ type Props = {
 } & React.HTMLAttributes<HTMLDivElement>;
 
 const Wrapper = forwardRef<HTMLDivElement, Props>(
-    ({ children, direction = 'row', align = 'align-stretch', justify = 'justify-start', gap, padding, className, ...rest }, ref) => {
-        return (
-            <div
-                ref={ref}
-                className={classNames(
-                    className,
-                    styles.flex,
-                    styles[direction],
-                    styles[align],
-                    styles[justify]
-                )}
-                style={{ gap: gap, padding: padding }}
-                {...rest}
-            >
-                {children}
-            </div>
-        );
-    }
-);
+  ({ children, direction = 'row', align = 'align-stretch', justify = 'justify-start', gap, padding, className, ...rest }, ref) => {
+    return (
+      <div
+        ref={ref}
+        className={classNames(
+          className,
+          styles.flex,
+          styles[direction],
+          styles[align],
+          styles[justify]
+        )}
+        style={{ gap: gap, padding: padding }}
+        {...rest}
+      >
+        {children}
+      </div>
+    )
+  }
+)
 
-export default Wrapper;
+export default Wrapper

@@ -1,9 +1,9 @@
-import { useState } from 'react';
-import styles from '@/main/common/EditableTextItem.module.scss';
-import ButtonEditBack from "@/main/assets/ButtonEditBack.svg";
-import Wrapper from '@/main/common/Wrapper';
-import Button from '@/main/common/Button';
-import Typography from '@/main/common/Typography';
+import { useState } from 'react'
+import styles from '@/main/common/EditableTextItem.module.scss'
+import ButtonEditBack from '@/main/assets/ButtonEditBack.svg'
+import Wrapper from '@/main/common/Wrapper'
+import Button from '@/main/common/Button'
+import Typography from '@/main/common/Typography'
 
 type Props = {
   label: string;
@@ -13,22 +13,22 @@ type Props = {
 };
 
 export default function EditableTextItem({ label, text, width, handleSaveClick }: Props)  {
-  const [isEditing, setIsEditing] = useState(false);
-  const [inputValue, setInputValue] = useState(text);
+  const [isEditing, setIsEditing] = useState(false)
+  const [inputValue, setInputValue] = useState(text)
 
   const handleEditClick = () => {
-    setIsEditing(true);
-  };
+    setIsEditing(true)
+  }
 
   const handleCancelClick = () => {
-    setIsEditing(false);
-    setInputValue(text);
-  };
+    setIsEditing(false)
+    setInputValue(text)
+  }
 
   const onSubmit = () => {
-    handleSaveClick(inputValue);
-    setIsEditing(false);
-  };
+    handleSaveClick(inputValue)
+    setIsEditing(false)
+  }
 
   return (
     <Wrapper>
@@ -67,5 +67,5 @@ export default function EditableTextItem({ label, text, width, handleSaveClick }
         </>
       )}
     </Wrapper>
-  );
+  )
 }

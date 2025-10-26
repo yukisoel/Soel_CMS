@@ -40,6 +40,12 @@ data class GoogleLocation (
     val title: String
 )
 
+data class GoogleLocationWithPrefecture(
+    val name: String,
+    val title: String,
+    val prefecture: String? = null
+)
+
 data class GoogleLocationAvailableAttributesResponse(
     val attributeMetadata: List<GoogleAttributeMetadata>? = null,
     val nextPageToken: String? = null,
@@ -643,6 +649,5 @@ enum class GoogleAttributeSnsType(
         }
     }
 }
-
 
 

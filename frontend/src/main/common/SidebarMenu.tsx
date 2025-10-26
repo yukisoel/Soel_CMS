@@ -1,3 +1,5 @@
+import { useState } from 'react'
+import classNames from 'classnames'
 import styles from '@/main/common/SidebarMenu.module.scss'
 import LogoIcon from '@/main/assets/Logo.svg'
 import HomeIcon from '@/main/assets/HomeIcon.svg'
@@ -5,14 +7,12 @@ import EditorIcon from '@/main/assets/EditorIcon.svg'
 import AdManageIcon from '@/main/assets/AdManageIcon.svg'
 import ReviewIcon from '@/main/assets/ReviewIcon.svg'
 import StoreMangeIcon from '@/main/assets/StoreManageIcon.svg'
-import {useState} from "react";
-import classNames from "classnames";
 
 export type Props = {
   email: string
 }
 
-export default function SidebarMenu({email}: Props) {
+export default function SidebarMenu({ email }: Props) {
   const [selectedMenu, _setSelectedMenu] = useState<string>('editor')
   return (
     <>

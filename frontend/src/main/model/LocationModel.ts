@@ -1,4 +1,4 @@
-import { LocationAssociationName } from "@/main/model/LocationAssociationName.ts"
+import { LocationAssociationName } from '@/main/model/LocationAssociationName.ts'
 
 export type GoogleLocationProfileModel = {
   name?: string
