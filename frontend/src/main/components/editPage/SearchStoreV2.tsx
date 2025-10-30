@@ -15,7 +15,7 @@ import Typography from '@/main/common/Typography'
 
 export default function SearchStoreV2() {
   const googleRepository = useGoogleRepository()
-  const [selectedService, setSelectedService] = useState<string>('')
+  const [selectedService] = useState<string>(ServiceName.GBP)
   const [selectedAccountName, setSelectedAccountName] = useState<string>('')
   const [selectedLocationTitle, setSelectedLocationTitle] = useState<string>('')
   const [accountList, setAccountList] = useState<GoogleAccount[]>([])
@@ -62,7 +62,7 @@ export default function SearchStoreV2() {
   return (
     <Wrapper direction="col" align="align-center" justify="justify-center" className={styles.root}>
       <Wrapper direction="col" gap="32px" padding="40px 32px 32px 32px" className={styles.card}>
-        <LayoutLabeledFormItem label="サービス名">
+        {/* <LayoutLabeledFormItem label="サービス名">
           <PhotoPullDownMenu
             placeholder="サービスを選択"
             selectedContent={selectedService}
@@ -74,7 +74,7 @@ export default function SearchStoreV2() {
               // ServiceName.RETTY
             ]}
           />
-        </LayoutLabeledFormItem>
+        </LayoutLabeledFormItem> */}
         {selectedService === ServiceName.GBP && (
           <>
             <LayoutLabeledFormItem label="Googleアカウントを選択">

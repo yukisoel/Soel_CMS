@@ -71,7 +71,7 @@ function App() {
                 element={<BulkSpecialOpeningHours />} />
               <Route path={'store'}
                 element={<SelectStoreSingleRender />} />
-              <Route path={'accounts/:accountId/location/:locationId/review'}
+              <Route path={'review'}
                 element={<ReviewPage />} />
             </Route>
           </Routes>

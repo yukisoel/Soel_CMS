@@ -1,7 +1,6 @@
-import { useState, useEffect } from 'react'
-import { useParams } from 'react-router-dom'
+import { useState } from 'react'
 import ReviewCard, { Review } from './ReviewCard'
-import SearchDetailModal from './Modal/SearchDetailModal'
+import SearchDetailModal, { SearchCriteria } from './Modal/SearchDetailModal'
 import ReviewDetailModal from './Modal/ReviewDetailModal'
 import styles from '@/main/components/stores/Review/ReviewPage.module.scss'
 import Wrapper from '@/main/common/Wrapper'
@@ -16,82 +15,91 @@ import { GoogleLocationReviewCustomStarRating } from '@/types/api'
 import { useGoogleRepository } from '@/main/contexts/GoogleRepositoryContext'
 
 
+// 日付の終了時刻を表す定数
+const END_OF_DAY_HOURS = 23
+const END_OF_DAY_MINUTES = 59
+const END_OF_DAY_SECONDS = 59
+const END_OF_DAY_MILLISECONDS = 999
+
 export default function ReviewPage() {
   const googleRepository = useGoogleRepository()
   const { isOpen: isSearchModalOpen, openModal: openSearchModal, closeModal: closeSearchModal } = useModal()
   const { isOpen: isReviewDetailModalOpen, openModal: openReviewDetailModal, closeModal: closeReviewDetailModal } = useModal()
   const [selectedReview, setSelectedReview] = useState<Review | null>(null)
   const [reviews, setReviews] = useState<Review[]>([])
-  const [isLoading, setIsLoading] = useState(true)
+  const [isLoading, setIsLoading] = useState(false)
   const [isReplying, setIsReplying] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
+  const [currentAccountId, setCurrentAccountId] = useState<string>('')
+  const [currentLocationId, setCurrentLocationId] = useState<string>('')
+  const [currentAccountName, setCurrentAccountName] = useState<string>('')
+  const [currentLocationTitle, setCurrentLocationTitle] = useState<string>('')
+  const [searchCriteria, setSearchCriteria] = useState<SearchCriteria | null>(null)
 
-  const { accountId, locationId } = useParams()
+  // モーダルから呼ばれる検索ハンドラー
+  const handleSearchFetch = async (criteria: SearchCriteria) => {
+    setIsLoading(true)
+    setCurrentAccountId(criteria.accountId)
+    setCurrentLocationId(criteria.locationId)
+    setCurrentAccountName(criteria.accountName)
+    setCurrentLocationTitle(criteria.locationTitle)
+    setSearchCriteria(criteria)
+    try {
+      const locationReviews = await googleRepository.getLocationReviews(
+        criteria.accountId,
+        criteria.locationId
+      )
 
-  useEffect(() => {
-    const fetchReviews = async () => {
-      setIsLoading(true)
-      try {
-        // Contextの値が設定されている場合のみAPIを呼び出し
-        if (accountId && locationId) {
-          const locationReviews = await googleRepository.getLocationReviews(
-            accountId,
-            locationId
-          )
+      const formattedReviews: Review[] = locationReviews.map((review: GoogleLocationReviewModel, index: number) => {
+        const ratingValue = review.starRating ? (() => {
+          switch (review.starRating) {
+          case GoogleLocationReviewCustomStarRating.ONE:
+            return 1
+          case GoogleLocationReviewCustomStarRating.TWO:
+            return 2
+          case GoogleLocationReviewCustomStarRating.THREE:
+            return 3
+          case GoogleLocationReviewCustomStarRating.FOUR:
+            return 4
+          case GoogleLocationReviewCustomStarRating.FIVE:
+            return 5
+          default:
+            return 0
+          }
+        })() : 0
+        const reviewDate = review.createTime ? (() => {
+          const date = new Date(review.createTime)
+          const year = date.getFullYear()
+          const month = String(date.getMonth() + 1).padStart(2, '0')
+          const day = String(date.getDate()).padStart(2, '0')
+          return `${year}年${month}月${day}日`
+        })() : ''
 
-          const formattedReviews: Review[] = locationReviews.map((review: GoogleLocationReviewModel, index: number) => {
-            const ratingValue = review.starRating ? (() => {
-              switch (review.starRating) {
-              case GoogleLocationReviewCustomStarRating.ONE:
-                return 1
-              case GoogleLocationReviewCustomStarRating.TWO:
-                return 2
-              case GoogleLocationReviewCustomStarRating.THREE:
-                return 3
-              case GoogleLocationReviewCustomStarRating.FOUR:
-                return 4
-              case GoogleLocationReviewCustomStarRating.FIVE:
-                return 5
-              default:
-                return 0
-              }
-            })() : 0
-            const reviewDate = review.createTime ? (() => {
-              const date = new Date(review.createTime)
-              const year = date.getFullYear()
-              const month = String(date.getMonth() + 1).padStart(2, '0')
-              const day = String(date.getDate()).padStart(2, '0')
-              return `${year}年${month}月${day}日`
-            })() : ''
+        // reviewIdはUUIDとして扱う
+        const reviewId = review.reviewId || `review-${index}-${Date.now()}`
 
-            // reviewIdはUUIDとして扱う
-            const reviewId = review.reviewId || `review-${index}-${Date.now()}`
+        return {
+          id: reviewId,
+          serviceName: 'GBP',
+          rating: ratingValue,
+          date: reviewDate,
+          createTime: review.createTime,
+          content: review.comment || '',
+          replied: !!review.reviewReply,
+          reviewReply: review.reviewReply ? {
+            comment: review.reviewReply.comment || '',
+            updateTime: review.reviewReply.updateTime || ''
+          } : undefined
+        } as Review & { createTime?: string }
+      })
 
-            return {
-              id: reviewId,
-              serviceName: 'GBP',
-              rating: ratingValue,
-              date: reviewDate,
-              content: review.comment || '',
-              replied: !!review.reviewReply,
-              reviewReply: review.reviewReply ? {
-                comment: review.reviewReply.comment || '',
-                updateTime: review.reviewReply.updateTime || ''
-              } : undefined
-            }
-          })
-
-          setReviews(formattedReviews)
-        }
-      } catch (error) {
-        console.error('Failed to fetch reviews:', error)
-      } finally {
-        setIsLoading(false)
-      }
+      setReviews(formattedReviews)
+    } catch (error) {
+      console.error('Failed to fetch reviews:', error)
+    } finally {
+      setIsLoading(false)
     }
-
-    fetchReviews()
-  }, [googleRepository, accountId, locationId])
+  }
 
   const handleReviewClick = (review: Review) => {
     setSelectedReview(review)
@@ -99,10 +107,10 @@ export default function ReviewPage() {
   }
 
   const handleReply = async (replyContent: string) => {
-    if (accountId && locationId && selectedReview) {
+    if (currentAccountId && currentLocationId && selectedReview) {
       setIsReplying(true)
       try {
-        await googleRepository.postLocationReviewReply(accountId, locationId, selectedReview.id, replyContent)
+        await googleRepository.postLocationReviewReply(currentAccountId, currentLocationId, selectedReview.id, replyContent)
         // Refresh the reviews after replying
         const updatedReviews = reviews.map(review =>
           review.id === selectedReview.id
@@ -120,9 +128,9 @@ export default function ReviewPage() {
   }
 
   const handleDeleteReply = async () => {
-    if (accountId && locationId && selectedReview) {
+    if (currentAccountId && currentLocationId && selectedReview) {
       try {
-        await googleRepository.deleteLocationReviewReply(accountId, locationId, selectedReview.id.toString())
+        await googleRepository.deleteLocationReviewReply(currentAccountId, currentLocationId, selectedReview.id.toString())
         // Refresh the reviews after deletion
         const updatedReviews = reviews.map(review =>
           review.id === selectedReview.id
@@ -141,18 +149,81 @@ export default function ReviewPage() {
     setSearchQuery(e.target.value)
   }
 
-  // 検索クエリに基づいてレビューをフィルタリング
-  const filteredReviews = reviews.filter(review => {
-    if (!searchQuery) return true
+  // 検索条件に基づいてレビューをフィルタリング＆ソート
+  const filteredReviews = (() => {
+    let result = [...reviews]
 
-    const query = searchQuery.toLowerCase()
-    return review.content.toLowerCase().includes(query)
-  })
+    // ワード検索でのフィルタリング
+    if (searchQuery) {
+      const query = searchQuery.toLowerCase()
+      result = result.filter(review => review.content.toLowerCase().includes(query))
+    }
+
+    // 検索条件が設定されている場合
+    if (searchCriteria) {
+      // 日付範囲でのフィルタリング
+      if (searchCriteria.startDate || searchCriteria.endDate) {
+        result = result.filter(review => {
+          const reviewWithTime = review as Review & { createTime?: string }
+          if (!reviewWithTime.createTime) return true
+
+          const reviewDate = new Date(reviewWithTime.createTime)
+
+          if (searchCriteria.startDate) {
+            const startDate = new Date(searchCriteria.startDate)
+            startDate.setHours(0, 0, 0, 0)
+            if (reviewDate < startDate) return false
+          }
+
+          if (searchCriteria.endDate) {
+            const endDate = new Date(searchCriteria.endDate)
+            endDate.setHours(END_OF_DAY_HOURS, END_OF_DAY_MINUTES, END_OF_DAY_SECONDS, END_OF_DAY_MILLISECONDS)
+            if (reviewDate > endDate) return false
+          }
+
+          return true
+        })
+      }
+
+      // 返信状態でのソート
+      if (searchCriteria.replyStatus === '未返信') {
+        result.sort((a, b) => {
+          // 未返信を上に
+          if (a.replied === b.replied) return 0
+          return a.replied ? 1 : -1
+        })
+      } else if (searchCriteria.replyStatus === '返信済み') {
+        result.sort((a, b) => {
+          // 返信済みを上に
+          if (a.replied === b.replied) return 0
+          return a.replied ? -1 : 1
+        })
+      }
+
+      // 評価順でのソート
+      if (searchCriteria.ratingOrder === '高評価') {
+        result.sort((a, b) => b.rating - a.rating)
+      } else if (searchCriteria.ratingOrder === '低評価') {
+        result.sort((a, b) => a.rating - b.rating)
+      }
+    }
+
+    return result
+  })()
 
   return (
     <Wrapper direction="col" padding="5rem 4.3rem 5.9rem 5rem" className={styles.content_container}>
       <Wrapper direction="col" gap="2rem">
         <Typography content="口コミ" color="primary" size="medium" />
+        {currentAccountName && currentLocationTitle && (
+          <Wrapper direction="col" gap="0.5rem">
+            <Typography
+              content={`現在の検索条件: ${currentAccountName} / ${currentLocationTitle}`}
+              color="gray"
+              size="small"
+            />
+          </Wrapper>
+        )}
         <Wrapper gap="3rem">
           <SearchBox placeholder="ワードを検索" width="42.7rem" onChange={handleSearch} value={searchQuery} />
           <Button bgColor="primary" onClick={openSearchModal}>
@@ -176,7 +247,7 @@ export default function ReviewPage() {
           ))
         )}
       </Wrapper>
-      <SearchDetailModal isOpen={isSearchModalOpen} onClose={closeSearchModal} />
+      <SearchDetailModal isOpen={isSearchModalOpen} onClose={closeSearchModal} onSearch={handleSearchFetch} />
       {selectedReview && (
         <ReviewDetailModal
           isOpen={isReviewDetailModalOpen}
