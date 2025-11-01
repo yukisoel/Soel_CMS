@@ -29,12 +29,14 @@ Resources:
 
   RDSInstance:
     Type: AWS::RDS::DBInstance
+    DeletionPolicy: Snapshot
+    UpdateReplacePolicy: Snapshot
     Properties:
       DBInstanceIdentifier: !Sub "${Environment}-${ProjectName}-db"
       AllocatedStorage: 20
       DBInstanceClass: !Ref RDSInstanceClass
       Engine: postgres
-      EngineVersion: 16.3
+      EngineVersion: 16.8
       ManageMasterUserPassword: true
       MasterUsername: postgres
       VPCSecurityGroups:
