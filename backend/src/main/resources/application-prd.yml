@@ -1,0 +1,30 @@
+app:
+  redirect:
+    url: https://cmssoel.click/edit
+  base-url: https://cmssoel.click
+
+server:
+  forward-headers-strategy: framework
+
+spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          cognito:
+            redirect-uri: "https://cmssoel.click/login/oauth2/code/cognito"
+          google:
+            redirect-uri: "https://cmssoel.click/login/oauth2/code/google"
+springdoc:
+  api-docs:
+    enabled: false
+  swagger-ui:
+    enabled: false
+
+logging:
+  level:
+    org:
+      springframework:
+        security: DEBUG
+        web: DEBUG
+

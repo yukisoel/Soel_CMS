@@ -1,8 +1,6 @@
-import { useContext, useMemo, useState, useEffect, useRef } from 'react'
+import { useMemo, useState, useEffect, useRef } from 'react'
 import classNames from 'classnames'
 import { Link, useLocation } from 'react-router-dom'
-import { GoogleAccountsContext } from '../contexts/GoogleAccountsContext'
-import { GoogleSelectedLocationContext } from '../contexts/GoogleSelectedLocationContext'
 import styles from '@/main/common/AdvancedSidebarMenu.module.scss'
 import Wrapper from '@/main/common/Wrapper'
 import Typography from '@/main/common/Typography'
@@ -16,58 +14,48 @@ import ReviewIcon from '@/main/assets/ReviewIcon.svg'
 import StoreMangeIcon from '@/main/assets/StoreManageIcon.svg'
 
 export default function AdvancedSidebarMenu() {
-  const { selectedAccount } = useContext(GoogleAccountsContext)
-  const { googleSelectedLocation } = useContext(GoogleSelectedLocationContext)
   const { pathname } = useLocation()
 
-  const SidebarItems = useMemo(() => {
-    const items = [
-      {
-        title: '基本情報',
-        icon: StoreMangeIcon,
-        items: [
-          { title: '各店基本情報変更', link: '/edit' },
-          { title: '写真一括変更', link: '/edit/bulk/photo' },
-          { title: '特別営業時間一括変更', link: '/edit/bulk/special' }
-        ],
-        flipIcon: true
-      },
-      {
-        title: '投稿',
-        icon: EditorIcon,
-        items: [
-          { title: '一括投稿', link: '/edit/bulk/schedule-post', subItems: [
-            { title: 'ブランドから選択', link: '/edit/bulk/schedule-post?mode=brand' },
-            { title: 'エリアから選択', link: '/edit/bulk/schedule-post?mode=area' }
-          ] },
-          { title: '投稿予約一覧', link: '/edit/bulk/schedule-post-list' },
-          { title: '過去投稿一覧', link: '/edit/bulk/history-post-list' }
-        ],
-        flipIcon: true
-      },
-      {
-        title: '広告',
-        icon: AdManageIcon,
-        items: [],
-        flipIcon: true
-      }
-    ]
-
-    // 口コミ管理はlocationが選択されている場合のみ表示
-    if (selectedAccount?.name && googleSelectedLocation?.name) {
-      items.splice(2, 0, {
-        title: '口コミ管理',
-        icon: ReviewIcon,
-        items: [
-          { title: '口コミ一覧', link: `/edit/accounts/${selectedAccount.name}/location/${googleSelectedLocation.name}/review` },
-          { title: '口コミ分析', link: '#' }
-        ],
-        flipIcon: true
-      })
+  const SidebarItems = [
+    {
+      title: '基本情報',
+      icon: StoreMangeIcon,
+      items: [
+        { title: '各店基本情報変更', link: '/edit' },
+        { title: '写真一括変更', link: '/edit/bulk/photo' },
+        { title: '特別営業時間一括変更', link: '/edit/bulk/special' }
+      ],
+      flipIcon: true
+    },
+    {
+      title: '投稿',
+      icon: EditorIcon,
+      items: [
+        { title: '一括投稿', link: '/edit/bulk/schedule-post', subItems: [
+          { title: 'ブランドから選択', link: '/edit/bulk/schedule-post?mode=brand' },
+          { title: 'エリアから選択', link: '/edit/bulk/schedule-post?mode=area' }
+        ] },
+        { title: '投稿予約一覧', link: '/edit/bulk/schedule-post-list' },
+        { title: '過去投稿一覧', link: '/edit/bulk/history-post-list' }
+      ],
+      flipIcon: true
+    },
+    {
+      title: '口コミ管理',
+      icon: ReviewIcon,
+      items: [
+        { title: '口コミ一覧', link: `/edit/review` },
+        { title: '口コミ分析', link: '#' }
+      ],
+      flipIcon: true
+    },
+    {
+      title: '広告',
+      icon: AdManageIcon,
+      items: [],
+      flipIcon: true
     }
-
-    return items
-  }, [selectedAccount, googleSelectedLocation])
+  ]
 
   return (
     <Wrapper direction="col" className={styles.sidebar_container} justify="justify-between">
@@ -79,7 +67,7 @@ export default function AdvancedSidebarMenu() {
         <Link to="/">
           <Wrapper gap="1.7rem" padding="2.1rem 0 2.1rem 4.4rem" className={pathname === '/' ? styles.home_selected : ''}>
             <img src={HomeIcon} alt="home_icon" />
-            <Typography content="ホーム" size="medium" color="primary" />
+            <Typography content="店舗管理" size="medium" color="primary" />
           </Wrapper>
         </Link>
         {

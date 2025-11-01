@@ -16,10 +16,13 @@ import org.springframework.web.multipart.MultipartFile
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody
 import java.io.IOException
 import javax.imageio.ImageIO
+import javax.sql.DataSource
+import org.slf4j.LoggerFactory
 
 @RestController
 @RequestMapping("/api/google")
-class GoogleController(val authHelper: AuthHelper,  val googleService: GoogleService, val googleUseCase: GoogleUseCase) {
+class GoogleController(val authHelper: AuthHelper,  val googleService: GoogleService, val googleUseCase: GoogleUseCase,  private val dataSource: DataSource) {
+    private val log = LoggerFactory.getLogger(GoogleController::class.java)
 
     @Operation(summary = "Google:ログインユーザー情報の取得", description = "Google:ログインユーザー情報の取得を行います", tags = ["Google:GETメソッド"])
     @GetMapping("/me")
@@ -60,6 +63,27 @@ class GoogleController(val authHelper: AuthHelper,  val googleService: GoogleSer
     @GetMapping("/locations")
     fun getLocations(request: HttpServletRequest, @RequestParam("accountId") accountId: String): ResponseEntity<List<GoogleLocation>>? {
         val accessToken = authHelper.getGoogleAccessToken(request)
+
+        // --- DB Ping（Secret 取得のトリガー） ---
+        try {
+            dataSource.connection.use { conn ->
+                val md = conn.metaData
+                log.info(
+                    "DB ping start: url='{}', user='{}', connClass='{}'",
+                    md.url, md.userName, conn.javaClass.name
+                )
+                conn.createStatement().use { st ->
+                    st.executeQuery("SELECT 1").use { rs ->
+                        if (rs.next()) {
+                            log.info("DB ping OK: result={}", rs.getInt(1))
+                        }
+                    }
+                }
+            }
+        } catch (e: Exception) {
+            log.error("DB ping FAILED: {}", e.message, e)
+        }
+
         return googleService.getLocations(accessToken, accountId)
     }
 
