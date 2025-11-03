@@ -14,10 +14,10 @@ export default function SchedulePost() {
   const [mode, setMode] = useState<'selectStore' | 'selectService' | 'schedulePost' | 'confirmPost'>('selectStore')
 
   useEffect(() => {
-    if (selectedAccount?.accountName) {
-      googleRepository.syncGoogleStore(selectedAccount.accountName)
+    if (selectedAccount?.name) {
+      googleRepository.syncGoogleStore(selectedAccount.name)
     }
-  }, [selectedAccount?.accountName])
+  }, [selectedAccount?.name])
 
   const { selectedBranches, selectStoreRender } = useSelectStore({
     onNextClick: () => setMode('selectService'),
