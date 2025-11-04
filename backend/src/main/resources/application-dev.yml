@@ -7,6 +7,12 @@ server:
   forward-headers-strategy: framework
 
 spring:
+  datasource:
+    driver-class-name: com.amazonaws.secretsmanager.sql.AWSSecretsManagerPostgreSQLDriver
+    url: >-
+      jdbc-secretsmanager:postgresql://${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}
+      ?secretId=arn:aws:secretsmanager:ap-northeast-1:211125631266:secret:rds!db-4bbb2b7c-00e2-41c5-8dde-aa864983e1ba-IcFAT2
+      &region=ap-northeast-1
   security:
     oauth2:
       client:
