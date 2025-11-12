@@ -95,23 +95,3 @@ aws cloudformation deploy \
 echo "✅ ネットワーク関連のスタック作成が完了しました"
 
 echo "▶️ 5. VPC Endpoint スタック作成"
-
-# 必要な Output を取得
-PRIVATE_RT_ID=$(stack_output "${ENV}-${PROJECT}-routes" PrivateRouteTableId)
-VPCE_SG_ID=$(stack_output "${ENV}-${PROJECT}-sg" VpcEndpointSecurityGroup)
-
-aws cloudformation deploy \
-  --template-file ${TEMPLATE_DIR}/vpc_endpoint.yml \
-  --stack-name ${ENV}-${PROJECT}-vpce \
-  --parameter-overrides \
-    Environment=$ENV \
-    ProjectName=$PROJECT \
-    VpcId=$VPC_ID \
-    SubnetPublic1Id=$PUB1_ID \
-    SubnetPublic2Id=$PUB2_ID \
-    PrivateRouteTableId=$PRIVATE_RT_ID \
-    VpcEndpointSG=$VPCE_SG_ID \
-  --region $REGION \
-  --role-arn ${CF_EXEC_ROLE}
-
-echo "✅ VPCエンドポイントスタックの作成が完了しました"
