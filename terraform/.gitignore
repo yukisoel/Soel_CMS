@@ -1,2 +1,6 @@
 .terraform
 .terraform.*
+*.tfstate
+*.tfstate.*
+tfstate-*.json
+*.tfplan
